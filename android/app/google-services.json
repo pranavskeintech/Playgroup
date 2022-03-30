@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "252989453175",
+    "project_id": "playgroup-6cb18",
+    "storage_bucket": "playgroup-6cb18.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:252989453175:android:c9e6e7e96e072b43d4e772",
+        "android_client_info": {
+          "package_name": "com.skein.playgroup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "252989453175-89cb13ii7vfu39fv7atfnc9meflf044a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skein.playgroup",
+            "certificate_hash": "f5ae13016bb7daa10588c482fef983a03f4b6c3b"
+          }
+        },
+        {
+          "client_id": "252989453175-se4id5q9j34ergjg66punfao0jmsj2dn.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfsZi98-K62fHAFDiKN1tgBLyHVHioVlI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "252989453175-se4id5q9j34ergjg66punfao0jmsj2dn.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
