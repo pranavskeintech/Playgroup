@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/ChildConfirmation.dart';
+import 'package:playgroup/Screens/ChildDetails.dart';
+import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
@@ -113,7 +116,8 @@ class NavigationDrawer extends StatelessWidget {
                     'Add Child',
                   ),
                 ),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () => {Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ChooseChild()))},
                 trailing: Icon(
                   Icons.add_circle,
                   color: Colors.blue,

@@ -10,7 +10,10 @@ import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/ChooseTopic.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/LocationSelection.dart';
+import 'package:playgroup/Screens/Mark_availability.dart';
+import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
+import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
 import 'package:playgroup/main.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -255,7 +258,7 @@ class _LoginPageState extends State<LoginPage>
                       onPressed: ()
                       {
                       Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => DashBoard()));
+              builder: (BuildContext context) => Own_Availability()));
                       },
                     ),
                   ),

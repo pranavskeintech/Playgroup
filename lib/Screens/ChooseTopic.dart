@@ -68,7 +68,6 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                  width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   children: [Image.asset(
-                                    
                                     "assets/imgs/book.png",width: 100,height: 100,),
                                     SizedBox(height: 10,),
                                     Text("Learn")],

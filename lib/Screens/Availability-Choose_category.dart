@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/ChooseTopic.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
-
 import 'Availability-Choose_friends.dart';
 
 
 class Choose_Category extends StatefulWidget 
 {
   const Choose_Category({ Key? key }) : super(key: key);
-
   @override
   State<Choose_Category> createState() => _Choose_CategoryState();
 }
@@ -23,7 +21,6 @@ List<String> options = [
   'Fashion', 'Travel', 'Food', 'Tech',
   'Science','Cricket','FoodBall','Hockey','Tennis','Kabbadi','Table Tennis',
 ];
-
   int? selectedIndex;
 
 
@@ -47,8 +44,7 @@ List<String> options = [
             Container(
               height: 400,
                 margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: GridView.builder(
-                  
+                child: GridView.builder( 
                   itemCount: options.length,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       childAspectRatio: 30/10,
@@ -64,24 +60,23 @@ List<String> options = [
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Colors.white,
+                            color: selectedIndex != index? Colors.white:Colors.green,
+                            border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                            borderRadius: BorderRadius.circular(5),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.grey,
-                                blurRadius: 1.0, // soften the shadow
-                                spreadRadius: 1.0, //extend the shadow
+                                color: Colors.grey.withOpacity(0.3),
+                                blurRadius: 0.0, // soften the shadow
+                                spreadRadius: 0.0, //extend the shadow
                                 offset: Offset(
-                                  2.0, // Move to right 10  horizontally
-                                  2.0, // Move to bottom 10 Vertically
+                                  0.0, // Move to right 10  horizontally
+                                  0.5, // Move to bottom 10 Vertically
                                 ),
                               )
                             ],
                           ),
-                          child: 
-                          Container(
-                            color:  selectedIndex != index? Colors.grey.withOpacity(0.2):Colors.green,
-                            child: Center(child: Text(options[index],style: TextStyle(color: selectedIndex != index? Colors.black:Colors.white),),),
-                          ),
+                          child:  Center(child: Text(options[index],style: TextStyle(color: selectedIndex != index? Colors.black:Colors.white),),),
+                          
                         ));
                   },
                 )),

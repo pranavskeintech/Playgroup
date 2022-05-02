@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/Availability-Choose_category.dart';
 import 'package:playgroup/Screens/HomeScreen.dart';
 import 'package:playgroup/Screens/Notification.dart';
+import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/Search.dart';
 import 'package:playgroup/Utilities/NavigationDrawer.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -67,9 +68,15 @@ class _DashBoardState extends State<DashBoard>
           ],
         ),
         actions: [
-          CircleAvatar(
-            radius: 16,
-            backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+          InkWell(
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => ProfileScreen()));
+            },
+            child: CircleAvatar(
+              radius: 16,
+              backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+            ),
           ),
           SizedBox(
             width: 3,

@@ -111,7 +111,8 @@ class _OTPScreenState extends State<OTPScreen> {
                     child: const Text('Continue',
                         style: TextStyle(color: Colors.white)),
                     controller: _btnController,
-                    onPressed: () {
+                    onPressed: () 
+                    {
                        Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => LocationSelection()));
                     },

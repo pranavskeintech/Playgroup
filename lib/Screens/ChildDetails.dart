@@ -43,7 +43,7 @@ class _ChildDetailsState extends State<ChildDetails>
   File? _imageFile;
 
 
-  _selectOrderDate() async 
+  _selectDate() async 
   {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -183,10 +183,7 @@ class _ChildDetailsState extends State<ChildDetails>
                     borderRadius: BorderRadius.circular(10)),
                 child: Row(
                   children: [
-                    Container(
-                      height: 40,
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                      width: MediaQuery.of(context).size.width * 0.70,
+                    Expanded(
                       child: TextField(
                         style: TextStyle(color: Colors.black),
                         controller: _numberController,
@@ -235,7 +232,7 @@ class _ChildDetailsState extends State<ChildDetails>
               ),
               GestureDetector(
                 onTap: () {
-                  _selectOrderDate();
+                  _selectDate();
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -244,10 +241,7 @@ class _ChildDetailsState extends State<ChildDetails>
                       borderRadius: BorderRadius.circular(10)),
                   child: Row(
                     children: [
-                      Container(
-                        height: 40,
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        width: MediaQuery.of(context).size.width * 0.85,
+                      Expanded(
                         child: TextField(
                           enabled: false,
                           style: TextStyle(
@@ -344,11 +338,9 @@ class _ChildDetailsState extends State<ChildDetails>
                 buttonWidth: MediaQuery.of(context).size.width * 0.9,
                 buttonPadding: const EdgeInsets.only(left: 14, right: 14),
                 buttonDecoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(
-                    color: Colors.black26,
-                  ),
-                  color: Colors.white.withOpacity(0.3),
+                  borderRadius: BorderRadius.circular(5),
+                 
+                  color: Color.fromARGB(255,230,230,230),
                 ),
                 buttonElevation: 2,
                 itemHeight: 40,
@@ -364,7 +356,7 @@ class _ChildDetailsState extends State<ChildDetails>
                 scrollbarRadius: const Radius.circular(40),
                 scrollbarThickness: 6,
                 scrollbarAlwaysShow: true,
-                offset: const Offset(-20, 0),
+                offset: const Offset(0, 0),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.05,

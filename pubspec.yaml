@@ -63,6 +63,7 @@ dev_dependencies:
   screenshot: ^1.2.3
   social_share: ^2.2.1
   chips_choice_null_safety: ^2.0.6
+  dropdown_plus: ^0.0.9
 
   
 # For information on the generic Dart part of this file, see the

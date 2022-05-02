@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
 class ChildConfirmation extends StatefulWidget {
@@ -186,7 +187,10 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                 RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0),
                                     side: BorderSide(color: Colors.grey.withOpacity(0.3))))),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => ChildDetails()));
+                        },
                         child: Text(
                           "Add Another Child",
                           style: TextStyle(color: Colors.black),
