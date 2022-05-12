@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:playgroup/Screens/ChooseTopic.dart';
 import 'package:playgroup/Utilities/Strings.dart';
-import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'Availability-Choose_friends.dart';
 
 
@@ -88,7 +86,7 @@ List<String> options = [
               Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => Availability_choose_friends()));
             }, child: Text("Continue"),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Strings.appThemecolor)),)),
-            Container(
+            SizedBox(
             //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
             // ),
             width: MediaQuery.of(context).size.width * 0.9,

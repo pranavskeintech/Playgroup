@@ -52,7 +52,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Colors.grey,
                                     blurRadius: 5.0, // soften the shadow
@@ -64,7 +64,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                   )
                                 ],
                               ),
-                              child: Container(
+                              child: SizedBox(
                                  width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   children: [Image.asset(
@@ -78,7 +78,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                               Positioned(
                                   right: 3,
                                   top: 3,
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: Image.asset("assets/imgs/check.png"),
@@ -112,7 +112,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                boxShadow: [
+                                boxShadow: const [
                                   BoxShadow(
                                     color: Colors.grey,
                                     blurRadius: 5.0, // soften the shadow
@@ -124,7 +124,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                   )
                                 ],
                               ),
-                              child: Container(
+                              child: SizedBox(
                                  width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   children: [Image.asset(
@@ -139,7 +139,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                               Positioned(
                                   right: 3,
                                   top: 3,
-                                  child: Container(
+                                  child: SizedBox(
                                     height: 20,
                                     width: 20,
                                     child: Image.asset("assets/imgs/check.png"),

@@ -65,7 +65,7 @@ List<String> images = [
             SizedBox(
               height: 10,
             ),
-            Container(
+            SizedBox(
               height: 80,
               child: ListView.builder(
                   itemCount: images.length,
@@ -75,7 +75,7 @@ List<String> images = [
                       children: [
                         Container(
                           margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                          decoration: new BoxDecoration(
+                          decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
                                 width: 2,
@@ -168,7 +168,7 @@ List<String> images = [
                                               ],
                                             ),
                                             Row(
-                                              children: [
+                                              children: const [
                                                 Icon(
                                                   Icons.location_pin,
                                                   color: Colors.red,
@@ -204,7 +204,7 @@ List<String> images = [
                                       SizedBox(
                                         height: 10,
                                       ),
-                                      Container(
+                                      SizedBox(
                                         height: 50,
                                         child: Row(
                                           children: [
@@ -215,7 +215,7 @@ List<String> images = [
                                                       Axis.horizontal,
                                                   itemBuilder:
                                                       ((context, index) {
-                                                    if (index < 4)
+                                                    if (index < 4) {
                                                       return Container(
                                                         padding:
                                                             EdgeInsets.all(2),
@@ -227,7 +227,7 @@ List<String> images = [
                                                                   "assets/imgs/${childImgs[index]}"),
                                                         ),
                                                       );
-                                                    else
+                                                    } else {
                                                       return Container(
                                                         padding:
                                                             EdgeInsets.all(3),
@@ -247,9 +247,10 @@ List<String> images = [
                                                           ), //Text
                                                         ),
                                                       );
+                                                    }
                                                   })),
                                             ),
-                                            Container(
+                                            SizedBox(
                                               height: 30,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(

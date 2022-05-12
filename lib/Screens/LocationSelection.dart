@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Screens/ChildDetails.dart';
+import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import '../Utilities/Strings.dart';
 
-class LocationSelection extends StatefulWidget 
-{
-  const LocationSelection({ Key? key }) : super(key: key);
+class LocationSelection extends StatefulWidget {
+  const LocationSelection({Key? key}) : super(key: key);
 
   @override
   State<LocationSelection> createState() => _LocationSelectionState();
 }
 
-class _LocationSelectionState extends State<LocationSelection>
- {
-  var _btnController = RoundedLoadingButtonController();
+class _LocationSelectionState extends State<LocationSelection> {
+  final _btnController = RoundedLoadingButtonController();
   String? selectedValue;
   List<String> items = [
     'Coimbatore',
@@ -28,8 +27,7 @@ class _LocationSelectionState extends State<LocationSelection>
   ];
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         color: Colors.white,
@@ -51,7 +49,7 @@ class _LocationSelectionState extends State<LocationSelection>
                       child: Icon(Icons.arrow_back_sharp)),
                 ),
                 SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.05,
+                  height: MediaQuery.of(context).size.height * 0.10,
                 ),
                 Image.asset(
                   "assets/imgs/location.png",
@@ -61,93 +59,93 @@ class _LocationSelectionState extends State<LocationSelection>
                 const SizedBox(height: 10),
                 const Text(
                   "Location",
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
                       fontSize: 20,
                       decoration: TextDecoration.none),
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.075,),
-                const SizedBox(
-                  height: 5,
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.075,
                 ),
-                DropdownButton2(      
-            isExpanded: true,
-            hint: Row(
-              children: const [
-                Expanded(
-                  child: Text(
-                    'Select Location',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-              ],
-            ),
-            items: items
-                .map((item) => DropdownMenuItem<String>(
-                      value: item,
-                      child: Text(
-                        item,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text("Enter your current location",style: TextStyle(color: Strings.textFeildHeading),)),
+                  SizedBox(height: 10,),
+                DropdownButtonHideUnderline(
+                  child: DropdownButton2(
+                    isExpanded: true,
+                    hint: Row(
+                      children: const [
+                        Expanded(
+                          child: Text(
+                            'Select Location',
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black),
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ))
-                .toList(),
-            value: selectedValue,
-            onChanged: (value) {
-              setState(() {
-                selectedValue = value as String;
-              });
-            },
-            icon: const Icon(
-              Icons.arrow_forward_ios_outlined,
-            ),
-            iconSize: 14,
-            iconEnabledColor: Colors.black,
-            iconDisabledColor: Colors.grey,
-            buttonHeight: 50,
-            buttonWidth: MediaQuery.of(context).size.width * 0.9,
-            buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-            buttonDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                color: Colors.black26,
-              ),
-              color: Colors.white,
-            ),
-            buttonElevation: 2,
-            itemHeight: 40,
-            itemPadding: const EdgeInsets.only(left: 14, right: 14),
-            dropdownMaxHeight: 200,
-            dropdownWidth: 300,
-            dropdownPadding: null,
-            dropdownDecoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: Colors.white,
-            ),
-            dropdownElevation: 8,
-            scrollbarRadius: const Radius.circular(40),
-            scrollbarThickness: 6,
-            scrollbarAlwaysShow: true,
-            offset: const Offset(0, 0),
-          ),
-              Container(
-                  decoration: BoxDecoration(
-                        color: Colors.grey.withOpacity(0.3),
-                        border: Border.all(color: const Color(0xFFf2f3f4)),
-                        borderRadius: BorderRadius.circular(10)),
-                  child: Container()
+                      ],
+                    ),
+                    items: items
+                        .map((item) => DropdownMenuItem<String>(
+                              value: item,
+                              child: 
+                              Text(
+                                item,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ))
+                        .toList(),
+                    value: selectedValue,
+                    onChanged: (value) {
+                      setState(() {
+                        selectedValue = value as String;
+                      });
+                    },
+                    icon: const Icon(
+                      Icons.arrow_forward_ios_outlined,
+                    ),
+                    iconSize: 14,
+                    iconEnabledColor: Colors.black,
+                    iconDisabledColor: Colors.grey,
+                    buttonHeight: 50,
+                    buttonWidth: MediaQuery.of(context).size.width * 0.9,
+                    buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                    buttonDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      // border: Border.all(
+                      //   color: Colors.black26,
+                      // ),
+                      color: Strings.textFeildBg,
+                    ),
+                    buttonElevation: 0,
+                    itemHeight: 40,
+                    itemPadding: const EdgeInsets.only(left: 14, right: 14),
+                    dropdownMaxHeight: 200,
+                   // dropdownWidth: 300,
+                    dropdownPadding: null,
+                    dropdownDecoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white,
+                    ),
+                    dropdownElevation: 8,
+                    scrollbarRadius: const Radius.circular(40),
+                    scrollbarThickness: 6,
+                    scrollbarAlwaysShow: true,
+                    offset: const Offset(0, 0),
+                  ),
+                ),              
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.05,
                 ),
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
                 Container(
                   margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                   width: MediaQuery.of(context).size.width * 0.9,
@@ -156,14 +154,15 @@ class _LocationSelectionState extends State<LocationSelection>
                     resetAfterDuration: true,
                     successColor: const Color.fromRGBO(94, 37, 108, 1),
                     width: 500,
-                    borderRadius: 10,
-                    color:  Strings.appThemecolor,
+                    borderRadius: 5,
+                    color: Strings.appThemecolor,
                     child: const Text('Continue',
-                        style: TextStyle(color: Colors.white)),
+                        style: TextStyle(color: Colors.white, fontSize: 18)),
                     controller: _btnController,
-                    onPressed: () {
-                       Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => DashBoard()));
+                    onPressed: () 
+                    {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => ChildDetails()));
                     },
                   ),
                 ),

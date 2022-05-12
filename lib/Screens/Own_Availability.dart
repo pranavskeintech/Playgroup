@@ -33,7 +33,7 @@ List<String> options = [
   @override
   void initState() {
     // TODO: implement initState
-    _tabController = new TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
 
@@ -62,11 +62,11 @@ List<String> options = [
           color: Colors.white,
         ),
         child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
+          SizedBox(
             height: 60,
             child: TabBar(
               tabs: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.45,
                   child: Text('Details',
                       textAlign: TextAlign.center,
@@ -74,7 +74,7 @@ List<String> options = [
                           fontWeight: FontWeight.bold,
                           color: const Color(0xFF272626))),
                 ),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.45,
                   child: Text('Chat',
                       textAlign: TextAlign.center,
@@ -145,7 +145,7 @@ List<String> options = [
                   ],
                 ):InkWell(
                   child: Row(
-                    children: [
+                    children: const [
                       Text("Share"),
                       SizedBox(width: 5,),
                       Icon(Icons.share,size: 15,)
@@ -157,7 +157,7 @@ List<String> options = [
           ),
           Card(
             elevation: 3,
-            child: Container(
+            child: SizedBox(
               height: 120,
               child: ListTile(
                 title: Padding(
@@ -253,7 +253,7 @@ List<String> options = [
             height: 10,
           ),
           Card(
-            child: Container(
+            child: SizedBox(
               height: 50,
               child: Row(
                 children: [
@@ -262,7 +262,7 @@ List<String> options = [
                         itemCount: 6,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: ((context, index) {
-                          if (index < 5)
+                          if (index < 5) {
                             return Container(
                               padding: EdgeInsets.all(2),
                               width: 40,
@@ -272,7 +272,7 @@ List<String> options = [
                                     "assets/imgs/${childImgs[index]}"),
                               ),
                             );
-                          else
+                          } else {
                             return Container(
                               padding: EdgeInsets.all(3),
                               height: 40,
@@ -286,6 +286,7 @@ List<String> options = [
                                 ), //Text
                               ),
                             );
+                          }
                         })),
                   ),
                 ],
@@ -315,7 +316,7 @@ List<String> options = [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              SizedBox(
                   //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
                   // ),
                   width: MediaQuery.of(context).size.width * 0.4,
@@ -334,7 +335,7 @@ List<String> options = [
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.white)),
                   )),
-              Container(
+              SizedBox(
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: ElevatedButton(
                     onPressed: () {},

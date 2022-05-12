@@ -23,7 +23,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               Text("25-03-2022",style: TextStyle(color: Colors.grey),),
               SizedBox(height: 10,),
               for(int i = 0; i<2; i++)
-              Container(
+              SizedBox(
                 height: 100,
                 child: Center(
                   child: Card(

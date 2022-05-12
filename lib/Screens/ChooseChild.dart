@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
 
@@ -40,25 +41,17 @@ class _ChooseChildState extends State<ChooseChild>
                    itemCount: ChildName.length,
                    itemBuilder: (BuildContext context,int index){
                      return Container(
-              margin: EdgeInsets.fromLTRB(0, 20, 20, 0),
-              height: 50,
-              child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      side: BorderSide(color: Colors.grey.withOpacity(0.3))))),
-                          onPressed: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChildConfirmation()));
-                          },
-                          child: Text(
-                            ChildName[index],
-                            style: TextStyle(color: Colors.black),
-                          )),
+              margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+              height: 60,
+              child: InkWell(
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => DashBoard()));
+                },
+                child: Card(
+                  shadowColor: Colors.grey.withOpacity(0.1),
+                  child: Center(child: Text(ChildName[index])),
+                elevation: 8,),
+              ),
                      );
                      }),
            )

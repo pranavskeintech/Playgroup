@@ -11,7 +11,7 @@ class SearchResults extends StatefulWidget {
 class _SearchResultsState extends State<SearchResults>
     with TickerProviderStateMixin {
   TabController? _tabController;
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<String> childImgs = [
     "child1.jpg",
@@ -35,7 +35,7 @@ class _SearchResultsState extends State<SearchResults>
   
   @override
   void initState() {
-    _tabController = new TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
     childNames.add(DetailsObject(parentName: "Sathis Kumar", firstChild: "Ram Kumar", secondChild: "Vishnu"));
     // TODO: implement initState
     super.initState();
@@ -46,8 +46,8 @@ class _SearchResultsState extends State<SearchResults>
     return Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
-          systemOverlayStyle:
-              SystemUiOverlayStyle(statusBarColor: Colors.white),
+          // systemOverlayStyle:
+          //     SystemUiOverlayStyle(statusBarColor: Colors.white),
           backgroundColor: Colors.white,
           title: Row(
             children: [
@@ -105,11 +105,11 @@ class _SearchResultsState extends State<SearchResults>
         ),
         child: Column(
           children: [
-            Container(
+            SizedBox(
               height: 60,
               child: TabBar(
                 tabs: [
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.45,
                     child: Text('Friends',
                         textAlign: TextAlign.center,
@@ -117,7 +117,7 @@ class _SearchResultsState extends State<SearchResults>
                             fontWeight: FontWeight.bold,
                             color: const Color(0xFF272626))),
                   ),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.45,
                     child: Text('Parents',
                         textAlign: TextAlign.center,
@@ -151,7 +151,7 @@ class _SearchResultsState extends State<SearchResults>
                           ),
                           title: Text(parentNames[index],style: TextStyle(fontSize: 14)),
                           subtitle: Row(
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.location_pin,
                                 color: Colors.red,
@@ -167,12 +167,12 @@ class _SearchResultsState extends State<SearchResults>
                             ],
                           ),
                            trailing: //Icon(Icons.access_alarm)
-                           Container(
+                           SizedBox(
                              width: 150,
                              child: Row(
                                mainAxisAlignment: MainAxisAlignment.end,
                                crossAxisAlignment: CrossAxisAlignment.center,
-                               children: [
+                               children: const [
                                Icon(
                                  
                                  Icons.phone,color: Colors.blue,
@@ -205,7 +205,7 @@ class _SearchResultsState extends State<SearchResults>
                           ),
                           title: Text("Harish Chandrakumar",style: TextStyle(fontSize: 14),),
                           subtitle: Row(
-                            children: [
+                            children: const [
                               Icon(
                                 Icons.location_pin,
                                 color: Colors.red,
@@ -221,12 +221,12 @@ class _SearchResultsState extends State<SearchResults>
                             ],
                           ),
                            trailing: //Icon(Icons.access_alarm)
-                           Container(
+                           SizedBox(
                              width: 150,
                              child: Row(
                                mainAxisAlignment: MainAxisAlignment.end,
                                crossAxisAlignment: CrossAxisAlignment.center,
-                               children: [
+                               children: const [
                                Icon(  
                                  Icons.phone,color: Colors.blue,
                                  size: 20,),

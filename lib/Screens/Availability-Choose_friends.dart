@@ -13,7 +13,7 @@ class _Availability_choose_friendsState
     extends State<Availability_choose_friends> {
   List<bool> values = [];
 
-  List<String> _texts = [
+  final List<String> _texts = [
     "InduceSmile.com",
     "Flutter.io",
     "google.com",

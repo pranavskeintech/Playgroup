@@ -60,11 +60,11 @@ String? selectedStartTime;
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: Text("From"),
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: Text("To"),
                     )
@@ -76,7 +76,7 @@ String? selectedStartTime;
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: DropdownButton2(
                         isExpanded: true,
@@ -144,7 +144,7 @@ String? selectedStartTime;
                         offset: const Offset(0, 0),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.4,
                       child: DropdownButton2(
                         isExpanded: true,
@@ -231,7 +231,7 @@ String? selectedStartTime;
                 ),
          
           Card(
-            child: Container(
+            child: SizedBox(
               height: 50,
               child: Row(
                 children: [
@@ -240,7 +240,7 @@ String? selectedStartTime;
                         itemCount: 6,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: ((context, index) {
-                          if (index < 5)
+                          if (index < 5) {
                             return Container(
                               padding: EdgeInsets.all(2),
                               width: 40,
@@ -250,7 +250,7 @@ String? selectedStartTime;
                                     "assets/imgs/${childImgs[index]}"),
                               ),
                             );
-                          else
+                          } else {
                             return Container(
                               padding: EdgeInsets.all(3),
                               height: 40,
@@ -264,6 +264,7 @@ String? selectedStartTime;
                                 ), //Text
                               ),
                             );
+                          }
                         })),
                   ),
                 ],
@@ -272,7 +273,7 @@ String? selectedStartTime;
           ),
           Spacer(),
           Align(alignment: Alignment.bottomCenter,
-          child: Container(
+          child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
             child: ElevatedButton(child: Text("Save"),onPressed: ()
             {

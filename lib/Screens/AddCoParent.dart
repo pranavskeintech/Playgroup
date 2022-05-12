@@ -15,10 +15,10 @@ class AddCoParent extends StatefulWidget
 
 class _AddCoParentState extends State<AddCoParent> {
 
-  var _numberController = TextEditingController();
+  final _numberController = TextEditingController();
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   List<String> items = [
     'View Only',
@@ -31,7 +31,7 @@ class _AddCoParentState extends State<AddCoParent> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+       // systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
         backgroundColor: Strings.appThemecolor,
         title: Text(
           "Add Co-Parent",

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
+import 'package:playgroup/Screens/ChooseChild.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
 class ChildConfirmation extends StatefulWidget {
@@ -39,44 +41,50 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
+              SizedBox(height: 10,),
               Container(
                 height: MediaQuery.of(context).size.height * 0.6,
                 child: ListView.builder(
-        itemCount: 5,
-        itemBuilder: (BuildContext context,int index){
-          return Container(
-                  color: Colors.grey.withOpacity(0.3),
+        itemCount: 2,
+        itemBuilder: (BuildContext context,int index)
+        {
+          return Card(
+            elevation: 5,
+            shadowColor: Colors.grey.withOpacity(0.2),
+                  color: Color.fromRGBO(248, 248, 248, 1),
                   margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
                   child: Container(
                     margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [Icon(Icons.edit_outlined)],
-                        ),
+                      children: [                       
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Image.asset("assets/imgs/edit2.png",
+                          fit: BoxFit.fill,
+                          width: 18,
+                          height: 18,),),
                         // SizedBox(
                         //   height: 10,
                         // ),
-                        CircleAvatar(
+                       const CircleAvatar(
                           radius: 40,
                           backgroundImage:
                               AssetImage('assets/imgs/child.jpg'),
                         ),
-                        SizedBox(height: 10,),
-                        Text(
+                      const SizedBox(height: 10,),
+                      const Text(
                               "Alex Timo Dissusa",
                               style: TextStyle(fontWeight: FontWeight.bold),
                             ),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         Container(
-                          width: 200,
+                          width: 300,
                           child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                           // crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,7 +97,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                   SizedBox(
                                     height: 3,
                                   ),
-                                  Text("12-03-2022")
+                                  Text("12-03-2022",style: TextStyle(fontWeight: FontWeight.w500),)
                                 ],
                               ),
                               // SizedBox(
@@ -105,7 +113,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                               // ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
+                                children: const [
                                   Text(
                                     "Gender",
                                     style: TextStyle(color: Colors.grey),
@@ -113,7 +121,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                   SizedBox(
                                     height: 3,
                                   ),
-                                  Text("Male")
+                                  Text("Male",style: TextStyle(fontWeight: FontWeight.w500),)
                                 ],
                               ),
                             ],
@@ -161,32 +169,40 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
               child: Column(
                 children: [
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 50,
                     child: ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 Strings.appThemecolor),
                             shape: MaterialStateProperty.all<
                                 RoundedRectangleBorder>(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10.0),
+                              borderRadius: BorderRadius.circular(5.0),
                             ))),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChooseChild(),
+                            ),
+                          );                       
+                        },
                         child: Text("Next")),
                   ),
                   SizedBox(height: 10,),
                   Container(
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    height: 40,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    height: 50,
                     child: ElevatedButton(
                         style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(0),
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.white),
                             shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                 RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    side: BorderSide(color: Colors.grey.withOpacity(0.3))))),
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    side: BorderSide(color: Colors.grey.withOpacity(0.2))))),
                         onPressed: () {
                           Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => ChildDetails()));

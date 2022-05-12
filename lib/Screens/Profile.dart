@@ -13,7 +13,7 @@ class ProfileScreen extends StatefulWidget
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 
   @override
@@ -21,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+      //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
         backgroundColor: Strings.appThemecolor,
         title: Text(
           "PlayGroup",
@@ -45,7 +45,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Your Profile",style: TextStyle(color: Colors.grey),),TextButton(onPressed: (){}, child: Row(children: [Text("Edit"),SizedBox(width: 5,),Icon(Icons.edit_outlined,size: 15,)],))
+                Text("Your Profile",style: TextStyle(color: Colors.grey),),TextButton(onPressed: (){}, child: Row(children: const [Text("Edit"),SizedBox(width: 5,),Icon(Icons.edit_outlined,size: 15,)],))
               ],
             ),
             Divider(color: Colors.grey,),
@@ -53,11 +53,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.30,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text("Name",style: TextStyle(color: Colors.grey),),
                       SizedBox(height: 5,),
                       Text("Jhon Doe",style: TextStyle(fontWeight: FontWeight.bold),)
@@ -65,11 +65,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Container(color: Colors.grey.withOpacity(0.3),width: 1,height: 40,),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.45,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text("Email ID",style: TextStyle(color: Colors.grey),),
                       SizedBox(height: 5,),
                       Text("jhondoe@gmail.com",style: TextStyle(fontWeight: FontWeight.bold),)
@@ -83,11 +83,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.30,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text("Number",style: TextStyle(color: Colors.grey),),
                       SizedBox(height: 5,),
                       Text("+91 8898767890",style: TextStyle(fontWeight: FontWeight.bold),)
@@ -95,11 +95,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
                 Container(color: Colors.grey.withOpacity(0.3),width: 1,height: 40,),
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width * 0.45,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: const [
                       Text("Password",style: TextStyle(color: Colors.grey),),
                       SizedBox(height: 5,),
                       InkWell(child: Text("Change Password",style: TextStyle(color: Colors.blue),))
@@ -140,7 +140,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 
               },),
             ),
-            Align(alignment: Alignment.bottomCenter,child: Container(
+            Align(alignment: Alignment.bottomCenter,child: SizedBox(
               width: MediaQuery.of(context).size.width * 0.8,
               child: ElevatedButton(onPressed: (){}, child: Text("Add Child",style: TextStyle(color: Colors.black),),style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),),

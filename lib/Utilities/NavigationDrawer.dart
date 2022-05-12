@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:playgroup/Screens/ChildConfirmation.dart';
-import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -10,14 +8,14 @@ class NavigationDrawer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Drawer(
       child: Stack(children: [
-        Container(
+        SizedBox(
           height: MediaQuery.of(context).size.height * 0.85,
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
               ClipRRect(
                 borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(28)),
+                    BorderRadius.vertical(bottom: Radius.circular(0)),
                 child: DrawerHeader(
                     decoration: BoxDecoration(
                       color: Strings.appThemecolor,
@@ -45,6 +43,7 @@ class NavigationDrawer extends StatelessWidget {
                                   'John Albhin',
                                   style: TextStyle(
                                       color: Colors.white.withAlpha(250),
+                                      fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
@@ -64,25 +63,28 @@ class NavigationDrawer extends StatelessWidget {
                 height: 20,
               ),
               ListTile(
+                tileColor: Colors.grey.withOpacity(0.1),
                 leading: Image.asset(
                   "assets/imgs/home.png",
-                  width: 20,
-                  height: 20,
-                ),
+                  width: 17,
+                  height: 17,               
+                   ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
-                  child: Text('Home'),
+                  offset: Offset(-20, -3),
+                  child: Text('Home',style: TextStyle(fontWeight: FontWeight.bold,color: Strings.appThemecolor),),
                 ),
-                onTap: () => {},
+                onTap: () => {
+                  Navigator.pop(context)
+                },
               ),
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/profile.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text('Profile'),
                 ),
                 onTap: () => {Navigator.of(context).pop()},
@@ -90,11 +92,11 @@ class NavigationDrawer extends StatelessWidget {
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/add-user.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text('Add Co Parent'),
                 ),
                 trailing: Icon(
@@ -107,17 +109,17 @@ class NavigationDrawer extends StatelessWidget {
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/add_child.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text(
                     'Add Child',
                   ),
                 ),
-                onTap: () => {Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => ChooseChild()))},
+                // onTap: () => {Navigator.of(context).push(MaterialPageRoute(
+                //     builder: (context) => ChooseChild()))},
                 trailing: Icon(
                   Icons.add_circle,
                   color: Colors.blue,
@@ -127,11 +129,11 @@ class NavigationDrawer extends StatelessWidget {
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/settings.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text('Settings'),
                 ),
                 onTap: () => {Navigator.of(context).pop()},
@@ -139,11 +141,11 @@ class NavigationDrawer extends StatelessWidget {
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/blogs.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text('Blogs'),
                 ),
                 onTap: () => {Navigator.of(context).pop()},
@@ -151,11 +153,11 @@ class NavigationDrawer extends StatelessWidget {
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/delete_account.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text('Delete Account'),
                 ),
                 onTap: () => {Navigator.of(context).pop()},
@@ -163,11 +165,11 @@ class NavigationDrawer extends StatelessWidget {
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/add_friends.png",
-                  width: 20,
-                  height: 20,
+                  width: 17,
+                  height: 17,
                 ),
                 title: Transform.translate(
-                  offset: Offset(-20, 0),
+                  offset: Offset(-20, -3),
                   child: Text('Invite Friends'),
                 ),
                 onTap: () => {Navigator.of(context).pop()},
@@ -186,16 +188,16 @@ class NavigationDrawer extends StatelessWidget {
                 color: Colors.grey.withOpacity(0.3),
               ),
               ListTile(
-                leading: Icon(Icons.exit_to_app),
+                leading: Icon(Icons.exit_to_app,size: 20,),
                 title: Transform.translate(
-                  offset: Offset(-16, 0),
+                  offset: Offset(-16, -3),
                   child: Text("Logout"),
                 ),
                 onTap: () => {
                   Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) => LoginPage(),
                   ))
-                },
+               },
               ),
             ],
           ),

@@ -12,8 +12,8 @@ class Mark_Availabilty extends StatefulWidget {
 }
 
 class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  var _dobController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _dobController = TextEditingController();
 
   String? selectedStartTime;
   String? selectedEndTime;
@@ -35,19 +35,20 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2023),
     );
-    if (picked != null)
+    if (picked != null) {
       setState(() {
         String date1 = "${picked.day}-${picked.month}-${picked.year}";
         _dobController.text = date1;
         print("date selected");
       });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+       // systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
         backgroundColor: Colors.white,
         title: Row(
           children: [
@@ -117,7 +118,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                         gradient: LinearGradient(
                       begin: Alignment.centerRight,
                       end: Alignment.centerLeft,
-                      colors: [
+                      colors: const [
                         Color.fromARGB(255, 251, 182, 149),
                         Color.fromARGB(255, 245, 106, 133),
                       ],
@@ -154,7 +155,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                         gradient: LinearGradient(
                       begin: Alignment.centerRight,
                       end: Alignment.centerLeft,
-                      colors: [
+                      colors: const [
                         Color.fromARGB(255, 146, 202, 247),
                         Color.fromARGB(255, 137, 123, 247),
                       ],
@@ -256,11 +257,11 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: Text("From"),
                   ),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: Text("To"),
                   )
@@ -272,7 +273,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: DropdownButton2(
                       isExpanded: true,
@@ -340,7 +341,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                       offset: const Offset(0, 0),
                     ),
                   ),
-                  Container(
+                  SizedBox(
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: DropdownButton2(
                       isExpanded: true,
@@ -481,16 +482,16 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   ),
                 child: Row(
                   children: [
-                    Container(
+                    SizedBox(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: TextDropdownFormField(
                         
-    options: ["Male", "Female"],
+    options: const ["Male", "Female"],
     // decoration: InputDecoration(
     //     border: OutlineInputBorder(),
     //     suffixIcon: Icon(Icons.arrow_drop_down),
     //     labelText: "Gender"),
-    decoration: new InputDecoration(
+    decoration: InputDecoration(
       fillColor: Colors.transparent,
       filled: true,
       border: InputBorder.none,
@@ -506,12 +507,12 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
 ),
                     ),
                     SizedBox(width: 5,),
-                    Row(children: [Text("Map",style: TextStyle(color: Colors.blue),),Icon(Icons.location_pin,color: Colors.red,)],)
+                    Row(children: const [Text("Map",style: TextStyle(color: Colors.blue),),Icon(Icons.location_pin,color: Colors.red,)],)
                   ],
                 ),
               ),
               SizedBox(height: 28,),
-              Container(
+              SizedBox(
                     width: MediaQuery.of(context).size.width * 0.9,
                     height: 40,
                     child: ElevatedButton(
