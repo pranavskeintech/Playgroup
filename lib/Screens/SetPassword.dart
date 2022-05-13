@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -41,8 +42,7 @@ class _SetPasswordState extends State<SetPassword> {
   }
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -61,7 +61,6 @@ class _SetPasswordState extends State<SetPassword> {
                       Navigator.pop(context);
                     },
                     child: Padding(
-                      
                       padding: const EdgeInsets.only(top: 50),
                       child: const Align(
                           alignment: Alignment.topLeft,
@@ -79,7 +78,7 @@ class _SetPasswordState extends State<SetPassword> {
                   const SizedBox(height: 20),
                   const Text(
                     "Set Password",
-                    style:  TextStyle(
+                    style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Colors.black,
                         fontSize: 20,
@@ -90,7 +89,7 @@ class _SetPasswordState extends State<SetPassword> {
                       alignment: Alignment.centerLeft,
                       child: Container(
                         margin: const EdgeInsets.fromLTRB(0, 50, 0, 2),
-                        child:  Text(
+                        child: Text(
                           "Enter Password",
                           style: TextStyle(
                               fontSize: 15,
@@ -114,7 +113,8 @@ class _SetPasswordState extends State<SetPassword> {
                         ),
                         focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
-                              color:  Color.fromRGBO(230, 230, 230, 1), width: 0.0),
+                              color: Color.fromRGBO(230, 230, 230, 1),
+                              width: 0.0),
                         ),
                         enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide(
@@ -123,7 +123,7 @@ class _SetPasswordState extends State<SetPassword> {
                         ),
                         fillColor: Strings.textFeildBg,
                         filled: true,
-                       // suffixIcon: Icon(Icons.key),
+                        // suffixIcon: Icon(Icons.key),
                         hintText: "Enter Password",
                         hintStyle: const TextStyle(
                           color: Colors.grey,
@@ -140,9 +140,9 @@ class _SetPasswordState extends State<SetPassword> {
                       alignment: Alignment.centerLeft,
                       child: Container(
                         margin: const EdgeInsets.fromLTRB(0, 10, 0, 2),
-                        child:  Text(
+                        child: Text(
                           "Confirm Password",
-                          style:  TextStyle(
+                          style: TextStyle(
                               fontSize: 15,
                               color: Strings.textFeildHeading,
                               fontWeight: FontWeight.w600),
@@ -157,7 +157,7 @@ class _SetPasswordState extends State<SetPassword> {
                     height: 40,
                     child: TextField(
                         onEditingComplete: () {
-                         // validatePassword();
+                          // validatePassword();
                         },
                         onChanged: (data) {
                           if (data == "") {
@@ -175,7 +175,7 @@ class _SetPasswordState extends State<SetPassword> {
                           ),
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
-                                color:  Color.fromRGBO(230, 230, 230, 1),
+                                color: Color.fromRGBO(230, 230, 230, 1),
                                 width: 0.0),
                           ),
                           enabledBorder: const OutlineInputBorder(
@@ -185,11 +185,11 @@ class _SetPasswordState extends State<SetPassword> {
                           ),
                           fillColor: Strings.textFeildBg,
                           filled: true,
-                         // suffixIcon: Icon(Icons.key),
+                          // suffixIcon: Icon(Icons.key),
                           hintText: "Confirm Password",
                           contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
-                          hintStyle:
-                             const TextStyle(fontSize: 14.0, color: Colors.grey),
+                          hintStyle: const TextStyle(
+                              fontSize: 14.0, color: Colors.grey),
                         ),
                         keyboardType: TextInputType.visiblePassword,
                         obscureText: true),
@@ -208,57 +208,63 @@ class _SetPasswordState extends State<SetPassword> {
                           style: TextStyle(color: Colors.white, fontSize: 20)),
                       controller: _btnController,
                       onPressed: () {
-                         bool _validate = true;//validatePassword();
-                          if (_validate) {
-
-                             if (Strings.ForgotPassword) {
-                          Strings.ForgotPassword = false;
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => LoginPage()));
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  PhoneNumber()));
-                        }
+                        bool _validate = true; //validatePassword();
+                        if (_passwordController.text ==
+                            _confirmPasswordController.text) {
+                          if (Strings.ForgotPassword) {
+                            Strings.ForgotPassword = false;
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    LoginPage()));
+                          } else {
+                            Strings.Password = _passwordController.text;
+                            _btnController.stop();
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    PhoneNumber()));
                           }
+                        } else {
+                          functions.createSnackBar(
+                              context, "The passwords do not match !!!");
+                          _btnController.stop();
+                        }
                       },
                     ),
                   ),
                   Expanded(
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Already have a account?",
-                          style: TextStyle(color: Colors.grey),
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              "Already have a account?",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                Strings.ForgotPassword = false;
+
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        LoginPage()));
+                              },
+                              child: Text(
+                                "Login",
+                                style: TextStyle(
+                                    color: Color.fromRGBO(248, 103, 171, 1)),
+                              ),
+                            )
+                          ],
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        InkWell(
-                          onTap: () {
-
-
-
-                            Strings.ForgotPassword = false;
-
-                            Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => LoginPage()));
-                          },
-                          child: Text(
-                            "Login",
-                            style: TextStyle(color:Color.fromRGBO(248, 103, 171, 1)),
-                          ),
-                        )
-                      ],
+                      ),
                     ),
-                ),
-              ),
-            )
+                  )
                 ],
               ),
             ),

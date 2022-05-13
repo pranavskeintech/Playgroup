@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Screens/SetPassword.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class SignupEmailScreen extends StatefulWidget {
@@ -19,8 +22,23 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _parentController = TextEditingController();
 
+  BuildContext? ctx;
+
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return CheckUser(newContext);
+          }),
+        ));
+  }
+
+  CheckUser(BuildContext context) {
+    ctx = context;
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -28,8 +46,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
           child: Container(
             height: MediaQuery.of(context).size.height * 1,
             margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: 
-            Column(
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -140,10 +157,13 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                     controller: _btnController,
                     onPressed: () {
                       if (_parentController.text.isNotEmpty) {
-                        if (AppUtils.validateEmail(_emailIdController.text.replaceAll(' ', ''))) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  SetPassword()));
+                        if (AppUtils.validateEmail(
+                            _emailIdController.text.replaceAll(' ', ''))) {
+                          var email = _emailIdController.text;
+                          _CheckUser(email);
+                          Strings.UserName = _parentController.text;
+                          Strings.EmailId = _emailIdController.text;
+                          print("entered");
                         } else {
                           AppUtils.showWarning(context, "Invalid email", "");
                           _btnController.stop();
@@ -193,5 +213,22 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
         ),
       ),
     );
+  }
+
+  _CheckUser(email) {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.CheckUser(email).then((response) {
+      print(response.status);
+      if (response.status == true && response.message == 'Success') {
+        _btnController.stop();
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => SetPassword()));
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 }

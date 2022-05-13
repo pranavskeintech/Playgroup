@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/OTPScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:country_calling_code_picker/picker.dart';
 
+import '../Network/ApiService.dart';
 
 class PhoneNumber extends StatefulWidget {
   const PhoneNumber({Key? key}) : super(key: key);
@@ -13,12 +16,13 @@ class PhoneNumber extends StatefulWidget {
   State<PhoneNumber> createState() => _PhoneNumberState();
 }
 
-class _PhoneNumberState extends State<PhoneNumber> 
-{
+class _PhoneNumberState extends State<PhoneNumber> {
   final _numberController = TextEditingController();
   final _btnController = RoundedLoadingButtonController();
 
   Country? _selectedCountry;
+
+  BuildContext? ctx;
 
   @override
   void initState() {
@@ -26,24 +30,40 @@ class _PhoneNumberState extends State<PhoneNumber>
     // TODO: implement initState
     super.initState();
   }
+
   void initCountry() async {
     final country = await getDefaultCountry(context);
     setState(() {
       _selectedCountry = country;
     });
   }
-  void _showCountryPicker() async{
-    final country = await showCountryPickerDialog(context,);
+
+  void _showCountryPicker() async {
+    final country = await showCountryPickerDialog(
+      context,
+    );
     if (country != null) {
-      
       setState(() {
         _selectedCountry = country;
       });
     }
-}      
+  }
+
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return phone(newContext);
+          }),
+        ));
+  }
+
+  phone(BuildContext context) {
+    ctx = context;
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Container(
@@ -62,7 +82,7 @@ class _PhoneNumberState extends State<PhoneNumber>
                       Navigator.pop(context);
                     },
                     child: Padding(
-                      padding: const EdgeInsets.only(top:50),
+                      padding: const EdgeInsets.only(top: 50),
                       child: const Align(
                           alignment: Alignment.topLeft,
                           child: Icon(Icons.arrow_back_sharp)),
@@ -90,7 +110,7 @@ class _PhoneNumberState extends State<PhoneNumber>
                     child: Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
-                        child:  Text(
+                        child: Text(
                           "Enter Phone Number",
                           style: TextStyle(
                               fontSize: 15,
@@ -105,20 +125,23 @@ class _PhoneNumberState extends State<PhoneNumber>
                   ),
                   Container(
                     decoration: BoxDecoration(
-                          color: Strings.textFeildBg,
-                          border: Border.all(color: const Color(0xFFf2f3f4)),
-                          borderRadius: BorderRadius.circular(5)),
+                        color: Strings.textFeildBg,
+                        border: Border.all(color: const Color(0xFFf2f3f4)),
+                        borderRadius: BorderRadius.circular(5)),
                     child: Row(
                       children: [
                         Container(
                           margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
                           child: GestureDetector(
-                            onTap: (){
+                              onTap: () {
                                 _showCountryPicker();
-                            },
-                            child: Text(_selectedCountry?.callingCode ?? "+91",style: TextStyle(color: Colors.blue),)),
+                              },
+                              child: Text(
+                                _selectedCountry?.callingCode ?? "+91",
+                                style: TextStyle(color: Colors.blue),
+                              )),
                         ),
-                        Icon(Icons.arrow_drop_down ),
+                        Icon(Icons.arrow_drop_down),
                         Container(
                           height: 40,
                           margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
@@ -130,14 +153,13 @@ class _PhoneNumberState extends State<PhoneNumber>
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              focusedBorder:  OutlineInputBorder(
+                              focusedBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
                                     color: Strings.textFeildBg, width: 0.0),
                               ),
-                              enabledBorder:  OutlineInputBorder(
+                              enabledBorder: OutlineInputBorder(
                                 borderSide: BorderSide(
-                                    color: Strings.textFeildBg,
-                                    width: 0.0),
+                                    color: Strings.textFeildBg, width: 0.0),
                               ),
                               fillColor: Strings.textFeildBg,
                               filled: true,
@@ -150,7 +172,9 @@ class _PhoneNumberState extends State<PhoneNumber>
                       ],
                     ),
                   ),
-                  SizedBox(height: MediaQuery.of(context).size.height * 0.05,),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                  ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                     width: MediaQuery.of(context).size.width * 0.9,
@@ -160,26 +184,18 @@ class _PhoneNumberState extends State<PhoneNumber>
                       successColor: const Color.fromRGBO(94, 37, 108, 1),
                       width: 500,
                       borderRadius: 5,
-                      color:  Strings.appThemecolor,
+                      color: Strings.appThemecolor,
                       child: const Text('Continue',
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       controller: _btnController,
                       onPressed: () {
-                          if(_numberController.text.length != 10)
-                          {
-                            AppUtils.showWarning(context, "Invalid Number","" );
-                            _btnController.stop();
-                          }
-                          else
-                          {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => OTPScreen(
-                                ),
-                              ),
-                            );
-                          }
+                        if (_numberController.text.length != 10) {
+                          AppUtils.showWarning(context, "Invalid Number", "");
+                          _btnController.stop();
+                        } else {
+                          Strings.PhoneNumber = _numberController.text;
+                          _CheckUser(_numberController.text);
+                        }
                       },
                     ),
                   ),
@@ -191,8 +207,26 @@ class _PhoneNumberState extends State<PhoneNumber>
       ),
     );
   }
+
+  _CheckUser(phone) {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.CheckUser(phone).then((response) {
+      print(response.status);
+      if (response.status == true && response.message == 'Success') {
+        _btnController.stop();
+
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OTPScreen(),
+          ),
+        );
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
 }
-
-        
-        
-

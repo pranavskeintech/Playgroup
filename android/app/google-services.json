@@ -22,6 +22,22 @@
           }
         },
         {
+          "client_id": "252989453175-a4ihl1mo4mq48806droirn02as5td3ns.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skein.playgroup",
+            "certificate_hash": "0e76e8ddc27d0dd099b0a54b654537ec95b25e4f"
+          }
+        },
+        {
+          "client_id": "252989453175-j9rpcsjgpu9bdl3kek7duhegvvf9bive.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skein.playgroup",
+            "certificate_hash": "b9de39186d2d704b62440292e702f118c87d10a7"
+          }
+        },
+        {
           "client_id": "252989453175-se4id5q9j34ergjg66punfao0jmsj2dn.apps.googleusercontent.com",
           "client_type": 3
         }

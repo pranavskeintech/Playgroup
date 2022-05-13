@@ -4,24 +4,25 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:playgroup/Models/LoginReq.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Forgotpassword.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/ExitPopup.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-
-class LoginPage extends StatefulWidget 
-{
+class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> 
-{
+class _LoginPageState extends State<LoginPage> {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
@@ -30,17 +31,16 @@ class _LoginPageState extends State<LoginPage>
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController forgotPassEmailID = TextEditingController();
 
-  void _doSomething() async 
-  {
+  BuildContext? ctx;
+
+  void _doSomething() async {
     print("Clicked me");
-    Timer(Duration(seconds: 3), () 
-    {
+    Timer(Duration(seconds: 3), () {
       _btnController.error();
     });
   }
 
-  Future googleSignIn(context) async 
-  {
+  Future googleSignIn(context) async {
     await _googleSignIn.signOut();
 
     try {
@@ -55,10 +55,8 @@ class _LoginPageState extends State<LoginPage>
       print('${googleSignInAccount.displayName}');
       print(googleSignInAccount.photoUrl);
 
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => DashBoard(
-                
-              )));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
     } catch (error) {
       print(error);
       print("enteres");
@@ -74,9 +72,8 @@ class _LoginPageState extends State<LoginPage>
           .login(permissions: ["public_profile", "email"]);
       // Create a credential from the access token
       print('accessToken ${accessToken.accessToken}');
-      OAuthCredential credential = FacebookAuthProvider.credential(
-        accessToken.accessToken!.token
-      );
+      OAuthCredential credential =
+          FacebookAuthProvider.credential(accessToken.accessToken!.token);
       print('credential $credential');
       // Once signed in, return the UserCredential
       print('creadentials ${FirebaseAuth.instance.currentUser}');
@@ -84,8 +81,8 @@ class _LoginPageState extends State<LoginPage>
           await FirebaseAuth.instance.signInWithCredential(credential);
       print("user deatisl--> ${value.user}");
 
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => DashBoard()));
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       return await FirebaseAuth.instance.signInWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       // handle the FirebaseAuthException
@@ -93,14 +90,29 @@ class _LoginPageState extends State<LoginPage>
       print(e);
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return Login(newContext);
+          }),
+        ));
+  }
+
+  Login(BuildContext context) {
+    ctx = context;
+    var media = MediaQuery.of(context).size;
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
       child: Scaffold(
         body: SingleChildScrollView(
           child: Stack(
-              clipBehavior: Clip.none, alignment: Alignment.center,
+              clipBehavior: Clip.none,
+              alignment: Alignment.center,
               textDirection: TextDirection.rtl,
               fit: StackFit.loose,
               children: <Widget>[
@@ -159,13 +171,19 @@ class _LoginPageState extends State<LoginPage>
                     Container(
                       width: MediaQuery.of(context).size.width * 0.9,
                       height: 40,
-                      child:  TextField(
+                      child: TextField(
                         style: TextStyle(color: Colors.white),
                         controller: _emailIdController,
                         decoration: InputDecoration(
-                            suffixIcon: Image.asset("assets/imgs/mail.png",width: 10,height: 10,color: Colors.grey,),
+                            suffixIcon: Image.asset(
+                              "assets/imgs/mail.png",
+                              width: 10,
+                              height: 10,
+                              color: Colors.grey,
+                            ),
                             hintText: "Enter email Id",
-                            hintStyle: TextStyle(fontSize:15, color: Colors.grey),
+                            hintStyle:
+                                TextStyle(fontSize: 15, color: Colors.grey),
                             contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
                             // hintStyle:
                             //     TextStyle(fontSize: 14.0, color: Colors.white),
@@ -175,7 +193,7 @@ class _LoginPageState extends State<LoginPage>
                       ),
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.3),
-                         // border: Border.all(color: const Color(0xFFf2f3f4)),
+                          // border: Border.all(color: const Color(0xFFf2f3f4)),
                           borderRadius: BorderRadius.circular(5)),
                     ),
                     const SizedBox(height: 5.0),
@@ -201,13 +219,19 @@ class _LoginPageState extends State<LoginPage>
                     Container(
                       width: MediaQuery.of(context).size.width * 0.9,
                       height: 40,
-                      child:  TextField(
+                      child: TextField(
                           style: TextStyle(color: Colors.white),
                           controller: _passwordController,
                           decoration: InputDecoration(
-                              suffixIcon: Image.asset("assets/imgs/pass.png",width: 10,height: 10,color: Colors.grey,),
+                              suffixIcon: Image.asset(
+                                "assets/imgs/pass.png",
+                                width: 10,
+                                height: 10,
+                                color: Colors.grey,
+                              ),
                               hintText: "Password",
-                              hintStyle: TextStyle(fontSize:15, color: Colors.grey),
+                              hintStyle:
+                                  TextStyle(fontSize: 15, color: Colors.grey),
                               contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
                               // border: OutlineInputBorder(),
                               border: InputBorder.none),
@@ -239,7 +263,7 @@ class _LoginPageState extends State<LoginPage>
                         margin: const EdgeInsets.fromLTRB(10, 0, 20, 2),
                       ),
                     ),
-    
+
                     Container(
                       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -250,34 +274,30 @@ class _LoginPageState extends State<LoginPage>
                         width: 500,
                         borderRadius: 5,
                         color: Color.fromRGBO(94, 37, 108, 1),
-                        child:
-                            const Text('LOGIN', style: TextStyle(color: Colors.white,fontSize: 18)),
+                        child: const Text('LOGIN',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 18)),
                         controller: _btnController,
-                        onPressed: ()
-                        {
-
-                             if (_passwordController.text.isNotEmpty && _emailIdController.text.isNotEmpty) {
-                        if (AppUtils.validateEmail(_emailIdController.text)) {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  DashBoard()));
-                        } else {
-                          AppUtils.showWarning(context, "Invalid email", "");
-                          _btnController.stop();
-                        }
-                      } else {
-                        AppUtils.showWarning(
-                            context, "Please enter parent name", "");
-                        _btnController.stop();
-                      }
-
-
-                        Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => DashBoard()));
+                        onPressed: () {
+                          if (_passwordController.text.isNotEmpty &&
+                              _emailIdController.text.isNotEmpty) {
+                            if (AppUtils.validateEmail(
+                                _emailIdController.text)) {
+                              _Login();
+                            } else {
+                              AppUtils.showWarning(
+                                  context, "Invalid email", "");
+                              _btnController.stop();
+                            }
+                          } else {
+                            AppUtils.showWarning(
+                                context, "Please enter parent name", "");
+                            _btnController.stop();
+                          }
                         },
                       ),
                     ),
-                    
+
                     Container(
                         margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Text(
@@ -296,7 +316,8 @@ class _LoginPageState extends State<LoginPage>
                                 decoration: BoxDecoration(
                                     color: Colors.grey.withOpacity(0.1),
                                     border: Border.all(
-                                        color: Color.fromARGB(255, 124, 125, 126)),
+                                        color:
+                                            Color.fromARGB(255, 124, 125, 126)),
                                     borderRadius: BorderRadius.circular(5)),
                                 margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
                                 child: FlatButton(
@@ -314,7 +335,8 @@ class _LoginPageState extends State<LoginPage>
                                 decoration: BoxDecoration(
                                     color: Colors.grey.withOpacity(0.1),
                                     border: Border.all(
-                                        color: Color.fromARGB(255, 124, 125, 126)),
+                                        color:
+                                            Color.fromARGB(255, 124, 125, 126)),
                                     borderRadius: BorderRadius.circular(5)),
                                 margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
                                 child: FlatButton(
@@ -344,11 +366,13 @@ class _LoginPageState extends State<LoginPage>
                       InkWell(
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) => SignupEmailScreen()));
+                              builder: (BuildContext context) =>
+                                  SignupEmailScreen()));
                         },
                         child: Text(
                           "Register",
-                          style: TextStyle(color: Color.fromRGBO(248, 103, 171, 1)),
+                          style: TextStyle(
+                              color: Color.fromRGBO(248, 103, 171, 1)),
                         ),
                       )
                     ],
@@ -360,6 +384,38 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
   }
+
+  _Login() {
+    LoginReq Userlogin = LoginReq();
+    Userlogin.emailId = _emailIdController.text;
+    Userlogin.password = _passwordController.text;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.login(Userlogin).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+
+      if (response.status == true) {
+        // _isLoading = false;
+        //  Get.off(() => DashPage());
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) =>  FeedsCommentsScreen(fid)));
+        // print("uhad:$fid");
+        // int feedid = fid;
+        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+        //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
+        print("res:${response.message}");
+        _btnController.stop();
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+        print("error");
+      }
+    });
+  }
+
   Future<void> _forgotPass() async {
     return showDialog<void>(
       context: context,
@@ -413,7 +469,7 @@ class _LoginPageState extends State<LoginPage>
                     ),
                     InkWell(
                       onTap: () {
-                       // _generateOtp(context);
+                        // _generateOtp(context);
                       },
                       child: Container(
                         child: Center(

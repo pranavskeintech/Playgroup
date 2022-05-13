@@ -21,6 +21,20 @@ mixin Strings {
 
   static String fcmToken = '';
 
+  static double Latt=0;
+
+  static double Long=0;
+
+  static String UserName='';
+
+  static String EmailId='';
+
+  static String Password='';
+
+  static String PhoneNumber='';
+
+  static String? Location='';
+
   
 }
 
