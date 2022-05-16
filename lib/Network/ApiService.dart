@@ -31,6 +31,13 @@ abstract class ApiService {
   @GET("user/check/{EmailOrPhone_No}/null")
   Future<CommonRes> CheckUser(@Path("EmailOrPhone_No") String EmailOrPhone_No);
 
+  @GET("user/check/{EmailOrPhone_No}/Google")
+  Future<CommonRes> GoogleLogin(
+      @Path("EmailOrPhone_No") String EmailOrPhone_No);
+
+  @GET("user/check/{EmailOrPhone_No}/Facebook")
+  Future<CommonRes> FBLogin(@Path("EmailOrPhone_No") String EmailOrPhone_No);
+
 //////////////////////////////////////////////////////////////////////////////////////////
   /// Request and Response Body
 //////////////////////////////////////////////////////////////////////////////////////////

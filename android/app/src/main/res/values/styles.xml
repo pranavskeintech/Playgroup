@@ -16,8 +16,4 @@
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
 
-    <string name="facebook_app_id">326722719509117</string>
-    <string name="fb_login_protocol_scheme">fb326722719509117</string>
-    <string name="facebook_client_token">9793ae82309800dac5d3c0cd67d1d623</string>
-
 </resources>
