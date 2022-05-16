@@ -125,26 +125,44 @@ class _LoginPageState extends State<LoginPage> {
   //   print("------2");
   //   print(e);
   // }
-  Future signInWithFacebook() async {
+  Future signInWithFacebook() async 
+  {
     LoginResult loginResult = await FacebookAuth.instance
         .login(permissions: ["public_profile", "email"]);
     print("Status:${loginResult.message}");
-    if (loginResult.status == LoginStatus.success) {
+    if (loginResult.status == LoginStatus.success) 
+    {
       final AccessToken accessToken = loginResult.accessToken!;
-      print("token$accessToken");
+     var data = FacebookAuth.instance.getUserData();
+     print("data--> $data");
+      print("data:$data");
+      print("token$accessToken.");
       final OAuthCredential credential =
           FacebookAuthProvider.credential(accessToken.token);
-      try {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-        return await FirebaseAuth.instance.signInWithCredential(credential);
-      } on FirebaseAuthException catch (e) {
-        // manage Firebase authentication exceptions
-        print(e);
-      }
+          var value = FirebaseAuth.instance.signInWithCredential(credential);
+          print('creadentials ${FirebaseAuth.instance.currentUser}');
+          var email = FirebaseAuth.instance.currentUser?.email ?? "";
+          
+      final value1 =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+      print(value1.user);
+
+      _FacebookLogin(email);
+          
+      // try {
+
+      //   Navigator.of(context).push(
+      //       MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+
+      //   return await FirebaseAuth.instance.signInWithCredential(credential);
+      // } on FirebaseAuthException catch (e) {
+      //   // manage Firebase authentication exceptions
+      //   print(e);
+      // }
     } else {
       // login was not successful, for example user cancelled the process
       print("Failed to login");
+      AppUtils.showError(context, "Unable to login", "");
     }
   }
 
@@ -475,8 +493,10 @@ class _LoginPageState extends State<LoginPage> {
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else {
-        functions.createSnackBar(context, response.message.toString());
+       // functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) => PhoneNumber()));
       }
     }).catchError((onError) {
       print(onError.toString());

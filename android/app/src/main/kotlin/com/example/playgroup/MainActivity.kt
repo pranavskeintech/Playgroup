@@ -1,4 +1,4 @@
-package com.example.playgroup
+package com.skein.playgroup
 
 import io.flutter.embedding.android.FlutterActivity
 

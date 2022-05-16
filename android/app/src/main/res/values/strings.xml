@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="app_name">"Playgroup"</string>
     <string name="facebook_app_id">550941069810881</string>
     <string name="fb_login_protocol_scheme">fb550941069810881</string>
-    <string name="facebook_client_token">a711848d70ea5b65fbe031c5c4cc9037</string>
+    <string name="facebook_client_token">c7904de85e7c2299d322a825077bf4ad</string>
 </resources>
