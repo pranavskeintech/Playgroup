@@ -35,19 +35,19 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> Register(body) async {
+  Future<Register_Res> Register(body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CommonRes>(
+        _setStreamType<Register_Res>(
             Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'user/register',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = CommonRes.fromJson(_result.data!);
+    final value = Register_Res.fromJson(_result.data!);
     return value;
   }
 
@@ -68,7 +68,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> CheckUser(EmailOrPhone_No) async {
+  Future<CommonRes> CheckUser(EmailOrPhoneNo) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -76,7 +76,7 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommonRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user/check/${EmailOrPhone_No}/null',
+                .compose(_dio.options, 'user/check/${EmailOrPhoneNo}/null',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);
@@ -84,7 +84,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> GoogleLogin(EmailOrPhone_No) async {
+  Future<CommonRes> GoogleLogin(EmailOrPhoneNo) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -92,7 +92,7 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommonRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user/check/${EmailOrPhone_No}/Google',
+                .compose(_dio.options, 'user/check/${EmailOrPhoneNo}/Google',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);
@@ -100,7 +100,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> FBLogin(EmailOrPhone_No) async {
+  Future<CommonRes> FBLogin(EmailOrPhoneNo) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -108,7 +108,57 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommonRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user/check/${EmailOrPhone_No}/Facebook',
+                .compose(_dio.options, 'user/check/${EmailOrPhoneNo}/Facebook',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> AddChild(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/addchild',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetChildRes> GetChild(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetChildRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/getchild/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetChildRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> EditChild(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'PUT', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/editchild',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);

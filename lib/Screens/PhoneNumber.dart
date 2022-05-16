@@ -212,7 +212,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(phone).then((response) {
       print(response.status);
-      if (response.status == true && response.message == 'Success') {
+      if (response.status == false) {
         _btnController.stop();
 
         Navigator.push(

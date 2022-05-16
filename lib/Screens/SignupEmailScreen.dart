@@ -219,7 +219,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(email).then((response) {
       print(response.status);
-      if (response.status == true && response.message == 'Success') {
+      if (response.status == false ) {
         _btnController.stop();
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => SetPassword()));

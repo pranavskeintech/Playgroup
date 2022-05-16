@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 
 mixin Strings {
+
   static String authToken = '';
 
   static bool internetDialog = false;
@@ -34,6 +35,8 @@ mixin Strings {
   static String PhoneNumber='';
 
   static String? Location='';
+
+  static int Parent_Id = 0;
 
   
 }

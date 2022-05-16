@@ -1,12 +1,18 @@
 import 'package:dio/dio.dart';
+import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
+import 'package:playgroup/Models/EditChildReq.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
+import 'package:playgroup/Models/Register_Res.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:playgroup/Models/CommonRes.dart';
+
+import '../Utilities/Strings.dart';
 part 'ApiService.g.dart';
 
 // Run this code in termial to generate ApiService.g.dart file
@@ -23,20 +29,28 @@ abstract class ApiService {
   Future<CommonRes> login(@Body() LoginReq body);
 
   @POST("user/register")
-  Future<CommonRes> Register(@Body() UserRegisterReq body);
+  Future<Register_Res> Register(@Body() UserRegisterReq body);
 
   @GET("user/get_City/IN/TN")
   Future<GetCity> Get_City();
 
   @GET("user/check/{EmailOrPhone_No}/null")
-  Future<CommonRes> CheckUser(@Path("EmailOrPhone_No") String EmailOrPhone_No);
+  Future<CommonRes> CheckUser(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
 
   @GET("user/check/{EmailOrPhone_No}/Google")
-  Future<CommonRes> GoogleLogin(
-      @Path("EmailOrPhone_No") String EmailOrPhone_No);
+  Future<CommonRes> GoogleLogin(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
 
   @GET("user/check/{EmailOrPhone_No}/Facebook")
-  Future<CommonRes> FBLogin(@Path("EmailOrPhone_No") String EmailOrPhone_No);
+  Future<CommonRes> FBLogin(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
+
+  @POST("user/addchild")
+  Future<CommonRes> AddChild(@Body() AddChildReq body);
+
+  @GET("user/getchild/{ChildID}")
+  Future<GetChildRes> GetChild(@Path("ChildID") int ChildID);
+
+  @PUT("user/editchild")
+  Future<CommonRes> EditChild(@Body() EditChildReq body);
 
 //////////////////////////////////////////////////////////////////////////////////////////
   /// Request and Response Body
@@ -50,8 +64,8 @@ abstract class ApiService {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
         options.headers["Content-Type"] = "application/json";
-
-        //  options.headers["jwt"] = Strings.authToken;
+        print("object" + Strings.authToken);
+        options.headers["jwt"] = Strings.authToken;
 
         options.followRedirects = false;
         options.validateStatus = (status) {

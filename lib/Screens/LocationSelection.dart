@@ -4,6 +4,7 @@ import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:provider/provider.dart';
@@ -248,11 +249,17 @@ class _LocationSelectionState extends State<LocationSelection> {
         // int feedid = fid;
         // Navigator.of(context).pushReplacement(MaterialPageRoute(
         //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
-        print("res:${response.message}");
+        print("res:${response.userId}");
+        //print("user_iid: ${response..}");
+        Strings.Parent_Id = response.userId ?? 0;
+        Strings.authToken = response.refreshToken!.refreshToken!;
+        print("tokr${Strings.authToken}");
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ChildDetails()));
         print("result2:$response");
       } else {
+        functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
         print("error");
       }
     });

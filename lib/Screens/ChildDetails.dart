@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/AddChildReq.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+import '../Network/ApiService.dart';
 import '../Utilities/Strings.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-
-
 
 class ChildDetails extends StatefulWidget {
   const ChildDetails({Key? key}) : super(key: key);
@@ -15,22 +19,19 @@ class ChildDetails extends StatefulWidget {
   @override
   State<ChildDetails> createState() => _ChildDetailsState();
 }
+
 enum AppState {
   free,
   picked,
   cropped,
 }
 
-
-class _ChildDetailsState extends State<ChildDetails> 
-{
+class _ChildDetailsState extends State<ChildDetails> {
   final _numberController = TextEditingController();
-    final _dobController = TextEditingController();
-
+  final _dobController = TextEditingController();
 
   final _btnController = RoundedLoadingButtonController();
   late AppState state;
-
 
   String? selectedValue;
   List<String> items = [
@@ -38,13 +39,15 @@ class _ChildDetailsState extends State<ChildDetails>
     'Female',
     'Prefer Not to say',
   ];
-   final ImagePicker _picker = ImagePicker();
+  final ImagePicker _picker = ImagePicker();
 
   File? _imageFile;
 
+  var ctx;
 
-  _selectDate() async 
-  {
+  String img64 = "";
+
+  _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(), // Refer step 1
@@ -54,18 +57,14 @@ class _ChildDetailsState extends State<ChildDetails>
     );
     if (picked != null) {
       setState(() {
-       String date1 = "${picked.day}-${picked.month}-${picked.year}";
+        String date1 = "${picked.day}-${picked.month}-${picked.year}";
         _dobController.text = date1;
         print("date selected");
       });
     }
-
-
-
   }
 
-  openGallery() async 
-  {
+  openGallery() async {
     final pickedFile = await _picker.getImage(
       source: ImageSource.gallery,
     );
@@ -85,16 +84,33 @@ class _ChildDetailsState extends State<ChildDetails>
           minimumAspectRatio: 1.0,
         ));
 
-    if (croppedFile?.path != null) 
-    {
+    if (croppedFile?.path != null) {
       setState(() {
+        print("Img selected");
         _imageFile = croppedFile;
+        final bytes = File(_imageFile!.path).readAsBytesSync();
+        img64 = base64Encode(bytes);
+        print("img64" + img64);
+        setState(() {});
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return AddChildpage(newContext);
+          }),
+        ));
+  }
+
+  AddChildpage(BuildContext context) {
+    ctx = context;
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       body: SingleChildScrollView(
         child: Center(
@@ -126,30 +142,29 @@ class _ChildDetailsState extends State<ChildDetails>
                       decoration: TextDecoration.none),
                 ),
                 const SizedBox(height: 10),
-                Stack(
-                  children:[
-                    CircleAvatar(
+                Stack(children: [
+                  CircleAvatar(
                     radius: 40.0,
-                    backgroundImage: _imageFile != null
-                        ? FileImage(_imageFile!)
-                        : null,
+                    backgroundImage:
+                        _imageFile != null ? FileImage(_imageFile!) : null,
                     backgroundColor: Colors.transparent,
                     child: _imageFile == null
                         ? Image.asset("assets/imgs/appicon.png")
                         : SizedBox(),
                   ),
-                  Positioned(bottom: 0,
-                  right: 0,
-                    child: GestureDetector(
-                      onTap: (){
-                        openGallery();
-                      },
-                      child: Container(
-        
-                        height: 30,
-                        width: 30,
-                        child:Image.asset("assets/imgs/camera.png") ),
-                    ))]         ),
+                  Positioned(
+                      bottom: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          openGallery();
+                        },
+                        child: Container(
+                            height: 30,
+                            width: 30,
+                            child: Image.asset("assets/imgs/camera.png")),
+                      ))
+                ]),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.050,
                 ),
@@ -157,12 +172,12 @@ class _ChildDetailsState extends State<ChildDetails>
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      child:  Text(
+                      child: Text(
                         "Child's Name",
                         style: TextStyle(
-                            fontSize: 15,
-                            color: Strings.textFeildHeading,
-                            ),
+                          fontSize: 15,
+                          color: Strings.textFeildHeading,
+                        ),
                       ),
                     ),
                   ),
@@ -185,15 +200,13 @@ class _ChildDetailsState extends State<ChildDetails>
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            focusedBorder:  OutlineInputBorder(
+                            focusedBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                  color: Strings.textFeildBg,
-                                  width: 0.0),
+                                  color: Strings.textFeildBg, width: 0.0),
                             ),
-                            enabledBorder:  OutlineInputBorder(
+                            enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                  color: Strings.textFeildBg,
-                                  width: 0.0),
+                                  color: Strings.textFeildBg, width: 0.0),
                             ),
                             fillColor: Strings.textFeildBg,
                             filled: true,
@@ -212,13 +225,12 @@ class _ChildDetailsState extends State<ChildDetails>
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      child:  Text(
+                      child: Text(
                         "DOB",
                         style: TextStyle(
-                          
-                            fontSize: 15,
-                            color: Strings.textFeildHeading,
-                            ),
+                          fontSize: 15,
+                          color: Strings.textFeildHeading,
+                        ),
                       ),
                     ),
                   ),
@@ -231,30 +243,31 @@ class _ChildDetailsState extends State<ChildDetails>
                     _selectDate();
                   },
                   child: Container(
-                    
                     child: Row(
                       children: [
                         Expanded(
                           child: TextField(
                             enabled: false,
-                            style: TextStyle(
-                              color: Colors.black),
+                            style: TextStyle(color: Colors.black),
                             controller: _dobController,
                             decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide(color: Strings.textFeildBg,width: 1),
+                                borderSide: BorderSide(
+                                    color: Strings.textFeildBg, width: 1),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(5),
-                                borderSide: BorderSide(color: Strings.textFeildBg,width: 1),
+                                borderSide: BorderSide(
+                                    color: Strings.textFeildBg, width: 1),
                               ),
-      
                               fillColor: Strings.textFeildBg,
                               filled: true,
                               hintText: "Select DOB",
                               suffixIcon: Icon(
-                                Icons.calendar_today_outlined,size: 20,),
+                                Icons.calendar_today_outlined,
+                                size: 20,
+                              ),
                               contentPadding: EdgeInsets.fromLTRB(10, 15, 0, 0),
                             ),
                             keyboardType: TextInputType.emailAddress,
@@ -269,12 +282,12 @@ class _ChildDetailsState extends State<ChildDetails>
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Container(
-                      child:  Text(
+                      child: Text(
                         "Gender",
                         style: TextStyle(
-                            fontSize: 15,
-                            color: Strings.textFeildHeading,
-                            ),
+                          fontSize: 15,
+                          color: Strings.textFeildHeading,
+                        ),
                       ),
                     ),
                   ),
@@ -290,9 +303,7 @@ class _ChildDetailsState extends State<ChildDetails>
                         Expanded(
                           child: Text(
                             'Select Gender',
-                            style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey),
+                            style: TextStyle(fontSize: 14, color: Colors.grey),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -322,13 +333,12 @@ class _ChildDetailsState extends State<ChildDetails>
                     ),
                     iconSize: 14,
                     iconEnabledColor: Colors.black,
-                   // iconDisabledColor: Colors.grey,
+                    // iconDisabledColor: Colors.grey,
                     buttonHeight: 50,
                     buttonWidth: MediaQuery.of(context).size.width * 0.9,
                     buttonPadding: const EdgeInsets.only(left: 14, right: 14),
                     buttonDecoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5),
-                     
                       color: Strings.textFeildBg,
                     ),
                     buttonElevation: 0,
@@ -365,8 +375,7 @@ class _ChildDetailsState extends State<ChildDetails>
                         style: TextStyle(color: Colors.white, fontSize: 18)),
                     controller: _btnController,
                     onPressed: () {
-                               Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ChildConfirmation()));
+                      _AddChild();
                     },
                   ),
                 ),
@@ -376,5 +385,28 @@ class _ChildDetailsState extends State<ChildDetails>
         ),
       ),
     );
+  }
+
+  _AddChild() {
+    AddChildReq ChildReg = AddChildReq();
+    ChildReg.parentId = Strings.Parent_Id.toString();
+    ChildReg.childName = _numberController.text;
+    ChildReg.dob = _dobController.text;
+    ChildReg.gender = selectedValue;
+    ChildReg.profile = "data:image/jpeg;base64,$img64";
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.AddChild(ChildReg).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+      if (response.status == true) {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ChildConfirmation()));
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+        print("error");
+      }
+    });
   }
 }
