@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+
+import '../Network/ApiService.dart';
 
 
 class ChooseChild extends StatefulWidget {
@@ -15,11 +20,23 @@ class _ChooseChildState extends State<ChooseChild>
 {
 
   List<String> ChildName = ["Alex Timo","Christina Timo","George Timo","Mariya Timo","Angel Timo"];
+  var ctx;
+  List<ChildData>? _ChildData;
+    bool _isLoading = true;
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetChild());
+  }
+
   @override
   Widget build(BuildContext context) 
   {
-    return Scaffold(
-      appBar: AppBar(
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          appBar:AppBar(
         backgroundColor: Strings.appThemecolor,
         title: Text("Select Child"),
         leading: IconButton(onPressed: (){
@@ -27,7 +44,22 @@ class _ChooseChildState extends State<ChooseChild>
         }, icon: Icon(Icons.arrow_back_sharp),
       ),
     ),
-    body: Container(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return ChooseChild(newContext);
+          }),
+        ));
+  }
+
+
+  ChooseChild(BuildContext context)
+  {
+    ctx = context;
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))):
+    Container(
       margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
       child: Column(
         children: [
@@ -38,7 +70,7 @@ class _ChooseChildState extends State<ChooseChild>
            Expanded(
              flex: 2,
              child: ListView.builder(
-                   itemCount: ChildName.length,
+                   itemCount: _ChildData!.length,
                    itemBuilder: (BuildContext context,int index){
                      return Container(
               margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -49,7 +81,7 @@ class _ChooseChildState extends State<ChooseChild>
                 },
                 child: Card(
                   shadowColor: Colors.grey.withOpacity(0.1),
-                  child: Center(child: Text(ChildName[index])),
+                  child: Center(child: Text(_ChildData![index].childName ?? "")),
                 elevation: 8,),
               ),
                      );
@@ -57,6 +89,28 @@ class _ChooseChildState extends State<ChooseChild>
            )
         ],
       ),
-    ),);
+    );
+  }
+  _GetChild() {
+    var PId = Strings.Parent_Id!.toInt();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetChild(PId).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        //_btnController.stop();
+        // Navigator.of(context).push(
+        //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        _ChildData = response.data;
+        setState(() {
+          _isLoading = false;
+        });
+        print("data: ${_ChildData!.length.toString()}");
+      } else {
+        functions.createSnackBar(context, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 }

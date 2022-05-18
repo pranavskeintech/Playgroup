@@ -8,6 +8,7 @@ import 'package:playgroup/Utilities/Functions.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:provider/provider.dart';
+import '../Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
 class LocationSelection extends StatefulWidget {
@@ -215,7 +216,16 @@ class _LocationSelectionState extends State<LocationSelection> {
                             var phonenum = Strings.PhoneNumber;
                             var pass = Strings.Password;
                             print("1");
-                            _Signup(email, name, phonenum, pass);
+
+                            if(selectedValue != null)
+                            {
+                               _Signup(email, name, phonenum, pass);
+                            }
+                            else
+                            {
+                              _btnController.stop();
+                              AppUtils.showError(context, "Please Select the Location", "");
+                            }
                           },
                         ),
                       ),

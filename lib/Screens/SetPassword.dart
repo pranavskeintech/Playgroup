@@ -7,6 +7,8 @@ import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
+import '../Utilities/AppUtlis.dart';
+
 class SetPassword extends StatefulWidget {
   const SetPassword({Key? key}) : super(key: key);
 
@@ -156,9 +158,9 @@ class _SetPasswordState extends State<SetPassword> {
                   SizedBox(
                     height: 40,
                     child: TextField(
-                        onEditingComplete: () {
-                          // validatePassword();
-                        },
+                        // onEditingComplete: () {
+                        //   // validatePassword();
+                        // },
                         onChanged: (data) {
                           if (data == "") {
                             setState(() {
@@ -211,14 +213,12 @@ class _SetPasswordState extends State<SetPassword> {
                         bool _validate = true; //validatePassword();
                         if (_passwordController.text ==
                             _confirmPasswordController.text) {
-                          if (Strings.ForgotPassword) {
-                            Strings.ForgotPassword = false;
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    LoginPage()));
+                              
+                          if (_confirmPasswordController.text.length < 6) {
+                            _btnController.stop();
+                            AppUtils.showError(context, "Password should be minimum 6 characters", "");
                           } else {
                             Strings.Password = _passwordController.text;
-                            _btnController.stop();
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     PhoneNumber()));

@@ -52,6 +52,39 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<Register_Res> ForgotPassword(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<Register_Res>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/forgot_pswd',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = Register_Res.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CheckchildRes> Checkchild(name, id) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CheckchildRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/Checkchild/${name}/${id}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CheckchildRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<GetCity> Get_City() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -133,7 +166,23 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GetChildRes> GetChild(ChildID) async {
+  Future<UserDetailsRes> getParentsDetails(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<UserDetailsRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/getparent/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = UserDetailsRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetChildRes> GetChild(parentid) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -141,7 +190,7 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<GetChildRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user/getchild/${ChildID}',
+                .compose(_dio.options, 'user/getchild/${parentid}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = GetChildRes.fromJson(_result.data!);

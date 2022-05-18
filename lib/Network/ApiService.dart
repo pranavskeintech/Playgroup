@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
+import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
@@ -7,6 +8,7 @@ import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
+import 'package:playgroup/Models/UserDetailsRes.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
@@ -31,6 +33,13 @@ abstract class ApiService {
   @POST("user/register")
   Future<Register_Res> Register(@Body() UserRegisterReq body);
 
+  @POST("user/forgot_pswd")
+  Future<Register_Res> ForgotPassword(@Body() UserRegisterReq body);
+
+@GET("user/Checkchild/{name}/{user_id}")
+  Future<CheckchildRes> Checkchild(@Path("name") String name,@Path("user_id") int id);
+
+
   @GET("user/get_City/IN/TN")
   Future<GetCity> Get_City();
 
@@ -46,8 +55,11 @@ abstract class ApiService {
   @POST("user/addchild")
   Future<CommonRes> AddChild(@Body() AddChildReq body);
 
-  @GET("user/getchild/{ChildID}")
-  Future<GetChildRes> GetChild(@Path("ChildID") int ChildID);
+  @GET("user/getparent/{ChildID}")
+  Future<UserDetailsRes> getParentsDetails(@Path("ChildID") int ChildID);
+
+  @GET("user/getchild/{parent_id}")
+  Future<GetChildRes> GetChild(@Path("parent_id") int parentid);
 
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
@@ -66,6 +78,7 @@ abstract class ApiService {
         options.headers["Content-Type"] = "application/json";
         print("object" + Strings.authToken);
         options.headers["jwt"] = Strings.authToken;
+       // options.headers["jwt"] = "08d41a36b34dadcfd6005452deb92037ad85af33b227827ae2f4e2d34b927fa0ae6a83d43cfdcff9";
 
         options.followRedirects = false;
         options.validateStatus = (status) {

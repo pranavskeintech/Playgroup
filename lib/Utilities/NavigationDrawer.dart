@@ -3,9 +3,17 @@ import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
-class NavigationDrawer extends StatelessWidget {
+class NavigationDrawer extends StatefulWidget {
+  const NavigationDrawer({ Key? key }) : super(key: key);
+
+  @override
+  State<NavigationDrawer> createState() => _NavigationDrawerState();
+}
+
+class _NavigationDrawerState extends State<NavigationDrawer> {
   @override
   Widget build(BuildContext context) {
+      print("_NavigationDrawer");
     return Drawer(
       child: Stack(children: [
         SizedBox(
@@ -40,14 +48,14 @@ class NavigationDrawer extends StatelessWidget {
                             children: [
                               ListTile(
                                 title: Text(
-                                  'John Albhin',
+                                  Strings.parentName,
                                   style: TextStyle(
                                       color: Colors.white.withAlpha(250),
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold),
                                 ),
                                 subtitle: Text(
-                                  "Johnalbin@gmail.com",
+                                  Strings.parentemail,
                                   style: TextStyle(
                                       color: Colors.white.withAlpha(200)),
                                 ),
@@ -203,6 +211,6 @@ class NavigationDrawer extends StatelessWidget {
           ),
         ),
       ]),
-    );
+    );;
   }
 }

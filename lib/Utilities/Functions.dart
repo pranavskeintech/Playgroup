@@ -4,15 +4,19 @@ import 'package:get/get.dart';
 import 'package:playgroup/Screens/LocationSelection.dart';
 import 'package:playgroup/Screens/OTPScreen.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
+import 'package:playgroup/Screens/ResetPassword.dart';
+
+import 'AppUtlis.dart';
+import 'Strings.dart';
 
 class firebase {
   static FirebaseAuth _auth = FirebaseAuth.instance;
   static String? smsOTP;
   static String? verId;
 
-  static void verifyPhone(context) async {
+  static void verifyPhone(context,phoneNumber) async 
+  {
     final auth = FirebaseAuth.instance;
-//
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) async {
       final res = await auth.signInWithCredential(phoneAuthCredential);
@@ -20,17 +24,20 @@ class firebase {
     final PhoneVerificationFailed verificationFailed =
         (FirebaseAuthException authException) {
       print('Auth Exception is ${authException.message}');
+      AppUtils.dismissprogress();
       // functions.createSnackBar(context, authException.message.toString());
       // Get.off(() => const PhoneNumber());
     };
 //
     final PhoneCodeSent smsOTPSent =
-        (String verificationId, [int? forceResendingToken]) async {
+        (String verificationId, [int? forceResendingToken]) async 
+        {
       print('verification id is $verificationId');
       verId = verificationId;
       // _isLoading = false;
       //  continued();
       // Get.to(() => OTPScreen());
+            AppUtils.dismissprogress();
       Navigator.of(context).push(
           MaterialPageRoute(builder: (BuildContext context) => OTPScreen()));
     };
@@ -42,7 +49,7 @@ class firebase {
 //
     await auth.verifyPhoneNumber(
         // mobile no. with country code
-        phoneNumber: '+91${8848216020}',
+        phoneNumber: '+91$phoneNumber',
         timeout: const Duration(seconds: 30),
         verificationCompleted: verificationCompleted,
         verificationFailed: verificationFailed,
@@ -50,10 +57,13 @@ class firebase {
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
 
-  static void signIn(context) async {
-    try {
+  
+
+  static void signIn(context,smsCode) async {
+    try 
+    {
       final AuthCredential credential =
-          PhoneAuthProvider.credential(verificationId: verId!, smsCode: '123456'
+          PhoneAuthProvider.credential(verificationId: verId!, smsCode: smsCode
               //smsOTP!,
               );
       final user = await _auth.signInWithCredential(credential);
@@ -63,20 +73,50 @@ class firebase {
       //Navigator.of(context).pushReplacementNamed('/homepage');
       // _isLoading = false;
       //Get.to(() => const LocationSelection());
+      AppUtils.dismissprogress();
 
-      Navigator.of(context).push(MaterialPageRoute(
+      if(Strings.ForgotPassword)
+      {
+        print("Moing to forgot pass");
+        Strings.ForgotPassword = false;
+        Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => ResetPassword()));
+      }
+      else{
+ Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) => LocationSelection()));
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'account-exists-with-different-credential') {
+      }
+     
+    } on FirebaseAuthException catch (e) 
+    {
+      AppUtils.dismissprogress();
+      print('Error is $e');
+
+      if(
+        e.code.contains('invalid')
+      )
+      {
+        functions.createSnackBar(context, 'Invalid OTP');
+      }
+      else
+      {
+        functions.createSnackBar(context, e.code);
+      }
+      
+      if (e.code == 'account-exists-with-different-credential') 
+      {
         //functions.createSnackBar(context, e.code.toString());
         // handle the error here
         print("account-exists-with-different-credential");
-      } else if (e.code == 'invalid-credential') {
-        //  functions.createSnackBar(context, e.code.toString());
+      } else if (e.code == 'invalid-credential') 
+      {
+        functions.createSnackBar(context, e.code.toString());
         // handle the error here
         print("invalid-credential");
+
       }
-    } catch (e) {
+    } catch (e) 
+    {
       //  handleError(e);
       print("Error:$e");
       // functions.createSnackBar(context, e.toString());
@@ -84,15 +124,14 @@ class firebase {
   }
 }
 
-class functions {
+class functions 
+{
   static void createSnackBar(scaffoldContext, String message) {
     final snackBar = new SnackBar(
         content: Container(
-            child: Padding(
-          padding: EdgeInsets.only(
-              bottom: MediaQuery.of(scaffoldContext).viewInsets.bottom),
-          child: new Text(message),
-        )),
+          height: 20,
+            child: new Text(message)
+        ),
         backgroundColor: Colors.red);
 
     // Find the Scaffold in the Widget tree and use it to show a SnackBar!

@@ -8,6 +8,7 @@ import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../Network/ApiService.dart';
+import '../Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -27,7 +28,7 @@ enum AppState {
 }
 
 class _ChildDetailsState extends State<ChildDetails> {
-  final _numberController = TextEditingController();
+  final _nameController = TextEditingController();
   final _dobController = TextEditingController();
 
   final _btnController = RoundedLoadingButtonController();
@@ -94,6 +95,12 @@ class _ChildDetailsState extends State<ChildDetails> {
         setState(() {});
       });
     }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -195,7 +202,7 @@ class _ChildDetailsState extends State<ChildDetails> {
                       Expanded(
                         child: TextField(
                           style: TextStyle(color: Colors.black),
-                          controller: _numberController,
+                          controller: _nameController,
                           decoration: InputDecoration(
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -365,6 +372,7 @@ class _ChildDetailsState extends State<ChildDetails> {
                   margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: RoundedLoadingButton(
+                    animateOnTap: false,
                     resetDuration: const Duration(seconds: 10),
                     resetAfterDuration: true,
                     successColor: const Color.fromRGBO(94, 37, 108, 1),
@@ -375,7 +383,20 @@ class _ChildDetailsState extends State<ChildDetails> {
                         style: TextStyle(color: Colors.white, fontSize: 18)),
                     controller: _btnController,
                     onPressed: () {
-                      _AddChild();
+                      
+                      if (_nameController.text.length < 3) {
+                        AppUtils.showError(
+                            context, "Child name should be minimum 3 characters", "");
+                      } else if (_dobController.text.isEmpty) {
+                        AppUtils.showError(
+                            context, "Please select child DOB", "");
+                      } else if (selectedValue == null) {
+                        AppUtils.showError(context, "Please select gender", "");
+                      } else {
+                        AppUtils.showprogress();
+                        checkChild();
+                       // _AddChild();
+                      }
                     },
                   ),
                 ),
@@ -390,20 +411,45 @@ class _ChildDetailsState extends State<ChildDetails> {
   _AddChild() {
     AddChildReq ChildReg = AddChildReq();
     ChildReg.parentId = Strings.Parent_Id.toString();
-    ChildReg.childName = _numberController.text;
+    ChildReg.childName = _nameController.text;
     ChildReg.dob = _dobController.text;
     ChildReg.gender = selectedValue;
-    ChildReg.profile = "data:image/jpeg;base64,$img64";
+
+    if (img64 != "") {
+      ChildReg.profile = "data:image/jpeg;base64,$img64";
+    } else {
+      ChildReg.profile = "null";
+    }
+
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.AddChild(ChildReg).then((response) {
       print('response ${response.status}');
       print("result1:${response.toJson()}");
       if (response.status == true) {
+        AppUtils.dismissprogress();
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ChildConfirmation()));
         print("result2:$response");
       } else {
+        AppUtils.dismissprogress();
         functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+        print("error");
+      }
+    });
+  }
+
+  checkChild() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.Checkchild(_nameController.text, Strings.Parent_Id).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+      if (response.status == true) {
+        _AddChild();
+      } else {
+        AppUtils.dismissprogress();
+       // functions.createSnackBar(context, response.message.toString());
+       AppUtils.showError(context, "Child already exists", "");
         _btnController.stop();
         print("error");
       }

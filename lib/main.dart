@@ -4,6 +4,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:playgroup/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 
+import 'Utilities/Strings.dart';
+
 
 
 void main() async 
@@ -11,7 +13,8 @@ void main() async
   WidgetsFlutterBinding.ensureInitialized();
   configLoading();
   await Firebase.initializeApp();
-  runApp(MaterialApp(home:SplashScreen()));
+  runApp(MaterialApp(home:SplashScreen(),builder: EasyLoading.init(),
+));
 }
 
 void configLoading() {
@@ -22,7 +25,7 @@ void configLoading() {
     ..indicatorSize = 50.0
     ..radius = 10.0
     ..progressColor = Colors.red
-    ..backgroundColor = Colors.orange
+    ..backgroundColor = Strings.appThemecolor
     ..indicatorColor = Colors.white
     ..textColor = Colors.white
     ..maskColor = Colors.blue.withOpacity(0.5)

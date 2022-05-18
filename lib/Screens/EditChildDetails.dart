@@ -5,6 +5,7 @@ import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -109,8 +110,9 @@ class _EditChildDetailsState extends State<EditChildDetails> {
         setState(() {
           _ChildData = response.data;
           _isLoading = false;
-          _numberController.text = _ChildData![0].childName.toString();
-          _dobController.text = _ChildData![0].dob.toString();
+          _numberController.text = _ChildData![Strings.editIndex].childName.toString();
+          _dobController.text = _ChildData![Strings.editIndex].dob.toString();
+          selectedValue = _ChildData![Strings.editIndex].gender;
         });
       }
     }).catchError((onError) {
@@ -150,7 +152,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                 child: Container(
                   height: MediaQuery.of(context).size.height * 1,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                  margin:  EdgeInsets.fromLTRB(0, 40, 0, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -159,14 +161,14 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child: const Align(
+                        child:  Align(
                             alignment: Alignment.topLeft,
                             child: Icon(Icons.arrow_back_sharp)),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.03,
                       ),
-                      const Text(
+                       Text(
                         "Edit Child Details",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -174,17 +176,17 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                             fontSize: 20,
                             decoration: TextDecoration.none),
                       ),
-                      const SizedBox(height: 10),
+                       SizedBox(height: 10),
                       Stack(children: [
                         CircleAvatar(
                           radius: 40.0,
-                          backgroundImage: _imageFile != null
-                              ? FileImage(_imageFile!)
-                              : null,
+                          backgroundImage: 
+                           (_imageFile == null && _ChildData![Strings.editIndex].profile != null) ?
+                           
+              NetworkImage(Strings.imageUrl+(_ChildData![Strings.editIndex].profile ?? "")):
+                              _imageFile != null ? FileImage(_imageFile!): AssetImage("assets/imgs/appicon.png") as ImageProvider,
                           backgroundColor: Colors.transparent,
-                          child: _imageFile == null
-                              ? Image.asset("assets/imgs/appicon.png")
-                              : SizedBox(),
+                          
                         ),
                         Positioned(
                             bottom: 0,
@@ -338,7 +340,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                             children:  [
                               Expanded(
                                 child: Text(
-                                  _ChildData![0].gender ?? "",
+                                  _ChildData![Strings.editIndex].gender ?? "",
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.black),
                                   overflow: TextOverflow.ellipsis,
@@ -404,6 +406,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                         width: MediaQuery.of(context).size.width * 0.9,
                         child: RoundedLoadingButton(
+                          animateOnTap: false,
                           resetDuration: const Duration(seconds: 10),
                           resetAfterDuration: true,
                           successColor: const Color.fromRGBO(94, 37, 108, 1),
@@ -415,7 +418,29 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                                   TextStyle(color: Colors.white, fontSize: 18)),
                           controller: _btnController,
                           onPressed: () {
-                            _EditChild();
+
+                            if (_numberController.text.length < 3) {
+                        AppUtils.showError(
+                            context, "Child name should be minimum 3 characters", "");
+                      } else if (_dobController.text.isEmpty) {
+                        AppUtils.showError(
+                            context, "Please select child DOB", "");
+                      } else if (selectedValue == null) {
+                        AppUtils.showError(context, "Please select gender", "");
+                      } else {
+                        AppUtils.showprogress();
+                       // checkChild();
+                        if(_numberController.text == _ChildData![Strings.editIndex].childName)
+                        {
+                            _EditChild();  
+                        }
+                        else{
+                          checkChild();
+                        }
+
+                    
+}
+                            
                           },
                         ),
                       ),
@@ -431,22 +456,45 @@ class _EditChildDetailsState extends State<EditChildDetails> {
 
     print("tokr2${Strings.authToken.toString()}");
     EditChildReq ChildEdit = EditChildReq();
-    ChildEdit.childId =  _ChildData![0].childId.toString();
+    ChildEdit.childId =  _ChildData![Strings.editIndex].childId.toString();
     ChildEdit.parentId = Strings.Parent_Id.toString();
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
     ChildEdit.gender = selectedValue;
+
+    if (img64 == "")
+    {
+        ChildEdit.profile = "null";
+    }
+    else{
     ChildEdit.profile = "data:image/jpeg;base64,$img64";
+    }
     print(jsonEncode(ChildEdit));
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.EditChild(ChildEdit).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
+        AppUtils.dismissprogress();
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ChildConfirmation()));
         print("result2:$response");
       } else {
         functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+        print("error");
+      }
+    });
+  }
+  checkChild() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.Checkchild(_numberController.text, Strings.Parent_Id).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+      if (response.status == true) {
+        _EditChild();
+      } else {
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "Child Already exists", "");
         _btnController.stop();
         print("error");
       }

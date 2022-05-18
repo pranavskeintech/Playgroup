@@ -11,6 +11,7 @@ import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Forgotpassword.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
+import 'package:playgroup/Screens/ResetPassword.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/ExitPopup.dart';
@@ -18,6 +19,8 @@ import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import 'ChildDetails.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -58,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
       // print(googleSignInAccount.email);
       // print('${googleSignInAccount.displayName}');
       // print(googleSignInAccount.photoUrl);
-      _GoogleLogin(googleSignInAccount.email);
+      _GoogleLogin(googleSignInAccount.email,googleSignInAccount.displayName);
     } catch (error) {
       print(error);
       return null;
@@ -357,7 +360,7 @@ class _LoginPageState extends State<LoginPage> {
                           if (_passwordController.text.isNotEmpty &&
                               _emailIdController.text.isNotEmpty) {
                             if (AppUtils.validateEmail(
-                                _emailIdController.text)) {
+                                _emailIdController.text.replaceAll(' ', ''))) {
                               _Login();
                             } else {
                               AppUtils.showWarning(
@@ -366,7 +369,7 @@ class _LoginPageState extends State<LoginPage> {
                             }
                           } else {
                             AppUtils.showWarning(
-                                context, "Please enter parent name", "");
+                                context, "Please fill all the feilds", "");
                             _btnController.stop();
                           }
                         },
@@ -462,7 +465,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _GoogleLogin(email) {
+  _GoogleLogin(email,name) {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GoogleLogin(email).then((response) {
       print(response.status);
@@ -472,6 +475,7 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else if (response.status == false) {
         _btnController.stop();
+        Strings.UserName = name;
         Strings.EmailId = email;
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => PhoneNumber()));
@@ -560,7 +564,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Text(
-                      "Forgot Password",
+                      "Forgot password",
                       style: TextStyle(
                           color: Colors.black,
                           fontSize: 16,

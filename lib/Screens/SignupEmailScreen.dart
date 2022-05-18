@@ -60,7 +60,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 ),
                 SizedBox(height: 20),
                 Text(
-                  "Email Verification",
+                  "Parents Details",
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
                       color: Colors.black,
@@ -156,7 +156,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                         style: TextStyle(color: Colors.white, fontSize: 18)),
                     controller: _btnController,
                     onPressed: () {
-                      if (_parentController.text.isNotEmpty) {
+                      if (_parentController.text.isNotEmpty && _parentController.text.length > 2) {
                         if (AppUtils.validateEmail(
                             _emailIdController.text.replaceAll(' ', ''))) {
                           var email = _emailIdController.text;
@@ -170,7 +170,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                         }
                       } else {
                         AppUtils.showWarning(
-                            context, "Please enter parent name", "");
+                            context, "Parents name shoulbe be minimum 3 letters", "");
                         _btnController.stop();
                       }
                     },

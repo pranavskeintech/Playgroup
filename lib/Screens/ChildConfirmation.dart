@@ -97,6 +97,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                   children: [
                                     InkWell(
                                       onTap: () {
+                                        Strings.editIndex = index;
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -116,16 +117,20 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                     // SizedBox(
                                     //   height: 10,
                                     // ),
-                                    const CircleAvatar(
+                                     CircleAvatar(
                                       radius: 40,
-                                      backgroundImage:
-                                          AssetImage('assets/imgs/child.jpg'),
+                                      backgroundImage:NetworkImage(Strings.imageUrl+(_ChildData![index].profile ?? "")),
+                                      backgroundColor: Colors.grey
+                                         
+              
+                                      // child: Image.network(Strings.imageUrl + (_ChildData![index].profile ?? ""),
+                                      //     fit: BoxFit.fill),
                                     ),
                                     const SizedBox(
                                       height: 10,
                                     ),
                                     Text(
-                                      _ChildData![index].childName!.toString(),
+                                      _ChildData![index].childName.toString(),
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold),
                                     ),

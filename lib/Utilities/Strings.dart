@@ -16,6 +16,11 @@ mixin Strings {
 
   static String appName = 'Play Group';
 
+  static String imageUrl = "https://demo.emeetify.com:5890/";
+
+  static String parentName = '';
+  static String parentemail = '';
+
  static bool firstLogin = true;
   static bool ForgotPassword = false;
 
@@ -37,6 +42,8 @@ mixin Strings {
   static String? Location='';
 
   static int Parent_Id = 0;
+
+  static var editIndex = 0;
 
   
 }

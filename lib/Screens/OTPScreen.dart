@@ -1,10 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/LocationSelection.dart';
 import 'package:playgroup/Screens/Login.dart';
+import 'package:playgroup/Screens/ResetPassword.dart';
 import 'package:playgroup/Screens/SetPassword.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import '../Utilities/AppUtlis.dart';
 
 class OTPScreen extends StatefulWidget {
   const OTPScreen({Key? key}) : super(key: key);
@@ -21,6 +27,7 @@ class _OTPScreenState extends State<OTPScreen> {
   FocusNode four = FocusNode();
   FocusNode five = FocusNode();
   FocusNode six = FocusNode();
+    int time = 30;
 
   final oneT = TextEditingController();
   final twoT = TextEditingController();
@@ -28,6 +35,37 @@ class _OTPScreenState extends State<OTPScreen> {
   final fourT = TextEditingController();
   final fiveT = TextEditingController();
   final sixT = TextEditingController();
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    countDownTimer();
+  }
+ countDownTimer()
+ {
+   print("inside count");
+  var timer = Timer.periodic(Duration(seconds: 1), (timer) 
+   {
+     if(mounted)
+     {
+         setState(() 
+      {
+        if(time > 0)
+        {
+           time--;
+        }
+        else
+        {
+          timer.cancel();
+        }
+        
+      });
+     }
+     
+    });
+   
+}
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +129,15 @@ class _OTPScreenState extends State<OTPScreen> {
                     height: 5,
                   ),
                   _boxBuilder(),
+                  Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      padding: EdgeInsets.only(right: 0,top: 10),
+                      child: time != 0? Text(time.toString()+ " seconds",style: TextStyle(color: Colors.grey)):TextButton(child: Text("Resend"),onPressed: (){
+                          AppUtils.showprogress();
+                          firebase.verifyPhone(context, Strings.PhoneNumber);
+                        },),),
+                  ),
                   // Container(
                   //   decoration: BoxDecoration(
                   //         color: Colors.grey.withOpacity(0.3),
@@ -105,6 +152,7 @@ class _OTPScreenState extends State<OTPScreen> {
                     margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                     width: MediaQuery.of(context).size.width * 0.9,
                     child: RoundedLoadingButton(
+                      animateOnTap: false,
                       resetDuration: const Duration(seconds: 10),
                       resetAfterDuration: true,
                       successColor: const Color.fromRGBO(94, 37, 108, 1),
@@ -115,15 +163,22 @@ class _OTPScreenState extends State<OTPScreen> {
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       controller: _btnController,
                       onPressed: () {
-                        if (Strings.ForgotPassword) {
-                         // Strings.ForgotPassword = false;
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) => SetPassword()));
-                        } else {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  LocationSelection()));
-                        }
+                        _btnController.reset();
+                        var enteredOTP = oneT.text + twoT.text + threeT.text + fourT.text + fiveT.text + sixT.text;
+                        print(enteredOTP);
+                      
+                          if (enteredOTP.length == 6) {
+                            AppUtils.showprogress();
+                            firebase.signIn(context, enteredOTP);
+                          } else
+                          {
+                            AppUtils.showToast("Please enter valid OTP","");
+                          }
+
+                          // Navigator.of(context).push(MaterialPageRoute(
+                          //     builder: (BuildContext context) =>
+                          //         LocationSelection()));
+                        
                       },
                     ),
                   ),

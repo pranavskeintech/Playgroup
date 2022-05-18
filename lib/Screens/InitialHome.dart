@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
+
+import '../Network/ApiService.dart';
 
 
 class InitialScreen extends StatefulWidget {
@@ -39,9 +43,32 @@ List<String> images = [
     "child5.jpg",
     "child6.jpg"
   ];
+ var ctx;
+List<UserData>? _UserData;
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+        WidgetsBinding.instance!.addPostFrameCallback((_) => getParentsDetails());
+
+  }
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return InitialScreen(newContext);
+          }),
+        ));
+  }
+
+  InitialScreen(BuildContext context)
+  {
+    ctx = context;
     return Container(
         margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
         child: Column(
@@ -111,5 +138,31 @@ List<String> images = [
           ],
         ),
       );
+  }
+  getParentsDetails() {
+    var PId = Strings.Parent_Id!.toInt();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.getParentsDetails(PId).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        //_btnController.stop();
+        // Navigator.of(context).push(
+        //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        _UserData = response.data;
+        setState(() {
+           Strings.parentName = _UserData![0].parentName!;
+        Strings.parentemail = _UserData![0].emailId!;
+        });
+       
+        setState(() {
+         // _isLoading = false;
+        });
+      } else {
+        //functions.createSnackBar(context, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 }

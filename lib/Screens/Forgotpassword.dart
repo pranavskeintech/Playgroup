@@ -6,6 +6,11 @@ import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/CustomStyle.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:country_calling_code_picker/picker.dart';
+import 'package:provider/provider.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+
+
+import '../Network/ApiService.dart';
 
 
 class Forgotpassword extends StatefulWidget {
@@ -100,9 +105,14 @@ class _ForgotpasswordState extends State<Forgotpassword> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: forgotBody(context),
-    );
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return forgotBody(newContext);
+          }),
+        ));
   }
 
   forgotBody(context) {
@@ -217,10 +227,14 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                     SizedBox(
                       height: 100,
                     ),
-                    AppUtils.appbutton('Continue', (){
+                    AppUtils.appbutton('Continue', ()
+                    {
+                      AppUtils.showprogress();
                       Strings.ForgotPassword = true;
-                      Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => OTPScreen()));
+                      _CheckUser(_numberController.text);
+                      Strings.PhoneNumber = _numberController.text;
+                    //   Navigator.of(context).push(MaterialPageRoute(
+                    // builder: (context) => OTPScreen()));
                     }),
                   ],
                 ),
@@ -230,5 +244,27 @@ class _ForgotpasswordState extends State<Forgotpassword> {
         ),
       ),
     );
+  }
+  _CheckUser(phone) {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.CheckUser(phone).then((response) {
+      print(response.status);
+      if (response.status == true) 
+      {
+        firebase.verifyPhone(context,phone);
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => OTPScreen(),
+        //   ),
+        // );
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "User not registered", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 }
