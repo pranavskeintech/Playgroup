@@ -181,7 +181,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         CircleAvatar(
                           radius: 40.0,
                           backgroundImage: 
-                           (_imageFile == null && _ChildData![Strings.editIndex].profile != null) ?
+                           (_imageFile == null && _ChildData![Strings.editIndex].profile != "null") ?
                            
               NetworkImage(Strings.imageUrl+(_ChildData![Strings.editIndex].profile ?? "")):
                               _imageFile != null ? FileImage(_imageFile!): AssetImage("assets/imgs/appicon.png") as ImageProvider,
@@ -455,11 +455,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   _EditChild() {
     print("tokr2${Strings.authToken.toString()}");
     EditChildReq ChildEdit = EditChildReq();
-<<<<<<< HEAD
     ChildEdit.childId =  _ChildData![Strings.editIndex].childId.toString();
-=======
-    ChildEdit.childId = _ChildData![0].childId.toString();
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
     ChildEdit.parentId = Strings.Parent_Id.toString();
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
@@ -467,9 +463,10 @@ class _EditChildDetailsState extends State<EditChildDetails> {
 
     if (img64 == "")
     {
-        ChildEdit.profile = "null";
+        ChildEdit.profile =  _ChildData![Strings.editIndex].profile;
     }
-    else{
+    else
+    {
     ChildEdit.profile = "data:image/jpeg;base64,$img64";
     }
     print(jsonEncode(ChildEdit));

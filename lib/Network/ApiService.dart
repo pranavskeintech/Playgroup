@@ -6,6 +6,7 @@ import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
+import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
@@ -28,7 +29,7 @@ abstract class ApiService {
   factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
 
   @POST("user/")
-  Future<CommonRes> login(@Body() LoginReq body);
+  Future<LoginRes> login(@Body() LoginReq body);
 
   @POST("user/register")
   Future<Register_Res> Register(@Body() UserRegisterReq body);
@@ -47,10 +48,10 @@ abstract class ApiService {
   Future<CommonRes> CheckUser(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
 
   @GET("user/check/{EmailOrPhone_No}/Google")
-  Future<CommonRes> GoogleLogin(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
+  Future<LoginRes> GoogleLogin(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
 
   @GET("user/check/{EmailOrPhone_No}/Facebook")
-  Future<CommonRes> FBLogin(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
+  Future<LoginRes> FBLogin(@Path("EmailOrPhone_No") String EmailOrPhoneNo);
 
   @POST("user/addchild")
   Future<CommonRes> AddChild(@Body() AddChildReq body);

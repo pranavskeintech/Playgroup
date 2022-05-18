@@ -170,7 +170,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                         }
                       } else {
                         AppUtils.showWarning(
-                            context, "Parents name shoulbe be minimum 3 letters", "");
+                            context, "Parents name should be minimum 3 letters", "");
                         _btnController.stop();
                       }
                     },

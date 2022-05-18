@@ -119,7 +119,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                     // ),
                                      CircleAvatar(
                                       radius: 40,
-                                      backgroundImage:NetworkImage(Strings.imageUrl+(_ChildData![index].profile ?? "")),
+                                      backgroundImage: _ChildData![Strings.editIndex].profile != "null" ? NetworkImage(Strings.imageUrl+(_ChildData![index].profile ?? "")):AssetImage("assets/imgs/appicon.png") as ImageProvider,
                                       backgroundColor: Colors.grey
                                          
               

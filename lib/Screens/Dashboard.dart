@@ -29,15 +29,11 @@ class _DashBoardState extends State<DashBoard> {
   var _bottomNavIndex = 0;
 
   List<IconData> iconList = [];
-<<<<<<< HEAD
-  List<UserData>? _UserData;
 
-=======
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
-
-  final screens = [
-    HomeScreen(),
+  final screens = 
+  [   
     InitialScreen(),
+    HomeScreen(),
     //  Center(child:Text("Past Activities")),
     //  Center(child:Text("Search")),
     //  Center(child:Text("Notification")),
@@ -61,53 +57,6 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   @override
-<<<<<<< HEAD
-  Widget build(BuildContext context) 
-  {
-    ctx = context;
-   // getParentsDetails();
-    return Provider(
-      create: (context) => ApiService.create(),
-      child: WillPopScope(
-        onWillPop: () => showExitPopup(context),
-         child: 
-        // _isLoading
-        //   ? const Center(
-        //       child: CircularProgressIndicator(
-        //           valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))):
-                   Scaffold(
-          key: _scaffoldKey,
-          drawer: NavigationDrawer(),
-          appBar: AppBar(
-           // systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
-            backgroundColor: Colors.white,
-            title: Row(
-              children: [
-                Image.asset(
-                  "assets/imgs/appicon.png",
-                  width: 32,
-                  height: 32,
-                ),
-               const SizedBox(
-                  width: 10,
-                ),
-                const Text(
-                  "PlayGroup",
-                  style:
-                      TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            actions: [
-              InkWell(
-                onTap: (){
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  // builder: (BuildContext context) => ProfileScreen()));
-                },
-                child: CircleAvatar(
-                  radius: 16,
-                  backgroundImage: AssetImage("assets/imgs/child5.jpg"),
-=======
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
@@ -163,7 +112,6 @@ class _DashBoardState extends State<DashBoard> {
                   radius: 16,
                   backgroundImage: AssetImage(
                       "assets/imgs/child5.jpg"), //Hard code for profile image
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
                 ),
               ),
               SizedBox(
@@ -186,30 +134,17 @@ class _DashBoardState extends State<DashBoard> {
                   color: Colors.black,
                 )),
           ),
-<<<<<<< HEAD
-          floatingActionButton: 
-          FloatingActionButton(
-            onPressed: () {
-      // Navigator.of(context).push(MaterialPageRoute(
-      //         builder: (BuildContext context) => Choose_Category()));
-      
-=======
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               // Navigator.of(context).push(MaterialPageRoute(
               //         builder: (BuildContext context) => Choose_Category()));
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
             },
             backgroundColor: Strings.appThemecolor,
             child: Icon(Icons.add),
             //params
           ),
-<<<<<<< HEAD
-          floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-=======
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
           bottomNavigationBar: AnimatedBottomNavigationBar(
               height: 60,
               icons: iconList,
@@ -221,53 +156,36 @@ class _DashBoardState extends State<DashBoard> {
               backgroundColor: Strings.appThemecolor,
               activeColor: Colors.white,
               inactiveColor: Colors.grey,
-<<<<<<< HEAD
-              onTap: (index) 
-              {
-                setState(() 
-                {
-=======
               onTap: (index) {
                 setState(() {
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
                   _bottomNavIndex = index;
                 });
                 print(index);
               }
               //other params
               ),
-<<<<<<< HEAD
-           body: Builder(builder: (BuildContext newContext) {
-            return  screens[_bottomNavIndex];
-          }),
-           
-                  
-        ),
-      ),
-=======
           body: screens[_bottomNavIndex]),
->>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
     );
   }
-   getParentsDetails() {
-    var PId = Strings.Parent_Id!.toInt();
-    final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getParentsDetails(PId).then((response) {
-      print(response.status);
-      if (response.status == true) {
-        //_btnController.stop();
-        // Navigator.of(context).push(
-        //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-        _UserData = response.data;
-        setState(() {
-          _isLoading = false;
-        });
-      } else {
-        functions.createSnackBar(context, response.status.toString());
-        // _btnController.stop();
-      }
-    }).catchError((onError) {
-      print(onError.toString());
-    });
-  }
+  //  getParentsDetails() {
+  //   var PId = Strings.Parent_Id!.toInt();
+  //   final api = Provider.of<ApiService>(ctx!, listen: false);
+  //   api.getParentsDetails(PId).then((response) {
+  //     print(response.status);
+  //     if (response.status == true) {
+  //       //_btnController.stop();
+  //       // Navigator.of(context).push(
+  //       //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+  //       _UserData = response.data;
+  //       setState(() {
+  //         _isLoading = false;
+  //       });
+  //     } else {
+  //       functions.createSnackBar(context, response.status.toString());
+  //       // _btnController.stop();
+  //     }
+  //   }).catchError((onError) {
+  //     print(onError.toString());
+  //   });
+  // }
 }

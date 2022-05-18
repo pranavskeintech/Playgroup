@@ -169,7 +169,7 @@ class _ForgotpasswordState extends State<Forgotpassword> {
                       padding: EdgeInsets.symmetric(vertical: 10),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        "Enter your Registered phone number",
+                        "Enter your registered phone number",
                         style: TextStyle(color: Strings.textFeildHeading)
                       ),
                     ),

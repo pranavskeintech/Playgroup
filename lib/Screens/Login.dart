@@ -6,6 +6,7 @@ import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 // import 'package:flutter_login_facebook/flutter_login_facebook.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playgroup/Models/LoginReq.dart';
+import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Forgotpassword.dart';
@@ -39,6 +40,8 @@ class _LoginPageState extends State<LoginPage> {
 
   BuildContext? ctx;
   FirebaseAuth _auth = FirebaseAuth.instance;
+  //List<LoginData>? loginData;
+
 
   void _doSomething() async {
     print("Clicked me");
@@ -145,12 +148,13 @@ class _LoginPageState extends State<LoginPage> {
           var value = FirebaseAuth.instance.signInWithCredential(credential);
           print('creadentials ${FirebaseAuth.instance.currentUser}');
           var email = FirebaseAuth.instance.currentUser?.email ?? "";
+          var name = FirebaseAuth.instance.currentUser?.displayName ?? "";
           
       final value1 =
           await FirebaseAuth.instance.signInWithCredential(credential);
       print(value1.user);
 
-      _FacebookLogin(email);
+      _FacebookLogin(email,name);
           
       // try {
 
@@ -346,6 +350,7 @@ class _LoginPageState extends State<LoginPage> {
                       margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
                       width: MediaQuery.of(context).size.width * 0.9,
                       child: RoundedLoadingButton(
+                        animateOnTap: false,
                         resetDuration: Duration(seconds: 10),
                         resetAfterDuration: true,
                         successColor: Color.fromRGBO(94, 37, 108, 1),
@@ -361,6 +366,7 @@ class _LoginPageState extends State<LoginPage> {
                               _emailIdController.text.isNotEmpty) {
                             if (AppUtils.validateEmail(
                                 _emailIdController.text.replaceAll(' ', ''))) {
+                                  AppUtils.showprogress();
                               _Login();
                             } else {
                               AppUtils.showWarning(
@@ -471,6 +477,9 @@ class _LoginPageState extends State<LoginPage> {
       print(response.status);
       if (response.status == true) {
         _btnController.stop();
+        Strings.parentName = response.data![0].parentName!;
+      Strings.parentemail = response.data![0].emailId!;
+      Strings.Parent_Id = response.data![0].userId!;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else if (response.status == false) {
@@ -488,17 +497,27 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _FacebookLogin(email) {
+  _FacebookLogin(email,name) 
+  {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.FBLogin(email).then((response) {
       print(response.status);
       if (response.status == true) {
         _btnController.stop();
+        //Strings.Parent_Id = response.data![0].userId!;
+        Strings.parentName = response.data![0].parentName!;
+      Strings.parentemail = response.data![0].emailId!;
+      Strings.Parent_Id = response.data![0].userId!;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-      } else {
+      } else 
+      {
        // functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
+        Strings.UserName = name;
+        Strings.EmailId = email;
+
+
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => PhoneNumber()));
       }
@@ -507,7 +526,9 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _Login() {
+  _Login() 
+  {
+
     LoginReq Userlogin = LoginReq();
     Userlogin.emailId = _emailIdController.text;
     Userlogin.password = _passwordController.text;
@@ -517,6 +538,11 @@ class _LoginPageState extends State<LoginPage> {
       print("result1:${response.toJson()}");
 
       if (response.status == true) {
+        AppUtils.dismissprogress();
+      Strings.parentName = response.data![0].parentName!;
+      Strings.parentemail = response.data![0].emailId!;
+      Strings.Parent_Id = response.data![0].userId!;
+        
         // _isLoading = false;
         //  Get.off(() => DashPage());
         // Navigator.of(context)
@@ -527,11 +553,14 @@ class _LoginPageState extends State<LoginPage> {
         //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
         print("res:${response.message}");
         _btnController.stop();
+
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
         print("result2:$response");
       } else {
-        functions.createSnackBar(context, response.message.toString());
+       // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+       AppUtils.showError(context, response.message, "");
         _btnController.stop();
         print("error");
       }

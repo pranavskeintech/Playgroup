@@ -18,19 +18,19 @@ class _ApiService implements ApiService {
   String? baseUrl;
 
   @override
-  Future<CommonRes> login(body) async {
+  Future<LoginRes> login(body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CommonRes>(
+        _setStreamType<LoginRes>(
             Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'user/',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = CommonRes.fromJson(_result.data!);
+    final value = LoginRes.fromJson(_result.data!);
     return value;
   }
 
@@ -117,34 +117,34 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> GoogleLogin(EmailOrPhoneNo) async {
+  Future<LoginRes> GoogleLogin(EmailOrPhoneNo) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CommonRes>(
+        _setStreamType<LoginRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'user/check/${EmailOrPhoneNo}/Google',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = CommonRes.fromJson(_result.data!);
+    final value = LoginRes.fromJson(_result.data!);
     return value;
   }
 
   @override
-  Future<CommonRes> FBLogin(EmailOrPhoneNo) async {
+  Future<LoginRes> FBLogin(EmailOrPhoneNo) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<CommonRes>(
+        _setStreamType<LoginRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'user/check/${EmailOrPhoneNo}/Facebook',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = CommonRes.fromJson(_result.data!);
+    final value = LoginRes.fromJson(_result.data!);
     return value;
   }
 
