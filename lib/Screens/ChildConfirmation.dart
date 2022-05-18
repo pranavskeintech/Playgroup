@@ -305,7 +305,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
   }
 
   _GetChild() {
-    var PId = Strings.Parent_Id!.toInt();
+    var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetChild(PId).then((response) {
       print(response.status);

@@ -24,24 +24,26 @@ class DashBoard extends StatefulWidget {
   State<DashBoard> createState() => _DashBoardState();
 }
 
-class _DashBoardState extends State<DashBoard> 
-{
+class _DashBoardState extends State<DashBoard> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   var _bottomNavIndex = 0;
 
   List<IconData> iconList = [];
+<<<<<<< HEAD
   List<UserData>? _UserData;
 
+=======
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
 
   final screens = [
-   // HomeScreen(),
-     InitialScreen(),
-     Center(child:Text("Past Activities")),
-     Center(child:Text("Search")),
-     Center(child:Text("Notification")),
+    HomeScreen(),
+    InitialScreen(),
+    //  Center(child:Text("Past Activities")),
+    //  Center(child:Text("Search")),
+    //  Center(child:Text("Notification")),
 
-    //SearchScreen(),
-    //NotificationScreen(),
+    SearchScreen(),
+    NotificationScreen(),
   ];
 
   var ctx;
@@ -59,6 +61,7 @@ class _DashBoardState extends State<DashBoard>
   }
 
   @override
+<<<<<<< HEAD
   Widget build(BuildContext context) 
   {
     ctx = context;
@@ -104,6 +107,63 @@ class _DashBoardState extends State<DashBoard>
                 child: CircleAvatar(
                   radius: 16,
                   backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+=======
+  Widget build(BuildContext context) {
+    return WillPopScope(
+      onWillPop: () => showExitPopup(context),
+      child: Scaffold(
+          key: _scaffoldKey,
+          drawer: NavigationDrawer(),
+          appBar: AppBar(
+            centerTitle: false,
+            elevation: 1,
+            toolbarHeight: 62,
+            // systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+            backgroundColor: Colors.white,
+            title: Transform(
+              transform: Matrix4.translationValues(-15.0, 0, 0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Image.asset(
+                    "assets/imgs/appicon.png",
+                    width: 28,
+                    height: 28,
+                  ),
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  const Text(
+                    "Play Group",
+                    style: TextStyle(
+                        fontSize: 17,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              InkWell(
+                onTap: () {
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  // builder: (BuildContext context) => ProfileScreen()));
+                  showDialog<void>(
+                      context: context,
+                      barrierDismissible: true, // user must tap button!
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Image(
+                              image: AssetImage(
+                                  "assets/imgs/child5.jpg")), //Hard code for profile image
+                        );
+                      });
+                },
+                child: CircleAvatar(
+                  radius: 16,
+                  backgroundImage: AssetImage(
+                      "assets/imgs/child5.jpg"), //Hard code for profile image
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
                 ),
               ),
               SizedBox(
@@ -126,18 +186,30 @@ class _DashBoardState extends State<DashBoard>
                   color: Colors.black,
                 )),
           ),
+<<<<<<< HEAD
           floatingActionButton: 
           FloatingActionButton(
             onPressed: () {
       // Navigator.of(context).push(MaterialPageRoute(
       //         builder: (BuildContext context) => Choose_Category()));
       
+=======
+          floatingActionButton: FloatingActionButton(
+            onPressed: () {
+              // Navigator.of(context).push(MaterialPageRoute(
+              //         builder: (BuildContext context) => Choose_Category()));
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
             },
             backgroundColor: Strings.appThemecolor,
             child: Icon(Icons.add),
             //params
           ),
+<<<<<<< HEAD
           floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+=======
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
           bottomNavigationBar: AnimatedBottomNavigationBar(
               height: 60,
               icons: iconList,
@@ -149,16 +221,22 @@ class _DashBoardState extends State<DashBoard>
               backgroundColor: Strings.appThemecolor,
               activeColor: Colors.white,
               inactiveColor: Colors.grey,
+<<<<<<< HEAD
               onTap: (index) 
               {
                 setState(() 
                 {
+=======
+              onTap: (index) {
+                setState(() {
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
                   _bottomNavIndex = index;
                 });
                 print(index);
               }
               //other params
               ),
+<<<<<<< HEAD
            body: Builder(builder: (BuildContext newContext) {
             return  screens[_bottomNavIndex];
           }),
@@ -166,6 +244,9 @@ class _DashBoardState extends State<DashBoard>
                   
         ),
       ),
+=======
+          body: screens[_bottomNavIndex]),
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
     );
   }
    getParentsDetails() {
@@ -190,4 +271,3 @@ class _DashBoardState extends State<DashBoard>
     });
   }
 }
-

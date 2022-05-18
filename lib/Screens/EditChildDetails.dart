@@ -104,7 +104,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   _GetChildData() {
     int? PId = Strings.Parent_Id;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetChild(PId!).then((response) {
+    api.GetChild(PId).then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
@@ -337,7 +337,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         child: DropdownButton2(
                           isExpanded: true,
                           hint: Row(
-                            children:  [
+                            children: [
                               Expanded(
                                 child: Text(
                                   _ChildData![Strings.editIndex].gender ?? "",
@@ -453,10 +453,13 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   }
 
   _EditChild() {
-
     print("tokr2${Strings.authToken.toString()}");
     EditChildReq ChildEdit = EditChildReq();
+<<<<<<< HEAD
     ChildEdit.childId =  _ChildData![Strings.editIndex].childId.toString();
+=======
+    ChildEdit.childId = _ChildData![0].childId.toString();
+>>>>>>> 72387e4cbd3470f321a06015e9464f6952f60293
     ChildEdit.parentId = Strings.Parent_Id.toString();
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
