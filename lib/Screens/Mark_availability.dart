@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:playgroup/Screens/G-Map.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
 class Mark_Availabilty extends StatefulWidget {
@@ -30,6 +33,10 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
     '7 pm',
     '8 pm',
   ];
+
+  String? _currentAddress;
+
+  var _AddressController = TextEditingController();
 
   _selectDate() async {
     final DateTime? picked = await showDatePicker(
@@ -58,6 +65,24 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   }
 
   final now = DateTime.now();
+
+  _getAddress() async {
+    if (Strings.Latt != 0) {
+      try {
+        List<Placemark> p =
+            await placemarkFromCoordinates(Strings.Latt, Strings.Long);
+
+        Placemark place = p[0];
+        setState(() {
+          _currentAddress =
+              "${place.name}, ${place.locality}, ${place.postalCode}, ${place.country}";
+          _AddressController.text = _currentAddress!;
+        });
+      } catch (e) {
+        print(e);
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -600,44 +625,122 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ),
                 child: Row(
                   children: [
-                    SizedBox(
-                      height: 42,
+                    // SizedBox(
+                    //   height: 42,
+                    //   width: MediaQuery.of(context).size.width * 0.7,
+                    //   child: TextDropdownFormField(
+                    //     options: const ["Open to anything", "Current location"],
+                    //     // decoration: InputDecoration(
+                    //     //     border: OutlineInputBorder(),
+                    //     //     suffixIcon: Icon(Icons.arrow_drop_down),
+                    //     //     labelText: "Gender"),
+                    //     decoration: InputDecoration(
+                    //       fillColor: Colors.transparent,
+                    //       filled: true,
+                    //       border: InputBorder.none,
+                    //       focusedBorder: InputBorder.none,
+                    //       enabledBorder: InputBorder.none,
+                    //       errorBorder: InputBorder.none,
+                    //       disabledBorder: InputBorder.none,
+                    //       contentPadding: EdgeInsets.only(
+                    //           left: 15, bottom: 11, top: 11, right: 15),
+                    //       //labelText: "Gender"),
+                    //     ),
+                    //     dropdownHeight: 120,
+                    //   ),
+                    // ),
+
+                    Container(
                       width: MediaQuery.of(context).size.width * 0.7,
-                      child: TextDropdownFormField(
-                        options: const ["Open to anything", "Current location"],
-                        // decoration: InputDecoration(
-                        //     border: OutlineInputBorder(),
-                        //     suffixIcon: Icon(Icons.arrow_drop_down),
-                        //     labelText: "Gender"),
-                        decoration: InputDecoration(
-                          fillColor: Colors.transparent,
-                          filled: true,
-                          border: InputBorder.none,
-                          focusedBorder: InputBorder.none,
-                          enabledBorder: InputBorder.none,
-                          errorBorder: InputBorder.none,
-                          disabledBorder: InputBorder.none,
-                          contentPadding: EdgeInsets.only(
-                              left: 15, bottom: 11, top: 11, right: 15),
-                          //labelText: "Gender"),
-                        ),
-                        dropdownHeight: 120,
-                      ),
+                      child: (_currentAddress != null && _currentAddress != '')
+                          ? TextField(
+                              style: TextStyle(color: Colors.black),
+                              controller: _AddressController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(230, 230, 230, 1),
+                                      width: 0.0),
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Color.fromRGBO(230, 230, 230, 1),
+                                      width: 0.0),
+                                ),
+                                fillColor: Color.fromRGBO(230, 230, 230, 1),
+                                filled: true,
+                                hintText: "Type here",
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(10, 5, 0, 0),
+                                suffixIcon: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _currentAddress = null;
+                                      });
+                                    },
+                                    icon: Icon(Icons.clear)),
+                              ),
+                              keyboardType: TextInputType.emailAddress,
+                            )
+                          : TextDropdownFormField(
+                              options: ["Open to anything", "Current Location"],
+                              // decoration: InputDecoration(
+                              //     border: OutlineInputBorder(),
+                              //     suffixIcon: Icon(Icons.arrow_drop_down),
+                              //     labelText: "Gender"),
+                              onChanged: (dynamic str) async {
+                                print("object:$str");
+                                if (str == "Current Location") {
+                                  Position position =
+                                      await _getGeoLocationPosition();
+                                  var location =
+                                      'Lat: ${position.latitude} , Long: ${position.longitude}';
+                                  GetAddressFromLatLong(position);
+                                }
+                              },
+                              decoration: new InputDecoration(
+                                fillColor: Colors.transparent,
+                                filled: true,
+                                border: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.only(
+                                    left: 15, bottom: 11, top: 11, right: 15),
+                                //labelText: "Gender"),
+                                hintText: "Type here",
+                              ),
+                              dropdownHeight: 120,
+                            ),
                     ),
                     SizedBox(
                       width: 5,
                     ),
-                    Row(
-                      children: const [
-                        Text(
-                          "Map",
-                          style: TextStyle(color: Colors.blue),
-                        ),
-                        Icon(
-                          Icons.location_pin,
-                          color: Colors.red,
-                        )
-                      ],
+                    GestureDetector(
+                      onTap: () async {
+                        var value = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (context) => MapsPage()));
+                        setState(() {
+                          _getAddress();
+                        });
+                      },
+                      child: Row(
+                        children: [
+                          Text(
+                            "Map",
+                            style: TextStyle(color: Colors.blue),
+                          ),
+                          Icon(
+                            Icons.location_pin,
+                            color: Colors.red,
+                          )
+                        ],
+                      ),
                     )
                   ],
                 ),
@@ -645,7 +748,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               SizedBox(
                 height: 28,
               ),
-              SizedBox(
+              Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: 40,
                 child: TextButton(
@@ -670,11 +773,55 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               ),
               SizedBox(
                 height: 100,
-              )
+              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  Future<Position> _getGeoLocationPosition() async {
+    print("1");
+    bool serviceEnabled;
+    LocationPermission permission;
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    return await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+  }
+
+  Future<void> GetAddressFromLatLong(Position position) async {
+    print("2");
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    print("place:$placemarks");
+    Placemark place = placemarks[1];
+    _currentAddress = '${place.name}, ${place.locality}, ${place.postalCode}';
+    setState(() {
+      _AddressController.text = _currentAddress!;
+    });
+    print("Address:$_currentAddress");
   }
 }
