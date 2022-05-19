@@ -4,6 +4,7 @@ import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Screens/Availability-Choose_category.dart';
 import 'package:playgroup/Screens/HomeScreen.dart';
 import 'package:playgroup/Screens/InitialHome.dart';
+import 'package:playgroup/Screens/Mark_availability.dart';
 import 'package:playgroup/Screens/Notification.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/Search.dart';
@@ -13,7 +14,6 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 import 'package:playgroup/Utilities/Functions.dart';
-
 
 import '../Network/ApiService.dart';
 
@@ -30,16 +30,16 @@ class _DashBoardState extends State<DashBoard> {
 
   List<IconData> iconList = [];
 
-  final screens = 
-  [   
-    InitialScreen(),
+  final screens = [
     HomeScreen(),
+    InitialScreen(),
     //  Center(child:Text("Past Activities")),
     //  Center(child:Text("Search")),
     //  Center(child:Text("Notification")),
 
     SearchScreen(),
     NotificationScreen(),
+    //Mark_Availabilty(),
   ];
 
   var ctx;
@@ -136,11 +136,14 @@ class _DashBoardState extends State<DashBoard> {
           ),
           floatingActionButton: FloatingActionButton(
             onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Mark_Availabilty()));
               // Navigator.of(context).push(MaterialPageRoute(
               //         builder: (BuildContext context) => Choose_Category()));
             },
             backgroundColor: Strings.appThemecolor,
             child: Icon(Icons.add),
+
             //params
           ),
           floatingActionButtonLocation:
