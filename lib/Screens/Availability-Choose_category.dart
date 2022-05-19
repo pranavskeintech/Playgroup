@@ -10,10 +10,11 @@ class Choose_Category extends StatefulWidget
   State<Choose_Category> createState() => _Choose_CategoryState();
 }
 
-class _Choose_CategoryState extends State<Choose_Category> {
-
+class _Choose_CategoryState extends State<Choose_Category> 
+{
 int tag = 1;
-List<String> options = [
+List<String> options = 
+[
   'News', 'Entertainment', 'Politics',
   'Automotive', 'Sports', 'Education',
   'Fashion', 'Travel', 'Food', 'Tech',

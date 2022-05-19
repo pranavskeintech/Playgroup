@@ -27,13 +27,13 @@ class _SearchScreenState extends State<SearchScreen> {
               },
               child: TextField(
                 // enabled: false,
-                style: TextStyle(height: 3),
+                //style: TextStyle(height: 3),
                 decoration: InputDecoration(
                     hintText: "Search",
-                    enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.grey.shade300, width: 0.0),
-                        borderRadius: BorderRadius.circular(6)),
+                    // enabledBorder: OutlineInputBorder(
+                    //     borderSide:
+                    //         BorderSide(color: Colors.grey.shade300, width: 0.0),
+                    //     borderRadius: BorderRadius.circular(6)),
                     filled: true,
                     fillColor: Colors.grey.withOpacity(0.2),
                     prefixIcon: Icon(Icons.search)),
