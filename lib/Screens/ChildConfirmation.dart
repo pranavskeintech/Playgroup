@@ -121,8 +121,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                       radius: 40,
                                       backgroundImage: _ChildData![Strings.editIndex].profile != "null" ? NetworkImage(Strings.imageUrl+(_ChildData![index].profile ?? "")):AssetImage("assets/imgs/appicon.png") as ImageProvider,
                                       backgroundColor: Colors.grey
-                                         
-              
+                                  
                                       // child: Image.network(Strings.imageUrl + (_ChildData![index].profile ?? ""),
                                       //     fit: BoxFit.fill),
                                     ),

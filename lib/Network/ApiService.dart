@@ -9,6 +9,7 @@ import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
+import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -40,6 +41,8 @@ abstract class ApiService {
 @GET("user/Checkchild/{name}/{user_id}")
   Future<CheckchildRes> Checkchild(@Path("name") String name,@Path("user_id") int id);
 
+  @GET("user/searchchild/{name}")
+  Future<SearchresultRes> SearchChild(@Path("name") String name,);
 
   @GET("user/get_City/IN/TN")
   Future<GetCity> Get_City();

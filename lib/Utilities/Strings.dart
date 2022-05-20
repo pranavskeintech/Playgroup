@@ -45,6 +45,8 @@ mixin Strings {
 
   static var editIndex = 0;
 
+  static String searchText = "";
+
   
 }
 

@@ -10,7 +10,8 @@ class PastActivity extends StatefulWidget {
   State<PastActivity> createState() => _PastActivityState();
 }
 
-class _PastActivityState extends State<PastActivity> {
+class _PastActivityState extends State<PastActivity> 
+{
   List<String> childImgs = [
     "https://picsum.photos/500/300",
     "https://picsum.photos/500/300",
@@ -22,7 +23,8 @@ class _PastActivityState extends State<PastActivity> {
 
   bool isHighlighted = true;
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return Container(
       color: Colors.white,
       child: Align(

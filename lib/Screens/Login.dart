@@ -477,6 +477,7 @@ class _LoginPageState extends State<LoginPage> {
       print(response.status);
       if (response.status == true) {
         _btnController.stop();
+        Strings.authToken = response.refreshToken!.refreshToken!;
         Strings.parentName = response.data![0].parentName!;
       Strings.parentemail = response.data![0].emailId!;
       Strings.Parent_Id = response.data![0].userId!;
@@ -505,6 +506,7 @@ class _LoginPageState extends State<LoginPage> {
       if (response.status == true) {
         _btnController.stop();
         //Strings.Parent_Id = response.data![0].userId!;
+                Strings.authToken = response.refreshToken!.refreshToken!;
         Strings.parentName = response.data![0].parentName!;
       Strings.parentemail = response.data![0].emailId!;
       Strings.Parent_Id = response.data![0].userId!;
@@ -539,6 +541,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.status == true) {
         AppUtils.dismissprogress();
+      Strings.authToken = response.refreshToken!.refreshToken!;
       Strings.parentName = response.data![0].parentName!;
       Strings.parentemail = response.data![0].emailId!;
       Strings.Parent_Id = response.data![0].userId!;

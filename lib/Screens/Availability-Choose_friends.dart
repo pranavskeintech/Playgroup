@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
 class Availability_choose_friends extends StatefulWidget {
@@ -104,10 +105,29 @@ class _Availability_choose_friendsState
                       ),
                     ),
                   Divider(color: Colors.grey.withOpacity(0.8),height: 1,),
+                  
                   ],
                 );
               },
-            ))
+            )),
+             Center(
+            child: Container(
+              decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 0),
+              ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: ElevatedButton(onPressed: (){
+                Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => DashBoard()));
+              }, child: Text("Continue"),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Strings.appThemecolor)),)),
+          ),
+            Center(
+              child: SizedBox(
+              //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+              // ),
+              width: MediaQuery.of(context).size.width * 0.9,
+              child: ElevatedButton(onPressed: (){}, child: Text("Skip",style: TextStyle(color: Colors.black),),style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),)),
+            )
           ],
         ),
       ),

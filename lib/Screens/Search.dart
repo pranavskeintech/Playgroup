@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/SearchResults.dart';
+import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
+
+import '../Network/ApiService.dart';
+import '../Utilities/Strings.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -10,8 +14,23 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
+  var ctx;
+
+  TextEditingController searchController = TextEditingController();
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return Search(newContext);
+          }),
+        ));
+  }
+
+  Search(BuildContext context){
+    ctx = context;
     return Container(
       margin: EdgeInsets.all(20),
       child: Column(
@@ -26,16 +45,26 @@ class _SearchScreenState extends State<SearchScreen> {
                     builder: (BuildContext context) => SearchResults()));
               },
               child: TextField(
+                controller: searchController,
+                textInputAction: TextInputAction.search,
                 // enabled: false,
-                style: TextStyle(height: 3),
+                //style: TextStyle(height: 3),
+
+                onEditingComplete: (){
+                  Strings.searchText = searchController.text;
+                   Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          SearchResults()));
+                },
                 decoration: InputDecoration(
                     hintText: "Search",
+                    border: InputBorder.none,
                     enabledBorder: OutlineInputBorder(
                         borderSide:
                             BorderSide(color: Colors.grey.shade300, width: 0.0),
                         borderRadius: BorderRadius.circular(6)),
                     filled: true,
-                    fillColor: Colors.grey.withOpacity(0.2),
+                    fillColor: Strings.textFeildBg,
                     prefixIcon: Icon(Icons.search)),
               ),
             ),
@@ -99,5 +128,6 @@ class _SearchScreenState extends State<SearchScreen> {
         ],
       ),
     );
+
   }
 }
