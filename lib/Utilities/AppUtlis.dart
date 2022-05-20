@@ -22,7 +22,17 @@ class AppUtils
       ),
     );
   }
+  static void createSnackBar(scaffoldContext, String message) {
+    final snackBar =  SnackBar(
+        content: Container(
+          height: 20,
+            child:  Text(message)
+        ),
+        backgroundColor: Colors.red);
 
+    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    ScaffoldMessenger.of(scaffoldContext).showSnackBar(snackBar);
+  }
   static void showprogress() {
     EasyLoading.show(status: 'loading...');
   }

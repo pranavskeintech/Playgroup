@@ -124,13 +124,13 @@ class firebase {
   }
 }
 
-class functions 
+ class functions 
 {
   static void createSnackBar(scaffoldContext, String message) {
-    final snackBar = new SnackBar(
+    final snackBar =  SnackBar(
         content: Container(
           height: 20,
-            child: new Text(message)
+            child:  Text(message)
         ),
         backgroundColor: Colors.red);
 
