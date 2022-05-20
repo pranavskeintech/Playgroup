@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/Login.dart';
+import 'package:playgroup/Screens/Profile.dart';
+import 'package:playgroup/Screens/Settings.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
 class NavigationDrawer extends StatefulWidget {
-  const NavigationDrawer({ Key? key }) : super(key: key);
+  const NavigationDrawer({Key? key}) : super(key: key);
 
   @override
   State<NavigationDrawer> createState() => _NavigationDrawerState();
@@ -13,7 +16,7 @@ class NavigationDrawer extends StatefulWidget {
 class _NavigationDrawerState extends State<NavigationDrawer> {
   @override
   Widget build(BuildContext context) {
-      print("_NavigationDrawer");
+    print("_NavigationDrawer");
     return Drawer(
       child: Stack(children: [
         SizedBox(
@@ -22,8 +25,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               ClipRRect(
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.circular(0)),
+                borderRadius: BorderRadius.vertical(bottom: Radius.circular(0)),
                 child: DrawerHeader(
                     decoration: BoxDecoration(
                       color: Strings.appThemecolor,
@@ -75,15 +77,18 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 leading: Image.asset(
                   "assets/imgs/home.png",
                   width: 17,
-                  height: 17,               
-                   ),
+                  height: 17,
+                ),
                 title: Transform.translate(
                   offset: Offset(-20, -3),
-                  child: Text('Home',style: TextStyle(fontWeight: FontWeight.bold,color: Strings.appThemecolor),),
+                  child: Text(
+                    'Home',
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Strings.appThemecolor),
+                  ),
                 ),
-                onTap: () => {
-                  Navigator.pop(context)
-                },
+                onTap: () => {Navigator.pop(context)},
               ),
               ListTile(
                 leading: Image.asset(
@@ -95,7 +100,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   offset: Offset(-20, -3),
                   child: Text('Profile'),
                 ),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () => {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => ProfileScreen()))
+                  // Navigator.of(context).pop()
+                },
               ),
               ListTile(
                 leading: Image.asset(
@@ -112,7 +121,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   color: Colors.blue,
                   size: 20,
                 ),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () => {
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AddCoParent()))
+                  // Navigator.of(context).pop()
+                },
               ),
               ListTile(
                 leading: Image.asset(
@@ -144,7 +157,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   offset: Offset(-20, -3),
                   child: Text('Settings'),
                 ),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () => {
+                  print("object"),
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SettingsPage())),
+                },
               ),
               ListTile(
                 leading: Image.asset(
@@ -196,21 +213,105 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 color: Colors.grey.withOpacity(0.3),
               ),
               ListTile(
-                leading: Icon(Icons.exit_to_app,size: 20,),
+                leading: Icon(
+                  Icons.exit_to_app,
+                  size: 20,
+                ),
                 title: Transform.translate(
                   offset: Offset(-16, -3),
                   child: Text("Logout"),
                 ),
                 onTap: () => {
-                  Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => LoginPage(),
-                  ))
-               },
+                  showDialog(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Column(
+                        children: [
+                          Align(
+                            alignment: Alignment.topRight,
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
+                          Text(
+                            "Logout",
+                            style: TextStyle(fontWeight: FontWeight.w500),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                        ],
+                      ),
+                      content: Text(
+                        "Are you sure do you want to logout from this app",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      actions: <Widget>[
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(25, 0, 25, 20),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 110,
+                                height: 25,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.of(ctx).pop();
+                                    },
+                                    child: Text(
+                                      "No",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w500),
+                                    ),
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all(
+                                                Strings.appThemecolor),
+                                        textStyle: MaterialStateProperty.all(
+                                            TextStyle(color: Colors.white)))),
+                              ),
+                              SizedBox(width: 15),
+                              SizedBox(
+                                width: 110,
+                                height: 25,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    //Navigator.of(ctx).pop();
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => LoginPage(),
+                                    ));
+                                  },
+                                  child: Text(
+                                    "Yes",
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                  style: ElevatedButton.styleFrom(
+                                    primary: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                },
               ),
             ],
           ),
         ),
       ]),
-    );;
+    );
+    ;
   }
 }

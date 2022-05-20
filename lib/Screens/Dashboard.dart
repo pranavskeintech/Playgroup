@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Screens/Availability-Choose_category.dart';
+import 'package:playgroup/Screens/ChatsPage.dart';
 import 'package:playgroup/Screens/HomeScreen.dart';
 import 'package:playgroup/Screens/InitialHome.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
@@ -118,7 +119,10 @@ class _DashBoardState extends State<DashBoard> {
                 width: 3,
               ),
               IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => Chat_List()));
+                  },
                   icon: Image.asset(
                     "assets/imgs/chat.png",
                     width: 25,

@@ -24,7 +24,7 @@ class _MapsPageState extends State<MapsPage> {
 
   List<Marker> _markers = [];
 
-  var Confirmation;
+  bool Confirmation = false;
 
   TextEditingController SearchController = TextEditingController();
 
@@ -92,7 +92,7 @@ class _MapsPageState extends State<MapsPage> {
             GoogleMap(
               onMapCreated: _onMapCreated,
               initialCameraPosition: _initialLocation,
-              //  myLocationEnabled: true,
+              myLocationEnabled: true,
               markers: _markers.toSet(),
               onTap: (LatLng point) {
                 if (_markers.length >= 1) {
@@ -144,55 +144,107 @@ class _MapsPageState extends State<MapsPage> {
                 ),
               ),
             ),
-            Visibility(
-              visible: Confirmation == null ? false : true,
-              child: SafeArea(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.only(top: 70, left: 20, bottom: 20),
-                    child: Container(
-                      height: width * 0.15,
-                      width: width * 0.9,
-                      decoration: BoxDecoration(
-                        color: Colors.white70,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(20.0),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Text("Confirm your location"),
-                            ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: Text(
-                                "Continue",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white)),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            )
+            // Visibility(
+            //   visible: Confirmation == null ? false : true,
+            //   child: SafeArea(
+            //     child: Align(
+            //       alignment: Alignment.topCenter,
+            //       child: Padding(
+            //         padding:
+            //             const EdgeInsets.only(top: 70, left: 20, bottom: 20),
+            //         child: Container(
+            //           height: width * 0.15,
+            //           width: width * 0.9,
+            //           decoration: BoxDecoration(
+            //             color: Colors.white70,
+            //             borderRadius: BorderRadius.all(
+            //               Radius.circular(20.0),
+            //             ),
+            //           ),
+            //           child: Padding(
+            //             padding: const EdgeInsets.all(8.0),
+            //             child: Row(
+            //               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            //               crossAxisAlignment: CrossAxisAlignment.center,
+            //               children: [
+            //                 Text("Confirm your location"),
+            //                 ElevatedButton(
+            //                   onPressed: () {
+            //                     Navigator.pop(context);
+            //                   },
+            //                   child: Text(
+            //                     "Continue",
+            //                     style: TextStyle(color: Colors.black),
+            //                   ),
+            //                   style: ButtonStyle(
+            //                       backgroundColor:
+            //                           MaterialStateProperty.all<Color>(
+            //                               Colors.white)),
+            //                 )
+            //               ],
+            //             ),
+            //           ),
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // )
           ],
         ),
+        bottomSheet: _showBottomSheet(),
       ),
     );
+  }
+
+  Widget? _showBottomSheet() {
+    var width = MediaQuery.of(context).size.width;
+    if (Confirmation!) {
+      return BottomSheet(
+        onClosing: () {},
+        builder: (context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(35.0),
+              ),
+              boxShadow: <BoxShadow>[
+                new BoxShadow(
+                  color: Colors.grey.withOpacity(0.8),
+                  blurRadius: 5.0,
+                  offset: new Offset(0.0, 2.0),
+                ),
+              ],
+            ),
+            height: 100,
+            width: double.infinity,
+            // color: Colors.white,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("Confirm your location"),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "Continue",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                )
+              ],
+            ),
+          );
+        },
+      );
+    } else {
+      return null;
+    }
   }
 
   void _onMapCreated(GoogleMapController controller) {

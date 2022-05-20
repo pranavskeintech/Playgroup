@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/AddGroup.dart';
+import 'package:playgroup/Screens/EditChildDetails.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 
@@ -67,6 +69,13 @@ class _ChildProfileState extends State<ChildProfile>
     'GROUPS',
     'FRIENDS',
   ];
+
+  bool value = false;
+
+  var _AddGroup = false;
+
+  bool _show = false;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -87,6 +96,7 @@ class _ChildProfileState extends State<ChildProfile>
           icon: Icon(Icons.arrow_back_sharp),
         ),
       ),
+      bottomSheet: _showBottomSheet(),
       body: Tabbarwidgets(),
     );
   }
@@ -185,7 +195,10 @@ class _ChildProfileState extends State<ChildProfile>
                       right: 20,
                     ),
                     child: TextButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EditChildDetails()));
+                        },
                         child: Container(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -507,15 +520,28 @@ class _ChildProfileState extends State<ChildProfile>
                 Container(
                   height: width * 0.07,
                   width: width * 0.24,
-                  child: ElevatedButton(
-                      onPressed: () {
-                        // Navigator.of(context).push(MaterialPageRoute(
-                        //     builder: (BuildContext context) => AddCoParent()));
-                      },
-                      child: Text(
-                        "Add Group+",
-                        style: TextStyle(fontSize: 11),
-                      )),
+                  child: _AddGroup
+                      ? ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _AddGroup = false;
+                              _show = false;
+                            });
+                          },
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(fontSize: 11),
+                          ))
+                      : ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _AddGroup = true;
+                            });
+                          },
+                          child: Text(
+                            "Add Group+",
+                            style: TextStyle(fontSize: 11),
+                          )),
                 )
               ],
             ),
@@ -534,6 +560,35 @@ class _ChildProfileState extends State<ChildProfile>
                     leading: CircleAvatar(
                       backgroundImage: AssetImage("assets/imgs/child1.jpg"),
                     ),
+                    trailing: _AddGroup
+                        ? Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 1),
+                              borderRadius: BorderRadius.circular(3.0),
+                            ),
+                            width: 20,
+                            height: 20,
+                            child: Theme(
+                              data: ThemeData(
+                                  unselectedWidgetColor: Colors.white),
+                              child: Checkbox(
+                                  // side: BorderSide(color: Colors.black),
+                                  checkColor: Colors.green,
+                                  activeColor: Colors.transparent,
+                                  //hoverColor: Colors.black,
+                                  value: this.value,
+                                  onChanged: (bool? value) {
+                                    setState(() {
+                                      this.value = value!;
+                                      print("value:$value");
+                                      if (value == true) {
+                                        _show = true;
+                                      }
+                                    });
+                                  }),
+                            ),
+                          )
+                        : null,
                     title: Text("Christopher Janglen"),
                   ),
                 );
@@ -551,6 +606,63 @@ class _ChildProfileState extends State<ChildProfile>
         ],
       ),
     );
+  }
+
+  Widget? _showBottomSheet() {
+    if (_show) {
+      return BottomSheet(
+        onClosing: () {},
+        builder: (context) {
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.all(
+                Radius.circular(35.0),
+              ),
+              boxShadow: <BoxShadow>[
+                new BoxShadow(
+                  color: Colors.grey.withOpacity(0.8),
+                  blurRadius: 5.0,
+                  offset: new Offset(0.0, 2.0),
+                ),
+              ],
+            ),
+            height: 100,
+            width: double.infinity,
+            // color: Colors.white,
+            alignment: Alignment.center,
+            child: TextButton(
+                onPressed: () {
+                  _show = false;
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => AddGroup()));
+                  setState(() {});
+                },
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "NEXT",
+                        style: TextStyle(color: Colors.green),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Icon(
+                        Icons.arrow_forward,
+                        color: Colors.green,
+                        size: 15,
+                      )
+                    ],
+                  ),
+                )),
+          );
+        },
+      );
+    } else {
+      return null;
+    }
   }
 
   Widget FriendRequest() {
