@@ -19,35 +19,16 @@ class _SearchResultsState extends State<SearchResults>
   TabController? _tabController;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  List<String> childImgs = [
-    "child1.jpg",
-    "child2.jpg",
-    "child3.jpg",
-    "child4.jpg",
-    "child5.jpg",
-    "child6.jpg"
-  ];
-
-  List<String> parentNames = [
-    "Sathish Kumar",
-    "Ram Krishnamoorthy",
-    "Manohar",
-    "Sabarish",
-    "Soumaya harish",
-    "Sangeetha Arun"
-  ];
   List<SearchData> searchData = [];
-  List<DetailsObject> childNames = [];
 
   var ctx;
   
   @override
   void initState() {
     _tabController = TabController(length: 1, vsync: this);
-    childNames.add(DetailsObject(parentName: "Sathis Kumar", firstChild: "Ram Kumar", secondChild: "Vishnu"));
     // TODO: implement initState
         WidgetsBinding.instance!.addPostFrameCallback((_) => searchResults());
-
+    AppUtils.showprogress();
     super.initState();
   }
 
@@ -114,9 +95,12 @@ class _SearchResultsState extends State<SearchResults>
   {
     ctx = context;
     return Container(
-                  child: Row(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      
+                      Container(
+                        margin: EdgeInsets.only(left: 20, right: 20, top: 20),
+                        child: Text("${searchData.length} Matches found",style:TextStyle(fontSize: 18,fontWeight: FontWeight.w500,color:Colors.grey))),
                       Expanded(
                         child: ListView.builder(
                           itemCount: searchData.length,
@@ -128,7 +112,7 @@ class _SearchResultsState extends State<SearchResults>
                                 ),
                                 title: Text(searchData[index].childName ?? "",style: TextStyle(fontSize: 14)),
                                 subtitle: Row(
-                                  children: const [
+                                  children:  [
                                     Icon(
                                       Icons.location_pin,
                                       color: Colors.red,
@@ -138,7 +122,7 @@ class _SearchResultsState extends State<SearchResults>
                                       width: 3,
                                     ),
                                     Text(
-                                      "Gandhipuram",
+                                      searchData[index].location ?? "",
                                       overflow: TextOverflow.fade,
                                     )
                                   ],
@@ -173,27 +157,26 @@ class _SearchResultsState extends State<SearchResults>
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.SearchChild(Strings.searchText).then((response) {
       print(response.status);
-      if (response.status == true) {
+      if (response.status == true) 
+      {
         searchData = response.data!;
+        setState(() {
+          AppUtils.dismissprogress();
+        });
         //_btnController.stop();
         // Navigator.of(context).push(
         //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
        
       }
        else 
-       {
+      {
          AppUtils.createSnackBar(context, response.message ?? "Unable to Search Details");
+        AppUtils.dismissprogress();
         // _btnController.stop();
       }
     }).catchError((onError) {
+      AppUtils.dismissprogress();
       print(onError.toString());
     });
   }
-}
-class DetailsObject {
-  final String parentName;
-  final String firstChild;
-  final String secondChild;
-
-  DetailsObject({required this.parentName , required this.firstChild, required this.secondChild});
 }

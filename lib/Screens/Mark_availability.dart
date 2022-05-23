@@ -12,6 +12,9 @@ import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 
+import '../Utilities/AppUtlis.dart';
+import 'ChooseTopic.dart';
+
 class Mark_Availabilty extends StatefulWidget {
   const Mark_Availabilty({Key? key}) : super(key: key);
 
@@ -41,18 +44,24 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
 
   var _AddressController = TextEditingController();
 
+  bool todaySelected = false;
+  bool TommorowSelected = false;
+
   _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: DateTime(2023),
+      
     );
     if (picked != null) {
       setState(() {
         String date1 = "${picked.day}-${picked.month}-${picked.year}";
         _dobController.text = date1;
         print("date selected");
+        todaySelected = false;
+        TommorowSelected = false;
       });
     }
   }
@@ -212,102 +221,138 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.42,
-                    height: 68,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        gradient: LinearGradient(
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
-                          colors: const [
-                            Color.fromARGB(255, 251, 182, 149),
-                            Color.fromARGB(255, 245, 106, 133),
-                          ],
-                        )),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(left: 13),
-                            child: Text(
-                              "Today",
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                            )),
-                        SizedBox(
-                          height: 13,
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 14),
-                          child: Align(
-                              alignment: Alignment.centerRight,
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        todaySelected = true;
+                        TommorowSelected = false;
+                        _dobController.text = "";
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.42,
+                      height: 68,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          boxShadow: [
+                              BoxShadow(
+                                  color: todaySelected
+                                      ? Colors.green.withOpacity(0.5)
+                                      : Colors.white,
+                                  spreadRadius: 3)
+                            ],
+                          gradient: LinearGradient(
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft,
+                            colors: const [
+                              Color.fromARGB(255, 251, 182, 149),
+                              Color.fromARGB(255, 245, 106, 133),
+                            ],
+                          )),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(left: 13),
                               child: Text(
-                                now.day.toString() +
-                                    "-" +
-                                    now.month.toString() +
-                                    "-" +
-                                    now.year.toString(),
+                                "Today",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
                                     color: Colors.white),
                               )),
-                        )
-                      ],
+                          SizedBox(
+                            height: 13,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(right: 14),
+                            child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  now.day.toString() +
+                                      "-" +
+                                      now.month.toString() +
+                                      "-" +
+                                      now.year.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                      color: Colors.white),
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.42,
-                    height: 68,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(3),
-                        gradient: LinearGradient(
-                          begin: Alignment.centerRight,
-                          end: Alignment.centerLeft,
-                          colors: const [
-                            Color.fromARGB(255, 146, 202, 247),
-                            Color.fromARGB(255, 137, 123, 247),
+                  InkWell(
+                    onTap: () {
+                      setState(() {
+                        todaySelected = false;
+                        TommorowSelected = true;
+                        _dobController.text = "";
+                      });
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.42,
+                      height: 68,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(3),
+                          boxShadow: [
+                            BoxShadow(
+                                color: TommorowSelected
+                                    ? Colors.green.withOpacity(0.5)
+                                    : Colors.white,
+                                spreadRadius: 3)
                           ],
-                        )),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Container(
-                            margin: EdgeInsets.only(left: 13),
-                            child: Text(
-                              "Tomorrow",
-                              style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.w600,
-                                  color: Colors.white),
-                            )),
-                        SizedBox(
-                          height: 13,
-                        ),
-                        Container(
-                          padding: EdgeInsets.only(right: 14),
-                          child: Align(
-                              alignment: Alignment.centerRight,
+                          gradient: LinearGradient(
+                            begin: Alignment.centerRight,
+                            end: Alignment.centerLeft,
+                            colors: const [
+                              Color.fromARGB(255, 146, 202, 247),
+                              Color.fromARGB(255, 137, 123, 247),
+                            ],
+                          )),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 2,
+                          ),
+                          Container(
+                              margin: EdgeInsets.only(left: 13),
                               child: Text(
-                                "13-May, 2022",
+                                "Tomorrow",
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: 12,
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
                                     color: Colors.white),
                               )),
-                        )
-                      ],
+                          SizedBox(
+                            height: 13,
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(right: 14),
+                            child: Align(
+                                alignment: Alignment.centerRight,
+                                child: Text(
+                                  (now.day + 1).toString() +
+                                      "-" +
+                                      now.month.toString() +
+                                      "-" +
+                                      now.year.toString(),
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w400,
+                                      fontSize: 12,
+                                      color: Colors.white),
+                                )),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -328,10 +373,11 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               GestureDetector(
                 onTap: () {
                   _selectDate();
+                  
                 },
                 child: Container(
                   decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.2),
+                      color: Strings.textFeildBg,
                       border: Border.all(color: const Color(0xFFf2f3f4)),
                       borderRadius: BorderRadius.circular(5)),
                   child: Row(
@@ -357,10 +403,10 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               //       color: Color.fromRGBO(230, 230, 230, 1),
                               //       width: 0.0),
                               // ),
-                              fillColor: Color.fromARGB(255, 235, 235, 235),
+                              fillColor: Strings.textFeildBg,
                               filled: true,
                               hintText: "Pick a Date",
-                              suffixIcon: Icon(Icons.calendar_today_outlined),
+                              suffixIcon: Icon(Icons.calendar_today_outlined,color:Colors.grey.withOpacity(0.3)),
                               contentPadding: EdgeInsets.fromLTRB(20, 10, 0, 0),
                             ),
                             keyboardType: TextInputType.emailAddress,
@@ -418,7 +464,6 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               child: Text(
                                 'Select time',
                                 style: TextStyle(
-                                    fontWeight: FontWeight.w600,
                                     fontSize: 15,
                                     //fontWeight: FontWeight.w300,
                                     color: Colors.grey),
@@ -459,7 +504,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                             const EdgeInsets.only(left: 14, right: 14),
                         buttonDecoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Color.fromARGB(255, 235, 235, 235),
+                          color: Strings.textFeildBg,
                         ),
                         buttonElevation: 0,
                         itemHeight: 40,
@@ -489,10 +534,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                             Expanded(
                               child: Text(
                                 'Select time',
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.grey),
+                                style:
+                                    TextStyle(fontSize: 15, color: Colors.grey),
                                 overflow: TextOverflow.ellipsis,
                               ),
                             ),
@@ -530,7 +573,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                             const EdgeInsets.only(left: 14, right: 14),
                         buttonDecoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Color.fromARGB(255, 235, 235, 235),
+                          color: Strings.textFeildBg,
                         ),
                         buttonElevation: 0,
                         itemHeight: 40,
@@ -570,7 +613,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               Container(
                 height: 42,
                 decoration: BoxDecoration(
-                    color: Colors.grey.withOpacity(0.1),
+                    color: Strings.textFeildBg,
                     border: Border.all(color: const Color(0xFFf2f3f4)),
                     borderRadius: BorderRadius.circular(5)),
                 child: Row(
@@ -583,17 +626,15 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
                           ),
-                          focusedBorder: const OutlineInputBorder(
+                          focusedBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                                color: Color.fromARGB(255, 235, 235, 235),
-                                width: 0.0),
+                                color: Strings.textFeildBg, width: 0.0),
                           ),
-                          enabledBorder: const OutlineInputBorder(
+                          enabledBorder: OutlineInputBorder(
                             borderSide: BorderSide(
-                                color: Color.fromARGB(255, 235, 235, 235),
-                                width: 0.0),
+                                color: Strings.textFeildBg, width: 0.0),
                           ),
-                          fillColor: Color.fromARGB(255, 235, 235, 235),
+                          fillColor: Strings.textFeildBg,
                           filled: true,
                           hintText: "",
                           contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
@@ -628,7 +669,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               ),
               Container(
                 decoration: BoxDecoration(
-                  color: Color.fromARGB(255, 235, 235, 235),
+                  color: Strings.textFeildBg,
                   borderRadius: BorderRadius.circular(3),
                 ),
                 child: Row(
@@ -673,12 +714,11 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                                       color: Color.fromRGBO(230, 230, 230, 1),
                                       width: 0.0),
                                 ),
-                                enabledBorder: const OutlineInputBorder(
+                                enabledBorder: OutlineInputBorder(
                                   borderSide: BorderSide(
-                                      color: Color.fromRGBO(230, 230, 230, 1),
-                                      width: 0.0),
+                                      color: Strings.textFeildBg, width: 0.0),
                                 ),
-                                fillColor: Color.fromRGBO(230, 230, 230, 1),
+                                fillColor: Strings.textFeildBg,
                                 filled: true,
                                 hintText: "Type here",
                                 contentPadding:
@@ -700,8 +740,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               //     suffixIcon: Icon(Icons.arrow_drop_down),
                               //     labelText: "Gender"),
                               onChanged: (dynamic str) async {
-                                print("object:$str");
                                 if (str == "Current Location") {
+                                  AppUtils.showprogress();
                                   Position position =
                                       await _getGeoLocationPosition();
                                   var location =
@@ -758,7 +798,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: 40,
+                height: 50,
                 child: TextButton(
                     style: ButtonStyle(
                         backgroundColor:
@@ -821,13 +861,12 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   }
 
   Future<void> GetAddressFromLatLong(Position position) async {
-    print("2");
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
-    print("place:$placemarks");
     Placemark place = placemarks[1];
     _currentAddress = '${place.name}, ${place.locality}, ${place.postalCode}';
     setState(() {
+      AppUtils.dismissprogress();
       _AddressController.text = _currentAddress!;
     });
     print("Address:$_currentAddress");

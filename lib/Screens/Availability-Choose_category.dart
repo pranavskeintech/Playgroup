@@ -107,6 +107,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
                         ));
                   },
                 )),
+<<<<<<< HEAD
             Container(
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey, width: 0),
@@ -123,6 +124,14 @@ class _Choose_CategoryState extends State<Choose_Category> {
                       backgroundColor: MaterialStateProperty.all<Color>(
                           Strings.appThemecolor)),
                 )),
+=======
+          Container(
+            width: MediaQuery.of(context).size.width * 0.9,
+            child: ElevatedButton(onPressed: (){
+              Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => Availability_choose_friends()));
+            }, child: Text("Continue"),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Strings.appThemecolor)),)),
+>>>>>>> 6790bfe3dd6cf8acc9c2632cfb9e8cd202cbc4d8
             SizedBox(
                 //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
                 // ),

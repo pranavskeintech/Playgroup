@@ -35,6 +35,7 @@ class SearchData {
   String? gender;
   String? profile;
   String? createdDate;
+  String? location;
 
   SearchData(
       {this.childId,
@@ -43,7 +44,8 @@ class SearchData {
       this.dob,
       this.gender,
       this.profile,
-      this.createdDate});
+      this.createdDate,
+      this.location});
 
   SearchData.fromJson(Map<String, dynamic> json) {
     childId = json['child_id'];
@@ -53,6 +55,7 @@ class SearchData {
     gender = json['gender'];
     profile = json['profile'];
     createdDate = json['created_date'];
+    location = json['location'];
   }
 
   Map<String, dynamic> toJson() {
@@ -64,6 +67,7 @@ class SearchData {
     data['gender'] = this.gender;
     data['profile'] = this.profile;
     data['created_date'] = this.createdDate;
+    data['location'] = this.location;
     return data;
   }
 }

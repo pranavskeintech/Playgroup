@@ -7,6 +7,7 @@ import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
+import 'package:playgroup/Models/MarkAvailabilityReq.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
@@ -37,6 +38,9 @@ abstract class ApiService {
 
   @POST("user/forgot_pswd")
   Future<Register_Res> ForgotPassword(@Body() UserRegisterReq body);
+
+  @POST("mark/addmark")
+  Future<CommonRes> createAvailability(@Body() MarkAvailabilityReq body);
 
 @GET("user/Checkchild/{name}/{user_id}")
   Future<CheckchildRes> Checkchild(@Path("name") String name,@Path("user_id") int id);
