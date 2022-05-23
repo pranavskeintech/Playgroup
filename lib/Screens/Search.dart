@@ -3,7 +3,9 @@ import 'package:playgroup/Screens/SearchResults.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
+import '../Models/SearchResultRes.dart';
 import '../Network/ApiService.dart';
+import '../Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
 class SearchScreen extends StatefulWidget {
@@ -15,8 +17,10 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   var ctx;
-
   TextEditingController searchController = TextEditingController();
+  List<SearchData> searchData = [];
+
+  bool noMatchFound = false;
   @override
   Widget build(BuildContext context) {
     return Provider<ApiService>(
@@ -39,61 +43,107 @@ class _SearchScreenState extends State<SearchScreen> {
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
             height: 42,
-            child: InkWell(
-              onTap: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                    builder: (BuildContext context) => SearchResults()));
-              },
-              child: TextField(
-                controller: searchController,
-                textInputAction: TextInputAction.search,
-                // enabled: false,
-                //style: TextStyle(height: 3),
+            child: TextField(
+              controller: searchController,
+              textInputAction: TextInputAction.search,
+              // enabled: false,
+              //style: TextStyle(height: 3),
+              onChanged: (changedvar){
 
-                onEditingComplete: (){
-                  Strings.searchText = searchController.text;
-                   Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          SearchResults()));
-                },
-                decoration: InputDecoration(
-                    hintText: "Search",
-                    border: InputBorder.none,
-                    enabledBorder: OutlineInputBorder(
-                        borderSide:
-                            BorderSide(color: Colors.grey.shade300, width: 0.0),
-                        borderRadius: BorderRadius.circular(6)),
-                    filled: true,
-                    fillColor: Strings.textFeildBg,
-                    prefixIcon: Icon(Icons.search)),
-              ),
+                if(changedvar != "")
+                {
+                  searchResults(changedvar);
+                }
+                else
+                {
+                  setState(() {});
+                }
+              },
+              onEditingComplete: (){
+                Strings.searchText = searchController.text;
+                //searchResults();
+                //  Navigator.of(context).push(MaterialPageRoute(
+                //                     builder: (BuildContext context) =>
+                //                         SearchResults()));
+              },
+              decoration: InputDecoration(
+                  hintText: "Search",
+                  border: InputBorder.none,
+                  enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.grey.shade300, width: 0.0),
+                      borderRadius: BorderRadius.circular(6)),
+                  filled: true,
+                  fillColor: Strings.textFeildBg,
+                  prefixIcon: Icon(Icons.search)),
             ),
           ),
           SizedBox(
-            height: 50,
+            height: 20,
           ),
-          Row(children: [
-            SizedBox(
-              width: 10,
+          searchController.text !=  ""?
+          noMatchFound?
+          Center(
+            child: Text("No Match Found"),
+          ):
+          Expanded(
+            child: ListView.builder(
+              itemCount: searchData.length,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    children:[
+                      CircleAvatar(
+                      backgroundImage: searchData[index].profile != "null" ? NetworkImage(Strings.imageUrl+(searchData[index].profile ?? "")):AssetImage("assets/imgs/appicon.png") as ImageProvider,
+                    ),
+                    SizedBox(width :14),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children :[
+                        Text(searchData[index].childName ?? "",style: TextStyle(fontSize: 14)),
+                        SizedBox(height :5),
+                        Row(
+                      children:  [
+                        Icon(
+                          Icons.location_pin,
+                          color: Colors.red,
+                          size: 15,
+                        ),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          searchData[index].location ?? "",
+                          overflow: TextOverflow.fade,
+                          maxLines: 3,
+                        )
+                      ],
+                    ),
+                      ]
+                    )
+                    ]
+                  )
+                  
+                );
+              },
             ),
-            Text(
-              "Invite Friends",
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
-          ]),
+          ):
+
+          Container(
+            child:Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+Text(
+            "Invite Friends",
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+          ),
           SizedBox(
-            height: 35,
+            height: 20,
           ),
-          Row(
-            children: [
-              SizedBox(
-                width: 10,
-              ),
-              Text(
-                "Invite your Friends to the Playgroup App.",
-                style: TextStyle(color: Colors.grey),
-              ),
-            ],
+          Text(
+            "Invite your Friends to the Playgroup App.",
+            style: TextStyle(color: Colors.grey),
           ),
           SizedBox(
             height: 20,
@@ -125,9 +175,43 @@ class _SearchScreenState extends State<SearchScreen> {
                   )
                 ])),
           )
+              ],
+            )
+          ),
+          
         ],
       ),
     );
 
+  }
+  searchResults(searchText) {
+    var PId = Strings.Parent_Id.toInt();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.SearchChild(searchText).then((response) {
+      print(response.status);
+      if (response.status == true) 
+      {
+        noMatchFound = false;
+        searchData = response.data!;
+        setState(() {
+          AppUtils.dismissprogress();
+        });
+        //_btnController.stop();
+        // Navigator.of(context).push(
+        //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+       
+      }
+       else 
+      {
+        setState(() {
+                  noMatchFound = true;
+        });
+         //AppUtils.createSnackBar(context, response.message ?? "Unable to Search Details");
+      // _btnController.stop();
+      }
+    }).catchError((onError) {
+      AppUtils.dismissprogress();
+      print(onError.toString());
+    });
   }
 }

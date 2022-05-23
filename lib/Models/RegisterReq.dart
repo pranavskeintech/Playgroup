@@ -12,7 +12,8 @@ class UserRegisterReq {
       this.phone,
       this.location});
 
-  UserRegisterReq.fromJson(Map<String, dynamic> json) {
+  UserRegisterReq.fromJson(Map<String, dynamic> json) 
+  {
     parentName = json['parent_name'];
     emailId = json['email_id'];
     password = json['password'];
@@ -20,7 +21,8 @@ class UserRegisterReq {
     location = json['location'];
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() 
+  {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['parent_name'] = this.parentName;
     data['email_id'] = this.emailId;

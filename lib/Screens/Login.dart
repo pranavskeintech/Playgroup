@@ -42,7 +42,14 @@ class _LoginPageState extends State<LoginPage> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   //List<LoginData>? loginData;
 
-
+@override
+  void initState() 
+  {
+    // TODO: implement initState
+    super.initState();
+    _emailIdController.text = "g@g.com";
+    _passwordController.text = "g";
+  }
   void _doSomething() async {
     print("Clicked me");
     Timer(Duration(seconds: 3), () {

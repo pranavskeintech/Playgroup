@@ -80,8 +80,6 @@ List<String> options =
                   },
                 )),
           Container(
-            decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 0),
-            ),
             width: MediaQuery.of(context).size.width * 0.9,
             child: ElevatedButton(onPressed: (){
               Navigator.of(context).push(MaterialPageRoute(
