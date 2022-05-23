@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "252989453175-0sf2jojcp1seqvddub27jkcvp0d4i2uo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.skein.playgroup",
+            "certificate_hash": "6ba296a280017d698618a81681784e0eb8ba234e"
+          }
+        },
+        {
           "client_id": "252989453175-89cb13ii7vfu39fv7atfnc9meflf044a.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

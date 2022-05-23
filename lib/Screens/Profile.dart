@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Screens/ChildProfile.dart';
+import 'package:playgroup/Utilities/NavigationDrawer.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
-
-class ProfileScreen extends StatefulWidget 
-{
-  const ProfileScreen({ Key? key }) : super(key: key);
+class ProfileScreen extends StatefulWidget {
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -15,18 +15,17 @@ class ProfileScreen extends StatefulWidget
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      drawer: NavigationDrawer(),
       appBar: AppBar(
-      //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+        //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
         backgroundColor: Strings.appThemecolor,
         title: Text(
-          "PlayGroup",
-          style:
-              TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          "Profile",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         leading: IconButton(
             onPressed: () {
@@ -45,112 +44,199 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("Your Profile",style: TextStyle(color: Colors.grey),),TextButton(onPressed: (){}, child: Row(children: const [Text("Edit"),SizedBox(width: 5,),Icon(Icons.edit_outlined,size: 15,)],))
+                Text(
+                  "Your Profile",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                TextButton(
+                    onPressed: () {},
+                    child: Row(
+                      children: const [
+                        Text("Edit"),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Icon(
+                          Icons.edit_outlined,
+                          size: 15,
+                        )
+                      ],
+                    ))
               ],
             ),
-            Divider(color: Colors.grey,),
-            Container(height: 10,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.30,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Name",style: TextStyle(color: Colors.grey),),
-                      SizedBox(height: 5,),
-                      Text("Jhon Doe",style: TextStyle(fontWeight: FontWeight.bold),)
-                    ],
-                  ),
-                ),
-                Container(color: Colors.grey.withOpacity(0.3),width: 1,height: 40,),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Email ID",style: TextStyle(color: Colors.grey),),
-                      SizedBox(height: 5,),
-                      Text("jhondoe@gmail.com",style: TextStyle(fontWeight: FontWeight.bold),)
-                    ],
-                  ),
-                ),
-                
-              ],
+            Divider(
+              color: Colors.grey,
             ),
-            SizedBox(height: 28,),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.30,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Number",style: TextStyle(color: Colors.grey),),
-                      SizedBox(height: 5,),
-                      Text("+91 8898767890",style: TextStyle(fontWeight: FontWeight.bold),)
-                    ],
-                  ),
-                ),
-                Container(color: Colors.grey.withOpacity(0.3),width: 1,height: 40,),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.45,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text("Password",style: TextStyle(color: Colors.grey),),
-                      SizedBox(height: 5,),
-                      InkWell(child: Text("Change Password",style: TextStyle(color: Colors.blue),))
-                    ],
-                  ),
-                ),
-                
-              ],
-            ),
-            SizedBox(height: 30,),
             Container(
-              child: 
-              Column(
+              height: 10,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Name",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "Jhon Doe",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  color: Colors.grey.withOpacity(0.3),
+                  width: 1,
+                  height: 40,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.45,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Email ID",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "jhondoe@gmail.com",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 28,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.30,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Number",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Text(
+                        "+91 8898767890",
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      )
+                    ],
+                  ),
+                ),
+                Container(
+                  color: Colors.grey.withOpacity(0.3),
+                  width: 1,
+                  height: 40,
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.45,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: const [
+                      Text(
+                        "Password",
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      InkWell(
+                          child: Text(
+                        "Change Password",
+                        style: TextStyle(color: Colors.blue),
+                      ))
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 30,
+            ),
+            Container(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                Text("Co-Parent",style: TextStyle(color: Colors.grey),
-                ),
-                ElevatedButton(onPressed: ()
-                {
-                  Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => AddCoParent()));
-                }, child: Text("Add Co-Parent"))
-              ],),
-            ),
-            SizedBox(height: 20,),
-            Text("Children",style: TextStyle(fontWeight: FontWeight.bold,)),
-            Expanded(
-              child: ListView.builder(itemCount: 2,
-                itemBuilder: (context, index) {
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage("assets/imgs/child1.jpg"),
+                  Text(
+                    "Co-Parent",
+                    style: TextStyle(color: Colors.grey),
                   ),
-                  title: Text("Christopher Janglen"),
-                  subtitle: Text("7 years"),
-                  trailing: Text("Remove",style: TextStyle(color: Colors.red),),
-                );
-                
-              },),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => AddCoParent()));
+                      },
+                      child: Text("Add Co-Parent"))
+                ],
+              ),
             ),
-            Align(alignment: Alignment.bottomCenter,child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.8,
-              child: ElevatedButton(onPressed: (){}, child: Text("Add Child",style: TextStyle(color: Colors.black),),style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),),
-            )),
-          
+            SizedBox(
+              height: 20,
+            ),
+            Text("Children",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
+            Expanded(
+              child: ListView.builder(
+                itemCount: 2,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    onTap: (() {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => ChildProfile()));
+                    }),
+                    leading: CircleAvatar(
+                      backgroundImage: AssetImage("assets/imgs/child1.jpg"),
+                    ),
+                    title: Text("Christopher Janglen"),
+                    subtitle: Text("7 years"),
+                    trailing: Text(
+                      "Remove",
+                      style: TextStyle(color: Colors.red),
+                    ),
+                  );
+                },
+              ),
+            ),
+            Align(
+                alignment: Alignment.bottomCenter,
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Add Child",
+                      style: TextStyle(color: Colors.black),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white)),
+                  ),
+                )),
           ],
         ),
-
       ),
-      
     );
   }
 }

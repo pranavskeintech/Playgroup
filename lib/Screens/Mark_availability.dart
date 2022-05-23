@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:playgroup/Screens/ChatsPage.dart';
 import 'package:playgroup/Screens/G-Map.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:dropdown_plus/dropdown_plus.dart';
+import 'package:playgroup/Utilities/NavigationDrawer.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
@@ -96,6 +98,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: NavigationDrawer(),
       appBar: AppBar(
         // systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
         backgroundColor: Colors.white,
@@ -150,7 +154,10 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
             width: 3,
           ),
           IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (BuildContext context) => Chat_List()));
+              },
               icon: Image.asset(
                 "assets/imgs/chat.png",
                 width: 25,

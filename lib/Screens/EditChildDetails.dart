@@ -31,6 +31,8 @@ enum AppState {
 class _EditChildDetailsState extends State<EditChildDetails> {
   final _numberController = TextEditingController();
   final _dobController = TextEditingController();
+  final _schoolController = TextEditingController();
+
   List<ChildData>? _ChildData;
 
   final _btnController = RoundedLoadingButtonController();
@@ -110,8 +112,10 @@ class _EditChildDetailsState extends State<EditChildDetails> {
         setState(() {
           _ChildData = response.data;
           _isLoading = false;
-          _numberController.text = _ChildData![Strings.editIndex].childName.toString();
+          _numberController.text =
+              _ChildData![Strings.editIndex].childName.toString();
           _dobController.text = _ChildData![Strings.editIndex].dob.toString();
+          // _schoolController.text= _ChildData![Strings.editIndex]..toString();
           selectedValue = _ChildData![Strings.editIndex].gender;
         });
       }
@@ -152,7 +156,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                 child: Container(
                   height: MediaQuery.of(context).size.height * 1,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  margin:  EdgeInsets.fromLTRB(0, 40, 0, 0),
+                  margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -161,14 +165,14 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         onTap: () {
                           Navigator.pop(context);
                         },
-                        child:  Align(
+                        child: Align(
                             alignment: Alignment.topLeft,
                             child: Icon(Icons.arrow_back_sharp)),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.03,
                       ),
-                       Text(
+                      Text(
                         "Edit Child Details",
                         style: TextStyle(
                             fontWeight: FontWeight.bold,
@@ -176,17 +180,21 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                             fontSize: 20,
                             decoration: TextDecoration.none),
                       ),
-                       SizedBox(height: 10),
+                      SizedBox(height: 10),
                       Stack(children: [
                         CircleAvatar(
                           radius: 40.0,
-                          backgroundImage: 
-                           (_imageFile == null && _ChildData![Strings.editIndex].profile != "null") ?
-                           
-              NetworkImage(Strings.imageUrl+(_ChildData![Strings.editIndex].profile ?? "")):
-                              _imageFile != null ? FileImage(_imageFile!): AssetImage("assets/imgs/appicon.png") as ImageProvider,
+                          backgroundImage: (_imageFile == null &&
+                                  _ChildData![Strings.editIndex].profile !=
+                                      "null")
+                              ? NetworkImage(Strings.imageUrl +
+                                  (_ChildData![Strings.editIndex].profile ??
+                                      ""))
+                              : _imageFile != null
+                                  ? FileImage(_imageFile!)
+                                  : AssetImage("assets/imgs/appicon.png")
+                                      as ImageProvider,
                           backgroundColor: Colors.transparent,
-                          
                         ),
                         Positioned(
                             bottom: 0,
@@ -399,6 +407,60 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                           offset: const Offset(0, 0),
                         ),
                       ),
+                      SizedBox(height: 32),
+                      Container(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            child: Text(
+                              "School Name",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Strings.textFeildHeading,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Strings.textFeildBg,
+                            //border: Border.all(color: const Color(0xFFf2f3f4)),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                style: TextStyle(color: Colors.black),
+                                controller: _schoolController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Strings.textFeildBg, width: 0.0),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Strings.textFeildBg, width: 0.0),
+                                  ),
+                                  fillColor: Strings.textFeildBg,
+                                  filled: true,
+                                  hintText: "Enter Child Name",
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(20, 5, 0, 0),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.05,
                       ),
@@ -418,29 +480,32 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                                   TextStyle(color: Colors.white, fontSize: 18)),
                           controller: _btnController,
                           onPressed: () {
-
                             if (_numberController.text.length < 3) {
-                        AppUtils.showError(
-                            context, "Child name should be minimum 3 characters", "");
-                      } else if (_dobController.text.isEmpty) {
-                        AppUtils.showError(
-                            context, "Please select child DOB", "");
-                      } else if (selectedValue == null) {
-                        AppUtils.showError(context, "Please select gender", "");
-                      } else {
-                        AppUtils.showprogress();
-                       // checkChild();
-                        if(_numberController.text == _ChildData![Strings.editIndex].childName)
-                        {
-                            _EditChild();  
-                        }
-                        else{
-                          checkChild();
-                        }
-
-                    
-}
-                            
+                              AppUtils.showError(
+                                  context,
+                                  "Child name should be minimum 3 characters",
+                                  "");
+                            } else if (_dobController.text.isEmpty) {
+                              AppUtils.showError(
+                                  context, "Please select child DOB", "");
+                            } else if (selectedValue == null) {
+                              AppUtils.showError(
+                                  context, "Please select gender", "");
+                            } else if (_schoolController.text.length < 3) {
+                              AppUtils.showError(
+                                  context,
+                                  "school name should be minimum 3 characters",
+                                  "");
+                            } else {
+                              AppUtils.showprogress();
+                              // checkChild();
+                              if (_numberController.text ==
+                                  _ChildData![Strings.editIndex].childName) {
+                                _EditChild();
+                              } else {
+                                checkChild();
+                              }
+                            }
                           },
                         ),
                       ),
@@ -455,19 +520,16 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   _EditChild() {
     print("tokr2${Strings.authToken.toString()}");
     EditChildReq ChildEdit = EditChildReq();
-    ChildEdit.childId =  _ChildData![Strings.editIndex].childId.toString();
+    ChildEdit.childId = _ChildData![Strings.editIndex].childId.toString();
     ChildEdit.parentId = Strings.Parent_Id.toString();
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
     ChildEdit.gender = selectedValue;
 
-    if (img64 == "")
-    {
-        ChildEdit.profile =  _ChildData![Strings.editIndex].profile;
-    }
-    else
-    {
-    ChildEdit.profile = "data:image/jpeg;base64,$img64";
+    if (img64 == "") {
+      ChildEdit.profile = _ChildData![Strings.editIndex].profile;
+    } else {
+      ChildEdit.profile = "data:image/jpeg;base64,$img64";
     }
     print(jsonEncode(ChildEdit));
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -485,6 +547,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
       }
     });
   }
+
   checkChild() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.Checkchild(_numberController.text, Strings.Parent_Id).then((response) {
