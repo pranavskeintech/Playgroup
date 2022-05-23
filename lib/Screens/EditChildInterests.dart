@@ -153,6 +153,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
                     if (_tick[i] == true) {
                       print(activities[i]);
                       _selectedvalues.add(activities[i]);
+                      Navigator.pop(context);
                       print(_selectedvalues);
                       // _selectedvalues[i] = activities[i];
                     } else {

@@ -33,13 +33,16 @@ class _ChooseTopicState extends State<ChooseTopic> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
-            child: Text("Top Activities",style: TextStyle(fontWeight: FontWeight.bold),)),
+              margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
+              child: Text(
+                "Top Activities",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
           Expanded(
             child: Container(
-                margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
+                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
                 child: GridView.builder(
-                  itemCount: 5,
+                  itemCount: 3,
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 10.0,
@@ -69,12 +72,22 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                 ],
                               ),
                               child: SizedBox(
-                                 width: MediaQuery.of(context).size.width * 0.8,
+                                width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
-                                  children: [Image.asset(
-                                    "assets/imgs/book.png",width: 100,height: 100,),
-                                    SizedBox(height: 10,),
-                                    Text("Learn")],
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    // Image.asset(
+                                    // "assets/imgs/book.png",width: 100,height: 100,),
+                                    ImageIcon(
+                                      AssetImage("assets/imgs/book.png"),
+                                      color: Colors.grey,
+                                      size: 68,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text("Learn")
+                                  ],
                                 ),
                               ),
                             ),
@@ -92,9 +105,12 @@ class _ChooseTopicState extends State<ChooseTopic> {
                   },
                 )),
           ),
-           Container(
-            margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
-            child: Text("Other Activities",style: TextStyle(fontWeight: FontWeight.bold),)),
+          Container(
+              margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
+              child: Text(
+                "Other Activities",
+                style: TextStyle(fontWeight: FontWeight.bold),
+              )),
           Expanded(
             child: Container(
                 margin: EdgeInsets.fromLTRB(20, 20, 20, 20),
@@ -129,13 +145,24 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                 ],
                               ),
                               child: SizedBox(
-                                 width: MediaQuery.of(context).size.width * 0.8,
+                                width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
-                                  children: [Image.asset(
-                                    
-                                    "assets/imgs/book.png",width: 100,height: 100,),
-                                    SizedBox(height: 10,),
-                                    Text("Learn")],
+                                  children: [
+                                    // Image.asset(
+                                    //   "assets/imgs/book.png",
+                                    //   width: 100,
+                                    //   height: 100,
+                                    // ),
+                                    ImageIcon(
+                                      AssetImage("assets/imgs/book.png"),
+                                      color: Colors.grey,
+                                      size: 68,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text("Learn")
+                                  ],
                                 ),
                               ),
                             ),
@@ -155,22 +182,37 @@ class _ChooseTopicState extends State<ChooseTopic> {
           ),
           Center(
             child: Container(
-              decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 0),
-              ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => Choose_Category()));
-              }, child: Text("Continue"),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Strings.appThemecolor)),)),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey, width: 0),
+                ),
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => Choose_Category()));
+                  },
+                  child: Text("Continue"),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Strings.appThemecolor)),
+                )),
           ),
-            Center(
-              child: SizedBox(
-              //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-              // ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(onPressed: (){}, child: Text("Skip",style: TextStyle(color: Colors.black),),style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),)),
-            )
+          Center(
+            child: SizedBox(
+                //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                // ),
+                width: MediaQuery.of(context).size.width * 0.9,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Skip",
+                    style: TextStyle(color: Colors.black),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                )),
+          )
         ],
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/ChatsPage.dart';
+import 'package:playgroup/Screens/ChooseTopic.dart';
 import 'package:playgroup/Screens/G-Map.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
@@ -771,7 +772,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                                         color: Colors.grey.withOpacity(0.2))))),
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ProfileScreen()));
+                          builder: (context) => ChooseTopic()));
                     },
                     child: Text(
                       "Continue",

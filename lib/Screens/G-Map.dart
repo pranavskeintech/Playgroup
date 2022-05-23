@@ -93,6 +93,8 @@ class _MapsPageState extends State<MapsPage> {
               onMapCreated: _onMapCreated,
               initialCameraPosition: _initialLocation,
               myLocationEnabled: true,
+              zoomControlsEnabled: false,
+              myLocationButtonEnabled: false,
               markers: _markers.toSet(),
               onTap: (LatLng point) {
                 if (_markers.length >= 1) {
@@ -198,8 +200,9 @@ class _MapsPageState extends State<MapsPage> {
 
   Widget? _showBottomSheet() {
     var width = MediaQuery.of(context).size.width;
-    if (Confirmation!) {
+    if (Confirmation) {
       return BottomSheet(
+        backgroundColor: Colors.black.withOpacity(0),
         onClosing: () {},
         builder: (context) {
           return Container(
@@ -208,15 +211,15 @@ class _MapsPageState extends State<MapsPage> {
               borderRadius: BorderRadius.all(
                 Radius.circular(35.0),
               ),
-              boxShadow: <BoxShadow>[
-                new BoxShadow(
-                  color: Colors.grey.withOpacity(0.8),
-                  blurRadius: 5.0,
-                  offset: new Offset(0.0, 2.0),
-                ),
-              ],
+              // boxShadow: <BoxShadow>[
+              //   new BoxShadow(
+              //     color: Colors.grey.withOpacity(0.8),
+              //     blurRadius: 5.0,
+              //     offset: new Offset(0.0, 2.0),
+              //   ),
+              // ],
             ),
-            height: 100,
+            height: 80,
             width: double.infinity,
             // color: Colors.white,
             alignment: Alignment.center,

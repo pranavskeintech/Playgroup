@@ -8,22 +8,25 @@ import 'package:playgroup/Utilities/Functions.dart';
 
 import '../Network/ApiService.dart';
 
-
 class ChooseChild extends StatefulWidget {
-  const ChooseChild({ Key? key }) : super(key: key);
+  const ChooseChild({Key? key}) : super(key: key);
 
   @override
   State<ChooseChild> createState() => _ChooseChildState();
 }
 
-class _ChooseChildState extends State<ChooseChild> 
-{
-
-  List<String> ChildName = ["Alex Timo","Christina Timo","George Timo","Mariya Timo","Angel Timo"];
+class _ChooseChildState extends State<ChooseChild> {
+  List<String> ChildName = [
+    "Alex Timo",
+    "Christina Timo",
+    "George Timo",
+    "Mariya Timo",
+    "Angel Timo"
+  ];
   var ctx;
   List<ChildData>? _ChildData;
-    bool _isLoading = true;
-@override
+  bool _isLoading = true;
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -31,19 +34,20 @@ class _ChooseChildState extends State<ChooseChild>
   }
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Provider<ApiService>(
         create: (context) => ApiService.create(),
         child: Scaffold(
-          appBar:AppBar(
-        backgroundColor: Strings.appThemecolor,
-        title: Text("Select Child"),
-        leading: IconButton(onPressed: (){
-          Navigator.pop(context);
-        }, icon: Icon(Icons.arrow_back_sharp),
-      ),
-    ),
+          appBar: AppBar(
+            backgroundColor: Strings.appThemecolor,
+            title: Text("Select Child"),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back_sharp),
+            ),
+          ),
           resizeToAvoidBottomInset: false,
           body: Builder(builder: (BuildContext newContext) {
             return ChooseChild(newContext);
@@ -51,48 +55,63 @@ class _ChooseChildState extends State<ChooseChild>
         ));
   }
 
-
-  ChooseChild(BuildContext context)
-  {
+  ChooseChild(BuildContext context) {
     ctx = context;
     return _isLoading
         ? const Center(
             child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))):
-    Container(
-      margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-      child: Column(
-        children: [
-          SizedBox(height: MediaQuery.of(context).size.height * 0.1,),
-          Text("Choose Child",style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24),),
-          SizedBox(height: 20,),
-          Text("Choose a child to view the child's activities, friends, availability",style: TextStyle(color: Colors.grey),),
-           Expanded(
-             flex: 2,
-             child: ListView.builder(
-                   itemCount: _ChildData!.length,
-                   itemBuilder: (BuildContext context,int index){
-                     return Container(
-              margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-              height: 60,
-              child: InkWell(
-                onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (context) => DashBoard()));
-                },
-                child: Card(
-                  shadowColor: Colors.grey.withOpacity(0.1),
-                  child: Center(child: Text(_ChildData![index].childName ?? "")),
-                elevation: 8,),
-              ),
-                     );
-                     }),
-           )
-        ],
-      ),
-    );
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : Container(
+            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: Column(
+              children: [
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                ),
+                Text(
+                  "Choose Child",
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Text(
+                  "Choose a child to view the child's activities, friends, availability",
+                  style: TextStyle(color: Colors.grey),
+                ),
+                Expanded(
+                  flex: 2,
+                  child: ListView.builder(
+                      itemCount: _ChildData!.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Container(
+                          margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                          height: 60,
+                          child: InkWell(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => DashBoard()));
+                            },
+                            child: Card(
+                              shadowColor: Colors.grey.withOpacity(0.1),
+                              child: Center(
+                                  child:
+                                      Text(_ChildData![index].childName ?? "")),
+                              elevation: 8,
+                            ),
+                          ),
+                        );
+                      }),
+                )
+              ],
+            ),
+          );
   }
+
   _GetChild() {
-    var PId = Strings.Parent_Id!.toInt();
+    var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetChild(PId).then((response) {
       print(response.status);

@@ -7,17 +7,15 @@ import 'package:social_share/social_share.dart';
 
 import '../Network/ApiService.dart';
 
-
 class InitialScreen extends StatefulWidget {
-  const InitialScreen({ Key? key }) : super(key: key);
+  const InitialScreen({Key? key}) : super(key: key);
 
   @override
   State<InitialScreen> createState() => _InitialScreenState();
 }
 
-class _InitialScreenState extends State<InitialScreen> 
-{
-List<String> images = [
+class _InitialScreenState extends State<InitialScreen> {
+  List<String> images = [
     "cricket.jpg",
     "cooking.jpg",
     "reading.jpg",
@@ -43,15 +41,14 @@ List<String> images = [
     "child5.jpg",
     "child6.jpg"
   ];
- var ctx;
-List<UserData>? _UserData;
+  var ctx;
+  List<UserData>? _UserData;
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-        WidgetsBinding.instance!.addPostFrameCallback((_) => getParentsDetails());
-
+    WidgetsBinding.instance!.addPostFrameCallback((_) => getParentsDetails());
   }
 
   @override
@@ -66,15 +63,14 @@ List<UserData>? _UserData;
         ));
   }
 
-  InitialScreen(BuildContext context)
-  {
+  InitialScreen(BuildContext context) {
     ctx = context;
     return Container(
-        margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Align(
+      margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Invite Friends",
@@ -92,9 +88,11 @@ List<UserData>? _UserData;
           ),
           ElevatedButton(
               onPressed: () {
-                 SocialShare.shareOptions("Hey I found an new app Named Playgroup, Install With my link https://play.google.com/store/apps/details?id=com.netflix.mediaclient").then((data) {
-                        print(data);
-                      });
+                SocialShare.shareOptions(
+                        "Hey I found an new app Named Playgroup, Install With my link https://play.google.com/store/apps/details?id=com.netflix.mediaclient")
+                    .then((data) {
+                  print(data);
+                });
               },
               child:
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -109,38 +107,45 @@ List<UserData>? _UserData;
                 ),
                 Text("Invite Friends")
               ])),
-              SizedBox(height: 10,),
-              Align(
+          SizedBox(
+            height: 10,
+          ),
+          Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "No Availabilities",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               )),
-              SizedBox(height: 20,),
-              Card(
-                elevation: 8,
-                shadowColor: Colors.grey.withOpacity(0.1),
-                child: 
-                Container(
-                  height: 140,
-                  padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
-                  child: Column
-                  (crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                    
-                    Text("There are no friend's availabilities please add friends and view their availabilities",style: TextStyle(color: Strings.textFeildHeading,fontSize: 15),),
-                    SizedBox(height:10),
-                                     Text("Add your friends and share with your availabilities",style: TextStyle(color: Strings.textFeildHeading)),
- 
+          SizedBox(
+            height: 20,
+          ),
+          Card(
+            elevation: 8,
+            shadowColor: Colors.grey.withOpacity(0.1),
+            child: Container(
+              height: 140,
+              padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "There are no friend's availabilities please add friends and view their availabilities",
+                      style: TextStyle(
+                          color: Strings.textFeildHeading, fontSize: 15),
+                    ),
+                    SizedBox(height: 10),
+                    Text("Add your friends and share with your availabilities",
+                        style: TextStyle(color: Strings.textFeildHeading)),
                   ]),
-                ),
-              )
-          ],
-        ),
-      );
+            ),
+          )
+        ],
+      ),
+    );
   }
+
   getParentsDetails() {
-    var PId = Strings.Parent_Id!.toInt();
+    var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.getParentsDetails(PId).then((response) {
       print(response.status);
@@ -150,12 +155,12 @@ List<UserData>? _UserData;
         //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
         _UserData = response.data;
         setState(() {
-           Strings.parentName = _UserData![0].parentName!;
-        Strings.parentemail = _UserData![0].emailId!;
+          Strings.parentName = _UserData![0].parentName!;
+          Strings.parentemail = _UserData![0].emailId!;
         });
-       
+
         setState(() {
-         // _isLoading = false;
+          // _isLoading = false;
         });
       } else {
         //functions.createSnackBar(context, response.status.toString());

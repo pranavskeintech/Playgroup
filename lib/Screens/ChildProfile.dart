@@ -3,6 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/AddGroup.dart';
 import 'package:playgroup/Screens/EditChildDetails.dart';
+import 'package:playgroup/Screens/EditChildInterests.dart';
+import 'package:playgroup/Screens/EditLanguagesKnown.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 
@@ -314,7 +317,10 @@ class _ChildProfileState extends State<ChildProfile>
                   Text("Interests",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => EditChildInterests()));
+                      },
                       child: Row(
                         children: [
                           Text("Edit"),
@@ -399,7 +405,10 @@ class _ChildProfileState extends State<ChildProfile>
                   Text("Languages Known",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => EditLangKnwn()));
+                      },
                       child: Row(
                         children: [
                           Text("Edit"),
@@ -555,7 +564,8 @@ class _ChildProfileState extends State<ChildProfile>
                   child: ListTile(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => ChildProfile()));
+                          builder: (BuildContext context) =>
+                              OtherChildProfile()));
                     },
                     leading: CircleAvatar(
                       backgroundImage: AssetImage("assets/imgs/child1.jpg"),
@@ -698,7 +708,8 @@ class _ChildProfileState extends State<ChildProfile>
                 return ListTile(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => ChildProfile()));
+                        builder: (BuildContext context) =>
+                            OtherChildProfile()));
                   },
                   leading: CircleAvatar(
                     backgroundImage: AssetImage("assets/imgs/child1.jpg"),
