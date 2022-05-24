@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -89,10 +91,9 @@ class _ChooseChildState extends State<ChooseChild> {
                           height: 60,
                           child: InkWell(
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => DashBoard()));
+                              AppUtils.showprogress();
+                              var ChildId = _ChildData![index].childId ?? "";
+                              _ChooseChild(ChildId);
                             },
                             child: Card(
                               shadowColor: Colors.grey.withOpacity(0.1),
@@ -108,6 +109,26 @@ class _ChooseChildState extends State<ChooseChild> {
               ],
             ),
           );
+  }
+
+  _ChooseChild(ChildId) {
+    var Pid = Strings.Parent_Id.toInt();
+    ChooseChildReq ChooseChild = ChooseChildReq();
+    ChooseChild.selectedChildId = ChildId;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.ChooseChild(Pid, ChooseChild).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => DashBoard()));
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        print("error");
+      }
+    });
   }
 
   _GetChild() {

@@ -10,6 +10,7 @@ void main() async {
   configLoading();
   await Firebase.initializeApp();
   runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
     home: SplashScreen(),
     builder: EasyLoading.init(),
   ));
@@ -43,7 +44,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.pink,
           bottomSheetTheme: BottomSheetThemeData(
               backgroundColor: Colors.black.withOpacity(0))),
-      debugShowCheckedModeBanner: false,
       home: const MyHomePage(title: 'Flutter Demo Home Page'),
       builder: EasyLoading.init(),
     );

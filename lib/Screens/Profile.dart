@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChildProfile.dart';
 import 'package:playgroup/Utilities/NavigationDrawer.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -224,7 +225,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Strings.profilepage = true;
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => ChildDetails()));
+                    },
                     child: Text(
                       "Add Child",
                       style: TextStyle(color: Colors.black),

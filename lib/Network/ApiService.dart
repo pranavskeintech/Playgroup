@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
+import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
@@ -42,11 +43,14 @@ abstract class ApiService {
   @POST("mark/addmark")
   Future<CommonRes> createAvailability(@Body() MarkAvailabilityReq body);
 
-@GET("user/Checkchild/{name}/{user_id}")
-  Future<CheckchildRes> Checkchild(@Path("name") String name,@Path("user_id") int id);
+  @GET("user/Checkchild/{name}/{user_id}")
+  Future<CheckchildRes> Checkchild(
+      @Path("name") String name, @Path("user_id") int id);
 
   @GET("user/searchchild/{name}")
-  Future<SearchresultRes> SearchChild(@Path("name") String name,);
+  Future<SearchresultRes> SearchChild(
+    @Path("name") String name,
+  );
 
   @GET("user/get_City/IN/TN")
   Future<GetCity> Get_City();
@@ -72,6 +76,10 @@ abstract class ApiService {
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
 
+  @PUT("user/updatechild/{parent_id}")
+  Future<CommonRes> ChooseChild(
+      @Path("parent_id") int parentid, @Body() ChooseChildReq body);
+
 //////////////////////////////////////////////////////////////////////////////////////////
   /// Request and Response Body
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -86,7 +94,7 @@ abstract class ApiService {
         options.headers["Content-Type"] = "application/json";
         print("object" + Strings.authToken);
         options.headers["jwt"] = Strings.authToken;
-       // options.headers["jwt"] = "08d41a36b34dadcfd6005452deb92037ad85af33b227827ae2f4e2d34b927fa0ae6a83d43cfdcff9";
+        // options.headers["jwt"] = "08d41a36b34dadcfd6005452deb92037ad85af33b227827ae2f4e2d34b927fa0ae6a83d43cfdcff9";
 
         options.followRedirects = false;
         options.validateStatus = (status) {

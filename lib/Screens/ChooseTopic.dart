@@ -42,15 +42,9 @@ class _ChooseTopicState extends State<ChooseTopic> {
               )),
           Expanded(
             child: Container(
-<<<<<<< HEAD
-                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: GridView.builder(
-                  itemCount: 3,
-=======
                 margin: EdgeInsets.fromLTRB(30, 20, 30, 20),
                 child: GridView.builder(
                   itemCount: 2,
->>>>>>> 6790bfe3dd6cf8acc9c2632cfb9e8cd202cbc4d8
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       crossAxisSpacing: 30.0,
@@ -84,26 +78,10 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-<<<<<<< HEAD
-                                  children: [
-                                    // Image.asset(
-                                    // "assets/imgs/book.png",width: 100,height: 100,),
-                                    ImageIcon(
-                                      AssetImage("assets/imgs/book.png"),
-                                      color: Colors.grey,
-                                      size: 68,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text("Learn")
-                                  ],
-=======
                                   children: [Image.asset(
                                     "assets/imgs/book.png",width: 50,height: 50,),
                                     SizedBox(height: 10,),
                                     Text("Learn")],
->>>>>>> 6790bfe3dd6cf8acc9c2632cfb9e8cd202cbc4d8
                                 ),
                               ),
                             ),
@@ -164,30 +142,11 @@ class _ChooseTopicState extends State<ChooseTopic> {
                               child: SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
-<<<<<<< HEAD
-                                  children: [
-                                    // Image.asset(
-                                    //   "assets/imgs/book.png",
-                                    //   width: 100,
-                                    //   height: 100,
-                                    // ),
-                                    ImageIcon(
-                                      AssetImage("assets/imgs/book.png"),
-                                      color: Colors.grey,
-                                      size: 68,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text("Learn")
-                                  ],
-=======
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [Image.asset(                                  
                                     "assets/imgs/book.png",width: 50,height: 50,),
                                     SizedBox(height: 10,),
                                     Text("Learn")],
->>>>>>> 6790bfe3dd6cf8acc9c2632cfb9e8cd202cbc4d8
                                 ),
                               ),
                             ),
@@ -206,40 +165,6 @@ class _ChooseTopicState extends State<ChooseTopic> {
                 )),
           ),
           Center(
-<<<<<<< HEAD
-            child: Container(
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey, width: 0),
-                ),
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => Choose_Category()));
-                  },
-                  child: Text("Continue"),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Strings.appThemecolor)),
-                )),
-          ),
-          Center(
-            child: SizedBox(
-                //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                // ),
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Skip",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white)),
-                )),
-          )
-=======
             child: Container(            
               width: MediaQuery.of(context).size.width * 0.9,
               child: ElevatedButton(onPressed: (){
@@ -256,7 +181,6 @@ class _ChooseTopicState extends State<ChooseTopic> {
               child: ElevatedButton(onPressed: (){}, child: Text("Skip",style: TextStyle(color: Colors.black),),style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),)),
             )
->>>>>>> 6790bfe3dd6cf8acc9c2632cfb9e8cd202cbc4d8
         ],
       ),
     );

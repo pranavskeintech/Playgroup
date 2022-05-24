@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
 class Own_Availability extends StatefulWidget {
@@ -14,8 +15,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
     with TickerProviderStateMixin {
   TabController? _tabController;
   bool activityConfirmed = false;
-  List<String> childImgs = 
-  [
+  List<String> childImgs = [
     "child1.jpg",
     "child2.jpg",
     "child3.jpg",
@@ -23,10 +23,14 @@ class _Own_AvailabilityState extends State<Own_Availability>
     "child5.jpg",
     "child6.jpg"
   ];
-List<String> options = [
-  'News', 'Entertainment', 'Politics',
-  'Automotive', 'Sports', 'Education',
-];
+  List<String> options = [
+    'News',
+    'Entertainment',
+    'Politics',
+    'Automotive',
+    'Sports',
+    'Education',
+  ];
 
   int tag = 1;
   List<int> tag1 = [];
@@ -101,8 +105,7 @@ List<String> options = [
         ]));
   }
 
-  Widget availabilityDetails() 
-  {
+  Widget availabilityDetails() {
     return Container(
       padding: EdgeInsets.all(20),
       child: Column(
@@ -126,33 +129,42 @@ List<String> options = [
                 ),
               ),
               Container(
-                child: !activityConfirmed? Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => EditAvailabilityTime(),));                        
-                        },
-                        icon: Icon(
-                          Icons.edit_note_rounded,
-                          size: 20,
-                        )),
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(
-                          Icons.share,
-                          size: 20,
+                  child: !activityConfirmed
+                      ? Row(
+                          children: [
+                            IconButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditAvailabilityTime(),
+                                  ));
+                                },
+                                icon: Icon(
+                                  Icons.edit_note_rounded,
+                                  size: 20,
+                                )),
+                            IconButton(
+                                onPressed: () {},
+                                icon: Icon(
+                                  Icons.share,
+                                  size: 20,
+                                ))
+                          ],
+                        )
+                      : InkWell(
+                          child: Row(
+                            children: const [
+                              Text("Share"),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Icon(
+                                Icons.share,
+                                size: 15,
+                              )
+                            ],
+                          ),
                         ))
-                  ],
-                ):InkWell(
-                  child: Row(
-                    children: const [
-                      Text("Share"),
-                      SizedBox(width: 5,),
-                      Icon(Icons.share,size: 15,)
-                    ],
-                  ),
-                )
-              )
             ],
           ),
           Card(
@@ -180,9 +192,7 @@ List<String> options = [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                 Row(
                   children: const [
                     Icon(
@@ -199,7 +209,7 @@ List<String> options = [
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(20,10, 0, 10 ),
+                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
                   child: Row(
                     children: [
                       Text("14 Jan 2021"),
@@ -219,11 +229,18 @@ List<String> options = [
                     ],
                   ),
                 ),
-                activityConfirmed?Padding(padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                child: InkWell(
-                  child:
-                  Text("Suggest time Slot",style: TextStyle(color: Colors.orange,decoration: TextDecoration.underline),),
-                )):Container()
+                activityConfirmed
+                    ? Padding(
+                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                        child: InkWell(
+                          child: Text(
+                            "Suggest time Slot",
+                            style: TextStyle(
+                                color: Colors.orange,
+                                decoration: TextDecoration.underline),
+                          ),
+                        ))
+                    : Container()
               ]),
               Row(
                 children: const [
@@ -299,64 +316,78 @@ List<String> options = [
           const Align(
               alignment: Alignment.centerLeft,
               child: Text("Optional Benifits")),
-             ChipsChoice<int>.multiple(
-               wrapped: true,
-               verticalDirection: VerticalDirection.up,
-               choiceStyle: C2ChoiceStyle(color: Colors.black),
-        value: tag1,
-        onChanged: (val) {},
-        choiceItems: C2Choice.listFrom<int, String>(
-      source: options,
-      value: (i, v) => i,
-      label: (i, v) => v,
-        ),
-        ),
+          ChipsChoice<int>.multiple(
+            wrapped: true,
+            verticalDirection: VerticalDirection.up,
+            choiceStyle: C2ChoiceStyle(color: Colors.black),
+            value: tag1,
+            onChanged: (val) {},
+            choiceItems: C2Choice.listFrom<int, String>(
+              source: options,
+              value: (i, v) => i,
+              label: (i, v) => v,
+            ),
+          ),
           Spacer(),
-          !activityConfirmed?
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                  //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                  // ),
-                  width: MediaQuery.of(context).size.width * 0.4,
+          !activityConfirmed
+              ? Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SizedBox(
+                        //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                        // ),
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            AppUtils.showPopUp(context,
+                                "Are you sure want to pause the event..");
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "Pause",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              Icon(
+                                Icons.pause_circle,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white)),
+                        )),
+                    SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            AppUtils.showPopUp(context,
+                                "Are you sure want to Delete the event..");
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text(
+                                "Delete",
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              Icon(
+                                Icons.delete,
+                                color: Colors.black,
+                              )
+                            ],
+                          ),
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all<Color>(
+                                  Colors.white)),
+                        ))
+                  ],
+                )
+              : Align(
+                  alignment: Alignment.center,
                   child: ElevatedButton(
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Pause",
-                          style: TextStyle(color: Colors.black),
-                        ),Icon(Icons.pause_circle,color: Colors.black,)
-                      ],
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                  )),
-              SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.4,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Delete",
-                          style: TextStyle(color: Colors.black),
-                        ),
-                        Icon(Icons.delete,color: Colors.black,)
-                      ],
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                  ))
-            ],
-          ):Align(
-            alignment: Alignment.center,
-            child: ElevatedButton(
                     onPressed: () {},
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -365,14 +396,17 @@ List<String> options = [
                           "Remove",
                           style: TextStyle(color: Colors.black),
                         ),
-                        Icon(Icons.close,color: Colors.black,)
+                        Icon(
+                          Icons.close,
+                          color: Colors.black,
+                        )
                       ],
                     ),
                     style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.white)),
                   ),
-          )
+                )
         ],
       ),
     );
