@@ -117,14 +117,23 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                     // SizedBox(
                                     //   height: 10,
                                     // ),
-                                     CircleAvatar(
-                                      radius: 40,
-                                      backgroundImage: _ChildData![Strings.editIndex].profile != "null" ? NetworkImage(Strings.imageUrl+(_ChildData![index].profile ?? "")):AssetImage("assets/imgs/appicon.png") as ImageProvider,
-                                      backgroundColor: Colors.grey
-                                  
-                                      // child: Image.network(Strings.imageUrl + (_ChildData![index].profile ?? ""),
-                                      //     fit: BoxFit.fill),
-                                    ),
+                                    CircleAvatar(
+                                        radius: 40,
+                                        backgroundImage: _ChildData![
+                                                        Strings.editIndex]
+                                                    .profile !=
+                                                "null"
+                                            ? NetworkImage(Strings.imageUrl +
+                                                (_ChildData![index].profile ??
+                                                    ""))
+                                            : AssetImage(
+                                                    "assets/imgs/appicon.png")
+                                                as ImageProvider,
+                                        backgroundColor: Colors.grey
+
+                                        // child: Image.network(Strings.imageUrl + (_ChildData![index].profile ?? ""),
+                                        //     fit: BoxFit.fill),
+                                        ),
                                     const SizedBox(
                                       height: 10,
                                     ),
@@ -266,7 +275,10 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                   ),
                                 );
                               },
-                              child: Text("Next")),
+                              child: Text(
+                                "Next",
+                                style: TextStyle(fontSize: 18),
+                              )),
                         ),
                         SizedBox(
                           height: 10,
@@ -293,7 +305,8 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                               },
                               child: Text(
                                 "Add Another Child",
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                    color: Colors.grey.shade700, fontSize: 18),
                               )),
                         )
                       ],
@@ -304,9 +317,8 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
   }
 
   _GetChild() {
-    var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetChild(PId).then((response) {
+    api.GetChild().then((response) {
       print(response.status);
       if (response.status == true) {
         //_btnController.stop();

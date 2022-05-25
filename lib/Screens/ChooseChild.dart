@@ -112,11 +112,11 @@ class _ChooseChildState extends State<ChooseChild> {
   }
 
   _ChooseChild(ChildId) {
-    var Pid = Strings.Parent_Id.toInt();
+    //var Pid = Strings.Parent_Id.toInt();
     ChooseChildReq ChooseChild = ChooseChildReq();
     ChooseChild.selectedChildId = ChildId;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.ChooseChild(Pid, ChooseChild).then((response) {
+    api.ChooseChild(ChooseChild).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
@@ -132,9 +132,9 @@ class _ChooseChildState extends State<ChooseChild> {
   }
 
   _GetChild() {
-    var PId = Strings.Parent_Id.toInt();
+    // var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetChild(PId).then((response) {
+    api.GetChild().then((response) {
       print(response.status);
       if (response.status == true) {
         //_btnController.stop();

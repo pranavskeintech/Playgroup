@@ -109,26 +109,34 @@ class _Choose_CategoryState extends State<Choose_Category> {
                 )),
             Container(
                 width: MediaQuery.of(context).size.width * 0.9,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) =>
                             Availability_choose_friends()));
                   },
-                  child: Text("Continue"),
+                  child: Text(
+                    "Continue",
+                    style: TextStyle(fontSize: 18),
+                  ),
                   style: ButtonStyle(
                       backgroundColor: MaterialStateProperty.all<Color>(
                           Strings.appThemecolor)),
                 )),
             SizedBox(
+              height: 8,
+            ),
+            SizedBox(
                 //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
                 // ),
                 width: MediaQuery.of(context).size.width * 0.9,
+                height: 50,
                 child: ElevatedButton(
                   onPressed: () {},
                   child: Text(
                     "Skip",
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 18),
                   ),
                   style: ButtonStyle(
                       backgroundColor:

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 mixin Strings {
   static String authToken = '';
 
+  static String refreshToken = '';
+
   static bool internetDialog = false;
 
   static var appThemecolor = const Color.fromRGBO(94, 37, 108, 1);

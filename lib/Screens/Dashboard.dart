@@ -47,10 +47,10 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     // TODO: implement initState
-    iconList.add(Icons.home);
+    iconList.add(Icons.home_outlined);
     iconList.add(Icons.schedule);
     iconList.add(Icons.search);
-    iconList.add(Icons.notifications);
+    iconList.add(Icons.notifications_outlined);
     super.initState();
   }
 
@@ -135,6 +135,7 @@ class _DashBoardState extends State<DashBoard> {
                   color: Colors.black,
                 )),
           ),
+          resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(

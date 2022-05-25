@@ -217,14 +217,12 @@ class _LocationSelectionState extends State<LocationSelection> {
                             var pass = Strings.Password;
                             print("1");
 
-                            if(selectedValue != null)
-                            {
-                               _Signup(email, name, phonenum, pass);
-                            }
-                            else
-                            {
+                            if (selectedValue != null) {
+                              _Signup(email, name, phonenum, pass);
+                            } else {
                               _btnController.stop();
-                              AppUtils.showError(context, "Please Select the Location", "");
+                              AppUtils.showError(
+                                  context, "Please Select the Location", "");
                             }
                           },
                         ),
@@ -262,7 +260,8 @@ class _LocationSelectionState extends State<LocationSelection> {
         print("res:${response.userId}");
         //print("user_iid: ${response..}");
         Strings.Parent_Id = response.userId ?? 0;
-        Strings.authToken = response.refreshToken!.refreshToken!;
+        Strings.authToken = response.token!;
+        Strings.refreshToken = response.refreshToken!.refreshToken!;
         print("tokr${Strings.authToken}");
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ChildDetails()));

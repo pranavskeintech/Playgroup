@@ -433,7 +433,6 @@ class _ChildDetailsState extends State<ChildDetails> {
 
   _AddChild() {
     AddChildReq ChildReg = AddChildReq();
-    ChildReg.parentId = Strings.Parent_Id.toString();
     ChildReg.childName = _nameController.text;
     ChildReg.dob = _dobController.text;
     ChildReg.gender = selectedValue;

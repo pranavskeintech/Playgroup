@@ -104,9 +104,9 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   }
 
   _GetChildData() {
-    int? PId = Strings.Parent_Id;
+    //int? PId = Strings.Parent_Id;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetChild(PId).then((response) {
+    api.GetChild().then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
@@ -475,7 +475,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                           width: 500,
                           borderRadius: 5,
                           color: Strings.appThemecolor,
-                          child: const Text('Continue',
+                          child: const Text('Save',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18)),
                           controller: _btnController,
@@ -518,10 +518,9 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   }
 
   _EditChild() {
-    print("tokr2${Strings.authToken.toString()}");
     EditChildReq ChildEdit = EditChildReq();
     ChildEdit.childId = _ChildData![Strings.editIndex].childId.toString();
-    ChildEdit.parentId = Strings.Parent_Id.toString();
+    //ChildEdit.parentId = Strings.Parent_Id.toString();
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
     ChildEdit.gender = selectedValue;

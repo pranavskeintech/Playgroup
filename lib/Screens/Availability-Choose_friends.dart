@@ -122,11 +122,9 @@ class _Availability_choose_friendsState
               },
             )),
             Center(
-              child: Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 0),
-                  ),
+              child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
@@ -138,22 +136,29 @@ class _Availability_choose_friendsState
                             Strings.appThemecolor)),
                   )),
             ),
+            SizedBox(
+              height: 8,
+            ),
             Center(
               child: SizedBox(
                   //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
                   // ),
                   width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {},
                     child: Text(
                       "Skip",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(color: Colors.grey.shade700),
                     ),
                     style: ButtonStyle(
                         backgroundColor:
                             MaterialStateProperty.all<Color>(Colors.white)),
                   )),
-            )
+            ),
+            SizedBox(
+              height: 40,
+            ),
           ],
         ),
       ),

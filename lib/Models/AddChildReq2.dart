@@ -1,16 +1,14 @@
-class AddChildReq {
+class AddChildReq2 {
   String? childName;
   String? dob;
   String? gender;
-  String? profile;
 
-  AddChildReq({this.childName, this.dob, this.gender, this.profile});
+  AddChildReq2({this.childName, this.dob, this.gender});
 
-  AddChildReq.fromJson(Map<String, dynamic> json) {
+  AddChildReq2.fromJson(Map<String, dynamic> json) {
     childName = json['child_name'];
     dob = json['dob'];
     gender = json['gender'];
-    profile = json['profile'];
   }
 
   Map<String, dynamic> toJson() {
@@ -18,7 +16,6 @@ class AddChildReq {
     data['child_name'] = this.childName;
     data['dob'] = this.dob;
     data['gender'] = this.gender;
-    data['profile'] = this.profile;
     return data;
   }
 }

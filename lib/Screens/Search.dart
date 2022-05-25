@@ -38,7 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
     return Container(
       margin: EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
@@ -63,6 +63,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 //                         SearchResults()));
               },
               decoration: InputDecoration(
+                  contentPadding: EdgeInsets.all(10),
                   hintText: "Search",
                   border: InputBorder.none,
                   enabledBorder: OutlineInputBorder(
@@ -71,7 +72,10 @@ class _SearchScreenState extends State<SearchScreen> {
                       borderRadius: BorderRadius.circular(6)),
                   filled: true,
                   fillColor: Strings.textFeildBg,
-                  prefixIcon: Icon(Icons.search)),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.grey,
+                  )),
             ),
           ),
           SizedBox(

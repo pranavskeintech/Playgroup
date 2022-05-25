@@ -16,8 +16,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
   int? selectedOtherActivities;
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Your Availability"),
@@ -62,7 +61,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                boxShadow:  [
+                                boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.3),
                                     blurRadius: 5.0, // soften the shadow
@@ -78,10 +77,17 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Image.asset(
-                                    "assets/imgs/book.png",width: 50,height: 50,),
-                                    SizedBox(height: 10,),
-                                    Text("Learn")],
+                                  children: [
+                                    Image.asset(
+                                      "assets/imgs/book.png",
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text("Learn")
+                                  ],
                                 ),
                               ),
                             ),
@@ -127,7 +133,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
-                                boxShadow:  [
+                                boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.3),
                                     blurRadius: 5.0, // soften the shadow
@@ -143,10 +149,17 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                 width: MediaQuery.of(context).size.width * 0.8,
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [Image.asset(                                  
-                                    "assets/imgs/book.png",width: 50,height: 50,),
-                                    SizedBox(height: 10,),
-                                    Text("Learn")],
+                                  children: [
+                                    Image.asset(
+                                      "assets/imgs/book.png",
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text("Learn")
+                                  ],
                                 ),
                               ),
                             ),
@@ -165,22 +178,47 @@ class _ChooseTopicState extends State<ChooseTopic> {
                 )),
           ),
           Center(
-            child: Container(            
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => Choose_Category()));
-              }, child: Text("Continue"),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Strings.appThemecolor)),)),
+            child: Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => Choose_Category()));
+                  },
+                  child: Text(
+                    "Continue",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(
+                          Strings.appThemecolor)),
+                )),
           ),
-            Center(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-              //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-              // ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(onPressed: (){}, child: Text("Skip",style: TextStyle(color: Colors.black),),style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),)),
-            )
+          SizedBox(
+            height: 10,
+          ),
+          Center(
+            child: Container(
+                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                // ),
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text(
+                    "Skip",
+                    style: TextStyle(color: Colors.grey.shade700, fontSize: 18),
+                  ),
+                  style: ButtonStyle(
+                      backgroundColor:
+                          MaterialStateProperty.all<Color>(Colors.white)),
+                )),
+          ),
+          SizedBox(
+            height: 40,
+          ),
         ],
       ),
     );

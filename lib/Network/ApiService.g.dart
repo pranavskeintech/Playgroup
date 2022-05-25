@@ -199,6 +199,23 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<CommonRes> AddChild2(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/addchild',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<UserDetailsRes> getParentsDetails(ChildID) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -215,7 +232,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GetChildRes> GetChild(parentid) async {
+  Future<GetChildRes> GetChild() async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -223,7 +240,7 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<GetChildRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user/getchild/${parentid}',
+                .compose(_dio.options, 'user/getchild',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = GetChildRes.fromJson(_result.data!);
@@ -248,7 +265,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> ChooseChild(parentid, body) async {
+  Future<CommonRes> ChooseChild(body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -257,7 +274,7 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommonRes>(
             Options(method: 'PUT', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'user/updatechild/${parentid}',
+                .compose(_dio.options, 'user/updatechild',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);

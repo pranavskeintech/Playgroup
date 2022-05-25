@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
+import 'package:playgroup/Models/AddChildReq2.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
@@ -67,18 +68,20 @@ abstract class ApiService {
   @POST("user/addchild")
   Future<CommonRes> AddChild(@Body() AddChildReq body);
 
+  @POST("user/addchild")
+  Future<CommonRes> AddChild2(@Body() AddChildReq2 body);
+
   @GET("user/getparent/{ChildID}")
   Future<UserDetailsRes> getParentsDetails(@Path("ChildID") int ChildID);
 
-  @GET("user/getchild/{parent_id}")
-  Future<GetChildRes> GetChild(@Path("parent_id") int parentid);
+  @GET("user/getchild")
+  Future<GetChildRes> GetChild();
 
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
 
-  @PUT("user/updatechild/{parent_id}")
-  Future<CommonRes> ChooseChild(
-      @Path("parent_id") int parentid, @Body() ChooseChildReq body);
+  @PUT("user/updatechild")
+  Future<CommonRes> ChooseChild(@Body() ChooseChildReq body);
 
 //////////////////////////////////////////////////////////////////////////////////////////
   /// Request and Response Body
@@ -92,8 +95,9 @@ abstract class ApiService {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
         options.headers["Content-Type"] = "application/json";
-        print("object" + Strings.authToken);
+        print("object" + Strings.refreshToken);
         options.headers["jwt"] = Strings.authToken;
+        options.headers["refresh-token"] = Strings.refreshToken;
         // options.headers["jwt"] = "08d41a36b34dadcfd6005452deb92037ad85af33b227827ae2f4e2d34b927fa0ae6a83d43cfdcff9";
 
         options.followRedirects = false;

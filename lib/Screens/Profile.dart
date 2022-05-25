@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChildProfile.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/NavigationDrawer.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -16,8 +21,54 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  BuildContext? ctx;
+  List<ChildData>? _ChildData;
+
+  _GetChild() {
+    AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetChild().then((response) {
+      print(response.status);
+      if (response.status == true) {
+        //_btnController.stop();
+        // Navigator.of(context).push(
+        //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        setState(() {
+          AppUtils.dismissprogress();
+          _ChildData = response.data;
+        });
+        print("data: ${_ChildData!.length.toString()}");
+      } else {
+        functions.createSnackBar(context, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetChild());
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return ProfilePage(newContext);
+          }),
+        ));
+  }
+
+  ProfilePage(BuildContext context) {
+    ctx = context;
+    var media = MediaQuery.of(context).size;
     return Scaffold(
       key: _scaffoldKey,
       drawer: NavigationDrawer(),
@@ -38,6 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             )),
       ),
       body: Container(
+        // color: Colors.white,
         padding: EdgeInsets.fromLTRB(28, 10, 20, 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +252,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 )),
             Expanded(
               child: ListView.builder(
-                itemCount: 2,
+                itemCount: _ChildData!.length,
                 itemBuilder: (context, index) {
                   return ListTile(
                     onTap: (() {
@@ -210,8 +262,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     leading: CircleAvatar(
                       backgroundImage: AssetImage("assets/imgs/child1.jpg"),
                     ),
-                    title: Text("Christopher Janglen"),
-                    subtitle: Text("7 years"),
+                    title: Text(_ChildData![index].childName!),
+                    subtitle: Text(
+                      TimeAgo.calculateTimeDifferenceBetween(
+                          _ChildData![index].dob),
+                    ),
                     trailing: Text(
                       "Remove",
                       style: TextStyle(color: Colors.red),
@@ -223,7 +278,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Align(
                 alignment: Alignment.bottomCenter,
                 child: SizedBox(
-                  width: MediaQuery.of(context).size.width * 0.8,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
                   child: ElevatedButton(
                     onPressed: () {
                       Strings.profilepage = true;
@@ -232,13 +288,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     },
                     child: Text(
                       "Add Child",
-                      style: TextStyle(color: Colors.black),
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                      ),
                     ),
                     style: ButtonStyle(
                         backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
+                            MaterialStateProperty.all(Colors.white),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4.0),
+                                    side: BorderSide(
+                                        width: 2,
+                                        color: Colors.grey.withOpacity(0.2))))),
                   ),
                 )),
+            SizedBox(
+              height: 40,
+            )
           ],
         ),
       ),

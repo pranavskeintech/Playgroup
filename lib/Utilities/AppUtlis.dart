@@ -164,3 +164,21 @@ class AppUtils {
         });
   }
 }
+
+class TimeAgo {
+  static String calculateTimeDifferenceBetween(String? createdAt) {
+    DateTime startDate = DateTime.parse(createdAt!);
+    DateTime endDate = DateTime.now();
+    int seconds = endDate.difference(startDate).inSeconds;
+    if (seconds < 60)
+      return '${seconds.abs()} seconds';
+    else if (seconds >= 60 && seconds < 3600)
+      return '${startDate.difference(endDate).inMinutes.abs()} minutes';
+    else if (seconds >= 3600 && seconds < 86400)
+      return '${startDate.difference(endDate).inHours.abs()} hours';
+    else if (seconds >= 86400 && seconds < 2073600)
+      return '${startDate.difference(endDate).inDays.abs()} days';
+    else
+      return '${startDate.difference(endDate).inDays.abs()} months';
+  }
+}
