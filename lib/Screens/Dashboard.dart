@@ -34,8 +34,9 @@ class _DashBoardState extends State<DashBoard> {
 
   final screens = [
     HomeScreen(),
-    //InitialScreen(),
-    PastActivity(),
+    Center(child: Text("Past Activities")),
+    // InitialScreen(),
+    //PastActivity(),
     SearchScreen(),
     NotificationScreen(),
   ];
@@ -117,8 +118,8 @@ class _DashBoardState extends State<DashBoard> {
               ),
               IconButton(
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => Chat_List()));
+                    // Navigator.of(context).push(MaterialPageRoute(
+                    //     builder: (BuildContext context) => Chat_List()));
                   },
                   icon: Image.asset(
                     "assets/imgs/chat.png",
@@ -138,10 +139,8 @@ class _DashBoardState extends State<DashBoard> {
           resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (BuildContext context) => Mark_Availabilty()));
               // Navigator.of(context).push(MaterialPageRoute(
-              //         builder: (BuildContext context) => Choose_Category()));
+              //     builder: (BuildContext context) => Mark_Availabilty()));
             },
             backgroundColor: Strings.appThemecolor,
             child: Icon(Icons.add),

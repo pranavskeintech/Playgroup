@@ -161,7 +161,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                         if (AppUtils.validateEmail(
                             _emailIdController.text.replaceAll(' ', ''))) {
                           var email = _emailIdController.text;
-                          _CheckUser(email);
+                          var name = _parentController.text;
+                          _CheckUser(email, name);
                           Strings.UserName = _parentController.text;
                           Strings.EmailId = _emailIdController.text;
                           print("entered");
@@ -216,12 +217,14 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     );
   }
 
-  _CheckUser(email) {
+  _CheckUser(email, name) {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(email).then((response) {
       print(response.status);
       if (response.status == false) {
         _btnController.stop();
+        Strings.parentName = name;
+        Strings.parentemail = email;
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => SetPassword()));
       } else {

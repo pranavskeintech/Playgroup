@@ -102,9 +102,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   child: Text('Profile'),
                 ),
                 onTap: () => {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ProfileScreen()))
-                  // Navigator.of(context).pop()
+                  // Navigator.of(context).push(
+                  //     MaterialPageRoute(builder: (context) => ProfileScreen()))
+                  Navigator.of(context).pop()
                 },
               ),
               ListTile(
@@ -123,9 +123,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   size: 20,
                 ),
                 onTap: () => {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddCoParent()))
-                  // Navigator.of(context).pop()
+                  // Navigator.of(context).push(
+                  //     MaterialPageRoute(builder: (context) => AddCoParent()))
+                  Navigator.of(context).pop()
                 },
               ),
               ListTile(
@@ -140,13 +140,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                     'Add Child',
                   ),
                 ),
-                // onTap: () => {Navigator.of(context).push(MaterialPageRoute(
-                //     builder: (context) => ChooseChild()))},
-
                 onTap: () {
                   Strings.DashboardPage = true;
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => ChildDetails()));
+                  // Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (BuildContext context) => ChildDetails()));
+                  Navigator.of(context).pop();
                 },
                 trailing: Icon(
                   Icons.add_circle,
@@ -166,8 +164,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 ),
                 onTap: () => {
                   print("object"),
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => SettingsPage())),
+                  // Navigator.of(context).push(
+                  //     MaterialPageRoute(builder: (context) => SettingsPage())),
+                  Navigator.of(context).pop()
                 },
               ),
               ListTile(
@@ -268,7 +267,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                             children: [
                               SizedBox(
                                 width: 110,
-                                height: 25,
+                                height: 30,
                                 child: ElevatedButton(
                                     onPressed: () {
                                       Navigator.of(ctx).pop();
@@ -288,7 +287,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                               SizedBox(width: 15),
                               SizedBox(
                                 width: 110,
-                                height: 25,
+                                height: 30,
                                 child: ElevatedButton(
                                   onPressed: () {
                                     //Navigator.of(ctx).pop();

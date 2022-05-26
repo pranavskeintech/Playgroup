@@ -132,11 +132,7 @@ class _ChooseChildState extends State<ChooseChild> {
   }
 
   _GetChild() {
-<<<<<<< HEAD
-    var PId = Strings.Parent_Id.toInt();
-=======
     // var PId = Strings.Parent_Id.toInt();
->>>>>>> 3c19ff3aa4f4f88d8743177dd9b1659b03b87f72
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetChild().then((response) {
       print(response.status);

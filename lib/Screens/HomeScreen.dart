@@ -10,6 +10,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<String> ChildName = [
+    "Kingston Jackey",
+    "Ronny Thomas",
+    "Alex Timo",
+    "Christina Timo",
+    "George Timo",
+    "Mariya Timo",
+    "Angel Timo"
+  ];
+
+  List<String> games = [
+    "Art Work - Natural Painting",
+    "Cricket play",
+    "Cooking",
+    "Reading",
+    "Trekking",
+    "Singing",
+    "Art",
+    "Hockey"
+  ];
   List<String> images = [
     "cricket.jpg",
     "cooking.jpg",
@@ -27,6 +47,15 @@ class _HomeScreenState extends State<HomeScreen> {
     "Singing",
     "Art",
     "Hockey"
+  ];
+  List<String> location = [
+    "Gandhipuram",
+    "PN Palayam",
+    "Kuniyamuthoor",
+    "Ukkadam",
+    "Town Hall",
+    "Race Course",
+    "Avinasi Road"
   ];
   List<String> childImgs = [
     "child1.jpg",
@@ -120,9 +149,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: FadeInAnimation(
                             child: GestureDetector(
                               onTap: (() {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Own_Availability()));
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (BuildContext context) =>
+                                //         Own_Availability()));
                               }),
                               child: Container(
                                 margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
@@ -155,10 +184,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                         contentPadding: EdgeInsets.all(0),
                                         leading: CircleAvatar(
                                           backgroundImage: AssetImage(
-                                              "assets/imgs/child.jpg"),
+                                              "assets/imgs/${childImgs[index]}"),
                                         ),
                                         title: Text(
-                                          "Kingston Jackey",
+                                          ChildName[index],
                                           style: TextStyle(
                                               fontSize: 13.5,
                                               fontWeight: FontWeight.w500),
@@ -197,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ],
                                             ),
                                             Row(
-                                              children: const [
+                                              children: [
                                                 Icon(
                                                   Icons.location_pin,
                                                   color: Colors.red,
@@ -207,12 +236,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   width: 3,
                                                 ),
                                                 Text(
-                                                  "Gandhipuram busstand",
+                                                  location[index],
                                                   style: TextStyle(
                                                     fontSize: 11,
                                                   ),
                                                   overflow: TextOverflow.fade,
-                                                )
+                                                ),
                                               ],
                                             )
                                           ],
@@ -222,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         height: 12,
                                       ),
                                       Text(
-                                        "Art Work - Natural Painting",
+                                        games[index],
                                         style: TextStyle(fontSize: 13),
                                       ),
                                       SizedBox(

@@ -61,14 +61,16 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.3),
-                                    blurRadius: 5.0, // soften the shadow
-                                    spreadRadius: 1.0, //extend the shadow
+                                    blurRadius: 2.0, // soften the shadow
+                                    spreadRadius: 0.0, //extend the shadow
                                     offset: Offset(
-                                      2.0, // Move to right 10  horizontally
-                                      2.0, // Move to bottom 10 Vertically
+                                      0.0, // Move to right 10  horizontally
+                                      0.5, // Move to bottom 10 Vertically
                                     ),
                                   )
                                 ],
@@ -133,14 +135,16 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             Container(
                               decoration: BoxDecoration(
                                 color: Colors.white,
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(10)),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.3),
-                                    blurRadius: 5.0, // soften the shadow
-                                    spreadRadius: 1.0, //extend the shadow
+                                    blurRadius: 2.0, // soften the shadow
+                                    spreadRadius: 0.0, //extend the shadow
                                     offset: Offset(
-                                      2.0, // Move to right 10  horizontally
-                                      2.0, // Move to bottom 10 Vertically
+                                      0.0, // Move to right 10  horizontally
+                                      0.5, // Move to bottom 10 Vertically
                                     ),
                                   )
                                 ],

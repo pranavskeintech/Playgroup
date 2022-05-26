@@ -15,7 +15,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         itemCount: 2,
         itemBuilder: (context, index) {
           return Container(
-            padding: EdgeInsets.fromLTRB(10, 20, 10, 0),
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [

@@ -408,59 +408,59 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         ),
                       ),
                       SizedBox(height: 32),
-                      Container(
-                        child: Align(
-                          alignment: Alignment.centerLeft,
-                          child: Container(
-                            child: Text(
-                              "School Name",
-                              style: TextStyle(
-                                fontSize: 15,
-                                color: Strings.textFeildHeading,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                            color: Strings.textFeildBg,
-                            //border: Border.all(color: const Color(0xFFf2f3f4)),
-                            borderRadius: BorderRadius.circular(5)),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                style: TextStyle(color: Colors.black),
-                                controller: _schoolController,
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Strings.textFeildBg, width: 0.0),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Strings.textFeildBg, width: 0.0),
-                                  ),
-                                  fillColor: Strings.textFeildBg,
-                                  filled: true,
-                                  hintText: "Enter Child Name",
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  contentPadding:
-                                      EdgeInsets.fromLTRB(20, 5, 0, 0),
-                                ),
-                                keyboardType: TextInputType.emailAddress,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      // Container(
+                      //   child: Align(
+                      //     alignment: Alignment.centerLeft,
+                      //     child: Container(
+                      //       child: Text(
+                      //         "School Name",
+                      //         style: TextStyle(
+                      //           fontSize: 15,
+                      //           color: Strings.textFeildHeading,
+                      //         ),
+                      //       ),
+                      //     ),
+                      //   ),
+                      // ),
+                      // const SizedBox(
+                      //   height: 5,
+                      // ),
+                      // Container(
+                      //   decoration: BoxDecoration(
+                      //       color: Strings.textFeildBg,
+                      //       //border: Border.all(color: const Color(0xFFf2f3f4)),
+                      //       borderRadius: BorderRadius.circular(5)),
+                      //   child: Row(
+                      //     children: [
+                      //       Expanded(
+                      //         child: TextField(
+                      //           style: TextStyle(color: Colors.black),
+                      //           controller: _schoolController,
+                      //           decoration: InputDecoration(
+                      //             border: OutlineInputBorder(
+                      //               borderRadius: BorderRadius.circular(10),
+                      //             ),
+                      //             focusedBorder: OutlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: Strings.textFeildBg, width: 0.0),
+                      //             ),
+                      //             enabledBorder: OutlineInputBorder(
+                      //               borderSide: BorderSide(
+                      //                   color: Strings.textFeildBg, width: 0.0),
+                      //             ),
+                      //             fillColor: Strings.textFeildBg,
+                      //             filled: true,
+                      //             hintText: "Enter Child Name",
+                      //             hintStyle: TextStyle(color: Colors.grey),
+                      //             contentPadding:
+                      //                 EdgeInsets.fromLTRB(20, 5, 0, 0),
+                      //           ),
+                      //           keyboardType: TextInputType.emailAddress,
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.05,
                       ),

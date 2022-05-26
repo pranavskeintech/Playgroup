@@ -80,8 +80,8 @@ class _Choose_CategoryState extends State<Choose_Category> {
                             color: selectedIndex != index
                                 ? Colors.white
                                 : Colors.green,
-                            border:
-                                Border.all(color: Colors.grey.withOpacity(0.3)),
+                            // border:
+                            //     Border.all(color: Colors.grey.withOpacity(0.3)),
                             borderRadius: BorderRadius.circular(25),
                             boxShadow: [
                               BoxShadow(
@@ -96,12 +96,15 @@ class _Choose_CategoryState extends State<Choose_Category> {
                             ],
                           ),
                           child: Center(
-                            child: Text(
-                              options[index],
-                              style: TextStyle(
-                                  color: selectedIndex != index
-                                      ? Colors.black
-                                      : Colors.white),
+                            child: Padding(
+                              padding: const EdgeInsets.all(2.0),
+                              child: Text(
+                                options[index],
+                                style: TextStyle(
+                                    color: selectedIndex != index
+                                        ? Colors.black
+                                        : Colors.white),
+                              ),
                             ),
                           ),
                         ));
