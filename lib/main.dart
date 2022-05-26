@@ -5,15 +5,15 @@ import 'package:playgroup/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Utilities/Strings.dart';
 
-
-
-void main() async 
-{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configLoading();
   await Firebase.initializeApp();
-  runApp(MaterialApp(home:SplashScreen(),builder: EasyLoading.init(),
-));
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    home: SplashScreen(),
+    builder: EasyLoading.init(),
+  ));
 }
 
 void configLoading() {
@@ -32,11 +32,6 @@ void configLoading() {
     ..dismissOnTap = true;
 }
 
-
- 
-
-
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -46,10 +41,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.pink,
-      ),
-         home: const MyHomePage(title: 'Flutter Demo Home Page'),
-         builder: EasyLoading.init(),
+          primarySwatch: Colors.pink,
+          bottomSheetTheme: BottomSheetThemeData(
+              backgroundColor: Colors.black.withOpacity(0))),
+      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      builder: EasyLoading.init(),
     );
   }
 }
@@ -72,8 +68,7 @@ class MyHomePage extends StatefulWidget {
   State<MyHomePage> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> 
-{
+class _MyHomePageState extends State<MyHomePage> {
   int _counter = 0;
 
   var _bottomNavIndex = 0;
@@ -148,8 +143,7 @@ class _MyHomePageState extends State<MyHomePage>
           backgroundColor: Colors.pink,
           activeColor: Colors.white,
           onTap: (index) {
-            setState(() 
-            {
+            setState(() {
               _bottomNavIndex = index;
 
               EasyLoading.show(status: 'loading...');
@@ -166,7 +160,9 @@ class _MyHomePageState extends State<MyHomePage>
       body: Container(
         height: MediaQuery.of(context).size.height,
         color: Color.fromRGBO(94, 37, 108, 1),
-        child: Center(child: Text("Welcome to Play group"),),
+        child: Center(
+          child: Text("Welcome to Play group"),
+        ),
       ),
     );
   }

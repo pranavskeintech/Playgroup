@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Screens/Profile.dart';
@@ -141,6 +142,12 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 ),
                 // onTap: () => {Navigator.of(context).push(MaterialPageRoute(
                 //     builder: (context) => ChooseChild()))},
+
+                onTap: () {
+                  Strings.DashboardPage = true;
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ChildDetails()));
+                },
                 trailing: Icon(
                   Icons.add_circle,
                   color: Colors.blue,

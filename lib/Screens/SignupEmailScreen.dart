@@ -156,7 +156,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                         style: TextStyle(color: Colors.white, fontSize: 18)),
                     controller: _btnController,
                     onPressed: () {
-                      if (_parentController.text.isNotEmpty && _parentController.text.length > 2) {
+                      if (_parentController.text.isNotEmpty &&
+                          _parentController.text.length > 2) {
                         if (AppUtils.validateEmail(
                             _emailIdController.text.replaceAll(' ', ''))) {
                           var email = _emailIdController.text;
@@ -169,8 +170,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                           _btnController.stop();
                         }
                       } else {
-                        AppUtils.showWarning(
-                            context, "Parents name should be minimum 3 letters", "");
+                        AppUtils.showWarning(context,
+                            "Parents name should be minimum 3 letters", "");
                         _btnController.stop();
                       }
                     },
@@ -219,7 +220,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(email).then((response) {
       print(response.status);
-      if (response.status == false ) {
+      if (response.status == false) {
         _btnController.stop();
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => SetPassword()));

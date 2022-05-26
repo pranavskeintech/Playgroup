@@ -42,14 +42,14 @@ class _LoginPageState extends State<LoginPage> {
   FirebaseAuth _auth = FirebaseAuth.instance;
   //List<LoginData>? loginData;
 
-@override
-  void initState() 
-  {
+  @override
+  void initState() {
     // TODO: implement initState
     super.initState();
     _emailIdController.text = "g@g.com";
     _passwordController.text = "g";
   }
+
   void _doSomething() async {
     print("Clicked me");
     Timer(Duration(seconds: 3), () {
@@ -71,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
       // print(googleSignInAccount.email);
       // print('${googleSignInAccount.displayName}');
       // print(googleSignInAccount.photoUrl);
-      _GoogleLogin(googleSignInAccount.email,googleSignInAccount.displayName);
+      _GoogleLogin(googleSignInAccount.email, googleSignInAccount.displayName);
     } catch (error) {
       print(error);
       return null;
@@ -138,31 +138,29 @@ class _LoginPageState extends State<LoginPage> {
   //   print("------2");
   //   print(e);
   // }
-  Future signInWithFacebook() async 
-  {
+  Future signInWithFacebook() async {
     LoginResult loginResult = await FacebookAuth.instance
         .login(permissions: ["public_profile", "email"]);
     print("Status:${loginResult.message}");
-    if (loginResult.status == LoginStatus.success) 
-    {
+    if (loginResult.status == LoginStatus.success) {
       final AccessToken accessToken = loginResult.accessToken!;
-     var data = FacebookAuth.instance.getUserData();
-     print("data--> $data");
+      var data = FacebookAuth.instance.getUserData();
+      print("data--> $data");
       print("data:$data");
       print("token$accessToken.");
       final OAuthCredential credential =
           FacebookAuthProvider.credential(accessToken.token);
-          var value = FirebaseAuth.instance.signInWithCredential(credential);
-          print('creadentials ${FirebaseAuth.instance.currentUser}');
-          var email = FirebaseAuth.instance.currentUser?.email ?? "";
-          var name = FirebaseAuth.instance.currentUser?.displayName ?? "";
-          
+      var value = FirebaseAuth.instance.signInWithCredential(credential);
+      print('creadentials ${FirebaseAuth.instance.currentUser}');
+      var email = FirebaseAuth.instance.currentUser?.email ?? "";
+      var name = FirebaseAuth.instance.currentUser?.displayName ?? "";
+
       final value1 =
           await FirebaseAuth.instance.signInWithCredential(credential);
       print(value1.user);
 
-      _FacebookLogin(email,name);
-          
+      _FacebookLogin(email, name);
+
       // try {
 
       //   Navigator.of(context).push(
@@ -373,7 +371,8 @@ class _LoginPageState extends State<LoginPage> {
                               _emailIdController.text.isNotEmpty) {
                             if (AppUtils.validateEmail(
                                 _emailIdController.text.replaceAll(' ', ''))) {
-                                  AppUtils.showprogress();
+                              AppUtils.showprogress();
+                              print("object");
                               _Login();
                             } else {
                               AppUtils.showWarning(
@@ -478,16 +477,17 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _GoogleLogin(email,name) {
+  _GoogleLogin(email, name) {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GoogleLogin(email).then((response) {
       print(response.status);
       if (response.status == true) {
         _btnController.stop();
-        Strings.authToken = response.refreshToken!.refreshToken!;
+        Strings.authToken = response.token!;
+        Strings.refreshToken = response.refreshToken!.refreshToken!;
         Strings.parentName = response.data![0].parentName!;
-      Strings.parentemail = response.data![0].emailId!;
-      Strings.Parent_Id = response.data![0].userId!;
+        Strings.parentemail = response.data![0].emailId!;
+        Strings.Parent_Id = response.data![0].userId!;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else if (response.status == false) {
@@ -505,39 +505,36 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  _FacebookLogin(email,name) 
-  {
+  _FacebookLogin(email, name) {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.FBLogin(email).then((response) {
       print(response.status);
       if (response.status == true) {
         _btnController.stop();
         //Strings.Parent_Id = response.data![0].userId!;
-                Strings.authToken = response.refreshToken!.refreshToken!;
+        Strings.authToken = response.token!;
+        Strings.refreshToken = response.refreshToken!.refreshToken!;
         Strings.parentName = response.data![0].parentName!;
-      Strings.parentemail = response.data![0].emailId!;
-      Strings.Parent_Id = response.data![0].userId!;
+        Strings.parentemail = response.data![0].emailId!;
+        Strings.Parent_Id = response.data![0].userId!;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-      } else 
-      {
-       // functions.createSnackBar(context, response.message.toString());
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
         Strings.UserName = name;
         Strings.EmailId = email;
 
-
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => PhoneNumber()));
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => PhoneNumber()));
       }
     }).catchError((onError) {
       print(onError.toString());
     });
   }
 
-  _Login() 
-  {
-
+  _Login() {
+    print("hii");
     LoginReq Userlogin = LoginReq();
     Userlogin.emailId = _emailIdController.text;
     Userlogin.password = _passwordController.text;
@@ -548,11 +545,12 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.status == true) {
         AppUtils.dismissprogress();
-      Strings.authToken = response.refreshToken!.refreshToken!;
-      Strings.parentName = response.data![0].parentName!;
-      Strings.parentemail = response.data![0].emailId!;
-      Strings.Parent_Id = response.data![0].userId!;
-        
+        Strings.authToken = response.token!;
+        Strings.refreshToken = response.refreshToken!.refreshToken!;
+        Strings.parentName = response.data![0].parentName!;
+        Strings.parentemail = response.data![0].emailId!;
+        Strings.Parent_Id = response.data![0].userId!;
+
         // _isLoading = false;
         //  Get.off(() => DashPage());
         // Navigator.of(context)
@@ -568,9 +566,9 @@ class _LoginPageState extends State<LoginPage> {
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
         print("result2:$response");
       } else {
-       // functions.createSnackBar(context, response.message.toString());
+        // functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
-       AppUtils.showError(context, response.message, "");
+        AppUtils.showError(context, response.message, "");
         _btnController.stop();
         print("error");
       }

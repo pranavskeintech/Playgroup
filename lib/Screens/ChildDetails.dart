@@ -49,6 +49,8 @@ class _ChildDetailsState extends State<ChildDetails> {
 
   String img64 = "";
 
+  var profilepage;
+
   _selectDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -121,10 +123,21 @@ class _ChildDetailsState extends State<ChildDetails> {
     var media = MediaQuery.of(context).size;
     return Scaffold(
       body: WillPopScope(
-        onWillPop: (){
-          Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => LoginPage()));
-          throw '';
+        onWillPop: () {
+          if (Strings.profilepage == true) {
+            Navigator.pop(context);
+
+            Strings.profilepage = false;
+            throw '';
+          } else if (Strings.DashboardPage == true) {
+            Navigator.pop(context);
+            Strings.DashboardPage = false;
+            throw '';
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) => LoginPage()));
+            throw '';
+          }
         },
         child: SingleChildScrollView(
           child: Center(
@@ -139,7 +152,7 @@ class _ChildDetailsState extends State<ChildDetails> {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => LoginPage()));
+                          builder: (BuildContext context) => LoginPage()));
                     },
                     child: const Align(
                         alignment: Alignment.topLeft,
@@ -283,7 +296,8 @@ class _ChildDetailsState extends State<ChildDetails> {
                                   Icons.calendar_today_outlined,
                                   size: 20,
                                 ),
-                                contentPadding: EdgeInsets.fromLTRB(10, 15, 0, 0),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(10, 15, 0, 0),
                               ),
                               keyboardType: TextInputType.emailAddress,
                             ),
@@ -318,7 +332,8 @@ class _ChildDetailsState extends State<ChildDetails> {
                           Expanded(
                             child: Text(
                               'Select Gender',
-                              style: TextStyle(fontSize: 14, color: Colors.grey),
+                              style:
+                                  TextStyle(fontSize: 14, color: Colors.grey),
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
@@ -391,19 +406,18 @@ class _ChildDetailsState extends State<ChildDetails> {
                           style: TextStyle(color: Colors.white, fontSize: 18)),
                       controller: _btnController,
                       onPressed: () {
-                        
                         if (_nameController.text.length < 3) {
-                          AppUtils.showError(
-                              context, "Child name should be minimum 3 characters", "");
+                          AppUtils.showError(context,
+                              "Child name should be minimum 3 characters", "");
                         } else if (_dobController.text.isEmpty) {
                           AppUtils.showError(
                               context, "Please select child DOB", "");
                         } else if (selectedValue == null) {
-                          AppUtils.showError(context, "Please select gender", "");
+                          AppUtils.showError(
+                              context, "Please select gender", "");
                         } else {
                           AppUtils.showprogress();
                           checkChild();
-                         // _AddChild();
                         }
                       },
                     ),
@@ -419,7 +433,6 @@ class _ChildDetailsState extends State<ChildDetails> {
 
   _AddChild() {
     AddChildReq ChildReg = AddChildReq();
-    ChildReg.parentId = Strings.Parent_Id.toString();
     ChildReg.childName = _nameController.text;
     ChildReg.dob = _dobController.text;
     ChildReg.gender = selectedValue;
@@ -457,8 +470,8 @@ class _ChildDetailsState extends State<ChildDetails> {
         _AddChild();
       } else {
         AppUtils.dismissprogress();
-       // functions.createSnackBar(context, response.message.toString());
-       AppUtils.showError(context, "Child already exists", "");
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.showError(context, "Child already exists", "");
         _btnController.stop();
         print("error");
       }

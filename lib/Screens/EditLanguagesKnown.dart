@@ -1,0 +1,153 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:get/get.dart';
+import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Utilities/Strings.dart';
+
+class EditLangKnwn extends StatefulWidget {
+  const EditLangKnwn({Key? key}) : super(key: key);
+
+  @override
+  State<EditLangKnwn> createState() => _EditLangKnwnState();
+}
+
+class _EditLangKnwnState extends State<EditLangKnwn> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  List<String> Languages = [
+    "English",
+    "Hindi",
+    "Tamil",
+    "Urdu",
+    "Malayalam",
+    "Bengali",
+    "Kannada",
+    "Telugu",
+    "Gujarati",
+    "Nepali",
+    "Punjabi"
+  ];
+  List<bool> _tick = [
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ];
+  List<String> _selectedvalues = [];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: AppBar(
+        //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+        backgroundColor: Strings.appThemecolor,
+        title: Transform(
+          transform: Matrix4.translationValues(-10.0, 0, 0),
+          child: Text(
+            "Edit Languages Known",
+            style: TextStyle(
+                color: Colors.white, fontSize: 19, fontWeight: FontWeight.w600),
+          ),
+        ),
+        leading: Transform(
+          transform: Matrix4.translationValues(8.0, 0, 0),
+          child: IconButton(
+              onPressed: () {
+                // _scaffoldKey.currentState?.openDrawer();
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                // AssetImage("assets/imgs/menu_ver2.png"),
+                Icons.arrow_back,
+                size: 32,
+                color: Colors.white,
+              )),
+        ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(14, 100, 14, 0),
+              child: Wrap(
+                spacing: 18.0,
+                direction: Axis.horizontal,
+                children: List<Widget>.generate(Languages.length, (int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      _selectedvalues.add(Languages[index]);
+                      print("Lang:$_selectedvalues");
+
+                      setState(() {
+                        _tick[index] = !_tick[index];
+                      });
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 7, 0, 7),
+                      child: Chip(
+                        label: Container(
+                          width: 80,
+                          child: Center(
+                            child: Text(Languages[index],
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    color: _tick[index]
+                                        ? Colors.white
+                                        : Colors.black)),
+                          ),
+                        ),
+                        backgroundColor:
+                            _tick[index] ? Colors.green : Colors.grey.shade200,
+                      ),
+                    ),
+                  );
+                }),
+              ),
+            ),
+          ),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      for (int i = 0; i < 12; i++) {
+                        if (_tick[i] == true) {
+                          // print(activities[i]);
+                          _selectedvalues.add(Languages[i]);
+                          Navigator.pop(context);
+                          print(_selectedvalues);
+                          _selectedvalues[i] = Languages[i];
+                        } else {
+                          // _selectedvalues[i] = "null";
+                          continue;
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Strings.appThemecolor)),
+                  )),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+}

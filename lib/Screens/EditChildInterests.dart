@@ -144,34 +144,36 @@ class _EditChildInterestsState extends State<EditChildInterests> {
                   );
                 }),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 0, 80),
-            child: ElevatedButton(
-                style: ElevatedButton.styleFrom(primary: Strings.appThemecolor),
-                onPressed: () {
-                  for (int i = 0; i < 12; i++) {
-                    if (_tick[i] == true) {
-                      print(activities[i]);
-                      _selectedvalues.add(activities[i]);
-                      print(_selectedvalues);
-                      // _selectedvalues[i] = activities[i];
-                    } else {
-                      // _selectedvalues[i] = "null";
-                      continue;
-                    }
-                  }
-                },
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 8, horizontal: 90),
-                  child: Text(
-                    "Save",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600),
-                  ),
-                )),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 80),
+              child: Container(
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      for (int i = 0; i < 12; i++) {
+                        if (_tick[i] == true) {
+                          print(activities[i]);
+                          _selectedvalues.add(activities[i]);
+                          Navigator.pop(context);
+                          print(_selectedvalues);
+                          // _selectedvalues[i] = activities[i];
+                        } else {
+                          // _selectedvalues[i] = "null";
+                          continue;
+                        }
+                      }
+                    },
+                    child: Text(
+                      "Save",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Strings.appThemecolor)),
+                  )),
+            ),
           )
         ],
       ),

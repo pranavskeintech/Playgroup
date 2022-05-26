@@ -7,6 +7,7 @@ import 'package:playgroup/Screens/HomeScreen.dart';
 import 'package:playgroup/Screens/InitialHome.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
 import 'package:playgroup/Screens/Notification.dart';
+import 'package:playgroup/Screens/PastActivity.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/Search.dart';
 import 'package:playgroup/Utilities/ExitPopup.dart';
@@ -33,14 +34,10 @@ class _DashBoardState extends State<DashBoard> {
 
   final screens = [
     HomeScreen(),
-    InitialScreen(),
-    //  Center(child:Text("Past Activities")),
-    //  Center(child:Text("Search")),
-    //  Center(child:Text("Notification")),
-
+    //InitialScreen(),
+    PastActivity(),
     SearchScreen(),
     NotificationScreen(),
-    //Mark_Availabilty(),
   ];
 
   var ctx;
@@ -50,10 +47,10 @@ class _DashBoardState extends State<DashBoard> {
   @override
   void initState() {
     // TODO: implement initState
-    iconList.add(Icons.home);
+    iconList.add(Icons.home_outlined);
     iconList.add(Icons.schedule);
     iconList.add(Icons.search);
-    iconList.add(Icons.notifications);
+    iconList.add(Icons.notifications_outlined);
     super.initState();
   }
 
@@ -138,6 +135,7 @@ class _DashBoardState extends State<DashBoard> {
                   color: Colors.black,
                 )),
           ),
+          resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(

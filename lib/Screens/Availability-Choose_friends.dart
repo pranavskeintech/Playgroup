@@ -54,19 +54,15 @@ class _Availability_choose_friendsState
               alignment: Alignment.centerLeft,
               child: Text(
                 "Choose Friends to join you?",
-                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
               ),
             ),
             SizedBox(height: 10),
             Container(
-              
               decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
-                border: Border.all(
-                  color: Colors.grey.withOpacity(0.3)
-                ),
-                borderRadius: BorderRadius.circular(10)
-              ),
+                  color: Colors.grey.withOpacity(0.3),
+                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                  borderRadius: BorderRadius.circular(10)),
               height: 40,
               child: TextField(
                 enabled: true,
@@ -93,41 +89,76 @@ class _Availability_choose_friendsState
                         backgroundImage: AssetImage("assets/imgs/child1.jpg"),
                       ),
                       title: Text("Ramesh"),
-                      trailing: Checkbox(
-                        value: _isChecked?[index],
-                        onChanged: (val) {
-                          setState(
-                            () {
-                              _isChecked?[index] = val!;
+                      trailing: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey, width: 1),
+                          borderRadius: BorderRadius.circular(3.0),
+                        ),
+                        width: 20,
+                        height: 20,
+                        child: Theme(
+                          data: ThemeData(unselectedWidgetColor: Colors.white),
+                          child: Checkbox(
+                            checkColor: Colors.green,
+                            activeColor: Colors.transparent,
+                            value: _isChecked?[index],
+                            onChanged: (val) {
+                              setState(
+                                () {
+                                  _isChecked?[index] = val!;
+                                },
+                              );
                             },
-                          );
-                        },
+                          ),
+                        ),
                       ),
                     ),
-                  Divider(color: Colors.grey.withOpacity(0.8),height: 1,),
-                  
+                    Divider(
+                      color: Colors.grey.withOpacity(0.8),
+                      height: 1,
+                    ),
                   ],
                 );
               },
             )),
-             Center(
-            child: Container(
-              decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 0),
-              ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => DashBoard()));
-              }, child: Text("Continue"),style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Strings.appThemecolor)),)),
-          ),
             Center(
               child: SizedBox(
-              //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-              // ),
-              width: MediaQuery.of(context).size.width * 0.9,
-              child: ElevatedButton(onPressed: (){}, child: Text("Skip",style: TextStyle(color: Colors.black),),style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(Colors.white)),)),
-            )
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) => DashBoard()));
+                    },
+                    child: Text("Continue"),
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Strings.appThemecolor)),
+                  )),
+            ),
+            SizedBox(
+              height: 8,
+            ),
+            Center(
+              child: SizedBox(
+                  //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                  // ),
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text(
+                      "Skip",
+                      style: TextStyle(color: Colors.grey.shade700),
+                    ),
+                    style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all<Color>(Colors.white)),
+                  )),
+            ),
+            SizedBox(
+              height: 40,
+            ),
           ],
         ),
       ),

@@ -1,14 +1,13 @@
-
 import 'package:flutter/material.dart';
 
-
 mixin Strings {
-
   static String authToken = '';
+
+  static String refreshToken = '';
 
   static bool internetDialog = false;
 
-  static var appThemecolor =const Color.fromRGBO(94, 37, 108, 1);
+  static var appThemecolor = const Color.fromRGBO(94, 37, 108, 1);
 
   static var textFeildBg = const Color.fromRGBO(245, 245, 245, 1);
 
@@ -21,25 +20,24 @@ mixin Strings {
   static String parentName = '';
   static String parentemail = '';
 
- static bool firstLogin = true;
+  static bool firstLogin = true;
   static bool ForgotPassword = false;
-
 
   static String fcmToken = '';
 
-  static double Latt=0;
+  static double Latt = 0;
 
-  static double Long=0;
+  static double Long = 0;
 
-  static String UserName='';
+  static String UserName = '';
 
-  static String EmailId='';
+  static String EmailId = '';
 
-  static String Password='';
+  static String Password = '';
 
-  static String PhoneNumber='';
+  static String PhoneNumber = '';
 
-  static String? Location='';
+  static String? Location = '';
 
   static int Parent_Id = 0;
 
@@ -47,7 +45,7 @@ mixin Strings {
 
   static String searchText = "";
 
-  
+  static bool profilepage = false;
+
+  static bool DashboardPage = false;
 }
-
-

@@ -64,11 +64,18 @@ class _SettingsPageState extends State<SettingsPage> {
                       "Lorm ipsum dolor sit amet,consectetur",
                       style: TextStyle(color: Colors.grey),
                     ),
-                    trailing: Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
+                    trailing:
+                        //  Icon(
+                        //   Icons.arrow_right_alt,
+                        //   color: Colors.grey,
+                        //   size: 20,
+                        // ),
+                        IconButton(
+                            onPressed: () {},
+                            icon: ImageIcon(
+                              AssetImage("assets/imgs/right arrow.png"),
+                              size: 16,
+                            )),
                   ),
                 ),
                 SizedBox(
@@ -96,11 +103,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: Text("Privacy"),
                     subtitle: Text("Lorm ipsum dolor sit amet,consectetur",
                         style: TextStyle(color: Colors.grey)),
-                    trailing: Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
+                    trailing: IconButton(
+                        onPressed: () {},
+                        icon: ImageIcon(
+                          AssetImage("assets/imgs/right arrow.png"),
+                          size: 16,
+                        )),
                   ),
                 ),
                 SizedBox(
@@ -128,11 +136,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: Text("Location"),
                     subtitle: Text("Lorm ipsum dolor sit amet,consectetur",
                         style: TextStyle(color: Colors.grey)),
-                    trailing: Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
+                    trailing: IconButton(
+                        onPressed: () {},
+                        icon: ImageIcon(
+                          AssetImage("assets/imgs/right arrow.png"),
+                          size: 16,
+                        )),
                   ),
                 ),
                 SizedBox(
@@ -160,11 +169,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: Text("Help"),
                     subtitle: Text("Lorm ipsum dolor sit amet,consectetur",
                         style: TextStyle(color: Colors.grey)),
-                    trailing: Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
+                    trailing: IconButton(
+                        onPressed: () {},
+                        icon: ImageIcon(
+                          AssetImage("assets/imgs/right arrow.png"),
+                          size: 16,
+                        )),
                   ),
                 ),
                 SizedBox(
@@ -192,11 +202,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: Text("FAQ"),
                     subtitle: Text("Lorm ipsum dolor sit amet,consectetur",
                         style: TextStyle(color: Colors.grey)),
-                    trailing: Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
+                    trailing: IconButton(
+                        onPressed: () {},
+                        icon: ImageIcon(
+                          AssetImage("assets/imgs/right arrow.png"),
+                          size: 16,
+                        )),
                   ),
                 ),
                 SizedBox(
@@ -224,11 +235,12 @@ class _SettingsPageState extends State<SettingsPage> {
                     title: Text("Policies, Terms & Conditions"),
                     subtitle: Text("Lorm ipsum dolor sit amet,consectetur",
                         style: TextStyle(color: Colors.grey)),
-                    trailing: Icon(
-                      Icons.arrow_right_alt,
-                      color: Colors.grey,
-                      size: 20,
-                    ),
+                    trailing: IconButton(
+                        onPressed: () {},
+                        icon: ImageIcon(
+                          AssetImage("assets/imgs/right arrow.png"),
+                          size: 16,
+                        )),
                   ),
                 ),
               ],
