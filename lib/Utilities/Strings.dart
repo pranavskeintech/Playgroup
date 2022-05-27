@@ -48,4 +48,14 @@ mixin Strings {
   static bool profilepage = false;
 
   static bool DashboardPage = false;
+
+  static String markAvailabiltydate = "";
+
+  static String markAvailabiltystartTime = "";
+  
+  static String markAvailabiltyendTime = "";
+  
+  static String markAvailabiltydesc = "";
+  
+  static String markAvailabiltylocations = "";
 }
