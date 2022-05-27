@@ -13,6 +13,8 @@ mixin Strings {
 
   static var textFeildHeading = const Color.fromRGBO(187, 185, 185, 1);
 
+  static var chipsbg = const Color.fromRGBO(241, 244, 251, 1);
+
   static String appName = 'Play Group';
 
   static String imageUrl = "https://demo.emeetify.com:5890/";

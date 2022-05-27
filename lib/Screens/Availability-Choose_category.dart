@@ -47,105 +47,129 @@ class _Choose_CategoryState extends State<Choose_Category> {
         backgroundColor: Strings.appThemecolor,
       ),
       body: Container(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-                padding: EdgeInsets.all(20),
-                child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "What do you want to play?",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ))),
-            Container(
-                height: 400,
-                margin: EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: GridView.builder(
-                  itemCount: options.length,
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      childAspectRatio: 30 / 10,
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 20.0,
-                      mainAxisSpacing: 20.0),
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            selectedIndex = index;
-                          });
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: selectedIndex != index
-                                ? Colors.white
-                                : Colors.green,
-                            // border:
-                            //     Border.all(color: Colors.grey.withOpacity(0.3)),
-                            borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.3),
-                                blurRadius: 0.0, // soften the shadow
-                                spreadRadius: 0.0, //extend the shadow
-                                offset: Offset(
-                                  0.0, // Move to right 10  horizontally
-                                  0.5, // Move to bottom 10 Vertically
+        child: Container(
+          height: MediaQuery.of(context).size.height * 1,
+          child: Column(
+            children: [
+              Container(
+                  padding: EdgeInsets.all(20),
+                  child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+                        child: Text(
+                          "What do you want to play?",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ))),
+              Container(
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
+                  child: GridView.builder(
+                    itemCount: options.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        childAspectRatio: 30 / 10,
+                        crossAxisCount: 3,
+                        crossAxisSpacing: 20.0,
+                        mainAxisSpacing: 20.0),
+                    itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedIndex = index;
+                            });
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: selectedIndex != index
+                                  ? Strings.chipsbg
+                                  : Colors.green,
+                              // border:
+                              //     Border.all(color: Colors.grey.withOpacity(0.3)),
+                              borderRadius: BorderRadius.circular(25),
+                              // boxShadow: [
+                              //   BoxShadow(
+                              //     color: Colors.grey.withOpacity(0.3),
+                              //     blurRadius: 0.0, // soften the shadow
+                              //     spreadRadius: 0.0, //extend the shadow
+                              //     offset: Offset(
+                              //       0.0, // Move to right 10  horizontally
+                              //       0.5, // Move to bottom 10 Vertically
+                              //     ),
+                              //   )
+                              // ],
+                            ),
+                            child: Center(
+                              child: Padding(
+                                padding: const EdgeInsets.fromLTRB(7, 0, 7, 0),
+                                child: Flexible(
+                                  child: Text(
+                                    options[index],
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: selectedIndex != index
+                                            ? Colors.black
+                                            : Colors.white),
+                                  ),
                                 ),
-                              )
-                            ],
-                          ),
-                          child: Center(
-                            child: Padding(
-                              padding: const EdgeInsets.all(2.0),
-                              child: Text(
-                                options[index],
-                                style: TextStyle(
-                                    color: selectedIndex != index
-                                        ? Colors.black
-                                        : Colors.white),
                               ),
                             ),
-                          ),
-                        ));
-                  },
-                )),
-            Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            Availability_choose_friends()));
-                  },
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(fontSize: 18),
+                          ));
+                    },
+                  )),
+              SizedBox(
+                height: 20,
+              ),
+              Spacer(),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 40),
+                child: Container(
+                  child: Column(
+                    children: [
+                      Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      Availability_choose_friends()));
+                            },
+                            child: Text(
+                              "Continue",
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Strings.appThemecolor)),
+                          )),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      SizedBox(
+                          //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                          // ),
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Skip",
+                              style: TextStyle(
+                                  color: Colors.grey.shade700, fontSize: 18),
+                            ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white)),
+                          )),
+                    ],
                   ),
-                  style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(
-                          Strings.appThemecolor)),
-                )),
-            SizedBox(
-              height: 8,
-            ),
-            SizedBox(
-                //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                // ),
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: 50,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Text(
-                    "Skip",
-                    style: TextStyle(color: Colors.grey.shade700, fontSize: 18),
-                  ),
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white)),
-                ))
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
