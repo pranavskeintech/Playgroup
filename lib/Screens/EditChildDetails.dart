@@ -491,11 +491,6 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                             } else if (selectedValue == null) {
                               AppUtils.showError(
                                   context, "Please select gender", "");
-                            } else if (_schoolController.text.length < 3) {
-                              AppUtils.showError(
-                                  context,
-                                  "school name should be minimum 3 characters",
-                                  "");
                             } else {
                               AppUtils.showprogress();
                               // checkChild();

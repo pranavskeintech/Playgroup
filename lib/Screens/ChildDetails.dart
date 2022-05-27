@@ -440,7 +440,7 @@ class _ChildDetailsState extends State<ChildDetails> {
     if (img64 != "") {
       ChildReg.profile = "data:image/jpeg;base64,$img64";
     } else {
-      ChildReg.profile = "null";
+      ChildReg.profile = null;
     }
     print(jsonEncode(ChildReg));
     final api = Provider.of<ApiService>(ctx!, listen: false);
