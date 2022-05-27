@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -24,6 +25,10 @@ class _Availability_choose_friendsState
   ];
 
   List<bool>? _isChecked;
+
+  TextEditingController searchController = TextEditingController();
+
+  bool _switchValue = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -60,23 +65,51 @@ class _Availability_choose_friendsState
             SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.3),
-                  border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                  borderRadius: BorderRadius.circular(10)),
+                  // color: Colors.grey.withOpacity(0.3),
+                  // border: Border.all(color: Colors.grey.withOpacity(0.3)),
+                  borderRadius: BorderRadius.circular(0)),
               height: 40,
               child: TextField(
                 enabled: true,
+                controller: searchController,
+                textInputAction: TextInputAction.search,
                 textAlign: TextAlign.justify,
                 style: TextStyle(height: 1),
                 decoration: InputDecoration(
+                    contentPadding: EdgeInsets.all(10),
                     hintText: "Search",
                     border: InputBorder.none,
+                    enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.grey.shade300, width: 0.0),
+                        borderRadius: BorderRadius.circular(6)),
                     filled: true,
+                    fillColor: Strings.textFeildBg,
                     prefixIcon: Icon(Icons.search)),
               ),
             ),
             SizedBox(
               height: 10,
+            ),
+            Row(
+              children: [
+                Text(
+                  "Select all friends",
+                  style: TextStyle(color: Colors.blue),
+                ),
+                Switch(
+                  activeColor: Colors.blue,
+                  value: _switchValue,
+                  onChanged: (value) {
+                    setState(() {
+                      _switchValue = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
             ),
             Expanded(
                 child: ListView.builder(

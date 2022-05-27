@@ -139,8 +139,8 @@ class _DashBoardState extends State<DashBoard> {
           resizeToAvoidBottomInset: false,
           floatingActionButton: FloatingActionButton(
             onPressed: () {
-              // Navigator.of(context).push(MaterialPageRoute(
-              //     builder: (BuildContext context) => Mark_Availabilty()));
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => Mark_Availabilty()));
             },
             backgroundColor: Strings.appThemecolor,
             child: Icon(Icons.add),

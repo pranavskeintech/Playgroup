@@ -6,6 +6,7 @@ import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
+import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
@@ -82,6 +83,9 @@ abstract class ApiService {
 
   @PUT("user/updatechild")
   Future<CommonRes> ChooseChild(@Body() ChooseChildReq body);
+
+  @GET("user/profile")
+  Future<GetProfileRes> GetProfile();
 
 //////////////////////////////////////////////////////////////////////////////////////////
   /// Request and Response Body
