@@ -72,8 +72,8 @@ class _AddCoParentState extends State<AddCoParent> {
             ),
             Container(
               decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.3),
-                  border: Border.all(color: const Color(0xFFf2f3f4)),
+                  color: Strings.textFeildBg,
+                  border: Border.all(color: Strings.textFeildBg),
                   borderRadius: BorderRadius.circular(10)),
               child: Row(
                 children: [
@@ -85,17 +85,17 @@ class _AddCoParentState extends State<AddCoParent> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: const OutlineInputBorder(
+                        focusedBorder:  OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(230, 230, 230, 1),
+                              color: Strings.textFeildBg,
                               width: 0.0),
                         ),
-                        enabledBorder: const OutlineInputBorder(
+                        enabledBorder:  OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(230, 230, 230, 1),
+                              color: Strings.textFeildBg,
                               width: 0.0),
                         ),
-                        fillColor: Color.fromRGBO(230, 230, 230, 1),
+                        fillColor: Strings.textFeildBg,
                         filled: true,
                         hintText: "Enter Co-Parent Name",
                         contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
@@ -128,8 +128,8 @@ class _AddCoParentState extends State<AddCoParent> {
             ),
             Container(
               decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.3),
-                  border: Border.all(color: const Color(0xFFf2f3f4)),
+                  color: Strings.textFeildBg,
+                  border: Border.all(color: Strings.textFeildBg),
                   borderRadius: BorderRadius.circular(10)),
               child: Row(
                 children: [
@@ -141,17 +141,17 @@ class _AddCoParentState extends State<AddCoParent> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: const OutlineInputBorder(
+                        focusedBorder:  OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(230, 230, 230, 1),
+                              color: Strings.textFeildBg,
                               width: 0.0),
                         ),
-                        enabledBorder: const OutlineInputBorder(
+                        enabledBorder:  OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(230, 230, 230, 1),
+                              color: Strings.textFeildBg,
                               width: 0.0),
                         ),
-                        fillColor: Color.fromRGBO(230, 230, 230, 1),
+                        fillColor: Strings.textFeildBg,
                         filled: true,
                         hintText: "Enter Email Id",
                         contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
@@ -231,8 +231,8 @@ class _AddCoParentState extends State<AddCoParent> {
                     // border: Border.all(
                     //   color: Colors.black26,
                     // ),
-                    color: Color.fromARGB(255, 230, 230, 230)),
-                buttonElevation: 2,
+                    color: Strings.textFeildBg),
+                buttonElevation: 0,
                 itemHeight: 40,
                 itemPadding: const EdgeInsets.only(left: 14, right: 14),
                 dropdownMaxHeight: 200,
@@ -242,7 +242,7 @@ class _AddCoParentState extends State<AddCoParent> {
                   borderRadius: BorderRadius.circular(14),
                   color: Colors.white,
                 ),
-                dropdownElevation: 8,
+                dropdownElevation: 0,
                 scrollbarRadius: const Radius.circular(40),
                 scrollbarThickness: 6,
                 scrollbarAlwaysShow: true,
@@ -271,8 +271,8 @@ class _AddCoParentState extends State<AddCoParent> {
             ),
             Container(
               decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.3),
-                  border: Border.all(color: const Color(0xFFf2f3f4)),
+                  color: Strings.textFeildBg,
+                  border: Border.all(color: Strings.textFeildBg),
                   borderRadius: BorderRadius.circular(10)),
               child: Row(
                 children: [
@@ -284,17 +284,17 @@ class _AddCoParentState extends State<AddCoParent> {
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        focusedBorder: const OutlineInputBorder(
+                        focusedBorder:  OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(230, 230, 230, 1),
+                              color: Strings.textFeildBg,
                               width: 0.0),
                         ),
-                        enabledBorder: const OutlineInputBorder(
+                        enabledBorder:  OutlineInputBorder(
                           borderSide: BorderSide(
-                              color: Color.fromRGBO(230, 230, 230, 1),
+                              color: Strings.textFeildBg,
                               width: 0.0),
                         ),
-                        fillColor: Color.fromRGBO(230, 230, 230, 1),
+                        fillColor: Strings.textFeildBg,
                         filled: true,
                         hintText: "Enter Password",
                         contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
@@ -305,8 +305,9 @@ class _AddCoParentState extends State<AddCoParent> {
                 ],
               ),
             ),
+            Spacer(),
             Container(
-              margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+              margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
               width: MediaQuery.of(context).size.width * 0.9,
               child: RoundedLoadingButton(
                 resetDuration: Duration(seconds: 10),

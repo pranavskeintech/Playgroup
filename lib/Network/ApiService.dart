@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/AddChildReq2.dart';
+import 'package:playgroup/Models/AddcoParentReq.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
@@ -44,6 +45,9 @@ abstract class ApiService {
 
   @POST("mark/addmark")
   Future<CommonRes> createAvailability(@Body() MarkAvailabilityReq body);
+
+   @POST("user/coparent")
+  Future<CommonRes> addCoParent(@Body() AddcoParentReq body);
 
   @GET("user/Checkchild/{name}/{user_id}")
   Future<CheckchildRes> Checkchild(
@@ -100,7 +104,6 @@ abstract class ApiService {
       dio.interceptors
           .add(InterceptorsWrapper(onRequest: (options, handler) async {
         options.headers["Content-Type"] = "application/json";
-        print("object" + Strings.refreshToken);
         options.headers["jwt"] = Strings.authToken;
         options.headers["refresh-token"] = Strings.refreshToken;
         // options.headers["jwt"] = "08d41a36b34dadcfd6005452deb92037ad85af33b227827ae2f4e2d34b927fa0ae6a83d43cfdcff9";
