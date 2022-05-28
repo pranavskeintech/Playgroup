@@ -141,6 +141,7 @@ class _Availability_choose_friendsState
                                   _isChecked?[index] = val!;
                                 },
                               );
+                              print("object:${_isChecked?[index]}");
                             },
                           ),
                         ),

@@ -27,6 +27,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   final _dobController = TextEditingController();
   final _FromTimeController = TextEditingController();
   final _TOTimeController = TextEditingController();
+  final _DescriptionController = TextEditingController();
+  final _AddressController = TextEditingController();
   List<IconData> iconList = [];
   var _bottomNavIndex = 0;
   String? selectedStartTime;
@@ -43,8 +45,6 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   ];
 
   String? _currentAddress;
-
-  var _AddressController = TextEditingController();
 
   bool todaySelected = false;
   bool TommorowSelected = false;
@@ -762,7 +762,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     Expanded(
                       child: TextField(
                         style: TextStyle(color: Colors.black),
-                        //controller: _numberController,
+                        controller: _DescriptionController,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -888,6 +888,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                                   var location =
                                       'Lat: ${position.latitude} , Long: ${position.longitude}';
                                   GetAddressFromLatLong(position);
+                                } else {
+                                  _AddressController.text = "Open to anything";
                                 }
                               },
                               decoration: new InputDecoration(
@@ -952,6 +954,11 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                                         width: 2,
                                         color: Colors.grey.withOpacity(0.2))))),
                     onPressed: () {
+                      Strings.AvailabilityDate = _dobController.text;
+                      Strings.AvailabilityStartTime = _FromTimeController.text;
+                      Strings.AvailabilityEndTime = _TOTimeController.text;
+                      Strings.Description = _DescriptionController.text;
+                      Strings.Location = _AddressController.text;
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (context) => ChooseTopic()));
                     },

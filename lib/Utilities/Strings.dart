@@ -50,4 +50,14 @@ mixin Strings {
   static bool profilepage = false;
 
   static bool DashboardPage = false;
+
+  static String AvailabilityDate = '';
+
+  static String AvailabilityStartTime = '';
+
+  static String AvailabilityEndTime = '';
+
+  static String Description = '';
+
+  static int? Activities;
 }

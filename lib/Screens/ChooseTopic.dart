@@ -14,6 +14,17 @@ class ChooseTopic extends StatefulWidget {
 class _ChooseTopicState extends State<ChooseTopic> {
   int? selectedActivities;
   int? selectedOtherActivities;
+  @override
+  void initState() {
+    // TODO: implement initState
+    print("object");
+    print("1:${Strings.AvailabilityDate}");
+    print("2:${Strings.AvailabilityStartTime}");
+    print("3:${Strings.AvailabilityEndTime}");
+    print("4:${Strings.Description}");
+    print("5:${Strings.Location}");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +65,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                           setState(() {
                             selectedOtherActivities = null;
                             selectedActivities = index;
+                            Strings.Activities = selectedActivities;
                           });
                         },
                         child: Stack(

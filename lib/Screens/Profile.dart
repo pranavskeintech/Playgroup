@@ -119,15 +119,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       TextButton(
                           onPressed: () {},
                           child: Row(
-                            children: const [
+                            children: [
                               Text("Edit"),
                               SizedBox(
                                 width: 5,
                               ),
-                              Icon(
-                                Icons.edit_outlined,
-                                size: 15,
-                              )
+                              Image.asset(
+                                "assets/imgs/compose.png",
+                                fit: BoxFit.fill,
+                                color: Colors.blue,
+                                width: 15,
+                                height: 15,
+                              ),
                             ],
                           ))
                     ],
@@ -241,97 +244,96 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   SizedBox(
                     height: 30,
                   ),
-                  // (_ProfileData!.coParent!.length == 0)
-                  //     ? Container(
-                  //         child: Column(
-                  //           crossAxisAlignment: CrossAxisAlignment.start,
-                  //           children: [
-                  //             Text(
-                  //               "Co-Parent",
-                  //               style: TextStyle(color: Colors.grey),
-                  //             ),
-                  //             ElevatedButton(
-                  //                 onPressed: () {
-                  //                   Navigator.of(context).push(
-                  //                       MaterialPageRoute(
-                  //                           builder: (BuildContext context) =>
-                  //                               AddCoParent()));
-                  //                 },
-                  //                 child: Text("Add Co-Parent"))
-                  //           ],
-                  //         ),
-                  //       )
-                  //     :
-                  Container(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Co-Parent",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            TextButton(
-                                onPressed: () {},
-                                child: Row(
-                                  children: const [
-                                    Text("Edit"),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Icon(
-                                      Icons.edit_outlined,
-                                      size: 15,
-                                    )
-                                  ],
-                                ))
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                      width: MediaQuery.of(context).size.width * 0.95,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.grey.shade200,
-                        // boxShadow: [
-                        //   BoxShadow(
-                        //     color: Colors.grey.withOpacity(0.1),
-                        //     blurRadius: 8.0, // soften the shadow
-                        //     spreadRadius: 5.0, //extend the shadow
-                        //     offset: Offset(
-                        //       2.0, // Move to right 10  horizontally
-                        //       2.0, // Move to bottom 10 Vertically
-                        //     ),
-                        //   )
-                        // ],
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Column(
+                  (_ProfileData!.coParent!.length == 0)
+                      ? Container(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Co-Parent",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                AddCoParent()));
+                                  },
+                                  child: Text("Add Co-Parent"))
+                            ],
+                          ),
+                        )
+                      : Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              "Merin Doe",
-                              style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.w500),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("merindoe34@gmail.com"),
-                                Text("Access-Complete"),
+                                Text(
+                                  "Co-Parent",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                                TextButton(
+                                    onPressed: () {},
+                                    child: Row(
+                                      children: [
+                                        Text("Edit"),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Image.asset(
+                                          "assets/imgs/compose.png",
+                                          fit: BoxFit.fill,
+                                          color: Colors.blue,
+                                          width: 15,
+                                          height: 15,
+                                        ),
+                                      ],
+                                    ))
                               ],
                             ),
+                            Container(
+                                width: MediaQuery.of(context).size.width * 0.95,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.grey.shade200,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        "Merin Doe",
+                                        style: TextStyle(
+                                            fontSize: 15,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text("merindoe34@gmail.com"),
+                                          Row(
+                                            children: [
+                                              Text("Access-"),
+                                              Text("Complete",
+                                                  style: TextStyle(
+                                                      color: Colors.green)),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )),
                           ],
                         ),
-                      )),
                   SizedBox(
                     height: 20,
                   ),
@@ -339,65 +341,100 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                       )),
+                  SizedBox(
+                    height: 10,
+                  ),
                   Expanded(
                     child: ListView.builder(
                       itemCount: _ProfileData!.children!.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          onTap: (() {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ChildProfile()));
-                          }),
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/imgs/child1.jpg"),
-                          ),
-                          title:
-                              Text(_ProfileData!.children![index].childName!),
-                          subtitle: Text(
-                            TimeAgo.calculateTimeDifferenceBetween(
-                                _ProfileData!.children![index].dob),
-                          ),
-                          trailing: Text(
-                            "Remove",
-                            style: TextStyle(color: Colors.red),
+                        return Padding(
+                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 7),
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.95,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  blurRadius: 8.0,
+                                )
+                              ],
+                            ),
+                            child: ListTile(
+                              onTap: (() {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ChildProfile()));
+                              }),
+                              leading: CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("assets/imgs/child1.jpg"),
+                              ),
+                              title: Text(
+                                  _ProfileData!.children![index].childName!),
+                              subtitle: Text(
+                                TimeAgo.calculateTimeDifferenceBetween(
+                                    _ProfileData!.children![index].dob),
+                              ),
+                              trailing: Container(
+                                width: 75,
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      "Remove",
+                                      style: TextStyle(color: Colors.red),
+                                    ),
+                                    Icon(
+                                      Icons.clear,
+                                      size: 15,
+                                      color: Colors.red,
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       },
                     ),
                   ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: 50,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            Strings.profilepage = true;
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    ChildDetails()));
-                          },
-                          child: Text(
-                            "Add Child",
-                            style: TextStyle(
-                              color: Colors.grey.shade700,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 50,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              Strings.profilepage = true;
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ChildDetails()));
+                            },
+                            child: Text(
+                              "Add Child",
+                              style: TextStyle(
+                                color: Colors.grey.shade700,
+                              ),
                             ),
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                        side: BorderSide(
+                                            width: 2,
+                                            color: Colors.grey
+                                                .withOpacity(0.2))))),
                           ),
-                          style: ButtonStyle(
-                              backgroundColor:
-                                  MaterialStateProperty.all(Colors.white),
-                              shape: MaterialStateProperty.all<
-                                      RoundedRectangleBorder>(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(4.0),
-                                      side: BorderSide(
-                                          width: 2,
-                                          color:
-                                              Colors.grey.withOpacity(0.2))))),
-                        ),
-                      )),
+                        )),
+                  ),
                   SizedBox(
                     height: 40,
                   )
