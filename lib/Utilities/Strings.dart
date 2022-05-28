@@ -51,6 +51,16 @@ mixin Strings {
 
   static bool DashboardPage = false;
 
+  static String markAvailabiltydate = "";
+
+  static String markAvailabiltystartTime = "";
+
+  static String markAvailabiltyendTime = "";
+
+  static String markAvailabiltydesc = "";
+
+  static String markAvailabiltylocations = "";
+
   static String AvailabilityDate = '';
 
   static String AvailabilityStartTime = '';
@@ -58,6 +68,4 @@ mixin Strings {
   static String AvailabilityEndTime = '';
 
   static String Description = '';
-
-  static int? Activities;
 }

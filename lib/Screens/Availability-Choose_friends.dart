@@ -65,9 +65,9 @@ class _Availability_choose_friendsState
             SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
-                  // color: Colors.grey.withOpacity(0.3),
-                  // border: Border.all(color: Colors.grey.withOpacity(0.3)),
-                  borderRadius: BorderRadius.circular(0)),
+                  color: Strings.textFeildBg,
+                  border: Border.all(color: Strings.textFeildBg),
+                  borderRadius: BorderRadius.circular(10)),
               height: 40,
               child: TextField(
                 enabled: true,
@@ -164,7 +164,7 @@ class _Availability_choose_friendsState
                       Navigator.of(context).push(MaterialPageRoute(
                           builder: (BuildContext context) => DashBoard()));
                     },
-                    child: Text("Continue"),
+                    child: Text("Done"),
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             Strings.appThemecolor)),
@@ -172,23 +172,6 @@ class _Availability_choose_friendsState
             ),
             SizedBox(
               height: 8,
-            ),
-            Center(
-              child: SizedBox(
-                  //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                  // ),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  height: 50,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      "Skip",
-                      style: TextStyle(color: Colors.grey.shade700),
-                    ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                  )),
             ),
             SizedBox(
               height: 40,

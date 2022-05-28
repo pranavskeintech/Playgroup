@@ -65,7 +65,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                           setState(() {
                             selectedOtherActivities = null;
                             selectedActivities = index;
-                            Strings.Activities = selectedActivities;
+                            //Strings.Activities = selectedActivities;
                           });
                         },
                         child: Stack(
