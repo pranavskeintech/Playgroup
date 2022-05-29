@@ -81,7 +81,7 @@ class Profile {
 class Children {
   int? childId;
   int? parentId;
-  Null? coParentId;
+  int? coParentId;
   String? childName;
   String? dob;
   String? gender;
@@ -132,8 +132,8 @@ class CoParent {
   String? access;
   String? phone;
   String? location;
-  Null? selectedChildId;
-  Null? parentId;
+  int? selectedChildId;
+  int? parentId;
   String? createdDate;
 
   CoParent(

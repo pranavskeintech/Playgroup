@@ -255,7 +255,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               ElevatedButton(
                                   onPressed: () {
-                                    Navigator.of(context).push(
+                                    Navigator.of(context).pushReplacement(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 AddCoParent()));
@@ -306,7 +306,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        "Merin Doe",
+                                        _ProfileData!.coParent?[0].parentName ?? "",
                                         style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500),
@@ -318,13 +318,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text("merindoe34@gmail.com"),
+                                          Text(_ProfileData!.coParent?[0].emailId ?? ""),
                                           Row(
                                             children: [
-                                              Text("Access-"),
-                                              Text("Complete",
+                                              Text("Access: "),
+                                              Text(_ProfileData!.coParent?[0].access ?? "",
                                                   style: TextStyle(
-                                                      color: Colors.green)),
+                                                      color: _ProfileData!.coParent?[0].access != "VIEW"?Colors.green:Colors.orange)),
                                             ],
                                           ),
                                         ],
