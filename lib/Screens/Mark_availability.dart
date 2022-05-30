@@ -11,7 +11,7 @@ import 'package:playgroup/Utilities/Strings.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
-import 'package:intl/intl.dart';
+
 import '../Utilities/AppUtlis.dart';
 import 'ChooseTopic.dart';
 
@@ -24,7 +24,7 @@ class Mark_Availabilty extends StatefulWidget {
 
 class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final _selectedDateController = TextEditingController();
+  final _dobController = TextEditingController();
   final _FromTimeController = TextEditingController();
   final _TOTimeController = TextEditingController();
   final _DescriptionController = TextEditingController();
@@ -64,34 +64,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
     if (ChoosenTime1 != null) {
       setState(() {
         // String time1 = "${ChoosenTime1.hour}:${ChoosenTime1.minute}";
-        var startTime = DateTime(
-          now.year,
-          now.month,
-          now.day,
-          ChoosenTime1.hour,
-          ChoosenTime1.minute,
-        );
-        var currentTime1 = DateTime.now();
-        var diff = startTime.difference(currentTime1).inMinutes;
-
-        var currentDate = "${now.day}-${now.month}-${now.year}";
-
-        if (_selectedDateController.text == null ||
-            _selectedDateController.text == "") {
-          AppUtils.showError(context, "Please select a date", "");
-        } else {
-          if (currentDate == _selectedDateController.text) {
-            if (diff < 0) {
-              _FromTimeController.text = "";
-              AppUtils.showError(context,
-                  "Time is already passed! please select a valid time", "");
-            } else {
-              _FromTimeController.text = ChoosenTime1.format(context);
-            }
-          } else {
-            _FromTimeController.text = ChoosenTime1.format(context);
-          }
-        }
+        _FromTimeController.text = ChoosenTime1.format(context);
       });
     }
   }
@@ -143,7 +116,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
     if (picked != null) {
       setState(() {
         String date1 = "${picked.day}-${picked.month}-${picked.year}";
-        _selectedDateController.text = date1;
+        _dobController.text = date1;
         print("date selected");
         todaySelected = false;
         TommorowSelected = false;
@@ -311,7 +284,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     onTap: () {
                       setState(() {
                         String date2 = "${now.day}-${now.month}-${now.year}";
-                        _selectedDateController.text = date2;
+                        _dobController.text = date2;
                         print("date selected");
                         todaySelected = true;
                         TommorowSelected = false;
@@ -382,7 +355,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                       setState(() {
                         String date3 =
                             "${now.day + 1}-${now.month}-${now.year}";
-                        _selectedDateController.text = date3;
+                        _dobController.text = date3;
                         print("date selected");
                         todaySelected = false;
                         TommorowSelected = true;
@@ -478,7 +451,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                         child: Container(
                           height: 42,
                           child: TextField(
-                            controller: _selectedDateController,
+                            controller: _dobController,
                             enabled: false,
                             style: TextStyle(color: Colors.black),
                             decoration: InputDecoration(
@@ -981,13 +954,25 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                                         width: 2,
                                         color: Colors.grey.withOpacity(0.2))))),
                     onPressed: () {
-                      Strings.AvailabilityDate = _selectedDateController.text;
-                      Strings.AvailabilityStartTime = _FromTimeController.text;
-                      Strings.AvailabilityEndTime = _TOTimeController.text;
-                      Strings.Description = _DescriptionController.text;
-                      Strings.Location = _AddressController.text;
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => ChooseTopic()));
+                      if (_dobController.text.isNotEmpty &&
+                          _FromTimeController.text.isNotEmpty &&
+                          _TOTimeController.text.isNotEmpty &&
+                          _DescriptionController.text.isNotEmpty &&
+                          _AddressController.text.isNotEmpty) {
+                        Strings.markAvailabiltydate = _dobController.text;
+                        Strings.markAvailabiltystartTime =
+                            _FromTimeController.text;
+                        Strings.markAvailabiltyendTime = _TOTimeController.text;
+                        Strings.markAvailabiltydesc =
+                            _DescriptionController.text;
+                        Strings.markAvailabiltylocations =
+                            _AddressController.text;
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => ChooseTopic()));
+                      } else {
+                        AppUtils.showWarning(
+                            context, "Please fill all the feilds", "");
+                      }
                     },
                     child: Text(
                       "Continue",

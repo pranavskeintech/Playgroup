@@ -102,9 +102,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   child: Text('Profile'),
                 ),
                 onTap: () => {
+                  print("object"),
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => ProfileScreen()))
-                 // Navigator.of(context).pop()
+                  // Navigator.of(context).pop()
                 },
               ),
               ListTile(

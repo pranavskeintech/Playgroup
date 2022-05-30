@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/SearchResults.dart';
+import 'package:playgroup/Screens/ShowOtherChild.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
 
@@ -94,73 +95,82 @@ class _SearchScreenState extends State<SearchScreen> {
                               .childName!
                               .toLowerCase()
                               .indexOf(searchController.text.toLowerCase());
-                          return Container(
-                              padding: EdgeInsets.all(10),
-                              child: Row(children: [
-                                CircleAvatar(
-                                  backgroundImage: searchData[index].profile !=
-                                          "null"
-                                      ? NetworkImage(Strings.imageUrl +
-                                          (searchData[index].profile ?? ""))
-                                      : AssetImage("assets/imgs/appicon.png")
-                                          as ImageProvider,
-                                ),
-                                SizedBox(width: 14),
-                                Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      // Text(searchData[index].childName ?? "",style: TextStyle(fontSize: 14)),
-                                      RichText(
-                                          text: TextSpan(
-                                        text: searchData[index]
-                                            .childName!
-                                            .substring(0, startIndex),
-                                        style: TextStyle(color: Colors.grey),
-                                        children: [
-                                          TextSpan(
-                                            text: searchData[index]
-                                                .childName!
-                                                .substring(
-                                                    startIndex,
-                                                    startIndex +
-                                                        searchController
-                                                            .text.length),
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.black),
-                                          ),
-                                          TextSpan(
-                                            text: searchData[index]
-                                                .childName!
-                                                .substring(startIndex +
-                                                    searchController
-                                                        .text.length),
-                                            style:
-                                                TextStyle(color: Colors.grey),
-                                          )
-                                        ],
-                                      )),
-                                      SizedBox(height: 5),
-                                      Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_pin,
-                                            color: Colors.red,
-                                            size: 15,
-                                          ),
-                                          SizedBox(
-                                            width: 3,
-                                          ),
-                                          Text(
-                                            searchData[index].location ?? "",
-                                            overflow: TextOverflow.fade,
-                                            maxLines: 3,
-                                          )
-                                        ],
-                                      ),
-                                    ])
-                              ]));
+                          return GestureDetector(
+                            onTap: () {
+                              Strings.FriendNotification = false;
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      ShowOtherChildProfile()));
+                            },
+                            child: Container(
+                                padding: EdgeInsets.all(10),
+                                child: Row(children: [
+                                  CircleAvatar(
+                                    backgroundImage: searchData[index]
+                                                .profile !=
+                                            "null"
+                                        ? NetworkImage(Strings.imageUrl +
+                                            (searchData[index].profile ?? ""))
+                                        : AssetImage("assets/imgs/appicon.png")
+                                            as ImageProvider,
+                                  ),
+                                  SizedBox(width: 14),
+                                  Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        // Text(searchData[index].childName ?? "",style: TextStyle(fontSize: 14)),
+                                        RichText(
+                                            text: TextSpan(
+                                          text: searchData[index]
+                                              .childName!
+                                              .substring(0, startIndex),
+                                          style: TextStyle(color: Colors.grey),
+                                          children: [
+                                            TextSpan(
+                                              text: searchData[index]
+                                                  .childName!
+                                                  .substring(
+                                                      startIndex,
+                                                      startIndex +
+                                                          searchController
+                                                              .text.length),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black),
+                                            ),
+                                            TextSpan(
+                                              text: searchData[index]
+                                                  .childName!
+                                                  .substring(startIndex +
+                                                      searchController
+                                                          .text.length),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            )
+                                          ],
+                                        )),
+                                        SizedBox(height: 5),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.location_pin,
+                                              color: Colors.red,
+                                              size: 15,
+                                            ),
+                                            SizedBox(
+                                              width: 3,
+                                            ),
+                                            Text(
+                                              searchData[index].location ?? "",
+                                              overflow: TextOverflow.fade,
+                                              maxLines: 3,
+                                            )
+                                          ],
+                                        ),
+                                      ])
+                                ])),
+                          );
                         },
                       ),
                     )

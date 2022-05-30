@@ -61,11 +61,9 @@ mixin Strings {
 
   static String markAvailabiltylocations = "";
 
-  static String AvailabilityDate = '';
+  static int markAvailabiltycategory = 0;
 
-  static String AvailabilityStartTime = '';
+  static int markAvailabiltyTopic = 0;
 
-  static String AvailabilityEndTime = '';
-
-  static String Description = '';
+  static bool FriendNotification = false;
 }

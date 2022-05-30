@@ -6,8 +6,10 @@ import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
+import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
+import 'package:playgroup/Models/GetSportsRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
@@ -46,7 +48,7 @@ abstract class ApiService {
   @POST("mark/addmark")
   Future<CommonRes> createAvailability(@Body() MarkAvailabilityReq body);
 
-   @POST("user/coparent")
+  @POST("user/coparent")
   Future<CommonRes> addCoParent(@Body() AddcoParentReq body);
 
   @GET("user/Checkchild/{name}/{user_id}")
@@ -90,6 +92,12 @@ abstract class ApiService {
 
   @GET("user/profile")
   Future<GetProfileRes> GetProfile();
+
+  @GET("mark/getactivities")
+  Future<GetActivitiesRes> GetActivities();
+
+  @GET("mark/getsports")
+  Future<GetSportsRes> GetSports();
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
