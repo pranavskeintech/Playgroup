@@ -31,7 +31,8 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return Provider<ApiService>(
         create: (context) => ApiService.create(),
         child: Scaffold(
@@ -42,7 +43,8 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
         ));
   }
 
-  ChildConfm(BuildContext context) {
+  ChildConfm(BuildContext context) 
+  {
     ctx = context;
     var media = MediaQuery.of(context).size;
     return _isLoading

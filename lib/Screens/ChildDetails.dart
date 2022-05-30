@@ -461,7 +461,8 @@ class _ChildDetailsState extends State<ChildDetails> {
     });
   }
 
-  checkChild() {
+  checkChild() 
+  {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.Checkchild(_nameController.text, Strings.Parent_Id).then((response) {
       print('response ${response.status}');
