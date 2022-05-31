@@ -32,11 +32,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
 
   _GetProfile() {
+    print("object");
     //AppUtils.showprogress();
     _isLoading = true;
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetProfile().then((response) {
       print(response.status);
+      print("object");
       if (response.status == true) {
         //_btnController.stop();
         // Navigator.of(context).push(

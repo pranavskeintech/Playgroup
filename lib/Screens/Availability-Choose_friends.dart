@@ -1,7 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/MarkAvailabilityReq.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 
 class Availability_choose_friends extends StatefulWidget {
   const Availability_choose_friends({Key? key}) : super(key: key);
@@ -29,6 +34,8 @@ class _Availability_choose_friendsState
   TextEditingController searchController = TextEditingController();
 
   bool _switchValue = false;
+
+  BuildContext? ctx;
   @override
   void initState() {
     // TODO: implement initState
@@ -38,6 +45,28 @@ class _Availability_choose_friendsState
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Strings.appThemecolor,
+            title: Text("Select Child"),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(Icons.arrow_back_sharp),
+            ),
+          ),
+          // resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return MarkAvail(newContext);
+          }),
+        ));
+  }
+
+  MarkAvail(BuildContext context) {
+    ctx = context;
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -104,6 +133,18 @@ class _Availability_choose_friendsState
                     setState(() {
                       _switchValue = value;
                     });
+                    print("1:$value");
+                    print("object:${_switchValue}");
+                    print("2:${_isChecked!.length}");
+                    if (_switchValue == true) {
+                      for (var index = 0; _isChecked!.length > index; index++) {
+                        _isChecked![index] = true;
+                      }
+                    } else {
+                      for (var index = 0; _isChecked!.length > index; index++) {
+                        _isChecked![index] = false;
+                      }
+                    }
                   },
                 ),
               ],
@@ -117,32 +158,35 @@ class _Availability_choose_friendsState
               itemBuilder: (context, index) {
                 return Column(
                   children: [
-                    ListTile(
-                      leading: CircleAvatar(
-                        backgroundImage: AssetImage("assets/imgs/child1.jpg"),
-                      ),
-                      title: Text("Ramesh"),
-                      trailing: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.circular(3.0),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 10),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage: AssetImage("assets/imgs/child1.jpg"),
                         ),
-                        width: 20,
-                        height: 20,
-                        child: Theme(
-                          data: ThemeData(unselectedWidgetColor: Colors.white),
-                          child: Checkbox(
-                            checkColor: Colors.green,
-                            activeColor: Colors.transparent,
-                            value: _isChecked?[index],
-                            onChanged: (val) {
-                              setState(
-                                () {
-                                  _isChecked?[index] = val!;
-                                },
-                              );
-                              print("object:${_isChecked?[index]}");
-                            },
+                        title: Text("Ramesh"),
+                        trailing: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius: BorderRadius.circular(3.0),
+                          ),
+                          width: 20,
+                          height: 20,
+                          child: Theme(
+                            data:
+                                ThemeData(unselectedWidgetColor: Colors.white),
+                            child: Checkbox(
+                              checkColor: Colors.green,
+                              activeColor: Colors.transparent,
+                              value: _isChecked?[index],
+                              onChanged: (val) {
+                                setState(
+                                  () {
+                                    _isChecked?[index] = val!;
+                                  },
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
@@ -161,8 +205,7 @@ class _Availability_choose_friendsState
                   height: 50,
                   child: ElevatedButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => DashBoard()));
+                      _MarkAvailability();
                     },
                     child: Text("Done"),
                     style: ButtonStyle(
@@ -180,5 +223,36 @@ class _Availability_choose_friendsState
         ),
       ),
     );
+  }
+
+  _MarkAvailability() {
+    print("1:${Strings.markAvailabiltydate}");
+    print("2" + Strings.markAvailabiltystartTime);
+    print("3" + Strings.markAvailabiltyendTime);
+    print("4" + Strings.markAvailabiltydesc);
+    print("5" + Strings.markAvailabiltylocations);
+    print("6" + Strings.markAvailabiltyTopic.toString());
+    print("7:${Strings.markAvailabiltycategory.toString()}");
+    MarkAvailabilityReq markavail = MarkAvailabilityReq();
+    markavail.date = Strings.markAvailabiltydate;
+    markavail.from = Strings.markAvailabiltystartTime;
+    markavail.to = Strings.markAvailabiltyendTime;
+    markavail.description = Strings.markAvailabiltydesc;
+    markavail.location = Strings.markAvailabiltylocations;
+    markavail.activitiesId = ["1", "2", "3", "4"];
+    markavail.sportId = ["3", "4", "5", "6"];
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.createAvailability(markavail).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
+      }
+    });
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/ShowOtherChild.dart';
+import 'package:playgroup/Utilities/Strings.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
@@ -47,6 +49,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           ],
                         ),
                         child: ListTile(
+                          onTap: () {
+                            Strings.FriendNotification = true;
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    ShowOtherChildProfile()));
+                          },
                           title: Text(
                             "Friend Request",
                             style: TextStyle(
