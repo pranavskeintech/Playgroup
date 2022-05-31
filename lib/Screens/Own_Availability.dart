@@ -91,9 +91,9 @@ class _Own_AvailabilityState extends State<Own_Availability>
               indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
               labelColor: Colors.black,
               indicatorSize: TabBarIndicatorSize.tab,
-              indicatorWeight: 3.0,
+              indicatorWeight: 2.0,
               indicatorPadding: EdgeInsets.all(10),
-              isScrollable: true,
+              isScrollable: false,
               controller: _tabController,
             ),
           ),
@@ -107,7 +107,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
   Widget availabilityDetails() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,10 +115,11 @@ class _Own_AvailabilityState extends State<Own_Availability>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Row(
                   children: const [
                     CircleAvatar(
-                      radius: 16,
+                      radius: 18,
                       backgroundImage: AssetImage("assets/imgs/child5.jpg"),
                     ),
                     SizedBox(
@@ -129,7 +130,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                 ),
               ),
               Container(
-                  child: !activityConfirmed
+                  child: !Strings.activityConfirmed
                       ? Row(
                           children: [
                             IconButton(
@@ -154,7 +155,10 @@ class _Own_AvailabilityState extends State<Own_Availability>
                       : InkWell(
                           child: Row(
                             children: const [
-                              Text("Share"),
+                              Icon(
+                                Icons.edit_note_outlined,
+                                size: 15,
+                              ),
                               SizedBox(
                                 width: 5,
                               ),
@@ -167,169 +171,264 @@ class _Own_AvailabilityState extends State<Own_Availability>
                         ))
             ],
           ),
-          Card(
-            elevation: 3,
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: 140,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              //borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  blurRadius: 8.0, // soften the shadow
+                  spreadRadius: 5.0, //extend the shadow
+                  offset: Offset(
+                    2.0, // Move to right 10  horizontally
+                    2.0, // Move to bottom 10 Vertically
+                  ),
+                )
+              ],
+            ),
             child: SizedBox(
               height: 120,
               child: ListTile(
                 title: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 10),
                     child: Text(
                       "Art-Work - Natural Painting",
                       style: TextStyle(
-                          color: Colors.black87, fontWeight: FontWeight.bold),
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
                     )),
-                subtitle: Text(
-                  "Natural Painting also reffered to as Landscape or Scenery Painting Mostly shows reference of mountains,trees or other natural elements, in recent times.",
-                  textAlign: TextAlign.justify,
+                subtitle: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: Text(
+                    "Nature Painting also referred to as Landscape or scenery painting mostly shows reference of mountains, trees or other natural elements, in recent times.",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        height: 1.4,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w400,
+                        color: Color.fromARGB(255, 150, 149, 149)),
+                  ),
                 ),
               ),
             ),
           ),
           SizedBox(
-            height: 10,
+            height: 18,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(
-                  children: const [
-                    Icon(
-                      Icons.location_pin,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      "Gandhipuram, Coimbathore",
-                      overflow: TextOverflow.fade,
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
-                  child: Row(
-                    children: [
-                      Text("14 Jan 2021"),
-                      SizedBox(width: 5),
-                      Container(
-                        width: 1,
-                        height: 10,
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
+                    children: const [
+                      Icon(
+                        Icons.location_pin,
                         color: Colors.red,
+                        size: 16,
                       ),
                       SizedBox(
-                        width: 5,
+                        width: 3,
                       ),
                       Text(
-                        "4-5 Pm",
-                        overflow: TextOverflow.ellipsis,
+                        "Gandhipuram, Coimbatore",
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromARGB(255, 150, 149, 149)),
                       )
                     ],
                   ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          "14 Jan 2021",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 150, 149, 149),
+                              fontSize: 11),
+                        ),
+                        SizedBox(width: 5),
+                        Container(
+                          width: 1,
+                          height: 10,
+                          color: Colors.red,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "4-5 pm",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 150, 149, 149),
+                              fontSize: 11),
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                  ),
+                  Strings.activityConfirmed
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child: InkWell(
+                            child: Text(
+                              "Suggest time Slot",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 11,
+                                  color: Colors.orange,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ))
+                      : Container()
+                ]),
+                Row(
+                  children: const [
+                    Text(
+                      "Direction",
+                      style: TextStyle(
+                          color: Colors.blue,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600),
+                    ),
+                    Icon(
+                      Icons.directions,
+                      color: Colors.blue,
+                      size: 17,
+                    )
+                  ],
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Column(
+              children: [
+                Divider(
+                  height: 2,
+                  thickness: 1.5,
                 ),
-                activityConfirmed
-                    ? Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: InkWell(
-                          child: Text(
-                            "Suggest time Slot",
-                            style: TextStyle(
-                                color: Colors.orange,
-                                decoration: TextDecoration.underline),
-                          ),
-                        ))
-                    : Container()
-              ]),
-              Row(
-                children: const [
-                  Text(
-                    "Direction",
-                    style: TextStyle(color: Colors.blue),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 10, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Other Participants",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                    ),
                   ),
-                  Icon(
-                    Icons.directions,
-                    color: Colors.blue,
-                  )
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Other Participnts",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Card(
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: 6,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: ((context, index) {
-                          if (index < 5) {
-                            return Container(
-                              padding: EdgeInsets.all(2),
-                              width: 40,
-                              height: 40,
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    "assets/imgs/${childImgs[index]}"),
-                              ),
-                            );
-                          } else {
-                            return Container(
-                              padding: EdgeInsets.all(3),
-                              height: 40,
-                              width: 40,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey.withOpacity(0.3),
-                                child: Text(
-                                  "3+",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ), //Text
-                              ),
-                            );
-                          }
-                        })),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Card(
+                  elevation: 0,
+                  child: SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                              itemCount: 6,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: ((context, index) {
+                                if (index < 5) {
+                                  return Container(
+                                    padding: EdgeInsets.all(3),
+                                    width: 35,
+                                    height: 35,
+                                    child: CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          "assets/imgs/${childImgs[index]}"),
+                                    ),
+                                  );
+                                } else {
+                                  return Container(
+                                    padding: EdgeInsets.all(3),
+                                    height: 40,
+                                    width: 40,
+                                    child: CircleAvatar(
+                                      backgroundColor:
+                                          Colors.grey.withOpacity(0.3),
+                                      child: Text(
+                                        "3+",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 12),
+                                      ), //Text
+                                    ),
+                                  );
+                                }
+                              })),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          const Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Optional Benifits")),
-          ChipsChoice<int>.multiple(
-            wrapped: true,
-            verticalDirection: VerticalDirection.up,
-            choiceStyle: C2ChoiceStyle(color: Colors.black),
-            value: tag1,
-            onChanged: (val) {},
-            choiceItems: C2Choice.listFrom<int, String>(
-              source: options,
-              value: (i, v) => i,
-              label: (i, v) => v,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(
+                  height: 2,
+                  thickness: 1.5,
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 10, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Optional Benefits",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+                ChipsChoice<int>.multiple(
+                  wrapped: true,
+                  verticalDirection: VerticalDirection.up,
+                  choiceStyle: C2ChoiceStyle(color: Colors.black),
+                  value: tag1,
+                  onChanged: (val) {},
+                  choiceItems: C2Choice.listFrom<int, String>(
+                    source: options,
+                    value: (i, v) => i,
+                    label: (i, v) => v,
+                  ),
+                ),
+              ],
             ),
           ),
           Spacer(),
-          !activityConfirmed
+          Strings.activityConfirmed
               ? Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
