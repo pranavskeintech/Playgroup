@@ -101,9 +101,31 @@ class _DashBoardState extends State<DashBoard> {
                       barrierDismissible: true, // user must tap button!
                       builder: (BuildContext context) {
                         return AlertDialog(
-                          content: Image(
-                              image: AssetImage(
-                                  "assets/imgs/child5.jpg")), //Hard code for profile image
+                          title: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Switch Child",
+                                  ),
+                                  Icon(Icons.clear)
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              CircleAvatar(
+                                backgroundImage:
+                                    AssetImage("assets/imgs/child5.jpg"),
+                              ),
+                            ],
+                          ),
+                          content: setupAlertDialoadContainer(),
+                          // Image(
+                          //     image: AssetImage(
+                          //         "assets/imgs/child5.jpg")), //Hard code for profile image
                         );
                       });
                 },
@@ -118,8 +140,8 @@ class _DashBoardState extends State<DashBoard> {
               ),
               IconButton(
                   onPressed: () {
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (BuildContext context) => Chat_List()));
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => Chat_List()));
                   },
                   icon: Image.asset(
                     "assets/imgs/chat.png",
@@ -171,6 +193,7 @@ class _DashBoardState extends State<DashBoard> {
           body: screens[_bottomNavIndex]),
     );
   }
+
   //  getParentsDetails() {
   //   var PId = Strings.Parent_Id!.toInt();
   //   final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -192,4 +215,32 @@ class _DashBoardState extends State<DashBoard> {
   //     print(onError.toString());
   //   });
   // }
+  Widget setupAlertDialoadContainer() {
+    return Container(
+      height: 150,
+      child: Column(
+        children: [
+          Text("Arun Prakash",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500)),
+          Container(
+            width: 250,
+            height: 30,
+            decoration: BoxDecoration(
+                border: Border.all(
+                  color: Colors.grey.withOpacity(0.2),
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(2)),
+            padding: EdgeInsets.fromLTRB(12, 5, 0, 5),
+            child: Center(
+              child: Text(
+                "Robert Doe",
+                style: TextStyle(fontSize: 17, fontWeight: FontWeight.w400),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
