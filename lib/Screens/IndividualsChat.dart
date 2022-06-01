@@ -12,14 +12,26 @@ class Individuals_Chat extends StatefulWidget {
 
 class _Individuals_ChatState extends State<Individuals_Chat> {
   List<ChatMessage> messages = [
-    ChatMessage(messageContent: "Hello, Will", messageType: "receiver"),
-    ChatMessage(messageContent: "How have you been?", messageType: "receiver"),
+    ChatMessage(
+        messageContent: "Hello, Will",
+        messageType: "receiver",
+        createdAt: "22-05-2022"),
+    ChatMessage(
+        messageContent: "How have you been?",
+        messageType: "receiver",
+        createdAt: "22-05-2022"),
     ChatMessage(
         messageContent: "Hey Kriss, I am doing fine dude. wbu?",
-        messageType: "sender"),
-    ChatMessage(messageContent: "ehhhh, doing OK.", messageType: "receiver"),
+        messageType: "sender",
+        createdAt: "22-05-2022"),
     ChatMessage(
-        messageContent: "Is there any thing wrong?", messageType: "sender"),
+        messageContent: "ehhhh, doing OK.",
+        messageType: "receiver",
+        createdAt: "24-05-2022"),
+    ChatMessage(
+        messageContent: "Is there any thing wrong?",
+        messageType: "sender",
+        createdAt: "25-05-2022"),
   ];
   @override
   Widget build(BuildContext context) {
@@ -173,32 +185,52 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
             padding: EdgeInsets.only(top: 10, bottom: 10),
             physics: NeverScrollableScrollPhysics(),
             itemBuilder: (context, index) {
-              return Container(
-                padding:
-                    EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-                child: Align(
-                  alignment: (messages[index].messageType == "receiver"
-                      ? Alignment.topLeft
-                      : Alignment.topRight),
-                  child: Container(
+              Widget separator = SizedBox();
+              if (index != 0 &&
+                  messages[index].createdAt != messages[index - 1].createdAt) {
+                separator = Container(
+                    height: 20,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: (messages[index].messageType == "receiver"
-                          ? Colors.grey.shade300
-                          : Colors.blue.shade400),
+                      borderRadius: BorderRadius.circular(5),
+                      //color: Strings.chipsbg
                     ),
-                    padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                    padding: EdgeInsets.only(right: 5, left: 5),
                     child: Text(
-                      messages[index].messageContent,
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: (messages[index].messageType == "receiver"
-                            ? Colors.black54
-                            : Colors.white),
+                      messages[index].createdAt,
+                      style: TextStyle(fontSize: 15, color: Colors.grey),
+                    ));
+              }
+              return Column(
+                children: [
+                  separator,
+                  Container(
+                    padding: EdgeInsets.only(
+                        left: 14, right: 14, top: 10, bottom: 10),
+                    child: Align(
+                      alignment: (messages[index].messageType == "receiver"
+                          ? Alignment.topLeft
+                          : Alignment.topRight),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: (messages[index].messageType == "receiver"
+                              ? Colors.grey.shade300
+                              : Colors.blue.shade400),
+                        ),
+                        padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                        child: Text(
+                          messages[index].messageContent,
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: (messages[index].messageType == "receiver"
+                                ? Colors.black54
+                                : Colors.white),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                ),
+                ],
               );
             },
           ),
@@ -394,5 +426,9 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
 class ChatMessage {
   String messageContent;
   String messageType;
-  ChatMessage({required this.messageContent, required this.messageType});
+  String createdAt;
+  ChatMessage(
+      {required this.messageContent,
+      required this.messageType,
+      required this.createdAt});
 }

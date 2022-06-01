@@ -61,17 +61,40 @@ class Data {
   int? userId;
   String? parentName;
   String? emailId;
+  String? password;
+  String? role;
+  String? access;
   String? phone;
   String? location;
+  int? selectedChildId;
+  int? parentId;
+  String? createdDate;
 
-  Data({this.userId, this.parentName, this.emailId, this.phone, this.location});
+  Data(
+      {this.userId,
+      this.parentName,
+      this.emailId,
+      this.password,
+      this.role,
+      this.access,
+      this.phone,
+      this.location,
+      this.selectedChildId,
+      this.parentId,
+      this.createdDate});
 
   Data.fromJson(Map<String, dynamic> json) {
     userId = json['user_id'];
     parentName = json['parent_name'];
     emailId = json['email_id'];
+    password = json['password'];
+    role = json['role'];
+    access = json['access'];
     phone = json['phone'];
     location = json['location'];
+    selectedChildId = json['selected_child_id'];
+    parentId = json['parent_id'];
+    createdDate = json['created_date'];
   }
 
   Map<String, dynamic> toJson() {
@@ -79,8 +102,14 @@ class Data {
     data['user_id'] = this.userId;
     data['parent_name'] = this.parentName;
     data['email_id'] = this.emailId;
+    data['password'] = this.password;
+    data['role'] = this.role;
+    data['access'] = this.access;
     data['phone'] = this.phone;
     data['location'] = this.location;
+    data['selected_child_id'] = this.selectedChildId;
+    data['parent_id'] = this.parentId;
+    data['created_date'] = this.createdDate;
     return data;
   }
 }
