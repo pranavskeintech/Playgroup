@@ -92,7 +92,8 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     );
   }
 
-  Widget Tabbarwidgets() {
+  Widget Tabbarwidgets() 
+  {
     return Container(
         // padding: EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width * 1.0,
@@ -595,7 +596,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.end,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
+                          children: const [
                             Text(
                               "Kingston Jackey",
                               style: TextStyle(

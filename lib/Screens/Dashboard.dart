@@ -34,9 +34,9 @@ class _DashBoardState extends State<DashBoard> {
 
   final screens = [
     HomeScreen(),
-    Center(child: Text("Past Activities")),
+    //Center(child: Text("Past Activities")),
     // InitialScreen(),
-    //PastActivity(),
+    PastActivity(),
     SearchScreen(),
     NotificationScreen(),
   ];
@@ -56,7 +56,8 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) 
+  {
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
       child: Scaffold(

@@ -146,8 +146,9 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Image.asset(
-                                            "assets/imgs/book.png",
+                                          Image.network(
+                                            Strings.imageUrl + "/activities/" +(TopCount![index].activitiesImg ?? "")
+                                                ,
                                             width: 50,
                                             height: 50,
                                           ),
@@ -223,11 +224,10 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          Image.asset(
-                                            "assets/imgs/book.png",
-                                            width: 50,
+                                          Image.network(
+                                            Strings.imageUrl + "/activities/" +(BottomCount![index].activitiesImg ?? ""),width: 50,
                                             height: 50,
-                                          ),
+                                                ),
                                           SizedBox(
                                             height: 10,
                                           ),

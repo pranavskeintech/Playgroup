@@ -30,6 +30,7 @@ class GetActivitiesRes {
 class GetSportsMessage {
   int? activitiesId;
   String? activitiesName;
+  String? activitiesImg;
   int? rank;
   String? createdDate;
   String? position;
@@ -37,6 +38,7 @@ class GetSportsMessage {
   GetSportsMessage(
       {this.activitiesId,
       this.activitiesName,
+      this.activitiesImg,
       this.rank,
       this.createdDate,
       this.position});
@@ -44,6 +46,7 @@ class GetSportsMessage {
   GetSportsMessage.fromJson(Map<String, dynamic> json) {
     activitiesId = json['activities_id'];
     activitiesName = json['activities_name'];
+    activitiesImg = json['activities_img'];
     rank = json['rank'];
     createdDate = json['created_date'];
     position = json['position'];
@@ -53,6 +56,7 @@ class GetSportsMessage {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['activities_id'] = this.activitiesId;
     data['activities_name'] = this.activitiesName;
+    data['activities_img'] = this.activitiesImg;
     data['rank'] = this.rank;
     data['created_date'] = this.createdDate;
     data['position'] = this.position;

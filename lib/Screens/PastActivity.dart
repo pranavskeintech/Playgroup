@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/PastActivityDetailView.dart';
+import 'package:galleryimage/galleryimage.dart';
 
 class PastActivity extends StatefulWidget {
   const PastActivity({Key? key}) : super(key: key);
@@ -10,8 +11,7 @@ class PastActivity extends StatefulWidget {
   State<PastActivity> createState() => _PastActivityState();
 }
 
-class _PastActivityState extends State<PastActivity> 
-{
+class _PastActivityState extends State<PastActivity> {
   List<String> childImgs = [
     "https://picsum.photos/500/300",
     "https://picsum.photos/500/300",
@@ -23,8 +23,7 @@ class _PastActivityState extends State<PastActivity>
 
   bool isHighlighted = true;
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: Align(
@@ -101,13 +100,9 @@ class _PastActivityState extends State<PastActivity>
               SizedBox(
                 height: 5,
               ),
-              Expanded(
-                child: PhotoGrid(
-                  imageUrls: childImgs,
-                  onImageClicked: (i) => print('Image $i was clicked!'),
-                  onExpandClicked: () => print('Expand Image was clicked'),
-                  maxImages: 3,
-                ),
+              GalleryImage(
+                imageUrls: childImgs,
+                titleGallery: "Playgroup",
               ),
               Row(children: [
                 Column(
