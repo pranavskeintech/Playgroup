@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Login.dart';
+import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/SetPassword.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -9,7 +11,12 @@ import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class SignupEmailScreen extends StatefulWidget {
-  const SignupEmailScreen({Key? key}) : super(key: key);
+  
+    final bool? fromProfile;
+    final String? name;
+    final String? email;
+
+   SignupEmailScreen({Key? key,this.fromProfile,this.email,this.name}) : super(key: key);
 
   @override
   State<SignupEmailScreen> createState() => _SignupEmailScreenState();
@@ -18,9 +25,23 @@ class SignupEmailScreen extends StatefulWidget {
 class _SignupEmailScreenState extends State<SignupEmailScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
+      @override
+  void initState() {
+    // TODO: implement initState
+
+    if(widget.fromProfile == true) {
+      _emailIdController.text = widget.email!;
+      _parentController.text = widget.name!;
+    }
+    super.initState();
+  }
 
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _parentController = TextEditingController();
+
+
+
+  
 
   BuildContext? ctx;
 
@@ -162,7 +183,15 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                             _emailIdController.text.replaceAll(' ', ''))) {
                           var email = _emailIdController.text;
                           var name = _parentController.text;
-                          _CheckUser(email, name);
+
+                          if(email == widget.email)
+                          {
+                            updateUser();
+                          }
+                          else
+                          {
+                            _CheckUser(email, name);
+                          }
                           Strings.UserName = _parentController.text;
                           Strings.EmailId = _emailIdController.text;
                           print("entered");
@@ -221,12 +250,22 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(email).then((response) {
       print(response.status);
-      if (response.status == false) {
+      if (response.status == false) 
+      {
         _btnController.stop();
         Strings.parentName = name;
         Strings.parentemail = email;
-        Navigator.of(context).push(MaterialPageRoute(
+        print("test--> ${widget.fromProfile}");
+       if (widget.fromProfile == true) 
+        {
+          print("from profile");
+          updateUser();
+        }
+        else{
+          Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => SetPassword()));
+        }
+        
       } else {
         functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
@@ -234,5 +273,29 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     }).catchError((onError) {
       print(onError.toString());
     });
+  }
+
+  void updateUser() {
+
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+
+    UserRegisterReq user = UserRegisterReq();
+    user.emailId = _emailIdController.text;
+    user.parentName = _parentController.text;
+    api.updateParent(user).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        AppUtils.showToast(response.message, "");
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => ProfileScreen()));
+      } else {
+        AppUtils.showToast(response.message, "");
+        functions.createSnackBar(context, response.message.toString());
+        _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+
   }
 }

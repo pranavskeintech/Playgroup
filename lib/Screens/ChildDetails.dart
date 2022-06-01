@@ -5,6 +5,7 @@ import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
 import 'package:playgroup/Screens/Login.dart';
+import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -16,7 +17,10 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChildDetails extends StatefulWidget {
-  const ChildDetails({Key? key}) : super(key: key);
+
+  final bool? fromProfile;
+
+   ChildDetails({Key? key, this.fromProfile}) : super(key: key);
 
   @override
   State<ChildDetails> createState() => _ChildDetailsState();
@@ -444,13 +448,32 @@ class _ChildDetailsState extends State<ChildDetails> {
     }
     print(jsonEncode(ChildReg));
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.AddChild(ChildReg).then((response) {
+    api.AddChild(ChildReg).then((response) 
+    {
       print('response ${response.status}');
       print("result1:${response.toJson()}");
-      if (response.status == true) {
+      if (response.status == true) 
+      {
         AppUtils.dismissprogress();
-        Navigator.of(context).push(MaterialPageRoute(
+
+        print("From profile ${widget.fromProfile}");
+
+        if(widget.fromProfile == true)
+        {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ProfileScreen(),
+            ),
+          );
+        }
+        else
+        {
+          Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ChildConfirmation()));
+        }
+
+        
         print("result2:$response");
       } else {
         AppUtils.dismissprogress();
@@ -459,6 +482,7 @@ class _ChildDetailsState extends State<ChildDetails> {
         print("error");
       }
     });
+  
   }
 
   checkChild() 

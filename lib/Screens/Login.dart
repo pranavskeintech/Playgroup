@@ -66,11 +66,14 @@ class _LoginPageState extends State<LoginPage> {
       GoogleSignInAuthentication googleAuth =
           await googleSignInAccount.authentication;
 
-      // print('access Token ${googleAuth.accessToken}');
-      // print('id Token ${googleAuth.idToken}');
-      // print(googleSignInAccount.email);
-      // print('${googleSignInAccount.displayName}');
-      // print(googleSignInAccount.photoUrl);
+      print('access Token ${googleAuth.accessToken}');
+      print('id Token ${googleAuth.idToken}');
+      print(googleSignInAccount.email);
+      print('${googleSignInAccount.displayName}');
+      print(googleSignInAccount.photoUrl);
+      print(googleSignInAccount.id);
+
+
       _GoogleLogin(googleSignInAccount.email, googleSignInAccount.displayName);
     } catch (error) {
       print(error);

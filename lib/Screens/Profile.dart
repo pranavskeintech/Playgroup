@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
@@ -6,6 +8,7 @@ import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChildProfile.dart';
+import 'package:playgroup/Screens/SignupEmailScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/NavigationDrawer.dart';
@@ -119,7 +122,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         style: TextStyle(color: Colors.grey),
                       ),
                       TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SignupEmailScreen(fromProfile: true,name: _ProfileData!.parentName!,email: _ProfileData!.emailId!,)));
+                          },
                           child: Row(
                             children: [
                               Text("Edit"),
@@ -308,7 +315,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        _ProfileData!.coParent?[0].parentName ?? "",
+                                        _ProfileData!.coParent?[0].parentName ??
+                                            "",
                                         style: TextStyle(
                                             fontSize: 15,
                                             fontWeight: FontWeight.w500),
@@ -320,13 +328,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(_ProfileData!.coParent?[0].emailId ?? ""),
+                                          Text(_ProfileData!
+                                                  .coParent?[0].emailId ??
+                                              ""),
                                           Row(
                                             children: [
                                               Text("Access: "),
-                                              Text(_ProfileData!.coParent?[0].access ?? "",
+                                              Text(
+                                                  _ProfileData!.coParent?[0]
+                                                          .access ??
+                                                      "",
                                                   style: TextStyle(
-                                                      color: _ProfileData!.coParent?[0].access != "VIEW"?Colors.green:Colors.orange)),
+                                                      color: _ProfileData!
+                                                                  .coParent?[0]
+                                                                  .access !=
+                                                              "VIEW"
+                                                          ? Colors.green
+                                                          : Colors.orange)),
                                             ],
                                           ),
                                         ],
@@ -380,20 +398,28 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 TimeAgo.calculateTimeDifferenceBetween(
                                     _ProfileData!.children![index].dob),
                               ),
-                              trailing: Container(
-                                width: 75,
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      "Remove",
-                                      style: TextStyle(color: Colors.red),
-                                    ),
-                                    Icon(
-                                      Icons.clear,
-                                      size: 15,
-                                      color: Colors.red,
-                                    )
-                                  ],
+                              trailing: GestureDetector(
+                                onTap: () {
+                                  deleteChild(
+                                      _ProfileData!.children![index].childId,
+                                      index);
+                                },
+                                child: Container(
+                                  height: 200,
+                                  width: 75,
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Remove",
+                                        style: TextStyle(color: Colors.red),
+                                      ),
+                                      Icon(
+                                        Icons.clear,
+                                        size: 15,
+                                        color: Colors.red,
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -414,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Strings.profilepage = true;
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      ChildDetails()));
+                                      ChildDetails(fromProfile: true,)));
                             },
                             child: Text(
                               "Add Child",
@@ -444,5 +470,62 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
           );
+  }
+
+  deleteChild(childId, index) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Delete Child"),
+            content: Text("Are you sure you want to delete this child?"),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                ),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Strings.appThemecolor,
+                ),
+                child: Text("Delete"),
+                onPressed: () {
+                  AppUtils.showprogress();
+                  setState(() {
+                    final api = Provider.of<ApiService>(ctx!, listen: false);
+                    api.DeleteChild(childId).then((response) {
+                      print(response.status);
+                      print("object");
+                      if (response.status == true) {
+                        //_btnController.stop();
+                        AppUtils.dismissprogress();
+
+                        setState(() {
+                          _ProfileData!.children!.removeAt(index);
+                          Navigator.pop(context);
+                        });
+                      } else {
+                        functions.createSnackBar(
+                            context, response.status.toString());
+                        AppUtils.dismissprogress();
+                      }
+                    }).catchError((onError) {
+                      print(onError.toString());
+                      AppUtils.dismissprogress();
+                    });
+                  });
+                },
+              )
+            ],
+          );
+        });
   }
 }

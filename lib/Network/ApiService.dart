@@ -51,7 +51,7 @@ abstract class ApiService {
   @POST("user/coparent")
   Future<CommonRes> addCoParent(@Body() AddcoParentReq body);
 
-  @GET("user/Checkchild/{name}/{user_id}")
+  @GET("user/Checkchild/{name}")
   Future<CheckchildRes> Checkchild(
       @Path("name") String name, @Path("user_id") int id);
 
@@ -84,12 +84,18 @@ abstract class ApiService {
   @GET("user/getchild")
   Future<GetChildRes> GetChild();
 
+  @DELETE("user/child/{ChildID}")  
+  Future<GetChildRes> DeleteChild(@Path("ChildID") int ChildID);
+
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
 
   @PUT("user/updatechild")
   Future<CommonRes> ChooseChild(@Body() ChooseChildReq body);
 
+  @PUT("user/updateParent")
+  Future<CommonRes> updateParent(@Body() UserRegisterReq body);
+  
   @GET("user/profile")
   Future<GetProfileRes> GetProfile();
 
