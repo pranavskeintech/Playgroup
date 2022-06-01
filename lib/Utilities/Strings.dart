@@ -68,4 +68,5 @@ mixin Strings {
   static int markAvailabiltyTopic = 0;
 
   static bool FriendNotification = false;
+  
 }
