@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
+import 'package:playgroup/Screens/LocationSelection.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/Settings.dart';
@@ -192,7 +193,11 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   offset: Offset(-20, -3),
                   child: Text('Delete Account'),
                 ),
-                onTap: () => {Navigator.of(context).pop()},
+                onTap: () => {
+                  //Navigator.of(context).pop()
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => LocationSelection())),
+                },
               ),
               ListTile(
                 leading: Image.asset(

@@ -29,6 +29,9 @@ class Profile {
   String? emailId;
   String? phone;
   String? location;
+  String? role;
+  String? access;
+  int? selectedChildId;
   List<Children>? children;
   List<CoParent>? coParent;
 
@@ -38,6 +41,9 @@ class Profile {
       this.emailId,
       this.phone,
       this.location,
+      this.role,
+      this.access,
+      this.selectedChildId,
       this.children,
       this.coParent});
 
@@ -47,6 +53,9 @@ class Profile {
     emailId = json['email_id'];
     phone = json['phone'];
     location = json['location'];
+    role = json['role'];
+    access = json['access'];
+    selectedChildId = json['selected_child_id'];
     if (json['children'] != null) {
       children = <Children>[];
       json['children'].forEach((v) {
@@ -68,6 +77,9 @@ class Profile {
     data['email_id'] = this.emailId;
     data['phone'] = this.phone;
     data['location'] = this.location;
+    data['role'] = this.role;
+    data['access'] = this.access;
+    data['selected_child_id'] = this.selectedChildId;
     if (this.children != null) {
       data['children'] = this.children!.map((v) => v.toJson()).toList();
     }
@@ -81,7 +93,6 @@ class Profile {
 class Children {
   int? childId;
   int? parentId;
-  int? coParentId;
   String? childName;
   String? dob;
   String? gender;
@@ -91,7 +102,6 @@ class Children {
   Children(
       {this.childId,
       this.parentId,
-      this.coParentId,
       this.childName,
       this.dob,
       this.gender,
@@ -101,7 +111,6 @@ class Children {
   Children.fromJson(Map<String, dynamic> json) {
     childId = json['child_id'];
     parentId = json['parent_id'];
-    coParentId = json['co_parent_id'];
     childName = json['child_name'];
     dob = json['dob'];
     gender = json['gender'];
@@ -113,7 +122,6 @@ class Children {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['child_id'] = this.childId;
     data['parent_id'] = this.parentId;
-    data['co_parent_id'] = this.coParentId;
     data['child_name'] = this.childName;
     data['dob'] = this.dob;
     data['gender'] = this.gender;
@@ -132,7 +140,7 @@ class CoParent {
   String? access;
   String? phone;
   String? location;
-  int? selectedChildId;
+  Null? selectedChildId;
   int? parentId;
   String? createdDate;
 
