@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
+import 'package:playgroup/Screens/G-Map.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
@@ -13,6 +15,11 @@ class Own_Availability extends StatefulWidget {
 
 class _Own_AvailabilityState extends State<Own_Availability>
     with TickerProviderStateMixin {
+  //final _AddressController = TextEditingController();
+
+  String? _currentAddress;
+  String _address = 'Gandhipuram, Coimbatore';
+
   TabController? _tabController;
   bool activityConfirmed = false;
   List<String> childImgs = [
@@ -34,12 +41,30 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
   int tag = 1;
   List<int> tag1 = [];
+
   @override
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
+
+  // _getAddress() async {
+  //   if (Strings.Latt != 0) {
+  //     try {
+  //       List<Placemark> p =
+  //           await placemarkFromCoordinates(Strings.Latt, Strings.Long);
+
+  //       Placemark place = p[0];
+  //       setState(() {
+  //         _currentAddress = "${place.name},${place.locality}";
+  //         _address = _currentAddress!;
+  //       });
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -232,7 +257,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
               children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Row(
-                    children: const [
+                    children: [
                       Icon(
                         Icons.location_pin,
                         color: Colors.red,
@@ -242,13 +267,13 @@ class _Own_AvailabilityState extends State<Own_Availability>
                         width: 3,
                       ),
                       Text(
-                        "Gandhipuram, Coimbatore",
+                        'Gandhipuram, Tamilnadu',
                         overflow: TextOverflow.fade,
                         style: TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w400,
                             color: Color.fromARGB(255, 150, 149, 149)),
-                      )
+                      ),
                     ],
                   ),
                   SizedBox(
@@ -298,21 +323,30 @@ class _Own_AvailabilityState extends State<Own_Availability>
                           ))
                       : Container()
                 ]),
-                Row(
-                  children: const [
-                    Text(
-                      "Direction",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontSize: 13,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    Icon(
-                      Icons.directions,
-                      color: Colors.blue,
-                      size: 17,
-                    )
-                  ],
+                InkWell(
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MapsPage()));
+                    // setState(() {
+                    //   _getAddress();
+                    // });
+                  },
+                  child: Row(
+                    children: const [
+                      Text(
+                        "Direction",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Icon(
+                        Icons.directions,
+                        color: Colors.blue,
+                        size: 17,
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

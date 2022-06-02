@@ -73,7 +73,6 @@ class _LoginPageState extends State<LoginPage> {
       print(googleSignInAccount.photoUrl);
       print(googleSignInAccount.id);
 
-
       _GoogleLogin(googleSignInAccount.email, googleSignInAccount.displayName);
     } catch (error) {
       print(error);
@@ -262,7 +261,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: MediaQuery.of(context).size.width * 0.9,
                       height: 40,
                       child: TextField(
-                        style: TextStyle(color: Colors.white),
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.w600),
                         controller: _emailIdController,
                         decoration: InputDecoration(
                             suffixIcon: Image.asset(
@@ -310,7 +310,8 @@ class _LoginPageState extends State<LoginPage> {
                       width: MediaQuery.of(context).size.width * 0.9,
                       height: 40,
                       child: TextField(
-                          style: TextStyle(color: Colors.white),
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w600),
                           controller: _passwordController,
                           decoration: InputDecoration(
                               suffixIcon: Image.asset(
@@ -392,7 +393,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
 
                     Container(
-                        margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
                         child: Text(
                           "Or login using",
                           style: TextStyle(color: Colors.grey),
@@ -400,7 +401,7 @@ class _LoginPageState extends State<LoginPage> {
                     Container(
                         width: MediaQuery.of(context).size.width * 0.9,
                         height: 42,
-                        margin: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -453,7 +454,8 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       Text(
                         "Do not have an account?",
-                        style: TextStyle(color: Colors.grey),
+                        style: TextStyle(
+                            color: Colors.grey, fontWeight: FontWeight.w600),
                       ),
                       SizedBox(
                         width: 5,
@@ -467,12 +469,13 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text(
                           "Register",
                           style: TextStyle(
-                              color: Color.fromRGBO(248, 103, 171, 1)),
+                              color: Color.fromRGBO(248, 103, 171, 1),
+                              fontWeight: FontWeight.w600),
                         ),
                       )
                     ],
                   ),
-                  bottom: 10,
+                  bottom: 30,
                 )
               ]),
         ),

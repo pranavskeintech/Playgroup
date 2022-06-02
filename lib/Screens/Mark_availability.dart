@@ -913,9 +913,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        var value = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => MapsPage()));
+                        await Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MapsPage()));
                         setState(() {
                           _getAddress();
                         });
