@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
+import '../Utilities/AppUtlis.dart';
+import '../Utilities/Strings.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -10,6 +12,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  bool _story = true;
   List<String> ChildName = [
     "Kingston Jackey",
     "Ronny Thomas",
@@ -101,20 +104,28 @@ class _HomeScreenState extends State<HomeScreen> {
                 itemBuilder: ((context, index) {
                   return Column(
                     children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                              width: 1.3,
-                              color: Color.fromARGB(255, 251, 132, 138)),
-                        ),
-                        padding: EdgeInsets.all(2),
-                        width: 50,
-                        height: 50,
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage(
-                            "assets/imgs/${images[index]}",
+                      InkWell(
+                        onTap: () {
+                          Strings.activityConfirmed = true;
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => Own_Availability(),
+                          ));
+                        },
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            border: Border.all(
+                                width: 1.3,
+                                color: Color.fromARGB(255, 251, 132, 138)),
+                          ),
+                          padding: EdgeInsets.all(2),
+                          width: 50,
+                          height: 50,
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage(
+                              "assets/imgs/${images[index]}",
+                            ),
                           ),
                         ),
                       ),
@@ -149,9 +160,10 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: FadeInAnimation(
                             child: GestureDetector(
                               onTap: (() {
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (BuildContext context) =>
-                                //         Own_Availability()));
+                                Strings.activityConfirmed = false;
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        Own_Availability()));
                               }),
                               child: Container(
                                 margin: EdgeInsets.fromLTRB(10, 10, 10, 20),
@@ -298,18 +310,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             EdgeInsets.all(2),
                                                         height: 32,
                                                         width: 32,
-                                                        child: CircleAvatar(
-                                                          backgroundColor:
-                                                              Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                          child: Text(
-                                                            "3+",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 12),
-                                                          ), //Text
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            AppUtils
+                                                                .showParticipant(
+                                                                    context, 2);
+                                                          },
+                                                          child: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                            child: Text(
+                                                              "3+",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 12),
+                                                            ), //Text
+                                                          ),
                                                         ),
                                                       );
                                                     }

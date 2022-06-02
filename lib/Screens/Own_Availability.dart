@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
+import 'package:playgroup/Screens/G-Map.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
@@ -13,6 +15,11 @@ class Own_Availability extends StatefulWidget {
 
 class _Own_AvailabilityState extends State<Own_Availability>
     with TickerProviderStateMixin {
+  //final _AddressController = TextEditingController();
+
+  String? _currentAddress;
+  String _address = 'Gandhipuram, Coimbatore';
+
   TabController? _tabController;
   bool activityConfirmed = false;
   List<String> childImgs = [
@@ -34,12 +41,30 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
   int tag = 1;
   List<int> tag1 = [];
+
   @override
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
     super.initState();
   }
+
+  // _getAddress() async {
+  //   if (Strings.Latt != 0) {
+  //     try {
+  //       List<Placemark> p =
+  //           await placemarkFromCoordinates(Strings.Latt, Strings.Long);
+
+  //       Placemark place = p[0];
+  //       setState(() {
+  //         _currentAddress = "${place.name},${place.locality}";
+  //         _address = _currentAddress!;
+  //       });
+  //     } catch (e) {
+  //       print(e);
+  //     }
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -87,13 +112,13 @@ class _Own_AvailabilityState extends State<Own_Availability>
                           color: const Color(0xFF9e9e9e))),
                 )
               ],
-              unselectedLabelColor: const Color(0xffacb3bf),
+              //unselectedLabelColor: const Color(0xffacb3bf),
               indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
               labelColor: Colors.black,
               indicatorSize: TabBarIndicatorSize.tab,
-              indicatorWeight: 3.0,
-              indicatorPadding: EdgeInsets.all(10),
-              isScrollable: true,
+              indicatorWeight: 2.0,
+              //indicatorPadding: EdgeInsets.all(10),
+              isScrollable: false,
               controller: _tabController,
             ),
           ),
@@ -107,7 +132,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
   Widget availabilityDetails() {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(15),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -115,10 +140,11 @@ class _Own_AvailabilityState extends State<Own_Availability>
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Container(
+                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Row(
                   children: const [
                     CircleAvatar(
-                      radius: 16,
+                      radius: 18,
                       backgroundImage: AssetImage("assets/imgs/child5.jpg"),
                     ),
                     SizedBox(
@@ -129,239 +155,348 @@ class _Own_AvailabilityState extends State<Own_Availability>
                 ),
               ),
               Container(
-                  child: !activityConfirmed
+                  child: Strings.activityConfirmed
                       ? Row(
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditAvailabilityTime(),
-                                  ));
-                                },
-                                icon: Icon(
-                                  Icons.edit_note_rounded,
-                                  size: 20,
-                                )),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditAvailabilityTime(),
+                                ));
+                              },
+                              icon: ImageIcon(
+                                AssetImage('assets/imgs/edit.png'),
+                                size: 15,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
                             IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.share,
-                                  size: 20,
-                                ))
+                              onPressed: () {},
+                              icon: ImageIcon(
+                                AssetImage('assets/imgs/share .png'),
+                                size: 16,
+                                color: Colors.grey.shade600,
+                              ),
+                            )
                           ],
                         )
-                      : InkWell(
-                          child: Row(
-                            children: const [
-                              Text("Share"),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.share,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        ))
+                      : Container())
             ],
           ),
-          Card(
-            elevation: 3,
+          SizedBox(
+            height: 10,
+          ),
+          Container(
+            height: 140,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              //borderRadius: BorderRadius.circular(30),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.1),
+                  blurRadius: 8.0, // soften the shadow
+                  spreadRadius: 5.0, //extend the shadow
+                  offset: Offset(
+                    2.0, // Move to right 10  horizontally
+                    2.0, // Move to bottom 10 Vertically
+                  ),
+                )
+              ],
+            ),
             child: SizedBox(
               height: 120,
               child: ListTile(
                 title: Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16, horizontal: 10),
                     child: Text(
                       "Art-Work - Natural Painting",
                       style: TextStyle(
-                          color: Colors.black87, fontWeight: FontWeight.bold),
+                        color: Colors.black87,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                      ),
                     )),
-                subtitle: Text(
-                  "Natural Painting also reffered to as Landscape or Scenery Painting Mostly shows reference of mountains,trees or other natural elements, in recent times.",
-                  textAlign: TextAlign.justify,
+                subtitle: Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                  child: Text(
+                    "Nature Painting also referred to as Landscape or scenery painting mostly shows reference of mountains, trees or other natural elements, in recent times.",
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(
+                        height: 1.4,
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w400,
+                        color: Color.fromARGB(255, 150, 149, 149)),
+                  ),
                 ),
               ),
             ),
           ),
           SizedBox(
-            height: 10,
+            height: 18,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Row(
-                  children: const [
-                    Icon(
-                      Icons.location_pin,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      "Gandhipuram, Coimbathore",
-                      overflow: TextOverflow.fade,
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
-                  child: Row(
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Row(
                     children: [
-                      Text("14 Jan 2021"),
-                      SizedBox(width: 5),
-                      Container(
-                        width: 1,
-                        height: 10,
+                      Icon(
+                        Icons.location_pin,
                         color: Colors.red,
+                        size: 16,
                       ),
                       SizedBox(
-                        width: 5,
+                        width: 3,
                       ),
                       Text(
-                        "4-5 Pm",
-                        overflow: TextOverflow.ellipsis,
+                        'Gandhipuram, Tamilnadu',
+                        overflow: TextOverflow.fade,
+                        style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Color.fromARGB(255, 150, 149, 149)),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 6,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 10, 0, 10),
+                    child: Row(
+                      children: [
+                        Text(
+                          "14 Jan 2021",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 150, 149, 149),
+                              fontSize: 11),
+                        ),
+                        SizedBox(width: 5),
+                        Container(
+                          width: 1,
+                          height: 10,
+                          color: Colors.red,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          "4-5 pm",
+                          style: TextStyle(
+                              color: Color.fromARGB(255, 150, 149, 149),
+                              fontSize: 11),
+                          overflow: TextOverflow.ellipsis,
+                        )
+                      ],
+                    ),
+                  ),
+                  Strings.activityConfirmed
+                      ? Padding(
+                          padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
+                          child: InkWell(
+                            child: Text(
+                              "Suggest time Slot",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 11,
+                                  color: Colors.orange,
+                                  decoration: TextDecoration.underline),
+                            ),
+                          ))
+                      : Container()
+                ]),
+                InkWell(
+                  onTap: () async {
+                    await Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => MapsPage()));
+                    // setState(() {
+                    //   _getAddress();
+                    // });
+                  },
+                  child: Row(
+                    children: const [
+                      Text(
+                        "Direction",
+                        style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600),
+                      ),
+                      Icon(
+                        Icons.directions,
+                        color: Colors.blue,
+                        size: 17,
                       )
                     ],
                   ),
+                )
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+            child: Column(
+              children: [
+                Divider(
+                  height: 1.5,
+                  thickness: 1.5,
                 ),
-                activityConfirmed
-                    ? Padding(
-                        padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
-                        child: InkWell(
-                          child: Text(
-                            "Suggest time Slot",
-                            style: TextStyle(
-                                color: Colors.orange,
-                                decoration: TextDecoration.underline),
-                          ),
-                        ))
-                    : Container()
-              ]),
-              Row(
-                children: const [
-                  Text(
-                    "Direction",
-                    style: TextStyle(color: Colors.blue),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 10, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Other Participants",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                    ),
                   ),
-                  Icon(
-                    Icons.directions,
-                    color: Colors.blue,
-                  )
-                ],
-              )
-            ],
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Other Participnts",
-              style: TextStyle(color: Colors.black),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Card(
-            child: SizedBox(
-              height: 50,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: ListView.builder(
-                        itemCount: 6,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: ((context, index) {
-                          if (index < 5) {
-                            return Container(
-                              padding: EdgeInsets.all(2),
-                              width: 40,
-                              height: 40,
-                              child: CircleAvatar(
-                                backgroundImage: AssetImage(
-                                    "assets/imgs/${childImgs[index]}"),
-                              ),
-                            );
-                          } else {
-                            return Container(
-                              padding: EdgeInsets.all(3),
-                              height: 40,
-                              width: 40,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey.withOpacity(0.3),
-                                child: Text(
-                                  "3+",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ), //Text
-                              ),
-                            );
-                          }
-                        })),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Card(
+                  elevation: 0,
+                  child: SizedBox(
+                    height: 50,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Expanded(
+                          child: ListView.builder(
+                              itemCount: 6,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: ((context, index) {
+                                if (index < 5) {
+                                  return Container(
+                                    padding: EdgeInsets.all(3),
+                                    width: 35,
+                                    height: 35,
+                                    child: CircleAvatar(
+                                      backgroundImage: AssetImage(
+                                          "assets/imgs/${childImgs[index]}"),
+                                    ),
+                                  );
+                                } else {
+                                  return Container(
+                                    padding: EdgeInsets.all(3),
+                                    height: 40,
+                                    width: 40,
+                                    child: InkWell(
+                                      onTap: () {
+                                        AppUtils.showParticipant(context, 10);
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            Colors.grey.withOpacity(0.3),
+                                        child: Text(
+                                          "3+",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12),
+                                        ), //Text
+                                      ),
+                                    ),
+                                  );
+                                }
+                              })),
+                        ),
+                      ],
+                    ),
                   ),
-                ],
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          const Align(
-              alignment: Alignment.centerLeft,
-              child: Text("Optional Benifits")),
-          ChipsChoice<int>.multiple(
-            wrapped: true,
-            verticalDirection: VerticalDirection.up,
-            choiceStyle: C2ChoiceStyle(color: Colors.black),
-            value: tag1,
-            onChanged: (val) {},
-            choiceItems: C2Choice.listFrom<int, String>(
-              source: options,
-              value: (i, v) => i,
-              label: (i, v) => v,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Divider(
+                  height: 1.5,
+                  thickness: 1.5,
+                ),
+                SizedBox(
+                  height: 15,
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 10, 0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      "Optional Benefits",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w500),
+                    ),
+                  ),
+                ),
+                ChipsChoice<int>.multiple(
+                  wrapped: true,
+                  verticalDirection: VerticalDirection.up,
+                  choiceStyle: C2ChoiceStyle(color: Colors.black),
+                  value: tag1,
+                  onChanged: (val) {},
+                  choiceItems: C2Choice.listFrom<int, String>(
+                    source: options,
+                    value: (i, v) => i,
+                    label: (i, v) => v,
+                  ),
+                ),
+              ],
             ),
           ),
           Spacer(),
-          !activityConfirmed
+          Strings.activityConfirmed
               ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SizedBox(
-                        //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                        // ),
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            AppUtils.showPopUp(context,
-                                "Are you sure want to pause the event..");
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "Pause",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              Icon(
-                                Icons.pause_circle,
-                                color: Colors.black,
-                              )
-                            ],
-                          ),
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white)),
-                        )),
+                      //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                      // ),
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 40,
+                      child: TextButton(
+                        onPressed: () {
+                          AppUtils.showPopUp(context,
+                              "Are you sure want to pause the event..");
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "Pause",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            ImageIcon(
+                              AssetImage('assets/imgs/pause_1.png'),
+                              color: Colors.grey,
+                              size: 16,
+                            )
+                          ],
+                        ),
+                        style: ButtonStyle(
+                            side: MaterialStateProperty.all(BorderSide(
+                                width: 2, color: Colors.grey.withOpacity(0.2))),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white)),
+                      ),
+                    ),
                     SizedBox(
                         width: MediaQuery.of(context).size.width * 0.4,
-                        child: ElevatedButton(
+                        height: 40,
+                        child: TextButton(
                           onPressed: () {
                             AppUtils.showPopUp(context,
                                 "Are you sure want to Delete the event..");
@@ -371,42 +506,136 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             children: const [
                               Text(
                                 "Delete",
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(color: Colors.grey),
                               ),
-                              Icon(
-                                Icons.delete,
-                                color: Colors.black,
+                              SizedBox(
+                                width: 5,
+                              ),
+                              ImageIcon(
+                                AssetImage('assets/imgs/delete_2.png'),
+                                color: Colors.grey,
+                                size: 16,
                               )
                             ],
                           ),
                           style: ButtonStyle(
+                              side: MaterialStateProperty.all(BorderSide(
+                                  width: 2,
+                                  color: Colors.grey.withOpacity(0.2))),
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white)),
                         ))
                   ],
                 )
-              : Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Remove",
-                          style: TextStyle(color: Colors.black),
+              : Strings.availConfirm
+                  ? Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 8.0, // soften the shadow
+                                  spreadRadius: 5.0, //extend the shadow
+                                  offset: Offset(
+                                    2.0, // Move to right 10  horizontally
+                                    9.0, // Move to bottom 10 Vertically
+                                  ),
+                                )
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  Strings.availConfirm = !Strings.availConfirm;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "Remove",
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 17,
+                                  )
+                                ],
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                              ),
+                            ),
+                          ),
                         ),
-                        Icon(
-                          Icons.close,
-                          color: Colors.black,
+                        SizedBox(
+                          height: 10,
+                        )
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 8.0, // soften the shadow
+                                  spreadRadius: 2.0, //extend the shadow
+                                  offset: Offset(
+                                    2.0, // Move to right 10  horizontally
+                                    10.0, // Move to bottom 10 Vertically
+                                  ),
+                                )
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  Strings.availConfirm = !Strings.availConfirm;
+                                });
+                              },
+                              child: Text(
+                                "Join",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Strings.appThemecolor),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
                         )
                       ],
                     ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                  ),
-                )
+          SizedBox(
+            height: 5,
+          )
         ],
       ),
     );

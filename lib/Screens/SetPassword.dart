@@ -213,10 +213,10 @@ class _SetPasswordState extends State<SetPassword> {
                         bool _validate = true; //validatePassword();
                         if (_passwordController.text ==
                             _confirmPasswordController.text) {
-                              
                           if (_confirmPasswordController.text.length < 6) {
                             _btnController.stop();
-                            AppUtils.showError(context, "Password should be minimum 6 characters", "");
+                            AppUtils.showError(context,
+                                "Password should be minimum 6 characters", "");
                           } else {
                             Strings.Password = _passwordController.text;
                             Navigator.of(context).push(MaterialPageRoute(
@@ -235,21 +235,21 @@ class _SetPasswordState extends State<SetPassword> {
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                        margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Already have a account?",
-                              style: TextStyle(color: Colors.grey),
+                              "Already have an account?",
+                              style: TextStyle(
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600),
                             ),
                             SizedBox(
                               width: 5,
                             ),
                             InkWell(
                               onTap: () {
-                                Strings.ForgotPassword = false;
-
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         LoginPage()));
@@ -257,9 +257,10 @@ class _SetPasswordState extends State<SetPassword> {
                               child: Text(
                                 "Login",
                                 style: TextStyle(
-                                    color: Color.fromRGBO(248, 103, 171, 1)),
+                                    color: Strings.appThemecolor,
+                                    fontWeight: FontWeight.w600),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),

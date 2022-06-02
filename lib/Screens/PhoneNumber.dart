@@ -147,7 +147,9 @@ class _PhoneNumberState extends State<PhoneNumber> {
                           margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           width: MediaQuery.of(context).size.width * 0.70,
                           child: TextField(
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600),
                             controller: _numberController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(
@@ -179,7 +181,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
                     margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
                     width: MediaQuery.of(context).size.width * 0.9,
                     child: RoundedLoadingButton(
-                      animateOnTap:false,
+                      animateOnTap: false,
                       resetDuration: const Duration(seconds: 10),
                       resetAfterDuration: true,
                       successColor: const Color.fromRGBO(94, 37, 108, 1),
@@ -193,8 +195,7 @@ class _PhoneNumberState extends State<PhoneNumber> {
                         if (_numberController.text.length != 10) {
                           AppUtils.showWarning(context, "Invalid Number", "");
                           _btnController.stop();
-                        } else 
-                        {
+                        } else {
                           AppUtils.showprogress();
                           Strings.PhoneNumber = _numberController.text;
                           _CheckUser(_numberController.text);
@@ -215,9 +216,8 @@ class _PhoneNumberState extends State<PhoneNumber> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(phone).then((response) {
       print(response.status);
-      if (response.status == false) 
-      {
-        firebase.verifyPhone(context,phone);
+      if (response.status == false) {
+        firebase.verifyPhone(context, phone);
         _btnController.stop();
         // Navigator.push(
         //   context,

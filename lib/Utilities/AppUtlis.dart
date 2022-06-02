@@ -1,12 +1,39 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'CustomStyle.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 //import 'package:toast/toast.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+List<String> ChildName = [
+  "Kingston Jackey",
+  "Ronny Thomas",
+  "Alex Timo",
+  "Christina Timo",
+  "George Timo",
+  "Mariya Timo",
+  "Angel Timo",
+  "Kingston Jackey",
+  "Ronny Thomas",
+  "Alex Timo"
+];
+
+List<String> Images = [
+  'child.jpg',
+  'child1.jpg',
+  'child2.jpg',
+  'child3.jpg',
+  'child4.jpg',
+  'child5.jpg',
+  'child6.jpg',
+  'child.jpg',
+  'child1.jpg',
+  'child2.jpg'
+];
 
 class AppUtils {
   static appbutton(String title, Function() ontap) {
@@ -161,6 +188,51 @@ class AppUtils {
               ),
             ),
           );
+        });
+  }
+
+  static void showParticipant(context, num) {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: SingleChildScrollView(
+            child: Stack(children: [
+              Positioned(
+                  child: Icon(
+                    Icons.close_rounded,
+                    size: 20,
+                  ),
+                  right: 3),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxHeight: 350, minHeight: 100),
+                child: ListView.builder(
+                  itemCount: num,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                                AssetImage("assets/imgs/${Images[index]}"),
+                            radius: 17,
+                          ),
+                          title: Text(
+                            ChildName[index],
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 13.5),
+                          ),
+                        ),
+                        Divider(
+                          height: 3,
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ]),
+          ));
         });
   }
 }

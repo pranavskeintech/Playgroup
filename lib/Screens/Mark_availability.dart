@@ -135,6 +135,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   }
 
   final now = DateTime.now();
+  final tom = DateTime.now().add(Duration(days: 1));
 
   _getAddress() async {
     if (Strings.Latt != 0) {
@@ -353,8 +354,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        String date3 =
-                            "${now.day + 1}-${now.month}-${now.year}";
+                        String date3 = "${tom.day}-${tom.month}-${tom.year}";
                         _dobController.text = date3;
                         print("date selected");
                         todaySelected = false;
@@ -406,11 +406,11 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                             child: Align(
                                 alignment: Alignment.centerRight,
                                 child: Text(
-                                  (now.day + 1).toString() +
+                                  (tom.day).toString() +
                                       "-" +
-                                      now.month.toString() +
+                                      tom.month.toString() +
                                       "-" +
-                                      now.year.toString(),
+                                      tom.year.toString(),
                                   style: TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 12,
@@ -913,9 +913,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     ),
                     GestureDetector(
                       onTap: () async {
-                        var value = await Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (context) => MapsPage()));
+                        await Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => MapsPage()));
                         setState(() {
                           _getAddress();
                         });

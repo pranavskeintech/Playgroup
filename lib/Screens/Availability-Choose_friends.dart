@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
@@ -239,8 +241,13 @@ class _Availability_choose_friendsState
     markavail.to = Strings.markAvailabiltyendTime;
     markavail.description = Strings.markAvailabiltydesc;
     markavail.location = Strings.markAvailabiltylocations;
-    markavail.activitiesId = ["1", "2", "3", "4"];
-    markavail.sportId = ["3", "4", "5", "6"];
+    markavail.activitiesId = Strings.markAvailabiltyTopic;
+    markavail.sportId = Strings.markAvailabiltycategory;
+    markavail.childId = 1;
+    
+
+    var dat = jsonEncode(markavail);
+    print(dat);
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.createAvailability(markavail).then((response) {
       print('response ${response.status}');

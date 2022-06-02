@@ -102,8 +102,8 @@ abstract class ApiService {
   @GET("mark/getactivities")
   Future<GetActivitiesRes> GetActivities();
 
-  @GET("mark/getsports")
-  Future<GetSportsRes> GetSports();
+  @GET("mark/getsports/{SportID}")
+  Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

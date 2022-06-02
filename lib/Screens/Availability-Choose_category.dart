@@ -45,7 +45,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
 
   _GetCatagories() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetSports().then((response) {
+    api.GetSports(Strings.markAvailabiltyTopic).then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
@@ -188,7 +188,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                   onPressed: () {
                                     if (SelectedCategory != null) {
                                       Strings.markAvailabiltycategory =
-                                          SelectedCategory!;
+                                          Categories![SelectedCategory!].sportsId ?? 0;
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
