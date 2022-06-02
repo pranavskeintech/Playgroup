@@ -71,10 +71,6 @@ class _LoginPageState extends State<LoginPage> {
       print(googleSignInAccount.email);
       print('${googleSignInAccount.displayName}');
       print(googleSignInAccount.photoUrl);
-<<<<<<< HEAD
-      print(googleSignInAccount.id);
-=======
->>>>>>> 392450d6a595e7dbe9901e0770db52c3a5b7035c
 
       _GoogleLogin(googleSignInAccount.email, googleSignInAccount.displayName);
     } catch (error) {

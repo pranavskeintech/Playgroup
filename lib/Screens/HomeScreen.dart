@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
+import '../Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -309,18 +310,25 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             EdgeInsets.all(2),
                                                         height: 32,
                                                         width: 32,
-                                                        child: CircleAvatar(
-                                                          backgroundColor:
-                                                              Colors.grey
-                                                                  .withOpacity(
-                                                                      0.3),
-                                                          child: Text(
-                                                            "3+",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                                fontSize: 12),
-                                                          ), //Text
+                                                        child: InkWell(
+                                                          onTap: () {
+                                                            AppUtils
+                                                                .showParticipant(
+                                                                    context, 2);
+                                                          },
+                                                          child: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .withOpacity(
+                                                                        0.3),
+                                                            child: Text(
+                                                              "3+",
+                                                              style: TextStyle(
+                                                                  color: Colors
+                                                                      .black,
+                                                                  fontSize: 12),
+                                                            ), //Text
+                                                          ),
                                                         ),
                                                       );
                                                     }

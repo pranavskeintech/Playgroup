@@ -112,12 +112,12 @@ class _Own_AvailabilityState extends State<Own_Availability>
                           color: const Color(0xFF9e9e9e))),
                 )
               ],
-              unselectedLabelColor: const Color(0xffacb3bf),
+              //unselectedLabelColor: const Color(0xffacb3bf),
               indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
               labelColor: Colors.black,
               indicatorSize: TabBarIndicatorSize.tab,
               indicatorWeight: 2.0,
-              indicatorPadding: EdgeInsets.all(10),
+              //indicatorPadding: EdgeInsets.all(10),
               isScrollable: false,
               controller: _tabController,
             ),
@@ -155,45 +155,32 @@ class _Own_AvailabilityState extends State<Own_Availability>
                 ),
               ),
               Container(
-                  child: !Strings.activityConfirmed
+                  child: Strings.activityConfirmed
                       ? Row(
                           children: [
                             IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditAvailabilityTime(),
-                                  ));
-                                },
-                                icon: Icon(
-                                  Icons.edit_note_rounded,
-                                  size: 20,
-                                )),
+                              onPressed: () {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => EditAvailabilityTime(),
+                                ));
+                              },
+                              icon: ImageIcon(
+                                AssetImage('assets/imgs/edit.png'),
+                                size: 15,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
                             IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.share,
-                                  size: 20,
-                                ))
+                              onPressed: () {},
+                              icon: ImageIcon(
+                                AssetImage('assets/imgs/share .png'),
+                                size: 16,
+                                color: Colors.grey.shade600,
+                              ),
+                            )
                           ],
                         )
-                      : InkWell(
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.edit_note_outlined,
-                                size: 15,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.share,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        ))
+                      : Container())
             ],
           ),
           SizedBox(
@@ -359,7 +346,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
             child: Column(
               children: [
                 Divider(
-                  height: 2,
+                  height: 1.5,
                   thickness: 1.5,
                 ),
                 SizedBox(
@@ -408,14 +395,20 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                     padding: EdgeInsets.all(3),
                                     height: 40,
                                     width: 40,
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          Colors.grey.withOpacity(0.3),
-                                      child: Text(
-                                        "3+",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                      ), //Text
+                                    child: InkWell(
+                                      onTap: () {
+                                        AppUtils.showParticipant(context, 10);
+                                      },
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            Colors.grey.withOpacity(0.3),
+                                        child: Text(
+                                          "3+",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12),
+                                        ), //Text
+                                      ),
                                     ),
                                   );
                                 }
@@ -429,7 +422,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                   height: 10,
                 ),
                 Divider(
-                  height: 2,
+                  height: 1.5,
                   thickness: 1.5,
                 ),
                 SizedBox(
@@ -464,37 +457,46 @@ class _Own_AvailabilityState extends State<Own_Availability>
           Spacer(),
           Strings.activityConfirmed
               ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
                     SizedBox(
-                        //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                        // ),
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            AppUtils.showPopUp(context,
-                                "Are you sure want to pause the event..");
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "Pause",
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              Icon(
-                                Icons.pause_circle,
-                                color: Colors.black,
-                              )
-                            ],
-                          ),
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white)),
-                        )),
+                      //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                      // ),
+                      width: MediaQuery.of(context).size.width * 0.4,
+                      height: 40,
+                      child: TextButton(
+                        onPressed: () {
+                          AppUtils.showPopUp(context,
+                              "Are you sure want to pause the event..");
+                        },
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const [
+                            Text(
+                              "Pause",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            ImageIcon(
+                              AssetImage('assets/imgs/pause_1.png'),
+                              color: Colors.grey,
+                              size: 16,
+                            )
+                          ],
+                        ),
+                        style: ButtonStyle(
+                            side: MaterialStateProperty.all(BorderSide(
+                                width: 2, color: Colors.grey.withOpacity(0.2))),
+                            backgroundColor:
+                                MaterialStateProperty.all<Color>(Colors.white)),
+                      ),
+                    ),
                     SizedBox(
                         width: MediaQuery.of(context).size.width * 0.4,
-                        child: ElevatedButton(
+                        height: 40,
+                        child: TextButton(
                           onPressed: () {
                             AppUtils.showPopUp(context,
                                 "Are you sure want to Delete the event..");
@@ -504,42 +506,136 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             children: const [
                               Text(
                                 "Delete",
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(color: Colors.grey),
                               ),
-                              Icon(
-                                Icons.delete,
-                                color: Colors.black,
+                              SizedBox(
+                                width: 5,
+                              ),
+                              ImageIcon(
+                                AssetImage('assets/imgs/delete_2.png'),
+                                color: Colors.grey,
+                                size: 16,
                               )
                             ],
                           ),
                           style: ButtonStyle(
+                              side: MaterialStateProperty.all(BorderSide(
+                                  width: 2,
+                                  color: Colors.grey.withOpacity(0.2))),
                               backgroundColor: MaterialStateProperty.all<Color>(
                                   Colors.white)),
                         ))
                   ],
                 )
-              : Align(
-                  alignment: Alignment.center,
-                  child: ElevatedButton(
-                    onPressed: () {},
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Text(
-                          "Remove",
-                          style: TextStyle(color: Colors.black),
+              : Strings.availConfirm
+                  ? Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 8.0, // soften the shadow
+                                  spreadRadius: 5.0, //extend the shadow
+                                  offset: Offset(
+                                    2.0, // Move to right 10  horizontally
+                                    9.0, // Move to bottom 10 Vertically
+                                  ),
+                                )
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  Strings.availConfirm = !Strings.availConfirm;
+                                });
+                              },
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "Remove",
+                                    style: TextStyle(
+                                        color: Colors.black54,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Icon(
+                                    Icons.close,
+                                    color: Colors.black,
+                                    size: 17,
+                                  )
+                                ],
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white),
+                              ),
+                            ),
+                          ),
                         ),
-                        Icon(
-                          Icons.close,
-                          color: Colors.black,
+                        SizedBox(
+                          height: 10,
+                        )
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 8.0, // soften the shadow
+                                  spreadRadius: 2.0, //extend the shadow
+                                  offset: Offset(
+                                    2.0, // Move to right 10  horizontally
+                                    10.0, // Move to bottom 10 Vertically
+                                  ),
+                                )
+                              ],
+                            ),
+                            child: TextButton(
+                              onPressed: () {
+                                setState(() {
+                                  Strings.availConfirm = !Strings.availConfirm;
+                                });
+                              },
+                              child: Text(
+                                "Join",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w700),
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Strings.appThemecolor),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10,
                         )
                       ],
                     ),
-                    style: ButtonStyle(
-                        backgroundColor:
-                            MaterialStateProperty.all<Color>(Colors.white)),
-                  ),
-                )
+          SizedBox(
+            height: 5,
+          )
         ],
       ),
     );

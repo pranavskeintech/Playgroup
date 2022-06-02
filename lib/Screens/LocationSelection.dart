@@ -131,7 +131,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                                   'Select Location',
                                   style: TextStyle(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w600,
                                       color: Colors.black),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -145,7 +145,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                                       item.name!,
                                       style: const TextStyle(
                                         fontSize: 14,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.black,
                                       ),
                                       overflow: TextOverflow.ellipsis,
