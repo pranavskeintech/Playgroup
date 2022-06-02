@@ -71,7 +71,10 @@ class _LoginPageState extends State<LoginPage> {
       print(googleSignInAccount.email);
       print('${googleSignInAccount.displayName}');
       print(googleSignInAccount.photoUrl);
+<<<<<<< HEAD
       print(googleSignInAccount.id);
+=======
+>>>>>>> 392450d6a595e7dbe9901e0770db52c3a5b7035c
 
       _GoogleLogin(googleSignInAccount.email, googleSignInAccount.displayName);
     } catch (error) {
@@ -556,6 +559,7 @@ class _LoginPageState extends State<LoginPage> {
         Strings.parentName = response.data![0].parentName!;
         Strings.parentemail = response.data![0].emailId!;
         Strings.Parent_Id = response.data![0].userId!;
+        Strings.SelectedChild = response.data![0].selectedChildId!;
 
         // _isLoading = false;
         //  Get.off(() => DashPage());

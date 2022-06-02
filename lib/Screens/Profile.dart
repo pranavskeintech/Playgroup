@@ -8,6 +8,8 @@ import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChildProfile.dart';
+import 'package:playgroup/Screens/EditCoParent.dart';
+import 'package:playgroup/Screens/PhoneNumber.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -125,7 +127,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           onPressed: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    SignupEmailScreen(fromProfile: true,name: _ProfileData!.parentName!,email: _ProfileData!.emailId!,)));
+                                    SignupEmailScreen(
+                                      fromProfile: true,
+                                      name: _ProfileData!.parentName!,
+                                      email: _ProfileData!.emailId!,
+                                    )));
                           },
                           child: Row(
                             children: [
@@ -284,7 +290,24 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 TextButton(
-                                    onPressed: () {},
+                                    onPressed: () {
+                                      Navigator.of(context).pushReplacement(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  EditCoParent(
+                                                    name: _ProfileData!
+                                                        .coParent?[0]
+                                                        .parentName,
+                                                    email: _ProfileData!
+                                                        .coParent?[0].emailId,
+                                                    PhoneNumber: _ProfileData!
+                                                        .coParent?[0].phone,
+                                                    password: _ProfileData!
+                                                        .coParent?[0].password,
+                                                    selectedAcces: _ProfileData!
+                                                        .coParent?[0].access,
+                                                  )));
+                                    },
                                     child: Row(
                                       children: [
                                         Text("Edit"),
@@ -440,7 +463,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               Strings.profilepage = true;
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      ChildDetails(fromProfile: true,)));
+                                      ChildDetails(
+                                        fromProfile: true,
+                                      )));
                             },
                             child: Text(
                               "Add Child",

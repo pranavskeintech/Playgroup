@@ -1,14 +1,16 @@
 class MarkAvailabilityReq {
+  int? childId;
   String? date;
   String? from;
   String? to;
   String? description;
   String? location;
-  List<String>? activitiesId;
-  List<String>? sportId;
+  int? activitiesId;
+  int? sportId;
 
   MarkAvailabilityReq(
       {this.date,
+      this.childId,
       this.from,
       this.to,
       this.description,
@@ -17,6 +19,7 @@ class MarkAvailabilityReq {
       this.sportId});
 
   MarkAvailabilityReq.fromJson(Map<String, dynamic> json) {
+    childId = json['child_id'];
     date = json['date'];
     from = json['from'];
     to = json['to'];
@@ -28,6 +31,7 @@ class MarkAvailabilityReq {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['child_id'] = this.childId;
     data['date'] = this.date;
     data['from'] = this.from;
     data['to'] = this.to;

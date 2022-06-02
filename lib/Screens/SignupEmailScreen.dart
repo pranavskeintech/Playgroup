@@ -275,25 +275,29 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     });
   }
 
-  void updateUser() {
-
+  void updateUser() 
+  {
     final api = Provider.of<ApiService>(ctx!, listen: false);
 
     UserRegisterReq user = UserRegisterReq();
     user.emailId = _emailIdController.text;
     user.parentName = _parentController.text;
-    api.updateParent(user).then((response) {
+    api.updateParent(user).then((response) 
+    {
       print(response.status);
-      if (response.status == true) {
+      if (response.status == true) 
+      {
         AppUtils.showToast(response.message, "");
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ProfileScreen()));
-      } else {
+      } else 
+      {
         AppUtils.showToast(response.message, "");
         functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
       }
-    }).catchError((onError) {
+    }).catchError((onError) 
+    {
       print(onError.toString());
     });
 

@@ -364,7 +364,7 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<GetSportsRes> GetSports() async {
+  Future<GetSportsRes> GetSports(sprotID) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -372,7 +372,7 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<GetSportsRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'mark/getsports',
+                .compose(_dio.options, 'mark/getsports/${sprotID}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = GetSportsRes.fromJson(_result.data!);

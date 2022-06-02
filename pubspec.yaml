@@ -70,6 +70,8 @@ dev_dependencies:
   social_share: ^2.2.1
   chips_choice_null_safety: ^2.0.6
   dropdown_plus: ^0.0.9
+  galleryimage: ^1.1.0
+  photo_view: ^0.12.0
 
   retrofit: ^3.0.1+1  
   # auto file creaation API Call
