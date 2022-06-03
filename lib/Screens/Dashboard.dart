@@ -99,7 +99,6 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   @override
-<<<<<<< HEAD
   Widget build(BuildContext context) {
     return Provider<ApiService>(
         create: (context) => ApiService.create(),
@@ -113,10 +112,6 @@ class _DashBoardState extends State<DashBoard> {
 
   Dashboard(BuildContext context) {
     ctx = context;
-=======
-  Widget build(BuildContext context) 
-  {
->>>>>>> b08f1f8f1b89ab5e61280a58ff7662ee9e5ce404
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
       child: _isLoading
