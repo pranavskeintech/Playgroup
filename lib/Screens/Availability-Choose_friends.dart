@@ -52,7 +52,7 @@ class _Availability_choose_friendsState
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Strings.appThemecolor,
-            title: Text("Select Child"),
+            title: Text("Your Availability"),
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -69,31 +69,18 @@ class _Availability_choose_friendsState
 
   MarkAvail(BuildContext context) {
     ctx = context;
-    return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_sharp,
-              color: Colors.white,
-            )),
-        title: Text("Your Availability"),
-        backgroundColor: Strings.appThemecolor,
-      ),
-      body: Container(
-        padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
+    return Container(
+        padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
         child: Column(
           children: [
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 "Choose Friends to join you?",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
             Container(
               decoration: BoxDecoration(
                   color: Strings.textFeildBg,
@@ -112,7 +99,7 @@ class _Availability_choose_friendsState
                     border: InputBorder.none,
                     enabledBorder: OutlineInputBorder(
                         borderSide:
-                            BorderSide(color: Colors.grey.shade300, width: 0.0),
+                            BorderSide(color: Strings.textFeildBg),
                         borderRadius: BorderRadius.circular(6)),
                     filled: true,
                     fillColor: Strings.textFeildBg,
@@ -135,9 +122,7 @@ class _Availability_choose_friendsState
                     setState(() {
                       _switchValue = value;
                     });
-                    print("1:$value");
-                    print("object:${_switchValue}");
-                    print("2:${_isChecked!.length}");
+                   
                     if (_switchValue == true) {
                       for (var index = 0; _isChecked!.length > index; index++) {
                         _isChecked![index] = true;
@@ -209,7 +194,7 @@ class _Availability_choose_friendsState
                     onPressed: () {
                       _MarkAvailability();
                     },
-                    child: Text("Done"),
+                    child: Text("Done",),
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             Strings.appThemecolor)),
@@ -223,19 +208,15 @@ class _Availability_choose_friendsState
             ),
           ],
         ),
-      ),
-    );
+      );
   }
 
   _MarkAvailability() {
-    print("1:${Strings.markAvailabiltydate}");
-    print("2" + Strings.markAvailabiltystartTime);
-    print("3" + Strings.markAvailabiltyendTime);
-    print("4" + Strings.markAvailabiltydesc);
-    print("5" + Strings.markAvailabiltylocations);
-    print("6" + Strings.markAvailabiltyTopic.toString());
-    print("7:${Strings.markAvailabiltycategory.toString()}");
+    AppUtils.showprogress();
+
+
     MarkAvailabilityReq markavail = MarkAvailabilityReq();
+
     markavail.date = Strings.markAvailabiltydate;
     markavail.from = Strings.markAvailabiltystartTime;
     markavail.to = Strings.markAvailabiltyendTime;
@@ -243,10 +224,10 @@ class _Availability_choose_friendsState
     markavail.location = Strings.markAvailabiltylocations;
     markavail.activitiesId = Strings.markAvailabiltyTopic;
     markavail.sportId = Strings.markAvailabiltycategory;
-    markavail.childId = 1;
+    markavail.childId = Strings.SelectedChild;
     
-
     var dat = jsonEncode(markavail);
+
     print(dat);
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.createAvailability(markavail).then((response) {
@@ -255,9 +236,9 @@ class _Availability_choose_friendsState
         AppUtils.dismissprogress();
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-        print("result2:$response");
       } else {
         functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
         print("error");
       }
     });
