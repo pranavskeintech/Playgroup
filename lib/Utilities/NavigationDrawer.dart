@@ -4,6 +4,7 @@ import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/LocationSelection.dart';
 import 'package:playgroup/Screens/Login.dart';
+import 'package:playgroup/Screens/OnBoardingScreen.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/Settings.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -200,17 +201,21 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 },
               ),
               ListTile(
-                leading: Image.asset(
-                  "assets/imgs/add_friends.png",
-                  width: 17,
-                  height: 17,
-                ),
-                title: Transform.translate(
-                  offset: Offset(-20, -3),
-                  child: Text('Invite Friends'),
-                ),
-                onTap: () => {Navigator.of(context).pop()},
-              ),
+                  leading: Image.asset(
+                    "assets/imgs/add_friends.png",
+                    width: 17,
+                    height: 17,
+                  ),
+                  title: Transform.translate(
+                    offset: Offset(-20, -3),
+                    child: Text('Invite Friends'),
+                  ),
+                  onTap: () => {
+                        //Navigator.of(context).pop()},
+
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => OnBoardingScreen())),
+                      }),
             ],
           ),
         ),

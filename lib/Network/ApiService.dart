@@ -15,7 +15,11 @@ import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
+<<<<<<< HEAD
 import 'package:playgroup/Models/OtherChildRes.dart';
+=======
+import 'package:playgroup/Models/PendingFriendReqRes.dart';
+>>>>>>> 7faacdf4cde5a18a628126932f6b21017a704206
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
@@ -96,7 +100,7 @@ abstract class ApiService {
   @GET("user/getchild")
   Future<GetChildRes> GetChild();
 
-  @DELETE("user/child/{ChildID}")  
+  @DELETE("user/child/{ChildID}")
   Future<GetChildRes> DeleteChild(@Path("ChildID") int ChildID);
 
   @PUT("user/editchild")
@@ -107,7 +111,7 @@ abstract class ApiService {
 
   @PUT("user/updateParent")
   Future<CommonRes> updateParent(@Body() UserRegisterReq body);
-  
+
   @GET("user/profile")
   Future<GetProfileRes> GetProfile();
 
@@ -116,6 +120,9 @@ abstract class ApiService {
 
   @GET("mark/getsports/{SportID}")
   Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
+
+  @GET("friends/{ChildID}/Pending")
+  Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
