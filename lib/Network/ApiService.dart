@@ -6,6 +6,7 @@ import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
+import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
@@ -14,6 +15,7 @@ import 'package:playgroup/Models/Get_CityRes.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
+import 'package:playgroup/Models/OtherChildRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
@@ -55,10 +57,10 @@ abstract class ApiService {
   Future<CheckchildRes> Checkchild(
       @Path("name") String name, @Path("user_id") int id);
 
-  @GET("user/searchchild/{name}")
+  @GET("user/searchchild/{child_id}/{name}")
   Future<SearchresultRes> SearchChild(
-    @Path("name") String name,
-  );
+    @Path("name") String name,@Path("child_id") int id);
+
 
   @GET("user/get_City/IN/TN")
   Future<GetCity> Get_City();
@@ -75,11 +77,21 @@ abstract class ApiService {
   @POST("user/addchild")
   Future<CommonRes> AddChild(@Body() AddChildReq body);
 
+  @POST("friends")
+  Future<CommonRes> sendFriendRequest(@Body() FriendRequestReq body);
+
+  @DELETE("friends/{user_id}/{otherChild_id}")
+  Future<CommonRes> deleteFriendRequest(@Path("user_id") int ChildID, @Path("otherChild_id") int otherChildID);
+
   @POST("user/addchild")
   Future<CommonRes> AddChild2(@Body() AddChildReq2 body);
 
   @GET("user/getparent/{ChildID}")
   Future<UserDetailsRes> getParentsDetails(@Path("ChildID") int ChildID);
+
+   @GET("user/getchildid/{child_id}/{otherChild_id}")
+  Future<OtherChildRes> getOtherchildDetails(@Path("child_id") int ChildID, @Path("otherChild_id") int otherChild_id);
+
 
   @GET("user/getchild")
   Future<GetChildRes> GetChild();

@@ -2,11 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:playgroup/Models/FriendRequestReq.dart';
+import 'package:playgroup/Models/OtherChildRes.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
+
+import '../Network/ApiService.dart';
+import '../Utilities/AppUtlis.dart';
 
 class OtherChildProfile extends StatefulWidget {
-  const OtherChildProfile({Key? key}) : super(key: key);
+  int? otherChildID;
+   OtherChildProfile({Key? key,this.otherChildID}) : super(key: key);
 
   @override
   State<OtherChildProfile> createState() => _OtherChildProfileState();
@@ -14,6 +21,16 @@ class OtherChildProfile extends StatefulWidget {
 
 class _OtherChildProfileState extends State<OtherChildProfile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+    BuildContext? ctx;
+  List<childData> childInfo = [];
+
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => getProfile());
+  }
+
   List<String> images = [
     "cricket.jpg",
     "cooking.jpg",
@@ -35,35 +52,46 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
   bool _limitImage = true;
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      appBar: AppBar(
-        //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
-        backgroundColor: Strings.appThemecolor,
-        title: Transform(
-          transform: Matrix4.translationValues(-10.0, 0, 0),
-          child: Text(
-            "Anne Besta ",
-            style: TextStyle(
-                color: Colors.white, fontSize: 19, fontWeight: FontWeight.w600),
+    return Provider(
+      create: (context) => ApiService.create(),
+      child: Scaffold(
+        key: _scaffoldKey,
+        appBar: AppBar(
+          //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+          backgroundColor: Strings.appThemecolor,
+          title: Transform(
+            transform: Matrix4.translationValues(-10.0, 0, 0),
+            child: Text(
+              "Anne Besta ",
+              style: TextStyle(
+                  color: Colors.white, fontSize: 19, fontWeight: FontWeight.w600),
+            ),
+          ),
+          leading: Transform(
+            transform: Matrix4.translationValues(8.0, 0, 0),
+            child: IconButton(
+                onPressed: () {
+                  // _scaffoldKey.currentState?.openDrawer();
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  // AssetImage("assets/imgs/menu_ver2.png"),
+                  Icons.arrow_back,
+                  size: 32,
+                  color: Colors.white,
+                )),
           ),
         ),
-        leading: Transform(
-          transform: Matrix4.translationValues(8.0, 0, 0),
-          child: IconButton(
-              onPressed: () {
-                // _scaffoldKey.currentState?.openDrawer();
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                // AssetImage("assets/imgs/menu_ver2.png"),
-                Icons.arrow_back,
-                size: 32,
-                color: Colors.white,
-              )),
-        ),
+        body: Builder(builder: (BuildContext newContext) {
+              return OtherChildProfile(newContext);
+            }),
       ),
-      body: SingleChildScrollView(
+    );
+  }
+OtherChildProfile(BuildContext context)
+{
+  ctx = context;
+  return SingleChildScrollView(
         child: Column(
           children: [
             Container(
@@ -105,7 +133,9 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                   height: 10,
                 ),
                 ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Addfriend();
+                    },
                     child: Container(
                       width: 140,
                       child: Center(
@@ -771,7 +801,50 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
             )
           ],
         ),
-      ),
-    );
+      );
+}
+   Addfriend() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+
+    FriendRequestReq friendRequestReq = FriendRequestReq();
+
+    friendRequestReq.childId = Strings.SelectedChild;
+    friendRequestReq.childFriendId = widget.otherChildID;
+    api.sendFriendRequest(friendRequestReq).then((response) {
+      print(response.status);
+      if (response.status == true) 
+      {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => OTPScreen(),
+        //   ),
+        // );
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "User not registered", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  getProfile()
+  {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.getOtherchildDetails(widget.otherChildID!,Strings.SelectedChild).then((response) {
+      print(response.status);
+      if (response.status == true) 
+      {
+        childInfo = response.data!;
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "Unable to fetch details for child", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 }

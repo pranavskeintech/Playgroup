@@ -100,7 +100,7 @@ class _SearchScreenState extends State<SearchScreen> {
                               Strings.FriendNotification = false;
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      ShowOtherChildProfile()));
+                                      ShowOtherChildProfile(otherChildID: searchData[index].childId,childName: searchData[index].childName,ChildLocation: searchData[index].location,)));
                             },
                             child: Container(
                                 padding: EdgeInsets.all(10),
@@ -232,7 +232,7 @@ class _SearchScreenState extends State<SearchScreen> {
   searchResults(searchText) {
     var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.SearchChild(searchText).then((response) {
+    api.SearchChild(searchText,Strings.SelectedChild).then((response) {
       print(response.status);
       if (response.status == true) {
         noMatchFound = false;
