@@ -51,6 +51,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
 
   TimeOfDay? ltime;
 
+  var _currentSelectedValue;
+
   _selectFromTime(context) async {
     final ChoosenTime1 = await showTimePicker(
       context: context,
@@ -154,6 +156,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
       }
     }
   }
+
+  var _Data = ["Open to anything", "Current Location"];
 
   @override
   Widget build(BuildContext context) {
@@ -874,7 +878,42 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               ),
                               keyboardType: TextInputType.emailAddress,
                             )
-                          : TextDropdownFormField(
+                          :
+                          // FormField<String>(
+                          //     builder: (FormFieldState<String> state) {
+                          //       return InputDecorator(
+                          //         decoration: InputDecoration(
+                          //             // labelStyle: textStyle,
+                          //             errorStyle: TextStyle(
+                          //                 color: Colors.redAccent,
+                          //                 fontSize: 16.0),
+                          //             hintText: 'Please select expense',
+                          //             border: OutlineInputBorder(
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(5.0))),
+                          //         isEmpty: _currentSelectedValue == '',
+                          //         child: DropdownButtonHideUnderline(
+                          //           child: DropdownButton<String>(
+                          //             value: _currentSelectedValue,
+                          //             isDense: true,
+                          //             onChanged: (String? newValue) {
+                          //               setState(() {
+                          //                 _currentSelectedValue = newValue;
+                          //                 state.didChange(newValue);
+                          //               });
+                          //             },
+                          //             items: _Data.map((String value) {
+                          //               return DropdownMenuItem<String>(
+                          //                 value: value,
+                          //                 child: Text(value),
+                          //               );
+                          //             }).toList(),
+                          //           ),
+                          //         ),
+                          //       );
+                          //     },
+                          //   )
+                          TextDropdownFormField(
                               options: ["Open to anything", "Current Location"],
                               // decoration: InputDecoration(
                               //     border: OutlineInputBorder(),

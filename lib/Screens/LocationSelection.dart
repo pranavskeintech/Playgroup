@@ -139,7 +139,6 @@ class _LocationSelectionState extends State<LocationSelection> {
                       SizedBox(
                         height: 10,
                       ),
-<<<<<<< HEAD
                       Padding(
                           padding: EdgeInsets.only(top: 8.0),
                           child: TextField(
@@ -162,59 +161,6 @@ class _LocationSelectionState extends State<LocationSelection> {
                             //   // ),
 
                             //   hintText: "Search...",
-=======
-                      DropdownButtonHideUnderline(
-                        child: DropdownButton2(
-                          isExpanded: true,
-                          hint: Row(
-                            children: const [
-                              Expanded(
-                                child: Text(
-                                  'Select Location',
-                                  style: TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w600,
-                                      color: Colors.black),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                          items: items
-                              .map((item) => DropdownMenuItem<String>(
-                                    value: item.name,
-                                    child: Text(
-                                      item.name!,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w600,
-                                        color: Colors.black,
-                                      ),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ))
-                              .toList(),
-                          value: selectedValue,
-                          onChanged: (value) {
-                            setState(() {
-                              selectedValue = value as String;
-                            });
-                          },
-                          icon: const Icon(
-                            Icons.arrow_forward_ios_outlined,
-                          ),
-                          iconSize: 14,
-                          iconEnabledColor: Colors.black,
-                          iconDisabledColor: Colors.grey,
-                          buttonHeight: 50,
-                          buttonWidth: MediaQuery.of(context).size.width * 0.9,
-                          buttonPadding:
-                              const EdgeInsets.only(left: 14, right: 14),
-                          buttonDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            // border: Border.all(
-                            //   color: Colors.black26,
->>>>>>> b08f1f8f1b89ab5e61280a58ff7662ee9e5ce404
                             // ),
 
                             decoration: InputDecoration(

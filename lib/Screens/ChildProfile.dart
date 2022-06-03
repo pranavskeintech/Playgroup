@@ -1,13 +1,18 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/PendingFriendReqRes.dart';
+import 'package:playgroup/Models/UserDetailsRes.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddGroup.dart';
 import 'package:playgroup/Screens/EditChildDetails.dart';
 import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/EditLanguagesKnown.dart';
 import 'package:playgroup/Screens/OtherChildProfile.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
+import 'package:provider/provider.dart';
 
 class ChildProfile extends StatefulWidget {
   const ChildProfile({Key? key}) : super(key: key);
@@ -79,15 +84,55 @@ class _ChildProfileState extends State<ChildProfile>
 
   bool _show = false;
 
+  BuildContext? ctx;
+
+  List<FriendReqData>? _FriendReqData;
+
+  fetchData() {
+    var CID = Strings.SelectedChild.toInt();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetPendingFriendReq(CID).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        //_btnController.stop();
+        // Navigator.of(context).push(
+        //     MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+
+        setState(() {
+          _FriendReqData = response.data;
+        });
+      } else {
+        functions.createSnackBar(context, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 4, vsync: this);
     super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => fetchData());
   }
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return FriendReq(newContext);
+          }),
+        ));
+  }
+
+  FriendReq(BuildContext context) {
+    ctx = context;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
