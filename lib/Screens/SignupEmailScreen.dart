@@ -11,12 +11,12 @@ import 'package:provider/provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class SignupEmailScreen extends StatefulWidget {
-  
-    final bool? fromProfile;
-    final String? name;
-    final String? email;
+  final bool? fromProfile;
+  final String? name;
+  final String? email;
 
-   SignupEmailScreen({Key? key,this.fromProfile,this.email,this.name}) : super(key: key);
+  SignupEmailScreen({Key? key, this.fromProfile, this.email, this.name})
+      : super(key: key);
 
   @override
   State<SignupEmailScreen> createState() => _SignupEmailScreenState();
@@ -25,11 +25,11 @@ class SignupEmailScreen extends StatefulWidget {
 class _SignupEmailScreenState extends State<SignupEmailScreen> {
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
-      @override
+  @override
   void initState() {
     // TODO: implement initState
 
-    if(widget.fromProfile == true) {
+    if (widget.fromProfile == true) {
       _emailIdController.text = widget.email!;
       _parentController.text = widget.name!;
     }
@@ -38,10 +38,6 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
 
   final TextEditingController _emailIdController = TextEditingController();
   final TextEditingController _parentController = TextEditingController();
-
-
-
-  
 
   BuildContext? ctx;
 
@@ -109,7 +105,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 Container(
                   height: 40,
                   child: TextField(
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w600),
                     controller: _parentController,
                     decoration: InputDecoration(
                         hintText: "Enter Parent Name",
@@ -147,7 +144,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 Container(
                   height: 40,
                   child: TextField(
-                    style: const TextStyle(color: Colors.black),
+                    style: const TextStyle(
+                        color: Colors.black, fontWeight: FontWeight.w600),
                     controller: _emailIdController,
                     decoration: const InputDecoration(
                         hintText: "Enter Email ID",
@@ -184,12 +182,9 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                           var email = _emailIdController.text;
                           var name = _parentController.text;
 
-                          if(email == widget.email)
-                          {
+                          if (email == widget.email) {
                             updateUser();
-                          }
-                          else
-                          {
+                          } else {
                             _CheckUser(email, name);
                           }
                           Strings.UserName = _parentController.text;
@@ -211,13 +206,14 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Already have a account?",
-                          style: TextStyle(color: Colors.grey),
+                          "Already have an account?",
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w600),
                         ),
                         SizedBox(
                           width: 5,
@@ -231,13 +227,14 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                           child: Text(
                             "Login",
                             style: TextStyle(
-                                color: Color.fromRGBO(248, 103, 171, 1)),
+                                color: Strings.appThemecolor,
+                                fontWeight: FontWeight.w600),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -250,22 +247,18 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.CheckUser(email).then((response) {
       print(response.status);
-      if (response.status == false) 
-      {
+      if (response.status == false) {
         _btnController.stop();
         Strings.parentName = name;
         Strings.parentemail = email;
         print("test--> ${widget.fromProfile}");
-       if (widget.fromProfile == true) 
-        {
+        if (widget.fromProfile == true) {
           print("from profile");
           updateUser();
-        }
-        else{
+        } else {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => SetPassword()));
+              builder: (BuildContext context) => SetPassword()));
         }
-        
       } else {
         functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
@@ -275,31 +268,25 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     });
   }
 
-  void updateUser() 
-  {
+  void updateUser() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
 
     UserRegisterReq user = UserRegisterReq();
     user.emailId = _emailIdController.text;
     user.parentName = _parentController.text;
-    api.updateParent(user).then((response) 
-    {
+    api.updateParent(user).then((response) {
       print(response.status);
-      if (response.status == true) 
-      {
+      if (response.status == true) {
         AppUtils.showToast(response.message, "");
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ProfileScreen()));
-      } else 
-      {
+      } else {
         AppUtils.showToast(response.message, "");
         functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
       }
-    }).catchError((onError) 
-    {
+    }).catchError((onError) {
       print(onError.toString());
     });
-
   }
 }

@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 mixin Strings {
+  static bool availConfirm = false;
+
+  static bool activityConfirmed = false;
+
   static String authToken = '';
 
   static String refreshToken = '';

@@ -29,6 +29,12 @@ class _LocationSelectionState extends State<LocationSelection> {
 
   bool _isLoading = true;
 
+  final TextEditingController controller = TextEditingController();
+  List countries = [];
+  String? filter;
+
+  bool _showList = false;
+
   _GetCities() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.Get_City().then((response) {
@@ -51,6 +57,17 @@ class _LocationSelectionState extends State<LocationSelection> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => _GetCities());
+    controller.addListener(() {
+      setState(() {
+        filter = controller.text;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
   }
 
   @override
@@ -73,6 +90,7 @@ class _LocationSelectionState extends State<LocationSelection> {
             child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
         : Scaffold(
+            resizeToAvoidBottomInset: false,
             body: Container(
               color: Colors.white,
               child: Center(
@@ -121,6 +139,30 @@ class _LocationSelectionState extends State<LocationSelection> {
                       SizedBox(
                         height: 10,
                       ),
+<<<<<<< HEAD
+                      Padding(
+                          padding: EdgeInsets.only(top: 8.0),
+                          child: TextField(
+                            onTap: () {
+                              setState(() {
+                                _showList = true;
+                              });
+                            },
+                            style:
+                                TextStyle(fontSize: 18.0, color: Colors.black),
+                            // decoration: InputDecoration(
+                            //   // prefixIcon: Icon(Icons.search),
+                            //   // suffixIcon: IconButton(
+                            //   //   icon: Icon(Icons.close),
+                            //   //   onPressed: () {
+                            //   //     controller.clear();
+                            //   //     FocusScope.of(context)
+                            //   //         .requestFocus(FocusNode());
+                            //   //   },
+                            //   // ),
+
+                            //   hintText: "Search...",
+=======
                       DropdownButtonHideUnderline(
                         child: DropdownButton2(
                           isExpanded: true,
@@ -131,7 +173,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                                   'Select Location',
                                   style: TextStyle(
                                       fontSize: 14,
-                                      fontWeight: FontWeight.bold,
+                                      fontWeight: FontWeight.w600,
                                       color: Colors.black),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -145,7 +187,7 @@ class _LocationSelectionState extends State<LocationSelection> {
                                       item.name!,
                                       style: const TextStyle(
                                         fontSize: 14,
-                                        fontWeight: FontWeight.bold,
+                                        fontWeight: FontWeight.w600,
                                         color: Colors.black,
                                       ),
                                       overflow: TextOverflow.ellipsis,
@@ -172,27 +214,110 @@ class _LocationSelectionState extends State<LocationSelection> {
                             borderRadius: BorderRadius.circular(5),
                             // border: Border.all(
                             //   color: Colors.black26,
+>>>>>>> b08f1f8f1b89ab5e61280a58ff7662ee9e5ce404
                             // ),
-                            color: Strings.textFeildBg,
-                          ),
-                          buttonElevation: 0,
-                          itemHeight: 40,
-                          itemPadding:
-                              const EdgeInsets.only(left: 14, right: 14),
-                          dropdownMaxHeight: 200,
-                          // dropdownWidth: 300,
-                          dropdownPadding: null,
-                          dropdownDecoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Colors.white,
-                          ),
-                          dropdownElevation: 8,
-                          scrollbarRadius: const Radius.circular(40),
-                          scrollbarThickness: 6,
-                          scrollbarAlwaysShow: true,
-                          offset: const Offset(0, 0),
-                        ),
-                      ),
+
+                            decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(10),
+                                hintText: "Search",
+                                border: InputBorder.none,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Colors.grey.shade300,
+                                        width: 0.0),
+                                    borderRadius: BorderRadius.circular(6)),
+                                filled: true,
+                                fillColor: Strings.textFeildBg,
+                                suffixIcon: IconButton(
+                                  color: Colors.grey,
+                                  icon: Icon(
+                                    _showList
+                                        ? Icons.clear
+                                        : Icons.arrow_forward_ios_outlined,
+                                  ),
+                                  onPressed: () {
+                                    controller.clear();
+                                    FocusScope.of(context)
+                                        .requestFocus(FocusNode());
+                                  },
+                                )),
+                            controller: controller,
+                          )),
+                      _showList
+                          ? Expanded(child: _buildListView())
+                          : SizedBox(),
+                      // DropdownButtonHideUnderline(
+                      //   child: DropdownButton2(
+                      //     isExpanded: true,
+                      //     hint: Row(
+                      //       children: const [
+                      //         Expanded(
+                      //           child: Text(
+                      //             'Select Location',
+                      //             style: TextStyle(
+                      //                 fontSize: 14,
+                      //                 fontWeight: FontWeight.bold,
+                      //                 color: Colors.black),
+                      //             overflow: TextOverflow.ellipsis,
+                      //           ),
+                      //         ),
+                      //       ],
+                      //     ),
+                      //     items: items
+                      //         .map((item) => DropdownMenuItem<String>(
+                      //               value: item.name,
+                      //               child: Text(
+                      //                 item.name!,
+                      //                 style: const TextStyle(
+                      //                   fontSize: 14,
+                      //                   fontWeight: FontWeight.bold,
+                      //                   color: Colors.black,
+                      //                 ),
+                      //                 overflow: TextOverflow.ellipsis,
+                      //               ),
+                      //             ))
+                      //         .toList(),
+                      //     value: selectedValue,
+                      //     onChanged: (value) {
+                      //       setState(() {
+                      //         selectedValue = value as String;
+                      //       });
+                      //     },
+                      //     icon: const Icon(
+                      //       Icons.arrow_forward_ios_outlined,
+                      //     ),
+                      //     iconSize: 14,
+                      //     iconEnabledColor: Colors.black,
+                      //     iconDisabledColor: Colors.grey,
+                      //     buttonHeight: 50,
+                      //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
+                      //     buttonPadding:
+                      //         const EdgeInsets.only(left: 14, right: 14),
+                      //     buttonDecoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(5),
+                      //       // border: Border.all(
+                      //       //   color: Colors.black26,
+                      //       // ),
+                      //       color: Strings.textFeildBg,
+                      //     ),
+                      //     buttonElevation: 0,
+                      //     itemHeight: 40,
+                      //     itemPadding:
+                      //         const EdgeInsets.only(left: 14, right: 14),
+                      //     dropdownMaxHeight: 200,
+                      //     // dropdownWidth: 300,
+                      //     dropdownPadding: null,
+                      //     dropdownDecoration: BoxDecoration(
+                      //       borderRadius: BorderRadius.circular(5),
+                      //       color: Colors.white,
+                      //     ),
+                      //     dropdownElevation: 8,
+                      //     scrollbarRadius: const Radius.circular(40),
+                      //     scrollbarThickness: 6,
+                      //     scrollbarAlwaysShow: true,
+                      //     offset: const Offset(0, 0),
+                      //   ),
+                      // ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.05,
                       ),
@@ -227,6 +352,9 @@ class _LocationSelectionState extends State<LocationSelection> {
                           },
                         ),
                       ),
+                      SizedBox(
+                        height: 40,
+                      )
                     ],
                   ),
                 ),
@@ -272,5 +400,47 @@ class _LocationSelectionState extends State<LocationSelection> {
         print("error");
       }
     });
+  }
+
+  Widget _buildListView() {
+    return Scrollbar(
+      child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: Cities!.length,
+          itemBuilder: (BuildContext context, int index) {
+            if (filter == null || filter == "") {
+              return ListTile(
+                onTap: () {
+                  selectedValue = Cities![index].name!;
+                  controller.text = selectedValue!;
+                  print("1:$selectedValue");
+                },
+                title: Text(
+                  Cities![index].name!,
+                ),
+              );
+            } else {
+              if (Cities![index]
+                  .name!
+                  .toLowerCase()
+                  .contains(filter!.toLowerCase())) {
+                return ListTile(
+                  onTap: () {
+                    setState(() {
+                      selectedValue = Cities![index].name!;
+                      controller.text = selectedValue!;
+                    });
+                    print("2:$selectedValue");
+                  },
+                  title: Text(
+                    Cities![index].name!,
+                  ),
+                );
+              } else {
+                return Container();
+              }
+            }
+          }),
+    );
   }
 }
