@@ -39,7 +39,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
 
   BuildContext? ctx;
 
-  List<Data>? Categories;
+  List<SportsData>? Categories;
 
   bool _isLoading = true;
 
@@ -107,10 +107,10 @@ class _Choose_CategoryState extends State<Choose_Category> {
                         child: Align(
                             alignment: Alignment.centerLeft,
                             child: Padding(
-                              padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+                              padding: const EdgeInsets.fromLTRB(10, 50, 0, 0),
                               child: Text(
-                                "What do you want to play?",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                "What do you want to do?",
+                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
                               ),
                             ))),
                     Container(
@@ -130,7 +130,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                   setState(() {
                                     selectedIndex = index;
                                     SelectedCategory =
-                                        Categories![index].sportsId!;
+                                        Categories![index].sportsId;
                                   });
                                 },
                                 child: Container(
@@ -159,7 +159,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                           const EdgeInsets.fromLTRB(7, 0, 7, 0),
                                       // child: Flexible(
                                       child: Text(
-                                        Categories![index].sportsName!,
+                                        Categories![index].sportsName ?? "",
                                         overflow: TextOverflow.ellipsis,
                                         style: TextStyle(
                                             color: selectedIndex != index
@@ -187,8 +187,10 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (SelectedCategory != null) {
-                                      Strings.markAvailabiltycategory =
-                                          Categories![SelectedCategory!].sportsId ?? 0;
+
+                                      print(SelectedCategory!);
+                                      Strings.markAvailabiltycategory = SelectedCategory!;
+                                          
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
@@ -216,7 +218,12 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                 width: MediaQuery.of(context).size.width * 0.9,
                                 height: 50,
                                 child: ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Availability_choose_friends()));
+                                  },
                                   child: Text(
                                     "Skip",
                                     style: TextStyle(
@@ -224,6 +231,8 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                         fontSize: 18),
                                   ),
                                   style: ButtonStyle(
+                                    shadowColor: MaterialStateProperty.all<Color>(
+                                              Colors.grey.withOpacity(0.9)),
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(
                                               Colors.white)),

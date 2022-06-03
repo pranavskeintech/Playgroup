@@ -846,7 +846,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
 
                     Container(
                       width: MediaQuery.of(context).size.width * 0.7,
-                      child: (_currentAddress != null && _currentAddress != '')
+                      child: ((_currentAddress != null && _currentAddress != '') || (_AddressController.text == ''))
                           ? TextField(
                               style: TextStyle(color: Colors.black),
                               controller: _AddressController,
@@ -878,6 +878,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               ),
                               keyboardType: TextInputType.emailAddress,
                             )
+<<<<<<< HEAD
                           :
                           // FormField<String>(
                           //     builder: (FormFieldState<String> state) {
@@ -914,6 +915,10 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                           //     },
                           //   )
                           TextDropdownFormField(
+=======
+                          : TextDropdownFormField(
+                            
+>>>>>>> ee37cb47f35c60fc0b975317c3331532059ff8d2
                               options: ["Open to anything", "Current Location"],
                               // decoration: InputDecoration(
                               //     border: OutlineInputBorder(),
@@ -931,7 +936,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                                   _AddressController.text = "Open to anything";
                                 }
                               },
-                              decoration: new InputDecoration(
+                              decoration:  InputDecoration(
                                 fillColor: Colors.transparent,
                                 filled: true,
                                 border: InputBorder.none,
@@ -975,11 +980,12 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ),
               ),
               SizedBox(
-                height: 28,
+                height: 100,
               ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
-                height: 50,
+                height: 60,
+                padding: EdgeInsets.only(bottom: 20),
                 child: TextButton(
                     style: ButtonStyle(
                         backgroundColor:
@@ -1017,9 +1023,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                       style: TextStyle(color: Colors.black),
                     )),
               ),
-              SizedBox(
-                height: 100,
-              ),
+             SizedBox(height: 100,)
             ],
           ),
         ),
