@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
+import 'package:playgroup/Models/AcceptedFriendsRes.dart';
 import 'package:playgroup/Models/PendingFriendReqRes.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
@@ -9,6 +11,7 @@ import 'package:playgroup/Screens/EditChildDetails.dart';
 import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/EditLanguagesKnown.dart';
 import 'package:playgroup/Screens/OtherChildProfile.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
@@ -88,6 +91,10 @@ class _ChildProfileState extends State<ChildProfile>
 
   List<FriendReqData>? _FriendReqData;
 
+  List<FriendsData>? FriendsDatum;
+
+  bool _isLoading = true;
+
   fetchData() {
     var CID = Strings.SelectedChild.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -100,10 +107,26 @@ class _ChildProfileState extends State<ChildProfile>
 
         setState(() {
           _FriendReqData = response.data;
+          _GetFriends();
         });
       } else {
         functions.createSnackBar(context, response.status.toString());
         // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  _GetFriends() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetAcceptedFriendReq(Strings.SelectedChild).then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          FriendsDatum = response.data!;
+          _isLoading = false;
+        });
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -602,7 +625,7 @@ class _ChildProfileState extends State<ChildProfile>
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: 2,
+              itemCount: FriendsDatum!.length,
               itemBuilder: (context, index) {
                 return Padding(
                   padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -613,7 +636,11 @@ class _ChildProfileState extends State<ChildProfile>
                               OtherChildProfile()));
                     },
                     leading: CircleAvatar(
-                      backgroundImage: AssetImage("assets/imgs/child1.jpg"),
+                      backgroundImage: FriendsDatum![index].profile != "null"
+                          ? NetworkImage(Strings.imageUrl +
+                              (FriendsDatum![index].profile ?? ""))
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
                     ),
                     trailing: _AddGroup
                         ? Container(
@@ -644,7 +671,7 @@ class _ChildProfileState extends State<ChildProfile>
                             ),
                           )
                         : null,
-                    title: Text("Christopher Janglen"),
+                    title: Text(FriendsDatum![index].childName!),
                   ),
                 );
               },
@@ -748,7 +775,7 @@ class _ChildProfileState extends State<ChildProfile>
           ),
           Expanded(
             child: ListView.separated(
-              itemCount: 2,
+              itemCount: _FriendReqData!.length,
               itemBuilder: (context, index) {
                 return ListTile(
                   onTap: () {
@@ -760,7 +787,7 @@ class _ChildProfileState extends State<ChildProfile>
                     backgroundImage: AssetImage("assets/imgs/child1.jpg"),
                   ),
                   title: Text(
-                    "Christopher Janglen",
+                    _FriendReqData![index].childName!,
                   ),
                   trailing: Container(
                     width: width * 0.5,
@@ -774,6 +801,11 @@ class _ChildProfileState extends State<ChildProfile>
                               onPressed: () {
                                 // Navigator.of(context).push(MaterialPageRoute(
                                 //     builder: (BuildContext context) => AddCoParent()));
+                                int FID = _FriendReqData![index].friendsId!;
+                                int CID = _FriendReqData![index].childId!;
+                                int CFID =
+                                    _FriendReqData![index].childFriendId!;
+                                _AcceptFriendReq(CID, CFID, FID);
                               },
                               child: Text("Accept",
                                   style: TextStyle(fontSize: 11))),
@@ -787,6 +819,11 @@ class _ChildProfileState extends State<ChildProfile>
                                       MaterialStateProperty.all<Color>(
                                           Colors.white)),
                               onPressed: () {
+                                int FID = _FriendReqData![index].friendsId!;
+                                int CID = _FriendReqData![index].childId!;
+                                int CFID =
+                                    _FriendReqData![index].childFriendId!;
+                                _CancelFriendReq(CID, CFID);
                                 // Navigator.of(context).push(MaterialPageRoute(
                                 //     builder: (BuildContext context) => AddCoParent()));
                               },
@@ -818,6 +855,53 @@ class _ChildProfileState extends State<ChildProfile>
         ],
       ),
     );
+  }
+
+  _AcceptFriendReq(CID, CFID, FID) {
+    print("CID:$CID");
+    print("CFID:$CFID");
+    print("FID:$FID");
+    AcceptFriendReq friendReq = AcceptFriendReq();
+    friendReq.childId = CID;
+    friendReq.childFriendId = CFID;
+    friendReq.friendsId = FID;
+    ;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.AcceptFriendRequest(friendReq).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        fetchData();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
+    });
+  }
+
+  _CancelFriendReq(CID, CFID) {
+    print("CID:$CID");
+    print("CFID:$CFID");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.CancelFriendReq(CID, CFID).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        fetchData();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
+    });
   }
 
   Widget Activities() {

@@ -847,8 +847,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.7,
                       child: ((_currentAddress != null &&
-                                  _currentAddress != '') ||
-                              (_AddressController.text == ''))
+                              _currentAddress != ''))
                           ? TextField(
                               style: TextStyle(color: Colors.black),
                               controller: _AddressController,
@@ -880,7 +879,42 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               ),
                               keyboardType: TextInputType.emailAddress,
                             )
-                          : TextDropdownFormField(
+                          :
+                          //     FormField<String>(
+                          //   builder: (FormFieldState<String> state) {
+                          //     return InputDecorator(
+                          //       decoration: InputDecoration(
+                          //           // labelStyle: textStyle,
+                          //           errorStyle: TextStyle(
+                          //               color: Colors.redAccent, fontSize: 16.0),
+                          //           hintText: 'Please select expense',
+                          //           border: OutlineInputBorder(
+                          //               borderRadius:
+                          //                   BorderRadius.circular(5.0))),
+                          //       isEmpty: _currentSelectedValue == '',
+                          //       child: DropdownButtonHideUnderline(
+                          //         child: DropdownButton<String>(
+                          //           value: _currentSelectedValue,
+                          //           isDense: true,
+                          //           onChanged: (String? newValue) {
+                          //             setState(() {
+                          //               _currentSelectedValue = newValue;
+                          //               state.didChange(newValue);
+                          //               print("object:$_currentSelectedValue");
+                          //             });
+                          //           },
+                          //           items: _Data.map((String value) {
+                          //             return DropdownMenuItem<String>(
+                          //               value: value,
+                          //               child: Text(value),
+                          //             );
+                          //           }).toList(),
+                          //         ),
+                          //       ),
+                          //     );
+                          //   },
+                          // )
+                          TextDropdownFormField(
                               options: ["Open to anything", "Current Location"],
                               // decoration: InputDecoration(
                               //     border: OutlineInputBorder(),
