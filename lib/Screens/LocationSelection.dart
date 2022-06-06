@@ -340,7 +340,8 @@ class _LocationSelectionState extends State<LocationSelection> {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (BuildContext context) => ChildDetails()));
         print("result2:$response");
-      } else {
+      } else 
+      {
         functions.createSnackBar(context, response.message.toString());
         _btnController.stop();
         print("error");

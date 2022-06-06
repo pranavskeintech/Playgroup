@@ -152,10 +152,11 @@ class _SearchResultsState extends State<SearchResults>
                   ),
                 );
   }
-  searchResults() {
+  searchResults() 
+  {
     var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.SearchChild(Strings.searchText).then((response) {
+    api.SearchChild(Strings.searchText,Strings.SelectedChild).then((response) {
       print(response.status);
       if (response.status == true) 
       {
