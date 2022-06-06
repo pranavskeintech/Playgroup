@@ -41,7 +41,6 @@ dependencies:
   get: ^4.6.1
   flutter_facebook_auth: ^4.3.4
   flutter_typeahead: ^4.0.0
-  introduction_screen: ^3.0.2
 
 dev_dependencies:
   flutter_test:
