@@ -3,6 +3,7 @@ import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
 import 'package:playgroup/Screens/G-Map.dart';
+import 'package:playgroup/Screens/SuggestTimeSlot.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 
@@ -296,9 +297,14 @@ class _Own_AvailabilityState extends State<Own_Availability>
                     ),
                   ),
                   Strings.activityConfirmed
-                      ? Padding(
+                      ? Container()
+                      : Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                           child: InkWell(
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => SuggestTime()));
+                            },
                             child: Text(
                               "Suggest time Slot",
                               style: TextStyle(
@@ -308,7 +314,6 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                   decoration: TextDecoration.underline),
                             ),
                           ))
-                      : Container()
                 ]),
                 InkWell(
                   onTap: () async {

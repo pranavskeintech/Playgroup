@@ -1,4 +1,7 @@
 import 'package:dio/dio.dart';
+import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
+import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
+import 'package:playgroup/Models/AcceptedFriendsRes.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/AddChildReq2.dart';
 import 'package:playgroup/Models/AddcoParentReq.dart';
@@ -60,8 +63,7 @@ abstract class ApiService {
 
   @GET("user/searchchild/{child_id}/{name}")
   Future<SearchresultRes> SearchChild(
-    @Path("name") String name,@Path("child_id") int id);
-
+      @Path("name") String name, @Path("child_id") int id);
 
   @GET("user/get_City/IN/TN")
   Future<GetCity> Get_City();
@@ -82,7 +84,8 @@ abstract class ApiService {
   Future<CommonRes> sendFriendRequest(@Body() FriendRequestReq body);
 
   @DELETE("friends/{user_id}/{otherChild_id}")
-  Future<CommonRes> deleteFriendRequest(@Path("user_id") int ChildID, @Path("otherChild_id") int otherChildID);
+  Future<CommonRes> deleteFriendRequest(
+      @Path("user_id") int ChildID, @Path("otherChild_id") int otherChildID);
 
   @POST("user/addchild")
   Future<CommonRes> AddChild2(@Body() AddChildReq2 body);
@@ -90,9 +93,9 @@ abstract class ApiService {
   @GET("user/getparent/{ChildID}")
   Future<UserDetailsRes> getParentsDetails(@Path("ChildID") int ChildID);
 
-   @GET("user/getchildid/{child_id}/{otherChild_id}")
-  Future<OtherChildRes> getOtherchildDetails(@Path("child_id") int ChildID, @Path("otherChild_id") int otherChild_id);
-
+  @GET("user/getchildid/{child_id}/{otherChild_id}")
+  Future<OtherChildRes> getOtherchildDetails(
+      @Path("child_id") int ChildID, @Path("otherChild_id") int otherChild_id);
 
   @GET("user/getchild")
   Future<GetChildRes> GetChild();
@@ -123,6 +126,16 @@ abstract class ApiService {
 
   @GET("friends/{ChildID}/Accepted")
   Future<PendingFriendReqRes> getFriends(@Path("ChildID") int ChildID);
+  
+  @PUT("friends/")
+  Future<CommonRes> AcceptFriendRequest(@Body() AcceptFriendReq body);
+
+  @DELETE("friends/{ChildID}/{child_friend_id}")
+  Future<CommonRes> CancelFriendReq(@Path("ChildID") int ChildID,
+      @Path("child_friend_id") int child_friend_id);
+
+  @GET("friends/{ChildID}/Accepted")
+  Future<AcceptedFriendsRes> GetAcceptedFriendReq(@Path("ChildID") int ChildID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
