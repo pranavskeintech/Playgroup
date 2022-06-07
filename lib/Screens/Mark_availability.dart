@@ -878,7 +878,6 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                               ),
                               keyboardType: TextInputType.emailAddress,
                             )
-<<<<<<< HEAD
                           :
                           // FormField<String>(
                           //     builder: (FormFieldState<String> state) {
@@ -915,10 +914,6 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                           //     },
                           //   )
                           TextDropdownFormField(
-=======
-                          : TextDropdownFormField(
-                            
->>>>>>> ee37cb47f35c60fc0b975317c3331532059ff8d2
                               options: ["Open to anything", "Current Location"],
                               // decoration: InputDecoration(
                               //     border: OutlineInputBorder(),
