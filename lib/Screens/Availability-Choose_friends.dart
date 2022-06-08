@@ -214,6 +214,7 @@ class _Availability_choose_friendsState
                                         } else {
                                           FriendsId.remove(
                                               FriendsDatum![index].friendsId!);
+                                          print("friends:$FriendsId");
                                         }
                                       },
                                     );
