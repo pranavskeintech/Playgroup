@@ -105,7 +105,7 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             margin: EdgeInsets.fromLTRB(20, 20, 0, 0),
                             child: Text(
                               "Top Activities",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                             )),
                         Container(
                             margin: EdgeInsets.fromLTRB(30, 20, 30, 20),
@@ -129,18 +129,19 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                     child: Stack(
                                       children: [
                                         Container(
+                                          margin: EdgeInsets.only(bottom: 10,top: 10,right: 5,left: 5),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:
                                                 BorderRadius.all(Radius.circular(10)),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.3),
+                                                color: Colors.grey.withOpacity(0.1),
                                                 blurRadius: 2.0, // soften the shadow
-                                                spreadRadius: 0.0, //extend the shadow
+                                                spreadRadius: 1.0, //extend the shadow
                                                 offset: Offset(
-                                                  0.0, // Move to right 10  horizontally
-                                                  0.5, // Move to bottom 10 Vertically
+                                                  2.0, // Move to right 10  horizontally
+                                                  2.0, // Move to bottom 10 Vertically
                                                 ),
                                               )
                                             ],
@@ -210,18 +211,19 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                     child: Stack(
                                       children: [
                                         Container(
+                                       margin: EdgeInsets.only(bottom: 10,top: 10,right: 5,left: 5),
                                           decoration: BoxDecoration(
                                             color: Colors.white,
                                             borderRadius:
                                                 BorderRadius.all(Radius.circular(10)),
                                             boxShadow: [
                                               BoxShadow(
-                                                color: Colors.grey.withOpacity(0.3),
+                                                color: Colors.grey.withOpacity(0.1),
                                                 blurRadius: 2.0, // soften the shadow
-                                                spreadRadius: 0.0, //extend the shadow
+                                                spreadRadius: 1.0, //extend the shadow
                                                 offset: Offset(
-                                                  0.0, // Move to right 10  horizontally
-                                                  0.5, // Move to bottom 10 Vertically
+                                                  2.0, // Move to right 10  horizontally
+                                                  2.0, // Move to bottom 10 Vertically
                                                 ),
                                               )
                                             ],
