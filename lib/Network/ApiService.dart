@@ -5,6 +5,8 @@ import 'package:playgroup/Models/AcceptedFriendsRes.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/AddChildReq2.dart';
 import 'package:playgroup/Models/AddcoParentReq.dart';
+import 'package:playgroup/Models/AvailPauseReq.dart';
+import 'package:playgroup/Models/AvailabityRes.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
@@ -19,6 +21,7 @@ import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
+import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
 import 'package:playgroup/Models/PendingFriendReqRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
@@ -103,6 +106,12 @@ abstract class ApiService {
   @DELETE("user/child/{ChildID}")
   Future<GetChildRes> DeleteChild(@Path("ChildID") int ChildID);
 
+  @DELETE("mark/deletemark/{avail_id}")
+  Future<CommonRes> deleteAvailability(@Path("avail_id") int availID);
+
+  @PUT("mark/pausemark")
+  Future<CommonRes> pauseAvailability(@Body() AvailPauseReq body);
+
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
 
@@ -121,12 +130,14 @@ abstract class ApiService {
   @GET("mark/getsports/{SportID}")
   Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
 
+  @GET("/mark/getmarkbyid/{availability_id}")
+  Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(@Path("availability_id") int availability_id);
+
   @GET("friends/{ChildID}/Pending")
   Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
 
   @GET("friends/{ChildID}/Accepted")
   Future<PendingFriendReqRes> getFriends(@Path("ChildID") int ChildID);
-  
   @PUT("friends/")
   Future<CommonRes> AcceptFriendRequest(@Body() AcceptFriendReq body);
 

@@ -140,7 +140,8 @@ class AppUtils {
     );
   }
 
-  static void showPopUp(context, msg) {
+  static void showPopUp(context, msg, onTap) 
+  {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -161,7 +162,7 @@ class AppUtils {
                         child: ElevatedButton(
                           onPressed: () {
                             print('yes selected');
-
+                            onTap();
                             Navigator.of(context).pop();
                           },
                           child: Text("Yes"),
@@ -173,7 +174,6 @@ class AppUtils {
                       Expanded(
                           child: ElevatedButton(
                         onPressed: () {
-                          print('no selected');
                           Navigator.of(context).pop();
                         },
                         child:
@@ -191,48 +191,53 @@ class AppUtils {
         });
   }
 
-  static void showParticipant(context, num) {
+  static void showParticipant(context, num) 
+  {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              content: SingleChildScrollView(
-            child: Stack(children: [
-              Positioned(
-                  child: Icon(
-                    Icons.close_rounded,
-                    size: 20,
-                  ),
-                  right: 3),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxHeight: 350, minHeight: 100),
-                child: ListView.builder(
-                  itemCount: num,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        ListTile(
-                          leading: CircleAvatar(
-                            backgroundImage:
-                                AssetImage("assets/imgs/${Images[index]}"),
-                            radius: 17,
-                          ),
-                          title: Text(
-                            ChildName[index],
-                            style: TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 13.5),
-                          ),
-                        ),
-                        Divider(
-                          height: 3,
-                        ),
-                      ],
-                    );
+              content: Stack(children: [
+                InkWell(
+                  onTap: (){
+                    Navigator.of(context).pop();
                   },
+                  child: (
+                      Icon(
+                        Icons.close_rounded,
+                        size: 20,
+                      )
+                      ),
                 ),
-              ),
-            ]),
-          ));
+                Container(
+                  height: 300,
+                  width: 200,
+                  child: ListView.builder(
+                    itemCount: num,
+                    itemBuilder: (context, index) {
+                      return Column(
+                        children: [
+                          ListTile(
+                            leading: CircleAvatar(
+                              backgroundImage:
+                                  AssetImage("assets/imgs/${Images[index]}"),
+                              radius: 17,
+                            ),
+                            title: Text(
+                              ChildName[index],
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 13.5),
+                            ),
+                          ),
+                          Divider(
+                            height: 3,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ]));
         });
   }
 }

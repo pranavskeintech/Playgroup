@@ -94,7 +94,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
   getProfile()
   {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getOtherchildDetails(Strings.SelectedChild,widget.otherChildID!,).then((response) {
+    api.getOtherchildDetails(Strings.SelectedChild,widget.otherChildID!).then((response) {
       print(response.status);
       if (response.status == true) 
       {
@@ -271,7 +271,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                           ],
                         ),
                       )
-                    :  childInfo[0].status != "Pending"?
+                    :  childInfo[0].status == "unfriend"?
                     ElevatedButton(
                         onPressed: () {
                           Addfriend();
@@ -286,7 +286,9 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                                   fontSize: 14, fontWeight: FontWeight.w700),
                             ),
                           ),
-                        )):ElevatedButton(
+                        )):childInfo[0].status == "Accepted"?
+                        Text("You are already been friends"):
+                        ElevatedButton(
                         onPressed: () {
                           deleteRequest();
                         },

@@ -42,6 +42,9 @@ class _Availability_choose_friendsState
 
   List<FriendsData>? FriendsDatum;
 
+  List<FriendsData> _foundedUsers = [];
+
+
   bool _isLoading = true;
 
   var FriendsId = [];
@@ -52,6 +55,10 @@ class _Availability_choose_friendsState
         print("response ${response.status}");
         setState(() {
           FriendsDatum = response.data!;
+
+          setState(() {
+      _foundedUsers = FriendsDatum!;
+    });
           _isLoading = false;
         });
       }
@@ -66,6 +73,14 @@ class _Availability_choose_friendsState
     _isChecked = List<bool>.filled(_texts.length, false);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => _GetFriends());
+  }
+
+  onSearch(String search) {
+    print("Searching for $search");
+    setState(() {
+      _foundedUsers = FriendsDatum!.where((user) => user.childName!.toLowerCase().contains(search.toLowerCase())).toList();
+      print(_foundedUsers.length);
+    });
   }
 
   @override
@@ -115,6 +130,9 @@ class _Availability_choose_friendsState
                       borderRadius: BorderRadius.circular(10)),
                   height: 40,
                   child: TextField(
+                    onChanged: (searchString){
+                      onSearch(searchString);
+                    },
                     enabled: true,
                     controller: searchController,
                     textInputAction: TextInputAction.search,
@@ -171,22 +189,28 @@ class _Availability_choose_friendsState
                 ),
                 Expanded(
                     child: ListView.builder(
-                  itemCount: FriendsDatum!.length,
+                  itemCount: _foundedUsers.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 10),
                           child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  FriendsDatum![index].profile != "null"
-                                      ? NetworkImage(Strings.imageUrl +
-                                          (FriendsDatum![index].profile ?? ""))
-                                      : AssetImage("assets/imgs/appicon.png")
-                                          as ImageProvider,
+                            leading: Transform.translate(
+                              offset: Offset(-16, 0),
+                              child: CircleAvatar(
+                                backgroundImage: _foundedUsers[index].profile !=
+                                        "null"
+                                    ? NetworkImage(Strings.imageUrl +
+                                        (_foundedUsers[index].profile ?? ""))
+                                    : AssetImage("assets/imgs/appicon.png")
+                                        as ImageProvider,
+                              ),
                             ),
-                            title: Text(FriendsDatum![index].childName!),
+                            title: Transform.translate(
+                              offset: Offset(-16, 0),
+                              child: Text(_foundedUsers[index].childName!),
+                            ),
                             trailing: Container(
                               decoration: BoxDecoration(
                                 border:
@@ -208,12 +232,13 @@ class _Availability_choose_friendsState
                                         if (val!) {
                                           _isChecked?[index] = val;
                                           FriendsId.add(
-                                              FriendsDatum![index].friendsId!);
+                                              _foundedUsers[index].friendsId!);
                                           print("object:${_isChecked?[index]}");
                                           print("object1:$FriendsId");
                                         } else {
+                                          _isChecked?[index] = val;
                                           FriendsId.remove(
-                                              FriendsDatum![index].friendsId!);
+                                              _foundedUsers[index].friendsId!);
                                         }
                                       },
                                     );
@@ -224,7 +249,7 @@ class _Availability_choose_friendsState
                           ),
                         ),
                         Divider(
-                          color: Colors.grey.withOpacity(0.8),
+                          color: Colors.grey.withOpacity(0.4),
                           height: 1,
                         ),
                       ],
@@ -273,7 +298,6 @@ class _Availability_choose_friendsState
     markavail.childId = Strings.SelectedChild;
 
     var dat = jsonEncode(markavail);
-
     print(dat);
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.createAvailability(markavail).then((response) {
