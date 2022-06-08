@@ -4,7 +4,8 @@ class AvailPauseReq {
 
   AvailPauseReq({this.markavailId, this.status});
 
-  AvailPauseReq.fromJson(Map<String, dynamic> json) {
+  AvailPauseReq.fromJson(Map<String, dynamic> json) 
+  {
     markavailId = json['markavail_id'];
     status = json['status'];
   }

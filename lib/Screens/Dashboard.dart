@@ -14,6 +14,8 @@ import 'package:playgroup/Screens/PastActivity.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Screens/Search.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/ExitPopup.dart';
 import 'package:playgroup/Utilities/NavigationDrawer.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
@@ -44,6 +46,7 @@ class _DashBoardState extends State<DashBoard> {
     SearchScreen(),
     NotificationScreen(),
   ];
+  final screen2 = [Mark_Availabilty()];
 
   var ctx;
 
@@ -69,33 +72,6 @@ class _DashBoardState extends State<DashBoard> {
     iconList.add(Icons.search);
     iconList.add(Icons.notifications_outlined);
     super.initState();
-  }
-
-  _GetProfile() {
-    final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetProfile().then((response) {
-      if (response.status == true) {
-        setState(() {
-          // AppUtils.dismissprogress();
-          _isLoading = false;
-          _ProfileData = response.profile;
-          _SelectedChildId = _ProfileData!.selectedChildId;
-          for (var i = 0; i < _ProfileData!.children!.length; i++) {
-            if (_ProfileData!.children![i].childId == _SelectedChildId) {
-              index1 = i;
-            }
-          }
-          HeaderData = _ProfileData!.children![index1!];
-          ListViewData = _ProfileData!.children!.removeAt(index1!);
-          _showDialog();
-        });
-      } else {
-        functions.createSnackBar(context, response.status.toString());
-        // _btnController.stop();
-      }
-    }).catchError((onError) {
-      print(onError.toString());
-    });
   }
 
   @override
@@ -154,9 +130,8 @@ class _DashBoardState extends State<DashBoard> {
                   InkWell(
                     onTap: () {
                       // Navigator.of(context).push(MaterialPageRoute(
-                      // builder: (BuildContext context) => ProfileScreen()));
-                      _isLoading = true;
-                      _GetProfile();
+                      // builder: (BuildContext context) => ProfileScreen()))
+                      SwitchChild.showChildDialog(ctx);
                     },
                     child: CircleAvatar(
                       radius: 16,
@@ -244,110 +219,5 @@ class _DashBoardState extends State<DashBoard> {
   //     print(onError.toString());
   //   });
   // }
-  _showDialog() {
-    showDialog<void>(
-        context: context,
-        barrierDismissible: true, // user must tap button!
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Switch Child",
-                      style: TextStyle(fontSize: 17),
-                    ),
-                    GestureDetector(
-                        onTap: (() {
-                          Navigator.pop(context);
-                        }),
-                        child: Icon(Icons.clear))
-                  ],
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                CircleAvatar(
-                    backgroundImage: AssetImage("assets/imgs/child5.jpg"),
-                    radius: 32),
-                SizedBox(
-                  height: 10,
-                ),
-                Text(HeaderData!.childName!,
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
-              ],
-            ),
-            content: setupAlertDialoadContainer(),
-            // Image(
-            //     image: AssetImage(
-            //         "assets/imgs/child5.jpg")), //Hard code for profile image
-          );
-        });
-  }
 
-  Widget setupAlertDialoadContainer() {
-    return Container(
-      height: 150.0, // Change as per your requirement
-      width: 300.0, // Change as per your requirement
-      child: Center(
-        child: ListView.builder(
-          shrinkWrap: true,
-          itemCount: _ProfileData!.children!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 9),
-              child: InkWell(
-                onTap: () {
-                  AppUtils.showprogress();
-                  var ChildId = _ProfileData!.children![index].childId ?? "";
-                  _ChooseChild(ChildId);
-                },
-                child: Container(
-                  width: 250,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey.withOpacity(0.15),
-                        width: 1.5,
-                      ),
-                      borderRadius: BorderRadius.circular(4)),
-                  padding: EdgeInsets.fromLTRB(12, 5, 0, 5),
-                  child: Center(
-                    child: Text(
-                      _ProfileData!.children![index].childName!,
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
-  }
-
-  _ChooseChild(ChildId) {
-    //var Pid = Strings.Parent_Id.toInt();
-    ChooseChildReq ChooseChild = ChooseChildReq();
-    ChooseChild.selectedChildId = ChildId;
-    final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.ChooseChild(ChooseChild).then((response) {
-      print('response ${response.status}');
-      if (response.status == true) {
-        AppUtils.dismissprogress();
-        Navigator.push(
-            context, MaterialPageRoute(builder: (context) => DashBoard()));
-        print("result2:$response");
-      } else {
-        functions.createSnackBar(context, response.message.toString());
-        AppUtils.dismissprogress();
-        print("error");
-      }
-    });
-  }
 }
