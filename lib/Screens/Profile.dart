@@ -418,7 +418,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: Text(
                                   _ProfileData!.children![index].childName!),
                               subtitle: Text(
-                                TimeAgo.calculateTimeDifferenceBetween(
+                                TimeAgo.calculateTimeDifferenceOfSeconds(
                                     _ProfileData!.children![index].dob),
                               ),
                               trailing: GestureDetector(

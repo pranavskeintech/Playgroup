@@ -24,8 +24,6 @@ class _MapsPageState extends State<MapsPage> {
 
   List<Marker> _markers = [];
 
-  bool Confirmation = false;
-
   TextEditingController SearchController = TextEditingController();
 
   String? destinationCoordinatesString;
@@ -33,6 +31,8 @@ class _MapsPageState extends State<MapsPage> {
   double? destinationLongitude;
 
   double? destinationLatitude;
+
+  bool Confirmation = false;
 
   @override
   void initState() {
@@ -42,10 +42,35 @@ class _MapsPageState extends State<MapsPage> {
 
   // Method for retrieving the current location
   _getCurrentLocation() async {
-    await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high)
+    bool serviceEnabled;
+    LocationPermission permission;
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the
+      // App to enable the location services.
+      await Geolocator.openLocationSettings();
+      return Future.error('Location services are disabled.');
+    }
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      // Permissions are denied forever, handle appropriately.
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+    return await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high)
         .then((Position position) async {
       setState(() {
         _currentPosition = position;
+        print("object:${_currentPosition!.latitude}");
         mapController!.animateCamera(
           CameraUpdate.newCameraPosition(
             CameraPosition(
@@ -54,6 +79,9 @@ class _MapsPageState extends State<MapsPage> {
             ),
           ),
         );
+
+        Strings.Latt = _currentPosition!.latitude;
+        Strings.Long = _currentPosition!.longitude;
       });
       await _getAddress();
     }).catchError((e) {
@@ -200,54 +228,52 @@ class _MapsPageState extends State<MapsPage> {
 
   Widget? _showBottomSheet() {
     var width = MediaQuery.of(context).size.width;
-    if (Confirmation) {
-      return BottomSheet(
-        backgroundColor: Colors.black.withOpacity(0),
-        onClosing: () {},
-        builder: (context) {
-          return Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(35.0),
-              ),
-              // boxShadow: <BoxShadow>[
-              //   new BoxShadow(
-              //     color: Colors.grey.withOpacity(0.8),
-              //     blurRadius: 5.0,
-              //     offset: new Offset(0.0, 2.0),
-              //   ),
-              // ],
+    return BottomSheet(
+      backgroundColor: Colors.black.withOpacity(0),
+      onClosing: () {},
+      builder: (context) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(35.0),
             ),
-            height: 80,
-            width: double.infinity,
-            // color: Colors.white,
-            alignment: Alignment.center,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Text("Confirm your location"),
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(
-                    "Continue",
-                    style: TextStyle(color: Colors.black),
-                  ),
-                  style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white)),
-                )
-              ],
-            ),
-          );
-        },
-      );
-    } else {
-      return null;
-    }
+            // boxShadow: <BoxShadow>[
+            //   new BoxShadow(
+            //     color: Colors.grey.withOpacity(0.8),
+            //     blurRadius: 5.0,
+            //     offset: new Offset(0.0, 2.0),
+            //   ),
+            // ],
+          ),
+          height: 80,
+          width: double.infinity,
+          // color: Colors.white,
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              !Confirmation
+                  ? Text("Continue with your current location..")
+                  : Text("Continue with marked location.."),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text(
+                  "Continue",
+                  style: TextStyle(color: Colors.black),
+                ),
+                style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.white)),
+              )
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void _onMapCreated(GoogleMapController controller) {
@@ -278,7 +304,6 @@ class _MapsPageState extends State<MapsPage> {
       Strings.Long = destinationLongitude;
       setState(() {
         _markers.clear();
-        Confirmation = true;
         _markers.add(Marker(
           markerId: MarkerId(destinationCoordinatesString.toString()),
           position: LatLng(destinationLatitude, destinationLongitude),

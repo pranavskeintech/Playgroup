@@ -8,10 +8,12 @@ import 'package:playgroup/Models/AddcoParentReq.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
+import 'package:playgroup/Models/EditAvailabilityReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
+import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/GetSportsRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
@@ -53,6 +55,9 @@ abstract class ApiService {
 
   @POST("mark/addmark")
   Future<CommonRes> createAvailability(@Body() MarkAvailabilityReq body);
+
+  @PUT("mark/updatemark")
+  Future<CommonRes> EditAvailability(@Body() EditAvailabilityReq body);
 
   @POST("user/coparent")
   Future<CommonRes> addCoParent(@Body() AddcoParentReq body);
@@ -133,6 +138,14 @@ abstract class ApiService {
 
   @GET("friends/{ChildID}/Accepted")
   Future<AcceptedFriendsRes> GetAcceptedFriendReq(@Path("ChildID") int ChildID);
+
+  @GET("mark/getmark/{ChildID}")
+  Future<ownAvailabilityListRes> GetMarkAvailabilitRes(
+      @Path("ChildID") int ChildID);
+
+  @GET("mark/joinfriends/{markavailId}")
+  Future<CommonRes> JoinFriendsMarkAvailability(
+      @Path("markavailId") int markavailId);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

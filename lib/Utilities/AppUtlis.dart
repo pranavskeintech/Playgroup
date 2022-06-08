@@ -2,6 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:playgroup/Models/ChooseChildReq.dart';
+import 'package:playgroup/Models/GetProfileRes.dart';
+import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+import 'package:provider/provider.dart';
 import 'CustomStyle.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -238,19 +244,185 @@ class AppUtils {
 }
 
 class TimeAgo {
-  static String calculateTimeDifferenceBetween(String? createdAt) {
+  static String calculateTimeDifferenceOfSeconds(String? createdAt) {
     DateTime startDate = DateTime.parse(createdAt!);
     DateTime endDate = DateTime.now();
     int seconds = endDate.difference(startDate).inSeconds;
+    int Days = endDate.difference(startDate).inDays;
+    final yearsDifference = endDate.year - startDate.year;
+
     if (seconds < 60)
       return '${seconds.abs()} seconds';
     else if (seconds >= 60 && seconds < 3600)
       return '${startDate.difference(endDate).inMinutes.abs()} minutes';
     else if (seconds >= 3600 && seconds < 86400)
-      return '${startDate.difference(endDate).inHours.abs()} hours';
-    else if (seconds >= 86400 && seconds < 2073600)
+      return '${(endDate.hour) - (startDate.hour).abs()} hours';
+    // else if (seconds >= 86400 && seconds < 2073600)
+    //   return '${startDate.difference(endDate).inDays.abs()} days';
+    else if (Days >= 1 && Days < 30)
       return '${startDate.difference(endDate).inDays.abs()} days';
+    else if (Days >= 30 && Days < 365)
+      return '${(endDate.month) - (startDate.month).abs()} months';
     else
-      return '${startDate.difference(endDate).inDays.abs()} months';
+      return '${(endDate.year) - (startDate.year).abs()} years';
+  }
+}
+
+class SwitchChild {
+  static bool _isLoading = true;
+
+  static Profile? _ProfileData;
+
+  static int? _SelectedChildId;
+
+  static int? index1;
+
+  static Children? HeaderData;
+
+  static Children? ListViewData;
+
+  static GetProfile(ctx) {
+    print("hiiii");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetProfile().then((response) {
+      if (response.status == true) {
+        // AppUtils.dismissprogress();
+
+        _ProfileData = response.profile;
+        _SelectedChildId = _ProfileData!.selectedChildId;
+        for (var i = 0; i < _ProfileData!.children!.length; i++) {
+          if (_ProfileData!.children![i].childId == _SelectedChildId) {
+            index1 = i;
+          }
+        }
+        HeaderData = _ProfileData!.children![index1!];
+        ListViewData = _ProfileData!.children!.removeAt(index1!);
+        _isLoading = false;
+        // _showDialog(ctx);
+      } else {
+        functions.createSnackBar(ctx, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  static showChildDialog(ctx) {
+    GetProfile(ctx);
+    _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : showDialog(
+            context: ctx,
+            barrierDismissible: true, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Switch Child",
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        GestureDetector(
+                            onTap: (() {
+                              Navigator.pop(context);
+                            }),
+                            child: Icon(Icons.clear))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    CircleAvatar(
+                        backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                        radius: 32),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(HeaderData!.childName!,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+                content: setupAlertDialoadContainer(ctx),
+                // Image(
+                //     image: AssetImage(
+                //         "assets/imgs/child5.jpg")), //Hard code for profile image
+              );
+            });
+  }
+
+  static Widget setupAlertDialoadContainer(ctx) {
+    print("object:${_ProfileData!.children!.length}");
+    return (_ProfileData!.children!.length == 0)
+        ? Container(
+            height: 0,
+          )
+        : Container(
+            height: 150.0, // Change as per your requirement
+            width: 300.0, // Change as per your requirement
+            child: Center(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _ProfileData!.children!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 9),
+                    child: InkWell(
+                      onTap: () {
+                        AppUtils.showprogress();
+                        var ChildId =
+                            _ProfileData!.children![index].childId ?? "";
+                        _ChooseChild(ChildId, ctx);
+                      },
+                      child: Container(
+                        width: 250,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.withOpacity(0.15),
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(4)),
+                        padding: EdgeInsets.fromLTRB(12, 5, 0, 5),
+                        child: Center(
+                          child: Text(
+                            _ProfileData!.children![index].childName!,
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+  }
+
+  static _ChooseChild(ChildId, ctx) {
+    //var Pid = Strings.Parent_Id.toInt();
+    ChooseChildReq ChooseChild = ChooseChildReq();
+    ChooseChild.selectedChildId = ChildId;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.ChooseChild(ChooseChild).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.push(
+            ctx, MaterialPageRoute(builder: (context) => DashBoard()));
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(ctx, response.message.toString());
+        AppUtils.dismissprogress();
+        print("error");
+      }
+    });
   }
 }
