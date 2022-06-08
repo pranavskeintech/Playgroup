@@ -129,6 +129,9 @@ abstract class ApiService {
   @GET("friends/{ChildID}/Pending")
   Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
 
+  @GET("friends/{ChildID}/Accepted")
+  Future<PendingFriendReqRes> getFriends(@Path("ChildID") int ChildID);
+  
   @PUT("friends/")
   Future<CommonRes> AcceptFriendRequest(@Body() AcceptFriendReq body);
 
