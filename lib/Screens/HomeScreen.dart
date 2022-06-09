@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
+import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/InitialHome.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
 import '../Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
+import 'package:social_share/social_share.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -78,17 +81,46 @@ class _HomeScreenState extends State<HomeScreen> {
   List<AvailabilityListData>? GetMarkAvailabilityData;
 
   BuildContext? ctx;
+
+  List<Data>? OtherMarkAvailabilityData;
   _GetMarkAvailability() {
     //AppUtils.showprogress();
     int CID = Strings.SelectedChild;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetMarkAvailabilitRes(CID).then((response) {
+    api.GetMarkAvailability(CID).then((response) {
       print(response.status);
       if (response.status == true) {
         setState(() {
           // AppUtils.dismissprogress();
-          _isLoading = false;
           GetMarkAvailabilityData = response.data;
+          if (GetMarkAvailabilityData != null) {
+            _isLoading = false;
+            _GetOtherMarkAvailability();
+          } else {
+            InitialScreen();
+          }
+        });
+      } else {
+        functions.createSnackBar(context, response.status.toString());
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  _GetOtherMarkAvailability() {
+    //AppUtils.showprogress();
+    int CID = Strings.SelectedChild;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetOtherMarkAvailability(CID).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          OtherMarkAvailabilityData = response.data;
+          if (OtherMarkAvailabilityData != null) {
+            _isLoading = false;
+          }
         });
       } else {
         functions.createSnackBar(context, response.status.toString());
@@ -177,11 +209,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 width: 50,
                                 height: 50,
                                 child: CircleAvatar(
+                                  backgroundColor: Colors.blue,
                                   backgroundImage: GetMarkAvailabilityData![
                                                   index]
                                               .categoryImg !=
                                           "null"
                                       ? NetworkImage(Strings.imageUrl +
+                                          "activities/" +
                                           (GetMarkAvailabilityData![index]
                                                   .categoryImg ??
                                               ""))
@@ -212,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     child: AnimationLimiter(
                       child: ListView.builder(
-                        itemCount: 5,
+                        itemCount: OtherMarkAvailabilityData!.length,
                         itemBuilder: (context, index) {
                           return AnimationConfiguration.staggeredList(
                               position: index,
@@ -268,7 +302,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     "assets/imgs/${childImgs[index]}"),
                                               ),
                                               title: Text(
-                                                ChildName[index],
+                                                OtherMarkAvailabilityData![
+                                                        index]
+                                                    .childName!,
                                                 style: TextStyle(
                                                     fontSize: 13.5,
                                                     fontWeight:
@@ -282,7 +318,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   Row(
                                                     children: [
                                                       Text(
-                                                        "14 Jan 2021",
+                                                        OtherMarkAvailabilityData![
+                                                                index]
+                                                            .dateon!,
                                                         style: TextStyle(
                                                           fontSize: 11,
                                                         ),
@@ -298,13 +336,32 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       SizedBox(
                                                         width: 5,
                                                       ),
-                                                      Text(
-                                                        "4-5 pm",
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                        ),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            OtherMarkAvailabilityData![
+                                                                        index]
+                                                                    .fromTime! +
+                                                                " - ",
+                                                            style: TextStyle(
+                                                              fontSize: 11,
+                                                            ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                          Text(
+                                                            OtherMarkAvailabilityData![
+                                                                    index]
+                                                                .toTime!,
+                                                            style: TextStyle(
+                                                              fontSize: 11,
+                                                            ),
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        ],
                                                       )
                                                     ],
                                                   ),
@@ -319,7 +376,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         width: 3,
                                                       ),
                                                       Text(
-                                                        location[index],
+                                                        OtherMarkAvailabilityData![
+                                                                index]
+                                                            .location!,
                                                         style: TextStyle(
                                                           fontSize: 11,
                                                         ),
@@ -334,9 +393,24 @@ class _HomeScreenState extends State<HomeScreen> {
                                             SizedBox(
                                               height: 12,
                                             ),
-                                            Text(
-                                              games[index],
-                                              style: TextStyle(fontSize: 13),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  OtherMarkAvailabilityData![
+                                                              index]
+                                                          .categoryName! +
+                                                      " - ",
+                                                  style:
+                                                      TextStyle(fontSize: 13),
+                                                ),
+                                                Text(
+                                                  OtherMarkAvailabilityData![
+                                                          index]
+                                                      .activitiesName!,
+                                                  style:
+                                                      TextStyle(fontSize: 13),
+                                                ),
+                                              ],
                                             ),
                                             SizedBox(
                                               height: 20,
@@ -359,59 +433,88 @@ class _HomeScreenState extends State<HomeScreen> {
                                               child: Row(
                                                 children: [
                                                   Expanded(
-                                                    child: ListView.builder(
-                                                        itemCount: 5,
-                                                        scrollDirection:
-                                                            Axis.horizontal,
-                                                        itemBuilder:
-                                                            ((context, index) {
-                                                          if (index < 4) {
-                                                            return Container(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(2),
-                                                              width: 32,
-                                                              height: 32,
-                                                              child:
-                                                                  CircleAvatar(
-                                                                backgroundImage:
-                                                                    AssetImage(
-                                                                        "assets/imgs/${childImgs[index]}"),
-                                                              ),
-                                                            );
-                                                          } else {
-                                                            return Container(
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .all(2),
-                                                              height: 32,
-                                                              width: 32,
-                                                              child: InkWell(
-                                                                onTap: () {
-                                                                  AppUtils
-                                                                      .showParticipant(
-                                                                          context,
-                                                                          2);
-                                                                },
-                                                                child:
-                                                                    CircleAvatar(
-                                                                  backgroundColor: Colors
-                                                                      .grey
-                                                                      .withOpacity(
-                                                                          0.3),
-                                                                  child: Text(
-                                                                    "3+",
-                                                                    style: TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                        fontSize:
-                                                                            12),
-                                                                  ), //Text
+                                                    child: (OtherMarkAvailabilityData![
+                                                                    index]
+                                                                .friendsdata !=
+                                                            [])
+                                                        ? Chip(
+                                                            label: Container(
+                                                              width: 130,
+                                                              height: 20,
+                                                              child: Center(
+                                                                child: Text(
+                                                                  "No Participants",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        14,
+                                                                  ),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .center,
                                                                 ),
                                                               ),
-                                                            );
-                                                          }
-                                                        })),
+                                                            ),
+                                                            backgroundColor:
+                                                                Colors.grey
+                                                                    .shade200,
+                                                          )
+                                                        : ListView.builder(
+                                                            itemCount: 5,
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            itemBuilder:
+                                                                ((context,
+                                                                    index) {
+                                                              if (index < 4) {
+                                                                return Container(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              2),
+                                                                  width: 32,
+                                                                  height: 32,
+                                                                  child:
+                                                                      CircleAvatar(
+                                                                    backgroundImage:
+                                                                        AssetImage(
+                                                                            "assets/imgs/${childImgs[index]}"),
+                                                                  ),
+                                                                );
+                                                              } else {
+                                                                return Container(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              2),
+                                                                  height: 32,
+                                                                  width: 32,
+                                                                  child:
+                                                                      InkWell(
+                                                                    onTap: () {
+                                                                      AppUtils.showParticipant(
+                                                                          context,
+                                                                          2);
+                                                                    },
+                                                                    child:
+                                                                        CircleAvatar(
+                                                                      backgroundColor: Colors
+                                                                          .grey
+                                                                          .withOpacity(
+                                                                              0.3),
+                                                                      child:
+                                                                          Text(
+                                                                        "3+",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.black,
+                                                                            fontSize: 12),
+                                                                      ), //Text
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              }
+                                                            })),
                                                   ),
                                                   SizedBox(
                                                     height: 32,
@@ -469,6 +572,86 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           );
+  }
+
+  Widget InitialScreen() {
+    return Container(
+      margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "Invite Friends",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              )),
+          SizedBox(
+            height: 20,
+          ),
+          Text(
+            "Invite your Friends to the Playgroup App.",
+            style: TextStyle(color: Colors.grey),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          ElevatedButton(
+              onPressed: () {
+                SocialShare.shareOptions(
+                        "Hey I found an new app Named Playgroup, Install With my link https://play.google.com/store/apps/details?id=com.netflix.mediaclient")
+                    .then((data) {
+                  print(data);
+                });
+              },
+              child:
+                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Image.asset(
+                  "assets/imgs/add-user.png",
+                  width: 15,
+                  height: 15,
+                  color: Colors.white,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Text("Invite Friends")
+              ])),
+          SizedBox(
+            height: 10,
+          ),
+          Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                "No Availabilities",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              )),
+          SizedBox(
+            height: 20,
+          ),
+          Card(
+            elevation: 8,
+            shadowColor: Colors.grey.withOpacity(0.1),
+            child: Container(
+              height: 140,
+              padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "There are no friend's availabilities please add friends and view their availabilities",
+                      style: TextStyle(
+                          color: Strings.textFeildHeading, fontSize: 15),
+                    ),
+                    SizedBox(height: 10),
+                    Text("Add your friends and share with your availabilities",
+                        style: TextStyle(color: Strings.textFeildHeading)),
+                  ]),
+            ),
+          )
+        ],
+      ),
+    );
   }
 
   _JoinFriendsMarkAvailability(MID) {
