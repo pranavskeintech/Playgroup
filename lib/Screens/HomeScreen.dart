@@ -161,7 +161,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               onTap: () {
                                 Strings.activityConfirmed = true;
                                 Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Own_Availability(),
+                                  builder: (context) => Own_Availability(markavailId: GetMarkAvailabilityData![index].markavailId,),
                                 ));
                               },
                               child: Container(

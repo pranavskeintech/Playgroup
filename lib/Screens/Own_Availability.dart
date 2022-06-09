@@ -13,7 +13,9 @@ import '../Network/ApiService.dart';
 import '../Utilities/Strings.dart';
 
 class Own_Availability extends StatefulWidget {
-  const Own_Availability({Key? key}) : super(key: key);
+
+  int? markavailId;
+   Own_Availability({Key? key,this.markavailId}) : super(key: key);
 
   @override
   State<Own_Availability> createState() => _Own_AvailabilityState();
@@ -50,7 +52,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
   int tag = 1;
   List<int> tag1 = [];
 
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   BuildContext? ctx;
 
@@ -64,7 +66,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
 getAvailabilityDetails() 
 {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getAvailabilityDetails(2).then((response) 
+    api.getAvailabilityDetails(widget.markavailId!).then((response) 
     {
       if (response.status == true) 
       {
@@ -124,7 +126,9 @@ getAvailabilityDetails()
 
   Widget Tabbarwidgets(BuildContext context) {
     ctx = context;
-    return Container(
+    return
+    _isLoading?Center(child: CircularProgressIndicator()):
+     Container(
         // padding: EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width * 1.0,
         decoration: BoxDecoration(
@@ -714,7 +718,7 @@ getAvailabilityDetails()
    deleteAvailability() 
   {
       final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.deleteAvailability(1).then((response) 
+    api.deleteAvailability(widget.markavailId!).then((response) 
     {   
             AppUtils.showToast(context,response.message);  
     }).catchError((onError) {
@@ -726,7 +730,7 @@ getAvailabilityDetails()
   {
       final api = Provider.of<ApiService>(ctx!, listen: false);
       AvailPauseReq availPauseReq =  AvailPauseReq();
-      availPauseReq.markavailId = 2;
+      availPauseReq.markavailId = widget.markavailId;
       availPauseReq.status = "pause";
       
     api.pauseAvailability(availPauseReq).then((response) 
