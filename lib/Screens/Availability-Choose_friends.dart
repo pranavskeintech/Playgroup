@@ -231,11 +231,14 @@ class _Availability_choose_friendsState
                                   onChanged: (val) {
                                     setState(
                                       () {
-                                        if (val!) {
+                                        if (val!) 
+                                        {
                                           _isChecked?[index] = val;
                                           FriendsId.add(
                                               _foundedUsers[index].friendsId!);
-                                        } else {
+                                         
+                                        } else 
+                                        {
                                           _isChecked?[index] = val;
                                           FriendsId.remove(
                                               _foundedUsers[index].friendsId!);
