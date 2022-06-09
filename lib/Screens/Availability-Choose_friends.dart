@@ -235,13 +235,10 @@ class _Availability_choose_friendsState
                                           _isChecked?[index] = val;
                                           FriendsId.add(
                                               _foundedUsers[index].friendsId!);
-                                          print("object:${_isChecked?[index]}");
-                                          print("object1:$FriendsId");
                                         } else {
                                           _isChecked?[index] = val;
                                           FriendsId.remove(
                                               _foundedUsers[index].friendsId!);
-                                          print("object1:$FriendsId");
                                         }
                                       },
                                     );

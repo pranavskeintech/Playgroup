@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -17,6 +19,7 @@ class _SplashScreenState extends State<SplashScreen> {
   ConnectivityResult _connectionStatus = ConnectivityResult.none;
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
@@ -37,6 +40,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return _updateConnectionStatus(result);
   }
+  
 
   showAlertDialog(BuildContext context) {
     Strings.internetDialog = true;
@@ -93,6 +97,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getFCMToken();
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -107,6 +112,19 @@ class _SplashScreenState extends State<SplashScreen> {
   void dispose() {
     _connectivitySubscription.cancel();
     super.dispose();
+  }
+
+   getFCMToken() async 
+  {
+    _firebaseMessaging.getToken().then((String? token) {
+      assert(token != null);
+      setState(() {
+        print("token: $token");
+        Strings.fcmToken = token!;
+       
+      });
+      
+    });
   }
 
   @override
