@@ -30,6 +30,7 @@ import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
+import 'package:playgroup/Screens/deviceIdReq.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
@@ -62,6 +63,9 @@ abstract class ApiService {
 
   @PUT("mark/updatemark")
   Future<CommonRes> EditAvailability(@Body() EditAvailabilityReq body);
+
+  @PUT("user/updatefcm")
+  Future<CommonRes> updateFCM(@Body() deviceIdReq body);
 
   @POST("user/coparent")
   Future<CommonRes> addCoParent(@Body() AddcoParentReq body);
