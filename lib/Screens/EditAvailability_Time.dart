@@ -13,6 +13,8 @@ class EditAvailabilityTime extends StatefulWidget {
 class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
   String? selectedStartTime;
   String? selectedEndTime;
+  final _FromTimeController = TextEditingController();
+  final _TOTimeController = TextEditingController();
   List<String> items = [
     '1 PM',
     '2 PM',
@@ -31,6 +33,39 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
     "child5.jpg",
     "child6.jpg"
   ];
+  _selectFromTime(context) async {
+    final ChoosenTime1 = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      // cancelText: "NOT NOW",
+      helpText: "SELECT TIME",
+    );
+
+    if (ChoosenTime1 != null) {
+      setState(() {
+        // String time1 = "${ChoosenTime1.hour}:${ChoosenTime1.minute}";
+        _FromTimeController.text = ChoosenTime1.format(context);
+      });
+    }
+  }
+  _selectTOTime() async {
+    final ChoosenTime2 = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.now(),
+        initialEntryMode: TimePickerEntryMode.dial,
+        confirmText: "CONFIRM",
+        // cancelText: "NOT NOW",
+        helpText: "SELECT TIME");
+
+    if (ChoosenTime2 != null) {
+      setState(() {
+        _TOTimeController.text = ChoosenTime2.format(context);
+      });
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {

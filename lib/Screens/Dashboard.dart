@@ -41,8 +41,8 @@ class _DashBoardState extends State<DashBoard> {
   final screens = [
     HomeScreen(),
     //Center(child: Text("Past Activities")),
-    //  InitialScreen(),
-    PastActivity(),
+    InitialScreen(),
+    // PastActivity(),
     SearchScreen(),
     NotificationScreen(),
   ];
@@ -50,7 +50,7 @@ class _DashBoardState extends State<DashBoard> {
 
   var ctx;
 
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   Profile? _ProfileData;
 
@@ -63,6 +63,36 @@ class _DashBoardState extends State<DashBoard> {
   Children? ListViewData;
 
   Children? HeaderData;
+  GetProfile() {
+    print("hiiii");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetProfile().then((response) {
+      if (response.status == true) {
+        // AppUtils.dismissprogress();
+        setState(() {
+          _ProfileData = response.profile;
+          _SelectedChildId = _ProfileData!.selectedChildId;
+          for (var i = 0; i < _ProfileData!.children!.length; i++) {
+            if (_ProfileData!.children![i].childId == _SelectedChildId) {
+              index1 = i;
+            }
+          }
+          HeaderData = _ProfileData!.children![index1!];
+          print("profile:${HeaderData!.profile}");
+          Strings.ProfilePic = HeaderData!.profile;
+          ListViewData = _ProfileData!.children!.removeAt(index1!);
+          _isLoading = false;
+          // _showDialog(ctx);
+        });
+      } else {
+        functions.createSnackBar(ctx, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      
+      print(onError.toString());
+    });
+  }
 
   @override
   void initState() {
@@ -72,6 +102,7 @@ class _DashBoardState extends State<DashBoard> {
     iconList.add(Icons.search);
     iconList.add(Icons.notifications_outlined);
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => GetProfile());
   }
 
   @override
@@ -134,9 +165,13 @@ class _DashBoardState extends State<DashBoard> {
                       SwitchChild.showChildDialog(ctx);
                     },
                     child: CircleAvatar(
+                      backgroundImage: (HeaderData!.profile != "null")
+                          ? NetworkImage(
+                              Strings.imageUrl + (HeaderData!.profile!),
+                            )
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
                       radius: 16,
-                      backgroundImage: AssetImage(
-                          "assets/imgs/child5.jpg"), //Hard code for profile image
                     ),
                   ),
                   SizedBox(

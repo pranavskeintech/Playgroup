@@ -546,34 +546,37 @@ class _LoginPageState extends State<LoginPage> {
     Userlogin.password = _passwordController.text;
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.login(Userlogin).then((response) {
-      print('response ${response.status}');
-      print("result1:${response.toJson()}");
-
       if (response.status == true) {
-        AppUtils.dismissprogress();
-        Strings.authToken = response.token!;
-        Strings.refreshToken = response.refreshToken!.refreshToken!;
-        Strings.parentName = response.data![0].parentName!;
-        Strings.parentemail = response.data![0].emailId!;
-        Strings.Parent_Id = response.data![0].userId!;
-        Strings.SelectedChild = response.data![0].selectedChildId!;
+       
+          AppUtils.dismissprogress();
+          Strings.authToken = response.token!;
+          Strings.refreshToken = response.refreshToken!.refreshToken!;
+          Strings.parentName = response.data![0].parentName!;
+          Strings.parentemail = response.data![0].emailId!;
+          Strings.Parent_Id = response.data![0].userId!;
+          Strings.SelectedChild = response.data![0].selectedChildId!;
+          updateDeviceId();
+          // _isLoading = false;
+          //  Get.off(() => DashPage());
+          // Navigator.of(context)
+          //     .push(MaterialPageRoute(builder: (context) =>  FeedsCommentsScreen(fid)));
+          // print("uhad:$fid");
+          // int feedid = fid;
+          // Navigator.of(context).pushReplacement(MaterialPageRoute(
+          //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
+          print("res:${response.message}");
+          _btnController.stop();
 
-        // _isLoading = false;
-        //  Get.off(() => DashPage());
-        // Navigator.of(context)
-        //     .push(MaterialPageRoute(builder: (context) =>  FeedsCommentsScreen(fid)));
-        // print("uhad:$fid");
-        // int feedid = fid;
-        // Navigator.of(context).pushReplacement(MaterialPageRoute(
-        //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
-        print("res:${response.message}");
+           if (response.data![0].selectedChildId == null) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => ChildDetails()));
+        } else {
 
-        updateDeviceId();
-        _btnController.stop();
-
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-        print("result2:$response");
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => DashBoard()));
+          print("result2:$response");
+        }
+        
       } else {
         // functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
