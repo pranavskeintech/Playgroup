@@ -607,7 +607,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     //     offset: const Offset(0, 0),
                     //   ),
                     // ),
-
+      
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.04,
                       child: GestureDetector(
@@ -700,7 +700,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     //     offset: const Offset(0, 0),
                     //   ),
                     // ),
-
+      
                     child: GestureDetector(
                       onTap: () {
                         _selectTOTime();
@@ -943,10 +943,10 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                   keyboardType: TextInputType.emailAddress,
                 ),
               ),
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height * 0.04,
-              // ),
-              Spacer(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.04,
+              ),
+             // Spacer(),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: 70,

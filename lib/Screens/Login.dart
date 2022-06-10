@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -14,6 +15,7 @@ import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
 import 'package:playgroup/Screens/ResetPassword.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
+import 'package:playgroup/Screens/deviceIdReq.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/ExitPopup.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -539,7 +541,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   _Login() {
-    print("hii");
     LoginReq Userlogin = LoginReq();
     Userlogin.emailId = _emailIdController.text;
     Userlogin.password = _passwordController.text;
@@ -566,6 +567,8 @@ class _LoginPageState extends State<LoginPage> {
         // Navigator.of(context).pushReplacement(MaterialPageRoute(
         //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
         print("res:${response.message}");
+
+        updateDeviceId();
         _btnController.stop();
 
         Navigator.of(context).push(
@@ -577,6 +580,23 @@ class _LoginPageState extends State<LoginPage> {
         AppUtils.showError(context, response.message, "");
         _btnController.stop();
         print("error");
+      }
+    });
+  }
+
+  updateDeviceId() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    deviceIdReq deviceReq = deviceIdReq();
+    deviceReq.deviceId = Strings.fcmToken;
+    deviceReq.parentId = Strings.Parent_Id;
+    var dat = jsonEncode(deviceReq);
+    print("dat---> $dat");
+
+    api.updateFCM(deviceReq).then((response) {
+      if (response.status == true) {
+        print("res:${response.message}");
+      } else {
+        print("Unable to update device id");
       }
     });
   }
