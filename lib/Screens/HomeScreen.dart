@@ -377,7 +377,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                               MaterialPageRoute(
                                                   builder:
                                                       (BuildContext context) =>
-                                                          Own_Availability()));
+                                                          Own_Availability(
+                                                            markavailId:
+                                                                GetMarkAvailabilityData![
+                                                                        index]
+                                                                    .markavailId,
+                                                          )));
                                         }),
                                         child: Container(
                                           margin: EdgeInsets.fromLTRB(

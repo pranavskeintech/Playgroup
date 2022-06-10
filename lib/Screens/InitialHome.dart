@@ -45,7 +45,8 @@ class _InitialScreenState extends State<InitialScreen> {
   List<UserData>? _UserData;
 
   @override
-  void initState() {
+  void initState() 
+  {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => getParentsDetails());

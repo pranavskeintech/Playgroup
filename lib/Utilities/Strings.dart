@@ -72,4 +72,6 @@ mixin Strings {
   static bool FriendNotification = false;
 
   static int SelectedChild = 0;
+
+  static String? ProfilePic='';
 }

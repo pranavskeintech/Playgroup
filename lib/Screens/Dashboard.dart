@@ -50,7 +50,7 @@ class _DashBoardState extends State<DashBoard> {
 
   var ctx;
 
-  bool _isLoading = false;
+  bool _isLoading = true;
 
   Profile? _ProfileData;
 
@@ -79,6 +79,7 @@ class _DashBoardState extends State<DashBoard> {
           }
           HeaderData = _ProfileData!.children![index1!];
           print("profile:${HeaderData!.profile}");
+          Strings.ProfilePic = HeaderData!.profile;
           ListViewData = _ProfileData!.children!.removeAt(index1!);
           _isLoading = false;
           // _showDialog(ctx);
@@ -88,6 +89,7 @@ class _DashBoardState extends State<DashBoard> {
         // _btnController.stop();
       }
     }).catchError((onError) {
+      
       print(onError.toString());
     });
   }
