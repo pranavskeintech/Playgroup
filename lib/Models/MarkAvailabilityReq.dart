@@ -7,16 +7,18 @@ class MarkAvailabilityReq {
   String? location;
   int? activitiesId;
   int? sportId;
+  List<dynamic>? friendId;
 
   MarkAvailabilityReq(
-      {this.date,
-      this.childId,
+      {this.childId,
+      this.date,
       this.from,
       this.to,
       this.description,
       this.location,
       this.activitiesId,
-      this.sportId});
+      this.sportId,
+      this.friendId});
 
   MarkAvailabilityReq.fromJson(Map<String, dynamic> json) {
     childId = json['child_id'];
@@ -25,8 +27,9 @@ class MarkAvailabilityReq {
     to = json['to'];
     description = json['description'];
     location = json['location'];
-    activitiesId = json['activities_id'].cast<String>();
-    sportId = json['sport_id'].cast<String>();
+    activitiesId = json['activities_id'];
+    sportId = json['sport_id'];
+    friendId = json['friend_id'].cast<String>();
   }
 
   Map<String, dynamic> toJson() {
@@ -39,6 +42,7 @@ class MarkAvailabilityReq {
     data['location'] = this.location;
     data['activities_id'] = this.activitiesId;
     data['sport_id'] = this.sportId;
+    data['friend_id'] = this.friendId;
     return data;
   }
 }

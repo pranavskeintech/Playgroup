@@ -16,6 +16,7 @@ import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
+import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/GetSportsRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
@@ -136,7 +137,8 @@ abstract class ApiService {
   Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
 
   @GET("/mark/getmarkbyid/{availability_id}")
-  Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(@Path("availability_id") int availability_id);
+  Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(
+      @Path("availability_id") int availability_id);
 
   @GET("friends/{ChildID}/Pending")
   Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
@@ -154,7 +156,11 @@ abstract class ApiService {
   Future<AcceptedFriendsRes> GetAcceptedFriendReq(@Path("ChildID") int ChildID);
 
   @GET("mark/getmark/{ChildID}")
-  Future<ownAvailabilityListRes> GetMarkAvailabilitRes(
+  Future<ownAvailabilityListRes> GetMarkAvailability(
+      @Path("ChildID") int ChildID);
+
+  @GET("mark/join_markavail_list/{ChildID}")
+  Future<OtherMarkAvailabilityRes> GetOtherMarkAvailability(
       @Path("ChildID") int ChildID);
 
   @GET("mark/joinfriends/{markavailId}")

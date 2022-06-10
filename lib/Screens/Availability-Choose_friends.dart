@@ -44,7 +44,6 @@ class _Availability_choose_friendsState
 
   List<FriendsData> _foundedUsers = [];
 
-
   bool _isLoading = true;
 
   var FriendsId = [];
@@ -57,8 +56,8 @@ class _Availability_choose_friendsState
           FriendsDatum = response.data!;
 
           setState(() {
-      _foundedUsers = FriendsDatum!;
-    });
+            _foundedUsers = FriendsDatum!;
+          });
           _isLoading = false;
         });
       }
@@ -78,7 +77,10 @@ class _Availability_choose_friendsState
   onSearch(String search) {
     print("Searching for $search");
     setState(() {
-      _foundedUsers = FriendsDatum!.where((user) => user.childName!.toLowerCase().contains(search.toLowerCase())).toList();
+      _foundedUsers = FriendsDatum!
+          .where((user) =>
+              user.childName!.toLowerCase().contains(search.toLowerCase()))
+          .toList();
       print(_foundedUsers.length);
     });
   }
@@ -130,7 +132,7 @@ class _Availability_choose_friendsState
                       borderRadius: BorderRadius.circular(10)),
                   height: 40,
                   child: TextField(
-                    onChanged: (searchString){
+                    onChanged: (searchString) {
                       onSearch(searchString);
                     },
                     enabled: true,
@@ -289,6 +291,7 @@ class _Availability_choose_friendsState
 
     MarkAvailabilityReq markavail = MarkAvailabilityReq();
 
+    markavail.childId = Strings.SelectedChild;
     markavail.date = Strings.markAvailabiltydate;
     markavail.from = Strings.markAvailabiltystartTime;
     markavail.to = Strings.markAvailabiltyendTime;
@@ -296,7 +299,7 @@ class _Availability_choose_friendsState
     markavail.location = Strings.markAvailabiltylocations;
     markavail.activitiesId = Strings.markAvailabiltyTopic;
     markavail.sportId = Strings.markAvailabiltycategory;
-    markavail.childId = Strings.SelectedChild;
+    markavail.friendId = FriendsId;
 
     var dat = jsonEncode(markavail);
     print(dat);
