@@ -160,6 +160,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             InkWell(
                               onTap: () {
                                 Strings.activityConfirmed = true;
+
+                                print(GetMarkAvailabilityData![index].markavailId);
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => Own_Availability(markavailId: GetMarkAvailabilityData![index].markavailId,),
                                 ));
@@ -226,7 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  Own_Availability()));
+                                                  Own_Availability(markavailId: GetMarkAvailabilityData![index].markavailId!,)));
                                     }),
                                     child: Container(
                                       margin:

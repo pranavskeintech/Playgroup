@@ -1,11 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:playgroup/Models/AvailPauseReq.dart';
 import 'package:playgroup/Models/AvailabityRes.dart';
 import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
 import 'package:playgroup/Screens/G-Map.dart';
+import 'package:playgroup/Screens/HomeScreen.dart';
 import 'package:playgroup/Screens/SuggestTimeSlot.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:provider/provider.dart';
@@ -13,9 +17,8 @@ import '../Network/ApiService.dart';
 import '../Utilities/Strings.dart';
 
 class Own_Availability extends StatefulWidget {
-
   int? markavailId;
-   Own_Availability({Key? key,this.markavailId}) : super(key: key);
+  Own_Availability({Key? key, this.markavailId}) : super(key: key);
 
   @override
   State<Own_Availability> createState() => _Own_AvailabilityState();
@@ -60,29 +63,25 @@ class _Own_AvailabilityState extends State<Own_Availability>
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 2, vsync: this);
-        WidgetsBinding.instance!.addPostFrameCallback((_) => getAvailabilityDetails());    
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => getAvailabilityDetails());
     super.initState();
   }
-getAvailabilityDetails() 
-{
+
+  getAvailabilityDetails() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getAvailabilityDetails(widget.markavailId!).then((response) 
-    {
-      if (response.status == true) 
-      {
+    api.getAvailabilityDetails(widget.markavailId!).then((response) {
+      if (response.status == true) {
         print("response ${response.status}");
-        setState(() 
-        {
+        setState(() {
           availabilityData = response.data!;
           _isLoading = false;
-        
         });
       }
     }).catchError((onError) {
       print(onError.toString());
     });
   }
-
 
   // _getAddress() async {
   //   if (Strings.Latt != 0) {
@@ -102,8 +101,7 @@ getAvailabilityDetails()
   // }
 
   @override
-  Widget build(BuildContext context) 
-  {
+  Widget build(BuildContext context) {
     return Provider(
       create: (context) => ApiService.create(),
       child: Scaffold(
@@ -118,17 +116,15 @@ getAvailabilityDetails()
           ),
         ),
         body: Builder(builder: (BuildContext newContext) {
-            return Tabbarwidgets(newContext);
-          }),       
+          return Tabbarwidgets(newContext);
+        }),
       ),
     );
   }
 
   Widget Tabbarwidgets(BuildContext context) {
     ctx = context;
-    return
-    _isLoading?Center(child: CircularProgressIndicator()):
-     Container(
+    return Container(
         // padding: EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width * 1.0,
         decoration: BoxDecoration(
@@ -139,7 +135,7 @@ getAvailabilityDetails()
             height: 50,
             child: Padding(
               padding: const EdgeInsets.only(top: 20),
-             // padding: const EdgeInsets.all(8.0),
+              // padding: const EdgeInsets.all(8.0),
               child: TabBar(
                 tabs: [
                   SizedBox(
@@ -170,7 +166,6 @@ getAvailabilityDetails()
               ),
             ),
           ),
-          
           Expanded(
               child: TabBarView(controller: _tabController, children: <Widget>[
             availabilityDetails(),
@@ -179,14 +174,16 @@ getAvailabilityDetails()
         ]));
   }
 
-  Widget availabilityDetails() 
-  {
-    return availDetails();    
+  Widget availabilityDetails() {
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : availDetails();
   }
 
   availDetails() {
-    return  Container(
-        padding: EdgeInsets.all(15),
+    return Container(
+      padding: EdgeInsets.all(15),
+      child: Expanded(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -196,7 +193,7 @@ getAvailabilityDetails()
                 Container(
                   padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                   child: Row(
-                    children:  [
+                    children: [
                       CircleAvatar(
                         radius: 18,
                         backgroundImage: AssetImage("assets/imgs/child5.jpg"),
@@ -208,7 +205,6 @@ getAvailabilityDetails()
                     ],
                   ),
                 ),
-            
                 Container(
                     child: Strings.activityConfirmed
                         ? Row(
@@ -268,8 +264,7 @@ getAvailabilityDetails()
                       child: Text(
                         availabilityData[0].activitiesName! +
                             " - " +
-                            availabilityData[0].categoryName! ,
-                      
+                            availabilityData[0].categoryName!,
                         style: TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.w700,
@@ -344,7 +339,9 @@ getAvailabilityDetails()
                             width: 5,
                           ),
                           Text(
-                            availabilityData[0].fromTime! + "-" + availabilityData[0].toTime!,
+                            availabilityData[0].fromTime! +
+                                " - " +
+                                availabilityData[0].toTime!,
                             style: TextStyle(
                                 color: Color.fromARGB(255, 150, 149, 149),
                                 fontSize: 11),
@@ -428,63 +425,80 @@ getAvailabilityDetails()
                   SizedBox(
                     height: 10,
                   ),
-                  Card(
-                    elevation: 0,
-                    child: SizedBox(
-                      height: 50,
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            width: 5,
+                  availabilityData[0].friendsdata!.length > 0
+                      ? Card(
+                          elevation: 0,
+                          child: SizedBox(
+                            height: 50,
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  child: ListView.builder(
+                                      itemCount:
+                                          availabilityData[0].friendsdata!.length,
+                                      scrollDirection: Axis.horizontal,
+                                      itemBuilder: ((context, index) {
+                                        if (index < 5) {
+                                          return Container(
+                                            padding: EdgeInsets.all(3),
+                                            width: 35,
+                                            height: 35,
+                                            child: CircleAvatar(
+                                              backgroundImage: availabilityData[0]
+                                                          .friendsdata![index]
+                                                          .profile !=
+                                                      null
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          availabilityData[0]
+                                                              .friendsdata![index]
+                                                              .profile!)
+                                                  : AssetImage(
+                                                          "assets/images/user.png")
+                                                      as ImageProvider,
+                                            ),
+                                          );
+                                        } else {
+                                          return Container(
+                                            padding: EdgeInsets.all(3),
+                                            height: 40,
+                                            width: 40,
+                                            child: InkWell(
+                                              onTap: () {
+                                                AppUtils.showParticipant(
+                                                    context, 10);
+                                              },
+                                              child: CircleAvatar(
+                                                backgroundColor:
+                                                    Colors.grey.withOpacity(0.3),
+                                                child: Text(
+                                                  "+${availabilityData[0].friendsdata!.length - 5}",
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12),
+                                                ), //Text
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      })),
+                                ),
+                              ],
+                            ),
                           ),
-                          Expanded(
-                            child: ListView.builder(
-                                itemCount: availabilityData[0].friendsdata!.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: ((context, index) {
-                                  if (index < 5) 
-                                  {
-                                    return Container(
-                                      padding: EdgeInsets.all(3),
-                                      width: 35,
-                                      height: 35,
-                                      child: CircleAvatar(
-                                        backgroundImage: availabilityData[0].friendsdata![index].profile != null
-                                            ? NetworkImage(Strings.imageUrl + 
-                                                availabilityData[0].friendsdata![index].profile!)
-                                            : AssetImage("assets/images/user.png") as ImageProvider,
-                                        
-                
-                                      ),
-                                    );
-                                  } else {
-                                    return Container(
-                                      padding: EdgeInsets.all(3),
-                                      height: 40,
-                                      width: 40,
-                                      child: InkWell(
-                                        onTap: () {
-                                          AppUtils.showParticipant(context, 10);
-                                        },
-                                        child: CircleAvatar(
-                                          backgroundColor:
-                                              Colors.grey.withOpacity(0.3),
-                                          child: Text(
-                                            "+${availabilityData[0].friendsdata!.length - 5}",
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 12),
-                                          ), //Text
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                })),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        )
+                      : Align(
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 12),
+                            child: Text(
+                              "No friends joined yet!",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          )),
                   SizedBox(
                     height: 10,
                   ),
@@ -513,9 +527,7 @@ getAvailabilityDetails()
                       verticalDirection: VerticalDirection.up,
                       choiceStyle: C2ChoiceStyle(color: Colors.black),
                       value: tag1,
-                      onChanged: (val) {
-            
-                      },
+                      onChanged: (val) {},
                       choiceItems: C2Choice.listFrom<int, String>(
                         source: options,
                         value: (i, v) => i,
@@ -538,14 +550,64 @@ getAvailabilityDetails()
                         height: 40,
                         child: TextButton(
                           onPressed: () {
-                            AppUtils.showPopUp(context,
-                                "Are you sure want to pause the event..",pauseAvailability());
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    content: SizedBox(
+                                      height: 110,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Are you sure to pause the availability ?",
+                                            textAlign: TextAlign.center,
+                                          ),
+                                          SizedBox(height: 20),
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton(
+                                                  onPressed: () {
+                                                    print('yes selected');
+                                                    pauseAvailability();
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text("Yes"),
+                                                  style: ElevatedButton.styleFrom(
+                                                      primary:
+                                                          Strings.appThemecolor),
+                                                ),
+                                              ),
+                                              SizedBox(width: 15),
+                                              Expanded(
+                                                  child: ElevatedButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: Text("No",
+                                                    style: TextStyle(
+                                                        color: Colors.black)),
+                                                style: ElevatedButton.styleFrom(
+                                                  primary: Colors.white,
+                                                ),
+                                              ))
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  );
+                                });
                           },
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
+                            children: [
                               Text(
-                                "Pause",
+                                availabilityData[0].status != "pause"
+                                    ? "Pause"
+                                    : "Resume",
                                 style: TextStyle(color: Colors.grey),
                               ),
                               SizedBox(
@@ -570,10 +632,57 @@ getAvailabilityDetails()
                           height: 40,
                           child: TextButton(
                             onPressed: () {
-                              AppUtils.showPopUp(context,
-                                  "Are you sure want to Delete the event..",deleteAvailability());
-
-
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: SizedBox(
+                                        height: 110,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Text(
+                                              "Are you sure to delete the availability ?",
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            SizedBox(height: 20),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      print('yes selected');
+                                                      deleteAvailability();
+                                                      Navigator.of(context).pop();
+                                                    },
+                                                    child: Text("Yes"),
+                                                    style:
+                                                        ElevatedButton.styleFrom(
+                                                            primary: Strings
+                                                                .appThemecolor),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                    child: ElevatedButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: Text("No",
+                                                      style: TextStyle(
+                                                          color: Colors.black)),
+                                                  style: ElevatedButton.styleFrom(
+                                                    primary: Colors.white,
+                                                  ),
+                                                ))
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  });
                             },
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -712,36 +821,43 @@ getAvailabilityDetails()
             )
           ],
         ),
-      );
+      ),
+    );
   }
 
-   deleteAvailability() 
-  {
-      final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.deleteAvailability(widget.markavailId!).then((response) 
-    {   
-            AppUtils.showToast(context,response.message);  
+  deleteAvailability() {
+    AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.deleteAvailability(widget.markavailId!).then((response) {
+      AppUtils.dismissprogress();
+      AppUtils.showToast(response.message, ctx);
+      Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
     }).catchError((onError) {
+      AppUtils.showToast(onError.toString(), ctx);
       print(onError.toString());
     });
-
   }
-   pauseAvailability() 
-  {
-      final api = Provider.of<ApiService>(ctx!, listen: false);
-      AvailPauseReq availPauseReq =  AvailPauseReq();
-      availPauseReq.markavailId = widget.markavailId;
+
+  pauseAvailability() {
+    AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    AvailPauseReq availPauseReq = AvailPauseReq();
+    availPauseReq.markavailId = widget.markavailId;
+    if (availabilityData[0].status != "pause") {
       availPauseReq.status = "pause";
-      
-    api.pauseAvailability(availPauseReq).then((response) 
-    {
-      
-      AppUtils.showToast(context,response.message);
-       
+    } else {
+      availPauseReq.status = "resume";
+    }
+    var dat = jsonEncode(availPauseReq);
+    print(dat);
+
+    api.pauseAvailability(availPauseReq).then((response) {
+      AppUtils.dismissprogress();
+      // AppUtils.showToast(context,response.message);
+      getAvailabilityDetails();
     }).catchError((onError) {
       print(onError.toString());
     });
-
   }
-  
 }
