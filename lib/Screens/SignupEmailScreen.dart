@@ -203,38 +203,41 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                   ),
                 ),
                 Spacer(),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Already have an account?",
-                          style: TextStyle(
-                              color: Colors.grey, fontWeight: FontWeight.w600),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    LoginPage()));
-                          },
-                          child: Text(
-                            "Login",
-                            style: TextStyle(
-                                color: Strings.appThemecolor,
-                                fontWeight: FontWeight.w600),
+                (widget.fromProfile == true)
+                    ? Container()
+                    : Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Container(
+                          margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Already have an account?",
+                                style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          LoginPage()));
+                                },
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(
+                                      color: Strings.appThemecolor,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
               ],
             ),
           ),

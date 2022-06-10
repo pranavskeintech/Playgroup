@@ -146,8 +146,7 @@ class AppUtils {
     );
   }
 
-  static void showPopUp(context, msg, onTap) 
-  {
+  static void showPopUp(context, msg, onTap) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -197,53 +196,50 @@ class AppUtils {
         });
   }
 
-  static void showParticipant(context, num) 
-  {
+  static void showParticipant(context, num) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
               content: Stack(children: [
-                InkWell(
-                  onTap: (){
-                    Navigator.of(context).pop();
-                  },
-                  child: (
-                      Icon(
-                        Icons.close_rounded,
-                        size: 20,
-                      )
+            InkWell(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: (Icon(
+                Icons.close_rounded,
+                size: 20,
+              )),
+            ),
+            Container(
+              height: 300,
+              width: 200,
+              child: ListView.builder(
+                itemCount: num,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      ListTile(
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              AssetImage("assets/imgs/${Images[index]}"),
+                          radius: 17,
+                        ),
+                        title: Text(
+                          ChildName[index],
+                          style: TextStyle(
+                              fontWeight: FontWeight.w600, fontSize: 13.5),
+                        ),
                       ),
-                ),
-                Container(
-                  height: 300,
-                  width: 200,
-                  child: ListView.builder(
-                    itemCount: num,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        children: [
-                          ListTile(
-                            leading: CircleAvatar(
-                              backgroundImage:
-                                  AssetImage("assets/imgs/${Images[index]}"),
-                              radius: 17,
-                            ),
-                            title: Text(
-                              ChildName[index],
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 13.5),
-                            ),
-                          ),
-                          Divider(
-                            height: 3,
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ]));
+                      Divider(
+                        height: 3,
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ]));
         });
   }
 }
@@ -343,9 +339,17 @@ class SwitchChild {
                     SizedBox(
                       height: 15,
                     ),
+                    // CircleAvatar(
+                    //     backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                    //     radius: 32),
+
                     CircleAvatar(
-                        backgroundImage: AssetImage("assets/imgs/child5.jpg"),
-                        radius: 32),
+                      backgroundImage: HeaderData!.profile! != "null"
+                          ? NetworkImage(
+                              Strings.imageUrl + (HeaderData!.profile ?? ""))
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -363,7 +367,6 @@ class SwitchChild {
   }
 
   static Widget setupAlertDialoadContainer(ctx) {
-    print("object:${_ProfileData!.children!.length}");
     return (_ProfileData!.children!.length == 0)
         ? Container(
             height: 0,
@@ -381,8 +384,9 @@ class SwitchChild {
                     child: InkWell(
                       onTap: () {
                         AppUtils.showprogress();
-                        var ChildId =
-                            _ProfileData!.children![index].childId ?? "";
+                        int ChildId = _ProfileData!.children![index].childId!;
+                        Strings.SelectedChild = ChildId;
+                        print("CiD:$ChildId");
                         _ChooseChild(ChildId, ctx);
                       },
                       child: Container(

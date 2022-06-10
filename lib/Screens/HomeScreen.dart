@@ -83,25 +83,32 @@ class _HomeScreenState extends State<HomeScreen> {
   BuildContext? ctx;
 
   List<Data>? OtherMarkAvailabilityData;
+
+  bool _ShowNoFriends = false;
+
+  bool _ShowNoAvailability = false;
   _GetMarkAvailability() {
     //AppUtils.showprogress();
     int CID = Strings.SelectedChild;
+    print("cID:$CID");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetMarkAvailability(CID).then((response) {
-      print(response.status);
+      print("sts1:${response.status}");
+      print("res1:${response.data}");
       if (response.status == true) {
         setState(() {
           // AppUtils.dismissprogress();
           GetMarkAvailabilityData = response.data;
           if (GetMarkAvailabilityData != null) {
-            _isLoading = false;
+            _ShowNoFriends = false;
             _GetOtherMarkAvailability();
-          } else {
-            InitialScreen();
           }
         });
       } else {
-        functions.createSnackBar(context, response.status.toString());
+        setState(() {
+          _ShowNoAvailability = true;
+          _GetOtherMarkAvailability();
+        });
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -113,17 +120,26 @@ class _HomeScreenState extends State<HomeScreen> {
     int CID = Strings.SelectedChild;
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetOtherMarkAvailability(CID).then((response) {
-      print(response.status);
-      if (response.status == true) {
-        setState(() {
-          // AppUtils.dismissprogress();
-          OtherMarkAvailabilityData = response.data;
-          if (OtherMarkAvailabilityData != null) {
+      print("sts2:${response.status}");
+      print("res2:${response.data}");
+      try {
+        if (response.status == true) {
+          setState(() {
+            // AppUtils.dismissprogress();
+            OtherMarkAvailabilityData = response.data;
+            _ShowNoFriends = false;
             _isLoading = false;
-          }
-        });
-      } else {
-        functions.createSnackBar(context, response.status.toString());
+          });
+        } else {
+          setState(() {
+            print("3");
+            _isLoading = false;
+            _ShowNoFriends = true;
+            //functions.createSnackBar(context, response.status.toString());
+          });
+        }
+      } catch (e) {
+        print("err" + e.toString());
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -151,198 +167,278 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   HomePage(BuildContext context) {
+    print("friend:$_ShowNoFriends");
     ctx = context;
     return _isLoading
         ? const Center(
             child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-        : Container(
-            margin: EdgeInsets.fromLTRB(5, 20, 5, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        : _ShowNoFriends
+            ? Container(
+                margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                        margin: EdgeInsets.only(left: 10),
+                    Align(
+                        alignment: Alignment.centerLeft,
                         child: Text(
-                          "Your Play dates",
-                          style: TextStyle(fontWeight: FontWeight.w500),
+                          "Invite Friends",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         )),
-                    Container(
-                        margin: EdgeInsets.only(right: 10),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Invite your Friends to the Playgroup App.",
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          SocialShare.shareOptions(
+                                  "Hey I found an new app Named Playgroup, Install With my link https://play.google.com/store/apps/details?id=com.netflix.mediaclient")
+                              .then((data) {
+                            print(data);
+                          });
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/imgs/add-user.png",
+                                width: 15,
+                                height: 15,
+                                color: Colors.white,
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Invite Friends")
+                            ])),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Align(
+                        alignment: Alignment.centerLeft,
                         child: Text(
-                          "View All",
-                          style: TextStyle(color: Colors.grey),
+                          "No Availabilities",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
                         )),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Card(
+                      elevation: 8,
+                      shadowColor: Colors.grey.withOpacity(0.1),
+                      child: Container(
+                        height: 140,
+                        padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "There are no friend's availabilities please add friends and view their availabilities",
+                                style: TextStyle(
+                                    color: Strings.textFeildHeading,
+                                    fontSize: 15),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                  "Add your friends and share with your availabilities",
+                                  style: TextStyle(
+                                      color: Strings.textFeildHeading)),
+                            ]),
+                      ),
+                    )
                   ],
                 ),
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 80,
-                  child: ListView.builder(
-                      itemCount: GetMarkAvailabilityData!.length,
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: ((context, index) {
-                        return Column(
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                Strings.activityConfirmed = true;
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => Own_Availability(markavailId: GetMarkAvailabilityData![index].markavailId,),
-                                ));
-                              },
-                              child: Container(
-                                margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      width: 1.3,
-                                      color:
-                                          Color.fromARGB(255, 251, 132, 138)),
-                                ),
-                                padding: EdgeInsets.all(2),
-                                width: 50,
-                                height: 50,
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.blue,
-                                  backgroundImage: GetMarkAvailabilityData![
-                                                  index]
-                                              .categoryImg !=
-                                          "null"
-                                      ? NetworkImage(Strings.imageUrl +
-                                          "activities/" +
-                                          (GetMarkAvailabilityData![index]
-                                                  .categoryImg ??
-                                              ""))
-                                      : AssetImage("assets/imgs/appicon.png")
-                                          as ImageProvider,
-                                ),
-                              ),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(GetMarkAvailabilityData![index].categoryName!,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w300,
-                                    fontSize: 11.0))
-                          ],
-                        );
-                      })),
-                ),
-                Divider(
-                  height: 4,
-                  color: Colors.grey.shade400,
-                ),
-                SizedBox(
-                  height: 13,
-                ),
-                Expanded(
-                  child: Container(
-                    child: AnimationLimiter(
-                      child: ListView.builder(
-                        itemCount: OtherMarkAvailabilityData!.length,
-                        itemBuilder: (context, index) {
-                          return AnimationConfiguration.staggeredList(
-                              position: index,
-                              duration: const Duration(milliseconds: 375),
-                              child: SlideAnimation(
-                                verticalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child: GestureDetector(
-                                    onTap: (() {
-                                      Strings.activityConfirmed = false;
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Own_Availability()));
-                                    }),
-                                    child: Container(
-                                      margin:
-                                          EdgeInsets.fromLTRB(10, 10, 10, 20),
-                                      height: 220,
-                                      color: Colors.white,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                          color: Colors.white,
-                                          boxShadow: [
-                                            BoxShadow(
-                                              color:
-                                                  Colors.grey.withOpacity(0.1),
-                                              blurRadius:
-                                                  8.0, // soften the shadow
-                                              spreadRadius:
-                                                  5.0, //extend the shadow
-                                              offset: Offset(
-                                                2.0, // Move to right 10  horizontally
-                                                2.0, // Move to bottom 10 Vertically
-                                              ),
-                                            )
-                                          ],
+              )
+            : Container(
+                margin: EdgeInsets.fromLTRB(5, 20, 5, 0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                            margin: EdgeInsets.only(left: 10),
+                            child: Text(
+                              "Your Play dates",
+                              style: TextStyle(fontWeight: FontWeight.w500),
+                            )),
+                        Container(
+                            margin: EdgeInsets.only(right: 10),
+                            child: Text(
+                              "View All",
+                              style: TextStyle(color: Colors.grey),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    _ShowNoAvailability
+                        ? Container()
+                        : SizedBox(
+                            height: 80,
+                            child: ListView.builder(
+                                itemCount: GetMarkAvailabilityData!.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: ((context, index) {
+                                  return Column(
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Strings.activityConfirmed = true;
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(
+                                            builder: (context) =>
+                                                Own_Availability(
+                                              markavailId:
+                                                  GetMarkAvailabilityData![
+                                                          index]
+                                                      .markavailId,
+                                            ),
+                                          ));
+                                        },
+                                        child: Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                                width: 1.3,
+                                                color: Color.fromARGB(
+                                                    255, 251, 132, 138)),
+                                          ),
+                                          padding: EdgeInsets.all(2),
+                                          width: 50,
+                                          height: 50,
+                                          child: CircleAvatar(
+                                            backgroundColor: Colors.blue,
+                                            backgroundImage:
+                                                GetMarkAvailabilityData![index]
+                                                            .categoryImg !=
+                                                        "null"
+                                                    ? NetworkImage(Strings
+                                                            .imageUrl +
+                                                        "activities/" +
+                                                        (GetMarkAvailabilityData![
+                                                                    index]
+                                                                .categoryImg ??
+                                                            ""))
+                                                    : AssetImage(
+                                                            "assets/imgs/appicon.png")
+                                                        as ImageProvider,
+                                          ),
                                         ),
-                                        padding:
-                                            EdgeInsets.fromLTRB(13, 2, 12, 0),
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            ListTile(
-                                              isThreeLine: false,
-                                              //visualDensity: VisualDensity(horizontal: 0, vertical: -4),
-                                              contentPadding: EdgeInsets.all(0),
-                                              leading: CircleAvatar(
-                                                backgroundImage: AssetImage(
-                                                    "assets/imgs/${childImgs[index]}"),
-                                              ),
-                                              title: Text(
-                                                OtherMarkAvailabilityData![
-                                                        index]
-                                                    .childName!,
-                                                style: TextStyle(
-                                                    fontSize: 13.5,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                              subtitle: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Row(
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                          GetMarkAvailabilityData![index]
+                                              .categoryName!,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: 11.0))
+                                    ],
+                                  );
+                                })),
+                          ),
+                    Divider(
+                      height: 4,
+                      color: Colors.grey.shade400,
+                    ),
+                    SizedBox(
+                      height: 13,
+                    ),
+                    Expanded(
+                      child: Container(
+                        child: AnimationLimiter(
+                          child: ListView.builder(
+                            itemCount: OtherMarkAvailabilityData!.length,
+                            itemBuilder: (context, index) {
+                              return AnimationConfiguration.staggeredList(
+                                  position: index,
+                                  duration: const Duration(milliseconds: 375),
+                                  child: SlideAnimation(
+                                    verticalOffset: 50.0,
+                                    child: FadeInAnimation(
+                                      child: GestureDetector(
+                                        onTap: (() {
+                                          Strings.activityConfirmed = false;
+                                          Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          Own_Availability()));
+                                        }),
+                                        child: Container(
+                                          margin: EdgeInsets.fromLTRB(
+                                              10, 10, 10, 20),
+                                          height: 220,
+                                          color: Colors.white,
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              color: Colors.white,
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey
+                                                      .withOpacity(0.1),
+                                                  blurRadius:
+                                                      8.0, // soften the shadow
+                                                  spreadRadius:
+                                                      5.0, //extend the shadow
+                                                  offset: Offset(
+                                                    2.0, // Move to right 10  horizontally
+                                                    2.0, // Move to bottom 10 Vertically
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                            padding: EdgeInsets.fromLTRB(
+                                                13, 2, 12, 0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                ListTile(
+                                                  isThreeLine: false,
+                                                  //visualDensity: VisualDensity(horizontal: 0, vertical: -4),
+                                                  contentPadding:
+                                                      EdgeInsets.all(0),
+                                                  leading: CircleAvatar(
+                                                    backgroundImage: AssetImage(
+                                                        "assets/imgs/${childImgs[index]}"),
+                                                  ),
+                                                  title: Text(
+                                                    OtherMarkAvailabilityData![
+                                                            index]
+                                                        .childName!,
+                                                    style: TextStyle(
+                                                        fontSize: 13.5,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
+                                                  subtitle: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
-                                                      Text(
-                                                        OtherMarkAvailabilityData![
-                                                                index]
-                                                            .dateon!,
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                        ),
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      SizedBox(width: 5),
-                                                      Container(
-                                                        width: 1,
-                                                        height: 10,
-                                                        color: Colors.red,
-                                                      ),
-                                                      SizedBox(
-                                                        width: 5,
-                                                      ),
                                                       Row(
                                                         children: [
                                                           Text(
                                                             OtherMarkAvailabilityData![
-                                                                        index]
-                                                                    .fromTime! +
-                                                                " - ",
+                                                                    index]
+                                                                .dateon!,
                                                             style: TextStyle(
                                                               fontSize: 11,
                                                             ),
@@ -350,308 +446,252 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 TextOverflow
                                                                     .ellipsis,
                                                           ),
+                                                          SizedBox(width: 5),
+                                                          Container(
+                                                            width: 1,
+                                                            height: 10,
+                                                            color: Colors.red,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 5,
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                OtherMarkAvailabilityData![
+                                                                            index]
+                                                                        .fromTime! +
+                                                                    " - ",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 11,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              Text(
+                                                                OtherMarkAvailabilityData![
+                                                                        index]
+                                                                    .toTime!,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 11,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        children: [
+                                                          Icon(
+                                                            Icons.location_pin,
+                                                            color: Colors.red,
+                                                            size: 12.5,
+                                                          ),
+                                                          SizedBox(
+                                                            width: 3,
+                                                          ),
                                                           Text(
                                                             OtherMarkAvailabilityData![
                                                                     index]
-                                                                .toTime!,
+                                                                .location!,
                                                             style: TextStyle(
                                                               fontSize: 11,
                                                             ),
                                                             overflow:
                                                                 TextOverflow
-                                                                    .ellipsis,
+                                                                    .fade,
                                                           ),
                                                         ],
                                                       )
                                                     ],
                                                   ),
-                                                  Row(
+                                                ),
+                                                SizedBox(
+                                                  height: 12,
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      OtherMarkAvailabilityData![
+                                                                  index]
+                                                              .categoryName! +
+                                                          " - ",
+                                                      style: TextStyle(
+                                                          fontSize: 13),
+                                                    ),
+                                                    Text(
+                                                      OtherMarkAvailabilityData![
+                                                              index]
+                                                          .activitiesName!,
+                                                      style: TextStyle(
+                                                          fontSize: 13),
+                                                    ),
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  height: 20,
+                                                ),
+                                                Divider(
+                                                  height: 2,
+                                                  color: Colors.grey.shade300,
+                                                ),
+                                                SizedBox(height: 10),
+                                                Text(
+                                                  "Other Participants",
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                ),
+                                                SizedBox(
+                                                  height: 8,
+                                                ),
+                                                SizedBox(
+                                                  height: 50,
+                                                  child: Row(
                                                     children: [
-                                                      Icon(
-                                                        Icons.location_pin,
-                                                        color: Colors.red,
-                                                        size: 12.5,
+                                                      Expanded(
+                                                        child: (OtherMarkAvailabilityData![
+                                                                        index]
+                                                                    .friendsdata !=
+                                                                [])
+                                                            ? Container(
+                                                                width: 130,
+                                                                height: 20,
+                                                                child: Text(
+                                                                  "Be first to join",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      color: Colors
+                                                                          .blue,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .left,
+                                                                ),
+                                                              )
+                                                            : ListView.builder(
+                                                                itemCount: 5,
+                                                                scrollDirection:
+                                                                    Axis
+                                                                        .horizontal,
+                                                                itemBuilder:
+                                                                    ((context,
+                                                                        index) {
+                                                                  if (index <
+                                                                      4) {
+                                                                    return Container(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              2),
+                                                                      width: 32,
+                                                                      height:
+                                                                          32,
+                                                                      child:
+                                                                          CircleAvatar(
+                                                                        backgroundImage:
+                                                                            AssetImage("assets/imgs/${childImgs[index]}"),
+                                                                      ),
+                                                                    );
+                                                                  } else {
+                                                                    return Container(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              2),
+                                                                      height:
+                                                                          32,
+                                                                      width: 32,
+                                                                      child:
+                                                                          InkWell(
+                                                                        onTap:
+                                                                            () {
+                                                                          AppUtils.showParticipant(
+                                                                              context,
+                                                                              2);
+                                                                        },
+                                                                        child:
+                                                                            CircleAvatar(
+                                                                          backgroundColor: Colors
+                                                                              .grey
+                                                                              .withOpacity(0.3),
+                                                                          child:
+                                                                              Text(
+                                                                            "3+",
+                                                                            style:
+                                                                                TextStyle(color: Colors.black, fontSize: 12),
+                                                                          ), //Text
+                                                                        ),
+                                                                      ),
+                                                                    );
+                                                                  }
+                                                                })),
                                                       ),
                                                       SizedBox(
-                                                        width: 3,
-                                                      ),
-                                                      Text(
-                                                        OtherMarkAvailabilityData![
-                                                                index]
-                                                            .location!,
-                                                        style: TextStyle(
-                                                          fontSize: 11,
+                                                        height: 32,
+                                                        width: 70,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  right: 8.0),
+                                                          child: TextButton(
+                                                            onPressed: () {
+                                                              _JoinFriendsMarkAvailability(
+                                                                  1);
+                                                            },
+                                                            child: Text(
+                                                              "JOIN",
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                color: Color
+                                                                    .fromRGBO(
+                                                                        94,
+                                                                        37,
+                                                                        108,
+                                                                        1),
+                                                                // fontWeight:
+                                                                //     FontWeight.w400
+                                                              ),
+                                                            ),
+                                                            style: TextButton
+                                                                .styleFrom(
+                                                              primary:
+                                                                  Colors.white,
+                                                              side: BorderSide(
+                                                                width: 1.6,
+                                                                color: Colors
+                                                                    .grey
+                                                                    .shade300,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
-                                                        overflow:
-                                                            TextOverflow.fade,
                                                       ),
                                                     ],
-                                                  )
-                                                ],
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  OtherMarkAvailabilityData![
-                                                              index]
-                                                          .categoryName! +
-                                                      " - ",
-                                                  style:
-                                                      TextStyle(fontSize: 13),
-                                                ),
-                                                Text(
-                                                  OtherMarkAvailabilityData![
-                                                          index]
-                                                      .activitiesName!,
-                                                  style:
-                                                      TextStyle(fontSize: 13),
+                                                  ),
                                                 ),
                                               ],
                                             ),
-                                            SizedBox(
-                                              height: 20,
-                                            ),
-                                            Divider(
-                                              height: 2,
-                                              color: Colors.grey.shade300,
-                                            ),
-                                            SizedBox(height: 10),
-                                            Text(
-                                              "Other Participants",
-                                              style:
-                                                  TextStyle(color: Colors.grey),
-                                            ),
-                                            SizedBox(
-                                              height: 8,
-                                            ),
-                                            SizedBox(
-                                              height: 50,
-                                              child: Row(
-                                                children: [
-                                                  Expanded(
-                                                    child: (OtherMarkAvailabilityData![
-                                                                    index]
-                                                                .friendsdata !=
-                                                            [])
-                                                        ? Chip(
-                                                            label: Container(
-                                                              width: 130,
-                                                              height: 20,
-                                                              child: Center(
-                                                                child: Text(
-                                                                  "No Participants",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        14,
-                                                                  ),
-                                                                  textAlign:
-                                                                      TextAlign
-                                                                          .center,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            backgroundColor:
-                                                                Colors.grey
-                                                                    .shade200,
-                                                          )
-                                                        : ListView.builder(
-                                                            itemCount: 5,
-                                                            scrollDirection:
-                                                                Axis.horizontal,
-                                                            itemBuilder:
-                                                                ((context,
-                                                                    index) {
-                                                              if (index < 4) {
-                                                                return Container(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              2),
-                                                                  width: 32,
-                                                                  height: 32,
-                                                                  child:
-                                                                      CircleAvatar(
-                                                                    backgroundImage:
-                                                                        AssetImage(
-                                                                            "assets/imgs/${childImgs[index]}"),
-                                                                  ),
-                                                                );
-                                                              } else {
-                                                                return Container(
-                                                                  padding:
-                                                                      EdgeInsets
-                                                                          .all(
-                                                                              2),
-                                                                  height: 32,
-                                                                  width: 32,
-                                                                  child:
-                                                                      InkWell(
-                                                                    onTap: () {
-                                                                      AppUtils.showParticipant(
-                                                                          context,
-                                                                          2);
-                                                                    },
-                                                                    child:
-                                                                        CircleAvatar(
-                                                                      backgroundColor: Colors
-                                                                          .grey
-                                                                          .withOpacity(
-                                                                              0.3),
-                                                                      child:
-                                                                          Text(
-                                                                        "3+",
-                                                                        style: TextStyle(
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontSize: 12),
-                                                                      ), //Text
-                                                                    ),
-                                                                  ),
-                                                                );
-                                                              }
-                                                            })),
-                                                  ),
-                                                  SizedBox(
-                                                    height: 32,
-                                                    width: 70,
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              right: 8.0),
-                                                      child: TextButton(
-                                                        onPressed: () {
-                                                          _JoinFriendsMarkAvailability(
-                                                              1);
-                                                        },
-                                                        child: Text(
-                                                          "JOIN",
-                                                          style: TextStyle(
-                                                            fontSize: 12,
-                                                            color:
-                                                                Color.fromRGBO(
-                                                                    94,
-                                                                    37,
-                                                                    108,
-                                                                    1),
-                                                            // fontWeight:
-                                                            //     FontWeight.w400
-                                                          ),
-                                                        ),
-                                                        style: TextButton
-                                                            .styleFrom(
-                                                          primary: Colors.white,
-                                                          side: BorderSide(
-                                                            width: 1.6,
-                                                            color: Colors
-                                                                .grey.shade300,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ));
-                        },
+                                  ));
+                            },
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          );
-  }
-
-  Widget InitialScreen() {
-    return Container(
-      margin: EdgeInsets.fromLTRB(20, 50, 20, 0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Invite Friends",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          Text(
-            "Invite your Friends to the Playgroup App.",
-            style: TextStyle(color: Colors.grey),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          ElevatedButton(
-              onPressed: () {
-                SocialShare.shareOptions(
-                        "Hey I found an new app Named Playgroup, Install With my link https://play.google.com/store/apps/details?id=com.netflix.mediaclient")
-                    .then((data) {
-                  print(data);
-                });
-              },
-              child:
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Image.asset(
-                  "assets/imgs/add-user.png",
-                  width: 15,
-                  height: 15,
-                  color: Colors.white,
+                    )
+                  ],
                 ),
-                SizedBox(
-                  width: 10,
-                ),
-                Text("Invite Friends")
-              ])),
-          SizedBox(
-            height: 10,
-          ),
-          Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "No Availabilities",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-              )),
-          SizedBox(
-            height: 20,
-          ),
-          Card(
-            elevation: 8,
-            shadowColor: Colors.grey.withOpacity(0.1),
-            child: Container(
-              height: 140,
-              padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "There are no friend's availabilities please add friends and view their availabilities",
-                      style: TextStyle(
-                          color: Strings.textFeildHeading, fontSize: 15),
-                    ),
-                    SizedBox(height: 10),
-                    Text("Add your friends and share with your availabilities",
-                        style: TextStyle(color: Strings.textFeildHeading)),
-                  ]),
-            ),
-          )
-        ],
-      ),
-    );
+              );
   }
 
   _JoinFriendsMarkAvailability(MID) {

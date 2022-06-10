@@ -14,10 +14,12 @@ import '../Network/ApiService.dart';
 import '../Utilities/AppUtlis.dart';
 
 class ShowOtherChildProfile extends StatefulWidget {
-    int? otherChildID;
-    String? childName;
-    String? ChildLocation;
-   ShowOtherChildProfile({Key? key,this.otherChildID,this.childName,this.ChildLocation}) : super(key: key);
+  int? otherChildID;
+  String? childName;
+  String? ChildLocation;
+  ShowOtherChildProfile(
+      {Key? key, this.otherChildID, this.childName, this.ChildLocation})
+      : super(key: key);
 
   @override
   State<ShowOtherChildProfile> createState() => _ShowOtherChildProfileState();
@@ -25,10 +27,10 @@ class ShowOtherChildProfile extends StatefulWidget {
 
 class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-   BuildContext? ctx;
+  BuildContext? ctx;
   List<childData> childInfo = [];
   var isloading = true;
-  
+
   List<String> images = [
     "cricket.jpg",
     "cooking.jpg",
@@ -48,13 +50,12 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
     "Hockey"
   ];
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => getProfile());
   }
-
 
   Addfriend() {
     AppUtils.showprogress();
@@ -65,15 +66,13 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
     friendRequestReq.childId = Strings.SelectedChild;
     friendRequestReq.childFriendId = widget.otherChildID;
 
-
     var data = jsonEncode(friendRequestReq);
     print(data);
     api.sendFriendRequest(friendRequestReq).then((response) {
       print(response.status);
-      if (response.status == true) 
-      {
+      if (response.status == true) {
         AppUtils.dismissprogress();
-        AppUtils.showToast(response.message,"");
+        AppUtils.showToast(response.message, "");
         getProfile();
         // Navigator.push(
         //   context,
@@ -91,13 +90,13 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
     });
   }
 
-  getProfile()
-  {
+  getProfile() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getOtherchildDetails(Strings.SelectedChild,widget.otherChildID!).then((response) {
+    api
+        .getOtherchildDetails(Strings.SelectedChild, widget.otherChildID!)
+        .then((response) {
       print(response.status);
-      if (response.status == true) 
-      {
+      if (response.status == true) {
         setState(() {
           isloading = false;
           childInfo = response.data!;
@@ -112,18 +111,20 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
     });
   }
 
-  deleteRequest()
-  {
-            AppUtils.showprogress();
+  deleteRequest() {
+    AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.deleteFriendRequest(Strings.SelectedChild,widget.otherChildID!,).then((response) {
+    api
+        .deleteFriendRequest(
+      Strings.SelectedChild,
+      widget.otherChildID!,
+    )
+        .then((response) {
       print(response.status);
-      if (response.status == true) 
-      {
-               AppUtils.dismissprogress();
-         AppUtils.showToast("Request Cancelled", ctx);
-         getProfile();
-        
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast("Request Cancelled", ctx);
+        getProfile();
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -133,11 +134,12 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
       print(onError.toString());
     });
   }
+
   bool _limitImage = true;
   @override
   Widget build(BuildContext context) {
     return Provider(
-            create: (context) => ApiService.create(),
+      create: (context) => ApiService.create(),
       child: Scaffold(
         key: _scaffoldKey,
         appBar: AppBar(
@@ -148,7 +150,9 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
             child: Text(
               widget.childName ?? "",
               style: TextStyle(
-                  color: Colors.white, fontSize: 19, fontWeight: FontWeight.w600),
+                  color: Colors.white,
+                  fontSize: 19,
+                  fontWeight: FontWeight.w600),
             ),
           ),
           leading: Transform(
@@ -167,170 +171,177 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
           ),
         ),
         body: Builder(builder: (BuildContext newContext) {
-                return otherChild(newContext);
-              }),
+          return otherChild(newContext);
+        }),
       ),
     );
   }
 
   otherChild(BuildContext context) {
-  {
-    ctx = context;
+    {
+      ctx = context;
 
-    return 
-    isloading?const Center(
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))):
-     SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              child: Column(children: [
-                SizedBox(
-                  height: 20,
-                ),
-                CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage("assets/imgs/child6.jpg"),
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  childInfo[0].childName ?? "",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
-                ),
-                SizedBox(height: 5),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.location_on,
-                      size: 12,
-                      color: Colors.red,
-                    ),
-                    SizedBox(
-                      width: 3,
-                    ),
-                    Text(
-                      widget.ChildLocation ?? "",
-                      style:
-                          TextStyle(fontSize: 10, fontWeight: FontWeight.w200),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Strings.FriendNotification
-                    ? Padding(
-                        padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            SizedBox(
-                              height: 30,
-                              width: 120,
-                              child: ElevatedButton(
-                                  onPressed: () {},
+      return isloading
+          ? const Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Container(
+                    child: Column(children: [
+                      SizedBox(
+                        height: 20,
+                      ),
+                      CircleAvatar(
+                        backgroundColor: Colors.blue,
+                        backgroundImage: childInfo[0].profile != "null"
+                            ? NetworkImage(Strings.imageUrl +
+                                (childInfo[0].profile ?? ""))
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider,
+                        radius: 50,
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        childInfo[0].childName ?? "",
+                        style: TextStyle(
+                            fontSize: 15, fontWeight: FontWeight.w600),
+                      ),
+                      SizedBox(height: 5),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 12,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 3,
+                          ),
+                          Text(
+                            widget.ChildLocation ?? "",
+                            style: TextStyle(
+                                fontSize: 10, fontWeight: FontWeight.w200),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Strings.FriendNotification
+                          ? Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  SizedBox(
+                                    height: 30,
+                                    width: 120,
+                                    child: ElevatedButton(
+                                        onPressed: () {},
+                                        child: Container(
+                                          width: 140,
+                                          child: Center(
+                                            child: Text(
+                                              "Accept",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700),
+                                            ),
+                                          ),
+                                        )),
+                                  ),
+                                  SizedBox(
+                                    height: 30,
+                                    width: 120,
+                                    child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all<Color>(
+                                                  Colors.white),
+                                        ),
+                                        onPressed: () {},
+                                        child: Container(
+                                          width: 140,
+                                          child: Center(
+                                            child: Text(
+                                              "Reject",
+                                              style: TextStyle(
+                                                  fontSize: 14,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        )),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : childInfo[0].status == "unfriend"
+                              ? ElevatedButton(
+                                  onPressed: () {
+                                    Addfriend();
+                                  },
                                   child: Container(
                                     width: 140,
                                     child: Center(
                                       child: Text(
-                                        "Accept",
+                                        "Add Friend",
                                         style: TextStyle(
                                             fontSize: 14,
                                             fontWeight: FontWeight.w700),
                                       ),
                                     ),
-                                  )),
-                            ),
-                            SizedBox(
-                              height: 30,
-                              width: 120,
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.white),
-                                  ),
-                                  onPressed: () {},
-                                  child: Container(
-                                    width: 140,
-                                    child: Center(
-                                      child: Text(
-                                        "Reject",
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.black),
-                                      ),
-                                    ),
-                                  )),
-                            ),
-                          ],
-                        ),
-                      )
-                    :  childInfo[0].status == "unfriend"?
-                    ElevatedButton(
-                        onPressed: () {
-                          Addfriend();
-                        },
-                        child:         
-                        Container(
-                          width: 140,
-                          child: Center(
-                            child: Text(
-                              "Add Friend",
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w700),
-                            ),
+                                  ))
+                              : childInfo[0].status == "Accepted"
+                                  ? Text("You are already been friends")
+                                  : ElevatedButton(
+                                      onPressed: () {
+                                        deleteRequest();
+                                      },
+                                      child: Container(
+                                        width: 140,
+                                        child: Center(
+                                          child: Text(
+                                            "Cancel Request",
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        ),
+                                      ))
+                    ]),
+                    margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
+                    //padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
+                    height: 250,
+                    //width: 320,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.2),
+                            blurRadius: 10.0,
+                            spreadRadius: 2.0,
                           ),
-                        )):childInfo[0].status == "Accepted"?
-                        Text("You are already been friends"):
-                        ElevatedButton(
-                        onPressed: () {
-                          deleteRequest();
-                        },
-                        child:         
-                        Container(
-                          width: 140,
-                          child: Center(
-                            child: Text(
-                              "Cancel Request",
-                              style: TextStyle(
-                                  fontSize: 14, fontWeight: FontWeight.w700),
-                            ),
-                          ),
-                        ))
-              ]),
-              margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
-              //padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-              height: 250,
-              //width: 320,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      blurRadius: 10.0,
-                      spreadRadius: 2.0,
-                    ),
-                    BoxShadow(
-                      color: Colors.white,
-                      offset: const Offset(0.0, 0.0),
-                      blurRadius: 0.0,
-                      spreadRadius: 0.0,
-                    ), //BoxShadow
-                  ]),
-            ),
-            SizedBox(
-              height: 15,
-             
-            )
-          ],
-        ),
-      );
+                          BoxShadow(
+                            color: Colors.white,
+                            offset: const Offset(0.0, 0.0),
+                            blurRadius: 0.0,
+                            spreadRadius: 0.0,
+                          ), //BoxShadow
+                        ]),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  )
+                ],
+              ),
+            );
+    }
   }
-}
 }
