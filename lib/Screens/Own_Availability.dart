@@ -65,7 +65,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance!
         .addPostFrameCallback((_) => getAvailabilityDetails());
-        print("Data---> ${widget.markavailId}");
+    print("Data---> ${widget.markavailId}");
     super.initState();
   }
 
@@ -213,8 +213,11 @@ class _Own_AvailabilityState extends State<Own_Availability>
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => EditAvailabilityTime(
-                                      FromTime: availabilityData[0].fromTime,
-                                      TOTime: availabilityData[0].toTime,),
+                                    markavailId:
+                                        availabilityData[0].markavailId,
+                                    FromTime: availabilityData[0].fromTime,
+                                    TOTime: availabilityData[0].toTime,
+                                  ),
                                 ));
                               },
                               icon: ImageIcon(
