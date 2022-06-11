@@ -412,8 +412,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         ChildProfile()));
                               }),
                               leading: CircleAvatar(
-                                backgroundImage:
-                                    AssetImage("assets/imgs/child1.jpg"),
+                                backgroundImage:_ProfileData!.children![index].profile != "null"
+                            ? NetworkImage(Strings.imageUrl +
+                                (_ProfileData!.children![index].profile ?? ""))
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider
                               ),
                               title: Text(
                                   _ProfileData!.children![index].childName!),

@@ -228,7 +228,8 @@ class _Availability_choose_friendsState
                                   checkColor: Colors.green,
                                   activeColor: Colors.transparent,
                                   value: _isChecked?[index],
-                                  onChanged: (val) {
+                                  onChanged: (val) 
+                                  {
                                     setState(
                                       () {
                                         if (val!) 
@@ -306,11 +307,14 @@ class _Availability_choose_friendsState
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.createAvailability(markavail).then((response) {
       print('response ${response.status}');
-      if (response.status == true) {
+      if (response.status == true) 
+      {
         AppUtils.dismissprogress();
+        AppUtils.showToast(response.message,context);
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-      } else {
+      } else 
+      {
         functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         print("error");

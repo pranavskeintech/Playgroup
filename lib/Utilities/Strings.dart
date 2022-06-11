@@ -74,4 +74,6 @@ mixin Strings {
   static int SelectedChild = 0;
 
   static String? ProfilePic='';
+
+  static int? selectedAvailability;
 }

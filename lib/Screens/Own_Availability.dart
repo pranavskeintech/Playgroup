@@ -5,6 +5,7 @@ import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:playgroup/Models/AvailPauseReq.dart';
 import 'package:playgroup/Models/AvailabityRes.dart';
+import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
@@ -66,7 +67,32 @@ class _Own_AvailabilityState extends State<Own_Availability>
     WidgetsBinding.instance!
         .addPostFrameCallback((_) => getAvailabilityDetails());
         print("Data---> ${widget.markavailId}");
+
+    Strings.selectedAvailability = widget.markavailId;
     super.initState();
+  }
+
+   _JoinFriendsMarkAvailability() {
+    //AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+
+    JoinfriendsReq joinfriendsReq = JoinfriendsReq();
+    joinfriendsReq.childId = Strings.SelectedChild;
+    joinfriendsReq.markavailId = widget.markavailId;
+    joinfriendsReq.status = "joined";
+    api.JoinFriendsMarkAvailability(joinfriendsReq).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          _isLoading = false;
+        });
+      } else {
+        //functions.createSnackBar(context, response.status.toString());
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 
   getAvailabilityDetails() {
