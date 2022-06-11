@@ -1,215 +1,363 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:playgroup/Screens/Own_Availability.dart';
+import 'package:playgroup/Models/AcceptedFriendsRes.dart';
+import 'package:playgroup/Models/MarkAvailabilityReq.dart';
+import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
+import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 
 class EditParticipatingFriends extends StatefulWidget {
   const EditParticipatingFriends({Key? key}) : super(key: key);
 
   @override
   State<EditParticipatingFriends> createState() =>
-      _EditParticipatingFriendsState();
+      EditParticipatingFriendsState();
 }
 
-class _EditParticipatingFriendsState extends State<EditParticipatingFriends> {
-  bool value = false;
+class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
+  List<bool> values = [];
 
-  bool _showDelete = false;
+  final List<String> _texts = [
+    "InduceSmile.com",
+    "Flutter.io",
+    "google.com",
+    "youtube.com",
+    "yahoo.com",
+    "gmail.com"
+  ];
 
-  bool _isPressed = false;
+  List<bool>? _isChecked;
+
+  TextEditingController searchController = TextEditingController();
+
+  bool _switchValue = false;
+
+  BuildContext? ctx;
+
+  List<FriendsData>? FriendsDatum;
+
+  List<FriendsData> _foundedUsers = [];
+
+  bool _isLoading = true;
+
+  var FriendsId = [];
+
+  List<OwnAvailabilityData> availabilityData = [];
+
+  _GetFriends() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetAcceptedFriendReq(Strings.SelectedChild).then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          FriendsDatum = response.data!;
+
+          setState(() {
+            _foundedUsers = FriendsDatum!;
+          });
+          _isLoading = false;
+          getAvailabilityDetails();
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  getAvailabilityDetails() {
+    print("check");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.getAvailabilityDetails(Strings.selectedAvailability!).then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          availabilityData = response.data!;
+          _isLoading = false;
+          updateSelectedChilds();
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  updateSelectedChilds() {
+    print("color");
+    for (var i = 0; i < availabilityData[0].friendsdata!.length; i++) {
+      for (var j = 0; j < _foundedUsers.length; j++) {
+
+          print("avail data ${availabilityData[0].friendsdata![i].childFriendId}");
+          print(" found ${_foundedUsers[j].childId}");
+
+        if (availabilityData[0].friendsdata![i].childFriendId ==
+            _foundedUsers[j].childId) {
+              setState(() {
+                  _isChecked![j] = true;
+              });
+              
+        }
+      }
+    }
+    updateFriendsID();
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    _isChecked = List<bool>.filled(_texts.length, false);
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetFriends());
+  }
+  updateFriendsID()
+  {
+    for(var i=0;i<_isChecked!.length;i++)
+    {
+      if(_isChecked![i]==true)
+      {
+        FriendsId.add(_foundedUsers[i].childId);
+      }
+    }
+
+
+    print(FriendsId);
+  }
+  onSearch(String search) {
+    print("Searching for $search");
+    setState(() {
+      _foundedUsers = FriendsDatum!
+          .where((user) =>
+              user.childName!.toLowerCase().contains(search.toLowerCase()))
+          .toList();
+      print(_foundedUsers.length);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
-        backgroundColor: Strings.appThemecolor,
-        title: Text(
-          "Edit Availability",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: ImageIcon(
-              AssetImage("assets/imgs/back arrow.png"),
-              color: Colors.white,
-            )),
-      ),
-      bottomSheet: _showBottomSheet(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(10, 20, 0, 0),
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(
-                "Participating Friends",
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
-            child: Container(
-              height: 35,
-              child: TextField(
-                style: TextStyle(
-                  height: 2.5,
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.withOpacity(0.3),
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: 2,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: ListTile(
-                    onLongPress: () {
-                      // Navigator.of(context).push(MaterialPageRoute(
-                      //     builder: (BuildContext context) => ChildProfile()));
-                      setState(() {
-                        _isPressed = true;
-                      });
-                    },
-                    leading: CircleAvatar(
-                      backgroundImage: AssetImage("assets/imgs/child1.jpg"),
-                    ),
-                    trailing: _isPressed
-                        ? Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius: BorderRadius.circular(3.0),
-                            ),
-                            width: 20,
-                            height: 20,
-                            child: Theme(
-                              data: ThemeData(
-                                  unselectedWidgetColor: Colors.white),
-                              child: Checkbox(
-                                  // side: BorderSide(color: Colors.black),
-                                  checkColor: Colors.green,
-                                  activeColor: Colors.transparent,
-                                  //hoverColor: Colors.black,
-                                  value: this.value,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      this.value = value!;
-                                      print("value:$value");
-                                      if (value == true) {
-                                        _showDelete = true;
-                                      }
-                                    });
-                                  }),
-                            ),
-                          )
-                        : null,
-                    title: Text("Christopher Janglen"),
-                  ),
-                );
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Strings.appThemecolor,
+            title: Text("Your Availability"),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
               },
-              separatorBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider(
-                    thickness: 1,
-                  ),
-                );
-              },
+              icon: Icon(Icons.arrow_back_sharp),
             ),
           ),
-        ],
-      ),
-    );
+          // resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return MarkAvail(newContext);
+          }),
+        ));
   }
 
-  Widget? _showBottomSheet() {
-    if (_showDelete) {
-      return BottomSheet(
-        onClosing: () {},
-        builder: (context) {
-          return Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(
-                  Radius.circular(35.0),
-                ),
-                boxShadow: <BoxShadow>[
-                  new BoxShadow(
-                    color: Colors.grey.withOpacity(0.8),
-                    blurRadius: 5.0,
-                    offset: new Offset(0.0, 2.0),
+  MarkAvail(BuildContext context) {
+    ctx = context;
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : Container(
+            padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
+            child: Column(
+              children: [
+                SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                      color: Strings.textFeildBg,
+                      border: Border.all(color: Strings.textFeildBg),
+                      borderRadius: BorderRadius.circular(10)),
+                  height: 40,
+                  child: TextField(
+                    onChanged: (searchString) {
+                      onSearch(searchString);
+                    },
+                    enabled: true,
+                    controller: searchController,
+                    textInputAction: TextInputAction.search,
+                    textAlign: TextAlign.justify,
+                    style: TextStyle(height: 1),
+                    decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(10),
+                        hintText: "Search",
+                        border: InputBorder.none,
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(color: Strings.textFeildBg),
+                            borderRadius: BorderRadius.circular(6)),
+                        filled: true,
+                        fillColor: Strings.textFeildBg,
+                        prefixIcon: Icon(Icons.search)),
                   ),
-                ],
-              ),
-              height: 100,
-              width: double.infinity,
-              // color: Colors.white,
-              alignment: Alignment.center,
-              // child: TextButton(
-              //     onPressed: () {
-              //       // Navigator.of(context).push(MaterialPageRoute(
-              //       //     builder: (BuildContext context) => AddGroup()));
-              //       setState(() {
-              //         _showDelete = false;
-              //         _isPressed = false;
-              //       });
-              //     },
-              //     child: Padding(
-              //       padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-              //       child: Row(
-              //         mainAxisAlignment: MainAxisAlignment.start,
-              //         children: [
-              //           ImageIcon(
-              //             AssetImage("assets/imgs/delete_1.png"),
-              //             //color: Colors.white,
-              //             size: 20,
-              //           ),
-              //           SizedBox(
-              //             width: 8,
-              //           ),
-              //           Text(
-              //             "Delete",
-              //             // style: TextStyle(color: Colors.green),
-              //           ),
-              //         ],
-              //       ),
-              //     )),
-
-              child: Container(
-                width: MediaQuery.of(context).size.width * 0.9,
-                child: ElevatedButton(
-                  child: Text("Save"),
-                  onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => Own_Availability()));
-                    setState(() {
-                      _showDelete = false;
-                      _isPressed = false;
-                    });
-                  },
                 ),
-              ));
-        },
-      );
-    } else {
-      return null;
-    }
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    Text(
+                      "Select all friends",
+                      style: TextStyle(color: Colors.blue),
+                    ),
+                    Switch(
+                      activeColor: Colors.blue,
+                      value: _switchValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _switchValue = value;
+                        });
+
+                        if (_switchValue == true) {
+                          for (var index = 0;
+                              _isChecked!.length > index;
+                              index++) {
+                            _isChecked![index] = true;
+                          }
+                        } else {
+                          for (var index = 0;
+                              _isChecked!.length > index;
+                              index++) {
+                            _isChecked![index] = false;
+                          }
+                        }
+                      },
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                Expanded(
+                    child: ListView.builder(
+                  itemCount: _foundedUsers.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 10),
+                          child: ListTile(
+                            leading: Transform.translate(
+                              offset: Offset(-16, 0),
+                              child: CircleAvatar(
+                                backgroundImage: _foundedUsers[index].profile !=
+                                        "null"
+                                    ? NetworkImage(Strings.imageUrl +
+                                        (_foundedUsers[index].profile ?? ""))
+                                    : AssetImage("assets/imgs/appicon.png")
+                                        as ImageProvider,
+                              ),
+                            ),
+                            title: Transform.translate(
+                              offset: Offset(-16, 0),
+                              child: Text(_foundedUsers[index].childName!),
+                            ),
+                            trailing: Container(
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.circular(3.0),
+                              ),
+                              width: 20,
+                              height: 20,
+                              child: Theme(
+                                data: ThemeData(
+                                    unselectedWidgetColor: Colors.white),
+                                child: Checkbox(
+                                  checkColor: Colors.green,
+                                  activeColor: Colors.transparent,
+                                  value: _isChecked?[index],
+                                  onChanged: (val) {
+                                    setState(
+                                      () {
+                                        if (val!) {
+                                          _isChecked?[index] = val;
+                                          FriendsId.add(
+                                              _foundedUsers[index].childId!);
+                                        } else {
+                                          _isChecked?[index] = val;
+                                          FriendsId.remove(
+                                              _foundedUsers[index].childId!);
+                                        }
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Divider(
+                          color: Colors.grey.withOpacity(0.4),
+                          height: 1,
+                        ),
+                      ],
+                    );
+                  },
+                )),
+                Center(
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _MarkAvailability();
+                        },
+                        child: Text(
+                          "Done",
+                        ),
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all<Color>(
+                                Strings.appThemecolor)),
+                      )),
+                ),
+                SizedBox(
+                  height: 8,
+                ),
+                SizedBox(
+                  height: 40,
+                ),
+              ],
+            ),
+          );
+  }
+
+  _MarkAvailability() {
+    AppUtils.showprogress();
+
+    MarkAvailabilityReq markavail = MarkAvailabilityReq();
+
+    markavail.childId = Strings.SelectedChild;
+    markavail.date = Strings.markAvailabiltydate;
+    markavail.from = Strings.markAvailabiltystartTime;
+    markavail.to = Strings.markAvailabiltyendTime;
+    markavail.description = Strings.markAvailabiltydesc;
+    markavail.location = Strings.markAvailabiltylocations;
+    markavail.activitiesId = Strings.markAvailabiltyTopic;
+    markavail.sportId = Strings.markAvailabiltycategory;
+    markavail.friendId = FriendsId;
+
+    var dat = jsonEncode(markavail);
+    print(dat);
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.createAvailability(markavail).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        print("error");
+      }
+    });
   }
 }

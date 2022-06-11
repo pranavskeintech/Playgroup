@@ -156,6 +156,8 @@ class _HomeScreenState extends State<HomeScreen> {
         .addPostFrameCallback((_) => _GetMarkAvailability());
   }
 
+  
+
   @override
   Widget build(BuildContext context) {
     return Provider<ApiService>(
@@ -802,24 +804,34 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _JoinFriendsMarkAvailability(MID) {
+    AppUtils.showprogress();
     //AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
 
     JoinfriendsReq joinfriendsReq = JoinfriendsReq();
     joinfriendsReq.childId = Strings.SelectedChild;
     joinfriendsReq.markavailId = MID;
+    joinfriendsReq.status = "joined";
     api.JoinFriendsMarkAvailability(joinfriendsReq).then((response) {
       print(response.status);
       if (response.status == true) {
         setState(() {
           // AppUtils.dismissprogress();
           _isLoading = false;
+          _GetMarkAvailability();
+          AppUtils.showToast(response.message,context);
+          AppUtils.dismissprogress();
         });
       } else {
         functions.createSnackBar(context, response.status.toString());
+                  AppUtils.showToast("Unable to join please try again!",context);
+
+          AppUtils.dismissprogress();
       }
     }).catchError((onError) {
       print(onError.toString());
+      AppUtils.dismissprogress();
+
     });
   }
 }
