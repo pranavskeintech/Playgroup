@@ -385,7 +385,6 @@ class SwitchChild {
                       onTap: () {
                         AppUtils.showprogress();
                         int ChildId = _ProfileData!.children![index].childId!;
-                        Strings.SelectedChild = ChildId;
                         print("CiD:$ChildId");
                         _ChooseChild(ChildId, ctx);
                       },
@@ -423,6 +422,7 @@ class SwitchChild {
     api.ChooseChild(ChooseChild).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
+        Strings.SelectedChild = ChildId;
         AppUtils.dismissprogress();
         Navigator.push(
             ctx, MaterialPageRoute(builder: (context) => DashBoard()));
