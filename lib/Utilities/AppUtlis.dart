@@ -426,6 +426,7 @@ class SwitchChild {
         AppUtils.dismissprogress();
         Navigator.push(
             ctx, MaterialPageRoute(builder: (context) => DashBoard()));
+                                    Strings.SelectedChild = ChildId;
         print("result2:$response");
       } else {
         functions.createSnackBar(ctx, response.message.toString());

@@ -235,13 +235,13 @@ class _Availability_choose_friendsState
                                         {
                                           _isChecked?[index] = val;
                                           FriendsId.add(
-                                              _foundedUsers[index].friendsId!);
+                                              _foundedUsers[index].childId!);
                                          
                                         } else 
                                         {
                                           _isChecked?[index] = val;
                                           FriendsId.remove(
-                                              _foundedUsers[index].friendsId!);
+                                              _foundedUsers[index].childId!);
                                         }
                                       },
                                     );

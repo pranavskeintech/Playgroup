@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -14,6 +15,7 @@ import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
 import 'package:playgroup/Screens/ResetPassword.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
+import 'package:playgroup/Screens/deviceIdReq.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/ExitPopup.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -545,10 +547,7 @@ class _LoginPageState extends State<LoginPage> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.login(Userlogin).then((response) {
       if (response.status == true) {
-        if (response.data![0].selectedChildId == null) {
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => ChildDetails()));
-        } else {
+       
           AppUtils.dismissprogress();
           Strings.authToken = response.token!;
           Strings.refreshToken = response.refreshToken!.refreshToken!;
@@ -556,7 +555,7 @@ class _LoginPageState extends State<LoginPage> {
           Strings.parentemail = response.data![0].emailId!;
           Strings.Parent_Id = response.data![0].userId!;
           Strings.SelectedChild = response.data![0].selectedChildId!;
-
+          updateDeviceId();
           // _isLoading = false;
           //  Get.off(() => DashPage());
           // Navigator.of(context)
@@ -568,16 +567,39 @@ class _LoginPageState extends State<LoginPage> {
           print("res:${response.message}");
           _btnController.stop();
 
+           if (response.data![0].selectedChildId == null) {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => ChildDetails()));
+        } else {
+
           Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => DashBoard()));
           print("result2:$response");
         }
+        
       } else {
         // functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         AppUtils.showError(context, response.message, "");
         _btnController.stop();
         print("error");
+      }
+    });
+  }
+
+  updateDeviceId() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    deviceIdReq deviceReq = deviceIdReq();
+    deviceReq.deviceId = Strings.fcmToken;
+    deviceReq.parentId = Strings.Parent_Id;
+    var dat = jsonEncode(deviceReq);
+    print("dat---> $dat");
+
+    api.updateFCM(deviceReq).then((response) {
+      if (response.status == true) {
+        print("res:${response.message}");
+      } else {
+        print("Unable to update device id");
       }
     });
   }

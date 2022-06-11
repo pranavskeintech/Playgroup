@@ -20,6 +20,7 @@ import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/GetSportsRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
+import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
@@ -30,6 +31,7 @@ import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
+import 'package:playgroup/Screens/deviceIdReq.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
@@ -62,6 +64,9 @@ abstract class ApiService {
 
   @PUT("mark/updatemark")
   Future<CommonRes> EditAvailability(@Body() EditAvailabilityReq body);
+
+  @PUT("user/updatefcm")
+  Future<CommonRes> updateFCM(@Body() deviceIdReq body);
 
   @POST("user/coparent")
   Future<CommonRes> addCoParent(@Body() AddcoParentReq body);
@@ -163,9 +168,8 @@ abstract class ApiService {
   Future<OtherMarkAvailabilityRes> GetOtherMarkAvailability(
       @Path("ChildID") int ChildID);
 
-  @GET("mark/joinfriends/{markavailId}")
-  Future<CommonRes> JoinFriendsMarkAvailability(
-      @Path("markavailId") int markavailId);
+  @PUT("mark/joinfriends")
+  Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

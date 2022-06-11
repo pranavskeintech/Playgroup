@@ -65,6 +65,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance!
         .addPostFrameCallback((_) => getAvailabilityDetails());
+        print("Data---> ${widget.markavailId}");
     super.initState();
   }
 

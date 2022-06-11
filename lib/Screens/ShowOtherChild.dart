@@ -80,7 +80,8 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
         //     builder: (context) => OTPScreen(),
         //   ),
         // );
-      } else {
+      } else 
+      {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         AppUtils.showError(context, "User not registered", "");
@@ -101,7 +102,8 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
           isloading = false;
           childInfo = response.data!;
         });
-      } else {
+      } else 
+      {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         AppUtils.showError(context, "Unable to fetch details for child", "");
