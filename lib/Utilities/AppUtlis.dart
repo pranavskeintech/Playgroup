@@ -385,7 +385,6 @@ class SwitchChild {
                       onTap: () {
                         AppUtils.showprogress();
                         int ChildId = _ProfileData!.children![index].childId!;
-                        Strings.SelectedChild = ChildId;
                         print("CiD:$ChildId");
                         _ChooseChild(ChildId, ctx);
                       },
@@ -426,6 +425,7 @@ class SwitchChild {
         AppUtils.dismissprogress();
         Navigator.push(
             ctx, MaterialPageRoute(builder: (context) => DashBoard()));
+                                    Strings.SelectedChild = ChildId;
         print("result2:$response");
       } else {
         functions.createSnackBar(ctx, response.message.toString());

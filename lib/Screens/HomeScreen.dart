@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
+import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/InitialHome.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
@@ -115,11 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  _GetOtherMarkAvailability() {
+  _GetOtherMarkAvailability() 
+  {
     //AppUtils.showprogress();
-    int CID = Strings.SelectedChild;
+    int childId = Strings.SelectedChild;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetOtherMarkAvailability(CID).then((response) {
+    api.GetOtherMarkAvailability(childId).then((response) {
       print("sts2:${response.status}");
       print("res2:${response.data}");
       try {
@@ -293,8 +295,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                   return Column(
                                     children: [
                                       InkWell(
-                                        onTap: () {
+                                        onTap: () 
+                                        {
                                           Strings.activityConfirmed = true;
+                                          
                                           Navigator.of(context)
                                               .push(MaterialPageRoute(
                                             builder: (context) =>
@@ -363,9 +367,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         child: AnimationLimiter(
                           child: ListView.builder(
                             itemCount: OtherMarkAvailabilityData!.length,
-                            itemBuilder: (context, index) {
+                            itemBuilder: (context, mainIndex) {
                               return AnimationConfiguration.staggeredList(
-                                  position: index,
+                                  position: mainIndex,
                                   duration: const Duration(milliseconds: 375),
                                   child: SlideAnimation(
                                     verticalOffset: 50.0,
@@ -373,14 +377,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: GestureDetector(
                                         onTap: (() {
                                           Strings.activityConfirmed = false;
+                                          
                                           Navigator.of(context).push(
                                               MaterialPageRoute(
                                                   builder:
                                                       (BuildContext context) =>
                                                           Own_Availability(
                                                             markavailId:
-                                                                GetMarkAvailabilityData![
-                                                                        index]
+                                                                OtherMarkAvailabilityData![
+                                                                        mainIndex]
                                                                     .markavailId,
                                                           )));
                                         }),
@@ -422,11 +427,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       EdgeInsets.all(0),
                                                   leading: CircleAvatar(
                                                     backgroundImage: AssetImage(
-                                                        "assets/imgs/${childImgs[index]}"),
+                                                        "assets/imgs/${childImgs[mainIndex]}"),
                                                   ),
                                                   title: Text(
                                                     OtherMarkAvailabilityData![
-                                                            index]
+                                                            mainIndex]
                                                         .childName!,
                                                     style: TextStyle(
                                                         fontSize: 13.5,
@@ -442,7 +447,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         children: [
                                                           Text(
                                                             OtherMarkAvailabilityData![
-                                                                    index]
+                                                                    mainIndex]
                                                                 .dateon!,
                                                             style: TextStyle(
                                                               fontSize: 11,
@@ -464,7 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             children: [
                                                               Text(
                                                                 OtherMarkAvailabilityData![
-                                                                            index]
+                                                                            mainIndex]
                                                                         .fromTime! +
                                                                     " - ",
                                                                 style:
@@ -477,7 +482,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               ),
                                                               Text(
                                                                 OtherMarkAvailabilityData![
-                                                                        index]
+                                                                        mainIndex]
                                                                     .toTime!,
                                                                 style:
                                                                     TextStyle(
@@ -503,7 +508,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           ),
                                                           Text(
                                                             OtherMarkAvailabilityData![
-                                                                    index]
+                                                                    mainIndex]
                                                                 .location!,
                                                             style: TextStyle(
                                                               fontSize: 11,
@@ -524,7 +529,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   children: [
                                                     Text(
                                                       OtherMarkAvailabilityData![
-                                                                  index]
+                                                                  mainIndex]
                                                               .categoryName! +
                                                           " - ",
                                                       style: TextStyle(
@@ -532,7 +537,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     ),
                                                     Text(
                                                       OtherMarkAvailabilityData![
-                                                              index]
+                                                              mainIndex]
                                                           .activitiesName!,
                                                       style: TextStyle(
                                                           fontSize: 13),
@@ -561,8 +566,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     children: [
                                                       Expanded(
                                                         child: (OtherMarkAvailabilityData![
-                                                                        index]
-                                                                    .friendsdata !=
+                                                                        mainIndex]
+                                                                    .friendsdata ==
                                                                 [])
                                                             ? Container(
                                                                 width: 130,
@@ -583,7 +588,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 ),
                                                               )
                                                             : ListView.builder(
-                                                                itemCount: 5,
+                                                                itemCount: OtherMarkAvailabilityData![mainIndex].friendsdata!.length,
                                                                 scrollDirection:
                                                                     Axis
                                                                         .horizontal,
@@ -601,8 +606,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                           32,
                                                                       child:
                                                                           CircleAvatar(
-                                                                        backgroundImage:
-                                                                            AssetImage("assets/imgs/${childImgs[index]}"),
+                                                                        backgroundImage:OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile != "null"
+                            ? NetworkImage(Strings.imageUrl +
+                                (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider
                                                                       ),
                                                                     );
                                                                   } else {
@@ -648,8 +656,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   right: 8.0),
                                                           child: TextButton(
                                                             onPressed: () {
-                                                              _JoinFriendsMarkAvailability(
-                                                                  1);
+                                                              _JoinFriendsMarkAvailability(OtherMarkAvailabilityData![mainIndex].markavailId
+                                                                  );
                                                             },
                                                             child: Text(
                                                               "JOIN",
@@ -702,7 +710,11 @@ class _HomeScreenState extends State<HomeScreen> {
   _JoinFriendsMarkAvailability(MID) {
     //AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.JoinFriendsMarkAvailability(MID).then((response) {
+
+    JoinfriendsReq joinfriendsReq = JoinfriendsReq();
+    joinfriendsReq.childId = Strings.SelectedChild;
+    joinfriendsReq.markavailId = MID;
+    api.JoinFriendsMarkAvailability(joinfriendsReq).then((response) {
       print(response.status);
       if (response.status == true) {
         setState(() {

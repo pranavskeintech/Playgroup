@@ -627,15 +627,16 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<CommonRes> JoinFriendsMarkAvailability(markavailId) async {
+  Future<CommonRes> JoinFriendsMarkAvailability(body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<CommonRes>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, 'mark/joinfriends/${markavailId}',
+            Options(method: 'PUT', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/joinfriends',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);

@@ -20,6 +20,7 @@ import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/GetSportsRes.dart';
 import 'package:playgroup/Models/Get_CityRes.dart';
+import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
@@ -167,9 +168,8 @@ abstract class ApiService {
   Future<OtherMarkAvailabilityRes> GetOtherMarkAvailability(
       @Path("ChildID") int ChildID);
 
-  @GET("mark/joinfriends/{markavailId}")
-  Future<CommonRes> JoinFriendsMarkAvailability(
-      @Path("markavailId") int markavailId);
+  @PUT("mark/joinfriends")
+  Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
