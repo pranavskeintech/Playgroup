@@ -422,6 +422,7 @@ class SwitchChild {
     api.ChooseChild(ChooseChild).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
+        Strings.SelectedChild = ChildId;
         AppUtils.dismissprogress();
         Navigator.push(
             ctx, MaterialPageRoute(builder: (context) => DashBoard()));

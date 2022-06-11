@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:playgroup/Screens/EditParticipatingFriends.dart';
+import 'package:intl/intl.dart';
 import '../Utilities/Strings.dart';
 
 class EditAvailabilityTime extends StatefulWidget {
-  const EditAvailabilityTime({Key? key}) : super(key: key);
+  final String? FromTime;
+  final String? TOTime;
+  EditAvailabilityTime({Key? key, this.FromTime, this.TOTime})
+      : super(key: key);
 
   @override
   State<EditAvailabilityTime> createState() => _EditAvailabilityTimeState();
@@ -33,10 +37,14 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
     "child5.jpg",
     "child6.jpg"
   ];
+
+  DateTime? dt1;
+
+  DateTime? dt2;
   _selectFromTime(context) async {
     final ChoosenTime1 = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay(hour: dt1!.hour, minute: dt1!.minute),
       initialEntryMode: TimePickerEntryMode.dial,
       confirmText: "CONFIRM",
       // cancelText: "NOT NOW",
@@ -50,6 +58,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
       });
     }
   }
+
   _selectTOTime() async {
     final ChoosenTime2 = await showTimePicker(
         context: context,
@@ -66,6 +75,19 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
     }
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    _FromTimeController.text = widget.FromTime!;
+    _TOTimeController.text = widget.TOTime!;
+
+    var df = DateFormat("h:mma");
+    dt1 = df.parse(widget.FromTime!);
+    dt2 = df.parse(widget.TOTime!);
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -113,144 +135,202 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.06,
                   width: MediaQuery.of(context).size.width * 0.4,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      isExpanded: true,
-                      hint: Row(
-                        children: const [
+                  child: GestureDetector(
+                    onTap: () {
+                      _selectTOTime();
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Strings.textFeildBg,
+                          border: Border.all(color: const Color(0xFFf2f3f4)),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Row(
+                        children: [
                           Expanded(
-                            child: Text(
-                              'Select time',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
+                            child: Container(
+                              height: MediaQuery.of(context).size.height * 0.04,
+                              child: TextField(
+                                controller: _TOTimeController,
+                                enabled: false,
+                                style: TextStyle(color: Colors.black),
+                                decoration: InputDecoration(
+                                  fillColor: Strings.textFeildBg,
+                                  filled: true,
+                                  contentPadding: EdgeInsets.all(15),
+                                  hintText: "Select Time",
+                                  hintStyle: TextStyle(fontSize: 13.5),
+                                  suffixIcon: Icon(
+                                      Icons.keyboard_arrow_down_rounded,
+                                      color: Colors.grey.withOpacity(0.3)),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                              ),
                             ),
                           ),
                         ],
                       ),
-                      items: items
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))
-                          .toList(),
-                      value: selectedStartTime,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedStartTime = value as String;
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.arrow_forward_ios_outlined,
-                      ),
-                      iconSize: 14,
-                      iconEnabledColor: Colors.black,
-                      iconDisabledColor: Colors.grey,
-                      buttonHeight: 50,
-                      buttonWidth: MediaQuery.of(context).size.width * 0.9,
-                      buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-                      buttonDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Color.fromARGB(255, 230, 230, 230),
-                      ),
-                      buttonElevation: 2,
-                      itemHeight: 40,
-                      itemPadding: const EdgeInsets.only(left: 14, right: 14),
-                      dropdownMaxHeight: 200,
-                      dropdownWidth: 300,
-                      dropdownPadding: null,
-                      dropdownDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: Colors.white,
-                      ),
-                      dropdownElevation: 8,
-                      scrollbarRadius: const Radius.circular(40),
-                      scrollbarThickness: 6,
-                      scrollbarAlwaysShow: true,
-                      offset: const Offset(0, 0),
                     ),
                   ),
+                  // child: DropdownButtonHideUnderline(
+                  //   child: DropdownButton2(
+                  //     isExpanded: true,
+                  //     hint: Row(
+                  //       children: const [
+                  //         Expanded(
+                  //           child: Text(
+                  //             'Select time',
+                  //             style: TextStyle(
+                  //                 fontSize: 14,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Colors.black),
+                  //             overflow: TextOverflow.ellipsis,
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     items: items
+                  //         .map((item) => DropdownMenuItem<String>(
+                  //               value: item,
+                  //               child: Text(
+                  //                 item,
+                  //                 style: const TextStyle(
+                  //                   fontSize: 14,
+                  //                   fontWeight: FontWeight.bold,
+                  //                   color: Colors.black,
+                  //                 ),
+                  //                 overflow: TextOverflow.ellipsis,
+                  //               ),
+                  //             ))
+                  //         .toList(),
+                  //     value: selectedStartTime,
+                  //     onChanged: (value) {
+                  //       setState(() {
+                  //         selectedStartTime = value as String;
+                  //       });
+                  //     },
+                  //     icon: const Icon(
+                  //       Icons.arrow_forward_ios_outlined,
+                  //     ),
+                  //     iconSize: 14,
+                  //     iconEnabledColor: Colors.black,
+                  //     iconDisabledColor: Colors.grey,
+                  //     buttonHeight: 50,
+                  //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
+                  //     buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                  //     buttonDecoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(5),
+                  //       color: Color.fromARGB(255, 230, 230, 230),
+                  //     ),
+                  //     buttonElevation: 2,
+                  //     itemHeight: 40,
+                  //     itemPadding: const EdgeInsets.only(left: 14, right: 14),
+                  //     dropdownMaxHeight: 200,
+                  //     dropdownWidth: 300,
+                  //     dropdownPadding: null,
+                  //     dropdownDecoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(14),
+                  //       color: Colors.white,
+                  //     ),
+                  //     dropdownElevation: 8,
+                  //     scrollbarRadius: const Radius.circular(40),
+                  //     scrollbarThickness: 6,
+                  //     scrollbarAlwaysShow: true,
+                  //     offset: const Offset(0, 0),
+                  //   ),
+                  // ),
                 ),
                 SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.06,
                   width: MediaQuery.of(context).size.width * 0.4,
-                  child: DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      isExpanded: true,
-                      hint: Row(
-                        children: const [
-                          Expanded(
-                            child: Text(
-                              'Select time',
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+                  child: GestureDetector(
+                    onTap: () {
+                      _selectFromTime(context);
+                    },
+                    child: TextField(
+                      controller: _FromTimeController,
+                      enabled: false,
+                      style: TextStyle(color: Colors.black),
+                      decoration: InputDecoration(
+                        fillColor: Strings.textFeildBg,
+                        filled: true,
+                        contentPadding: EdgeInsets.all(15),
+                        hintText: "Select Time",
+                        hintStyle: TextStyle(fontSize: 13.5),
+                        suffixIcon: Icon(Icons.keyboard_arrow_down_rounded,
+                            color: Colors.grey.withOpacity(0.3)),
                       ),
-                      items: items
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Text(
-                                  item,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))
-                          .toList(),
-                      value: selectedEndTime,
-                      onChanged: (value) {
-                        setState(() {
-                          selectedEndTime = value as String;
-                        });
-                      },
-                      icon: const Icon(
-                        Icons.arrow_forward_ios_outlined,
-                      ),
-                      iconSize: 14,
-                      iconEnabledColor: Colors.black,
-                      iconDisabledColor: Colors.grey,
-                      buttonHeight: 50,
-                      buttonWidth: MediaQuery.of(context).size.width * 0.9,
-                      buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-                      buttonDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Color.fromARGB(255, 230, 230, 230),
-                      ),
-                      buttonElevation: 2,
-                      itemHeight: 40,
-                      itemPadding: const EdgeInsets.only(left: 14, right: 14),
-                      dropdownMaxHeight: 200,
-                      dropdownWidth: 300,
-                      dropdownPadding: null,
-                      dropdownDecoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14),
-                        color: Colors.white,
-                      ),
-                      dropdownElevation: 8,
-                      scrollbarRadius: const Radius.circular(40),
-                      scrollbarThickness: 6,
-                      scrollbarAlwaysShow: true,
-                      offset: const Offset(0, 0),
+                      keyboardType: TextInputType.emailAddress,
                     ),
                   ),
+                  // child: DropdownButtonHideUnderline(
+                  //   child: DropdownButton2(
+                  //     isExpanded: true,
+                  //     hint: Row(
+                  //       children: const [
+                  //         Expanded(
+                  //           child: Text(
+                  //             'Select time',
+                  //             style: TextStyle(
+                  //                 fontSize: 14,
+                  //                 fontWeight: FontWeight.bold,
+                  //                 color: Colors.black),
+                  //             overflow: TextOverflow.ellipsis,
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //     items: items
+                  //         .map((item) => DropdownMenuItem<String>(
+                  //               value: item,
+                  //               child: Text(
+                  //                 item,
+                  //                 style: const TextStyle(
+                  //                   fontSize: 14,
+                  //                   fontWeight: FontWeight.bold,
+                  //                   color: Colors.black,
+                  //                 ),
+                  //                 overflow: TextOverflow.ellipsis,
+                  //               ),
+                  //             ))
+                  //         .toList(),
+                  //     value: selectedEndTime,
+                  //     onChanged: (value) {
+                  //       setState(() {
+                  //         selectedEndTime = value as String;
+                  //       });
+                  //     },
+                  //     icon: const Icon(
+                  //       Icons.arrow_forward_ios_outlined,
+                  //     ),
+                  //     iconSize: 14,
+                  //     iconEnabledColor: Colors.black,
+                  //     iconDisabledColor: Colors.grey,
+                  //     buttonHeight: 50,
+                  //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
+                  //     buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                  //     buttonDecoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(5),
+                  //       color: Color.fromARGB(255, 230, 230, 230),
+                  //     ),
+                  //     buttonElevation: 2,
+                  //     itemHeight: 40,
+                  //     itemPadding: const EdgeInsets.only(left: 14, right: 14),
+                  //     dropdownMaxHeight: 200,
+                  //     dropdownWidth: 300,
+                  //     dropdownPadding: null,
+                  //     dropdownDecoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(14),
+                  //       color: Colors.white,
+                  //     ),
+                  //     dropdownElevation: 8,
+                  //     scrollbarRadius: const Radius.circular(40),
+                  //     scrollbarThickness: 6,
+                  //     scrollbarAlwaysShow: true,
+                  //     offset: const Offset(0, 0),
+                  //   ),
+                  // ),
                 )
               ],
             ),
