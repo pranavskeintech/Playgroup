@@ -113,19 +113,25 @@ class _Availability_choose_friendsState
         ? const Center(
             child: CircularProgressIndicator(
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-        : Container(
+        :
+        
+         Container(
             padding: EdgeInsets.fromLTRB(20, 20, 20, 10),
             child: Column(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text(
+                  child: FriendsDatum!.length > 0? Text(
                     "Choose Friends to join you?",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ):
+                  Text(
+                    "You dont have friends, Kindly add friends from homescreen!",
+                    style: TextStyle(fontWeight: FontWeight.normal, fontSize: 18),
                   ),
                 ),
                 SizedBox(height: 20),
-                Container(
+                FriendsDatum!.length > 0?Container(
                   decoration: BoxDecoration(
                       color: Strings.textFeildBg,
                       border: Border.all(color: Strings.textFeildBg),
@@ -151,10 +157,11 @@ class _Availability_choose_friendsState
                         fillColor: Strings.textFeildBg,
                         prefixIcon: Icon(Icons.search)),
                   ),
-                ),
+                ):Container(),
                 SizedBox(
                   height: 10,
                 ),
+                FriendsDatum!.length > 0?
                 Row(
                   children: [
                     Text(
@@ -185,10 +192,11 @@ class _Availability_choose_friendsState
                       },
                     ),
                   ],
-                ),
+                ):Container(),
                 SizedBox(
                   height: 20,
                 ),
+                FriendsDatum!.length > 0?
                 Expanded(
                     child: ListView.builder(
                   itemCount: _foundedUsers.length,
@@ -259,7 +267,7 @@ class _Availability_choose_friendsState
                       ],
                     );
                   },
-                )),
+                )):Spacer(),
                 Center(
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,

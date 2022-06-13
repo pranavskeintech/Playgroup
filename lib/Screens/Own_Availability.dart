@@ -483,23 +483,29 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                     scrollDirection: Axis.horizontal,
                                     itemBuilder: ((context, index) {
                                       if (index < 5) {
-                                        return Container(
-                                          padding: EdgeInsets.all(3),
-                                          width: 35,
-                                          height: 35,
-                                          child: CircleAvatar(
-                                            backgroundImage: availabilityData[0]
-                                                        .friendsdata![index]
-                                                        .profile !=
-                                                    null
-                                                ? NetworkImage(
-                                                    Strings.imageUrl +
-                                                        availabilityData[0]
-                                                            .friendsdata![index]
-                                                            .profile!)
-                                                : AssetImage(
-                                                        "assets/images/user.png")
-                                                    as ImageProvider,
+                                        return InkWell(
+                                          onTap: (){
+                                            showParticipant(
+                                                  context);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.all(3),
+                                            width: 35,
+                                            height: 35,
+                                            child: CircleAvatar(
+                                              backgroundImage: availabilityData[0]
+                                                          .friendsdata![index]
+                                                          .profile !=
+                                                      null
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          availabilityData[0]
+                                                              .friendsdata![index]
+                                                              .profile!)
+                                                  : AssetImage(
+                                                          "assets/images/user.png")
+                                                      as ImageProvider,
+                                            ),
                                           ),
                                         );
                                       } else {
@@ -509,8 +515,8 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                           width: 40,
                                           child: InkWell(
                                             onTap: () {
-                                              AppUtils.showParticipant(
-                                                  context, 10);
+                                            showParticipant(
+                                                  context);
                                             },
                                             child: CircleAvatar(
                                               backgroundColor:
@@ -863,6 +869,63 @@ class _Own_AvailabilityState extends State<Own_Availability>
         ],
       ),
     );
+  }
+
+  showParticipant(context) 
+  {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              content: Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Column(children: [
+                          InkWell(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: (Icon(
+                    Icons.close_rounded,
+                    size: 20,
+                  )),
+                ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                height: MediaQuery.of(context).size.height * 0.55,
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ListView.builder(
+                  itemCount: availabilityData[0].friendsdata!.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                            availabilityData[0].friendsdata![index].profile != "null"
+                            ? NetworkImage(Strings.imageUrl +
+                                (availabilityData[0].friendsdata![index].profile ?? ""))
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider,
+                            radius: 17,
+                          ),
+                          title: Text(
+                            ChildName[index],
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 13.5),
+                          ),
+                        ),
+                       
+                      ],
+                    );
+                  },
+                ),
+                          ),
+                        ]),
+              ));
+        });
   }
 
   deleteAvailability() {

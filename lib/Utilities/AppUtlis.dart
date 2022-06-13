@@ -8,6 +8,7 @@ import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
+import '../Models/GetOtherMarkAvailabilityRes.dart';
 import 'CustomStyle.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -40,6 +41,7 @@ List<String> Images = [
   'child1.jpg',
   'child2.jpg'
 ];
+
 
 class AppUtils {
   static appbutton(String title, Function() ontap) {
@@ -196,50 +198,60 @@ class AppUtils {
         });
   }
 
-  static void showParticipant(context, num) {
+  static void showParticipant(context,List<Friendsdata> friendsdata) 
+  {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-              content: Stack(children: [
-            InkWell(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: (Icon(
-                Icons.close_rounded,
-                size: 20,
-              )),
-            ),
-            Container(
-              height: 300,
-              width: 200,
-              child: ListView.builder(
-                itemCount: num,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: [
-                      ListTile(
-                        leading: CircleAvatar(
-                          backgroundImage:
-                              AssetImage("assets/imgs/${Images[index]}"),
-                          radius: 17,
-                        ),
-                        title: Text(
-                          ChildName[index],
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 13.5),
-                        ),
-                      ),
-                      Divider(
-                        height: 3,
-                      ),
-                    ],
-                  );
+              content: Container(
+                height: MediaQuery.of(context).size.height * 0.6,
+                child: Column(children: [
+                          InkWell(
+                onTap: () {
+                  Navigator.of(context).pop();
                 },
-              ),
-            ),
-          ]));
+                child: Align(
+                  alignment: Alignment.topRight,
+                  child: (Icon(
+                    Icons.close_rounded,
+                    size: 20,
+                  )),
+                ),
+                          ),
+                          SizedBox(height: 10),
+                          Container(
+                height: MediaQuery.of(context).size.height * 0.55,
+                width: MediaQuery.of(context).size.width * 0.8,
+                child: ListView.builder(
+                  itemCount: friendsdata.length,
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        ListTile(
+                          leading: CircleAvatar(
+                            backgroundImage:
+                            friendsdata[index].profile != "null"
+                            ? NetworkImage(Strings.imageUrl +
+                                (friendsdata[index].profile ?? ""))
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider,
+                            radius: 17,
+                          ),
+                          title: Text(
+                            ChildName[index],
+                            style: TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 13.5),
+                          ),
+                        ),
+                       
+                      ],
+                    );
+                  },
+                ),
+                          ),
+                        ]),
+              ));
         });
   }
 }

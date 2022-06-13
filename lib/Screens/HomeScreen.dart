@@ -711,12 +711,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             .all(2),
                                                                     width: 32,
                                                                     height: 32,
-                                                                    child: CircleAvatar(
-                                                                        backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile !=
-                                                                                "null"
-                                                                            ? NetworkImage(Strings.imageUrl +
-                                                                                (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
-                                                                            : AssetImage("assets/imgs/appicon.png") as ImageProvider),
+                                                                    child: InkWell(
+                                                                      onTap: () {
+                                                                        AppUtils.showParticipant(
+                                                                            context,OtherMarkAvailabilityData![mainIndex].friendsdata!
+                                                                            );
+                                                                      },
+                                                                      child: CircleAvatar(
+                                                                          backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile !=
+                                                                                  "null"
+                                                                              ? NetworkImage(Strings.imageUrl +
+                                                                                  (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
+                                                                              : AssetImage("assets/imgs/appicon.png") as ImageProvider),
+                                                                    ),
                                                                   );
                                                                 } else {
                                                                   return Container(
@@ -730,8 +737,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       onTap:
                                                                           () {
                                                                         AppUtils.showParticipant(
-                                                                            context,
-                                                                            2);
+                                                                            context,OtherMarkAvailabilityData![mainIndex].friendsdata!
+                                                                            );
                                                                       },
                                                                       child:
                                                                           CircleAvatar(
@@ -740,7 +747,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             .withOpacity(0.3),
                                                                         child:
                                                                             Text(
-                                                                          "3+",
+                                                                          "+${OtherMarkAvailabilityData![mainIndex].friendsdata!.length - 5}",
                                                                           style: TextStyle(
                                                                               color: Colors.black,
                                                                               fontSize: 12),
