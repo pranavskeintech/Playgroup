@@ -418,7 +418,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                           child: Text("Edit"))
                     ],
                   ),
-                  (availabilityData[0].friendsdata == [])
+                  (availabilityData[0].friendsdata!.length == 0)
                       ? Container(
                           child: Text(
                             "Add Some Participants",

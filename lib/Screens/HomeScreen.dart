@@ -156,8 +156,6 @@ class _HomeScreenState extends State<HomeScreen> {
         .addPostFrameCallback((_) => _GetMarkAvailability());
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
     return Provider<ApiService>(
@@ -664,8 +662,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     Expanded(
                                                       child: (OtherMarkAvailabilityData![
                                                                       mainIndex]
-                                                                  .friendsdata ==
-                                                              [])
+                                                                  .friendsdata!
+                                                                  .length ==
+                                                              0)
                                                           ? Container(
                                                               width: 130,
                                                               height: 20,
@@ -819,19 +818,18 @@ class _HomeScreenState extends State<HomeScreen> {
           // AppUtils.dismissprogress();
           _isLoading = false;
           _GetMarkAvailability();
-          AppUtils.showToast(response.message,context);
+          AppUtils.showToast(response.message, context);
           AppUtils.dismissprogress();
         });
       } else {
         functions.createSnackBar(context, response.status.toString());
-                  AppUtils.showToast("Unable to join please try again!",context);
+        AppUtils.showToast("Unable to join please try again!", context);
 
-          AppUtils.dismissprogress();
+        AppUtils.dismissprogress();
       }
     }).catchError((onError) {
       print(onError.toString());
       AppUtils.dismissprogress();
-
     });
   }
 }
