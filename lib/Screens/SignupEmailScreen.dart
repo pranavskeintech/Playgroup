@@ -70,11 +70,15 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.20,
                 ),
-                Image.asset(
-                  "assets/imgs/appicon.png",
-                  width: 80,
-                  height: 80,
-                ),
+                (widget.fromProfile == true)
+                    ? Container(
+                        height: 80,
+                      )
+                    : Image.asset(
+                        "assets/imgs/appicon.png",
+                        width: 80,
+                        height: 80,
+                      ),
                 SizedBox(height: 20),
                 Text(
                   "Parents Details",
@@ -171,8 +175,12 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                     width: 500,
                     borderRadius: 5,
                     color: Strings.appThemecolor,
-                    child: Text('Continue',
-                        style: TextStyle(color: Colors.white, fontSize: 18)),
+                    child: (widget.fromProfile == true)
+                        ? Text('Save',
+                            style: TextStyle(color: Colors.white, fontSize: 18))
+                        : Text('Continue',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 18)),
                     controller: _btnController,
                     onPressed: () {
                       if (_parentController.text.isNotEmpty &&
