@@ -9,6 +9,7 @@ import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChildProfile.dart';
 import 'package:playgroup/Screens/EditCoParent.dart';
+import 'package:playgroup/Screens/Forgotpassword.dart';
 import 'package:playgroup/Screens/PhoneNumber.dart';
 import 'package:playgroup/Screens/SignupEmailScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
@@ -238,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: MediaQuery.of(context).size.width * 0.45,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
+                          children:  [
                             Text(
                               "Password",
                               style: TextStyle(color: Colors.grey),
@@ -250,7 +251,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 child: Text(
                               "Change Password",
                               style: TextStyle(color: Colors.blue),
-                            ))
+                            ),onTap: (){
+                              Strings.fromProfile = true;
+                               Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Forgotpassword()));
+                            },)
                           ],
                         ),
                       ),
@@ -332,17 +339,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   color: Colors.grey.shade200,
                                 ),
                                 child: Padding(
-                                  padding: const EdgeInsets.all(15.0),
+                                  padding: const EdgeInsets.all(20.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Text(
-                                        _ProfileData!.coParent?[0].parentName ??
-                                            "",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.w500),
+                                      Container(
+                                        height: 25,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              _ProfileData!.coParent?[0].parentName ??
+                                                  "",
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w500),
+                                            ),
+                                           // IconButton(onPressed: deleteCoParent(), icon: (Icon(Icons.delete_outline,size: 20)))
+                                         // GestureDetector(child: Icon(Icons.delete_outline,size: 20,),onDoubleTap: deleteCoParent(),)
+                                          ],
+                                        ),
                                       ),
                                       SizedBox(
                                         height: 5,
@@ -550,6 +567,61 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       AppUtils.dismissprogress();
                     });
                   });
+                },
+              )
+            ],
+          );
+        });
+  }
+
+  deleteCoParent() {
+
+showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text("Delete Child"),
+            content: Text("Are you sure you want to delete this child?"),
+            actions: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Colors.white,
+                ),
+                child: Text(
+                  "Cancel",
+                  style: TextStyle(color: Colors.black),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  primary: Strings.appThemecolor,
+                ),
+                child: Text("Delete"),
+                onPressed: () {
+                  AppUtils.showprogress();
+                  final api = Provider.of<ApiService>(ctx!, listen: false);
+                    api.deleteCoParent().then((response) {
+                      print(response.status);
+                      print("object");
+                      if (response.status == true) {
+                        //_btnController.stop();
+                        AppUtils.dismissprogress();
+                        AppUtils.showToast("Co Parent deleted successfully", context);
+                        _GetProfile();
+
+                      } else {
+                        functions.createSnackBar(
+                            context, response.status.toString());
+                        AppUtils.dismissprogress();
+                      }
+                    }).catchError((onError) {
+                      print(onError.toString());
+                      AppUtils.dismissprogress();
+                    });
+                  
                 },
               )
             ],

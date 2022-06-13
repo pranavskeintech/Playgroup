@@ -76,4 +76,6 @@ mixin Strings {
   static String? ProfilePic='';
 
   static int? selectedAvailability;
+
+  static bool fromProfile = false;
 }

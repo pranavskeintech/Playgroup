@@ -8,7 +8,8 @@ class Groupinfo extends StatefulWidget {
   State<Groupinfo> createState() => _GroupinfoState();
 }
 
-class _GroupinfoState extends State<Groupinfo> {
+class _GroupinfoState extends State<Groupinfo> 
+{
   bool value = false;
 
   bool _showDelete = false;

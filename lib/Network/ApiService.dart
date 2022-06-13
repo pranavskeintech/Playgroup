@@ -120,6 +120,10 @@ abstract class ApiService {
   @DELETE("mark/deletemark/{avail_id}")
   Future<CommonRes> deleteAvailability(@Path("avail_id") int availID);
 
+  @DELETE("user/coparent")
+  Future<CommonRes> deleteCoParent();
+
+
   @PUT("mark/pausemark")
   Future<CommonRes> pauseAvailability(@Body() AvailPauseReq body);
 
