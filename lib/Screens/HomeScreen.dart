@@ -246,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       "null"
                                                   ? NetworkImage(Strings
                                                           .imageUrl +
-                                                      "activities/" +
+                                                      "sports/" +
                                                       (GetMarkAvailabilityData![
                                                                   index]
                                                               .categoryImg ??
@@ -431,7 +431,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       "null"
                                                   ? NetworkImage(Strings
                                                           .imageUrl +
-                                                      "activities/" +
+                                                      "sports/" +
                                                       (GetMarkAvailabilityData![
                                                                   index]
                                                               .categoryImg ??
@@ -525,8 +525,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 contentPadding:
                                                     EdgeInsets.all(0),
                                                 leading: CircleAvatar(
-                                                  backgroundImage: AssetImage(
-                                                      "assets/imgs/${childImgs[1]}"),
+                                                  backgroundImage:
+                                                      (OtherMarkAvailabilityData![
+                                                                      mainIndex]
+                                                                  .profile! !=
+                                                              "null")
+                                                          ? NetworkImage(Strings
+                                                                  .imageUrl +
+                                                              OtherMarkAvailabilityData![
+                                                                      mainIndex]
+                                                                  .profile!)
+                                                          : AssetImage(
+                                                                  "assets/images/user.png")
+                                                              as ImageProvider,
                                                 ),
                                                 title: Text(
                                                   OtherMarkAvailabilityData![
@@ -748,38 +759,74 @@ class _HomeScreenState extends State<HomeScreen> {
                                                             const EdgeInsets
                                                                     .only(
                                                                 right: 8.0),
-                                                        child: TextButton(
-                                                          onPressed: () {
-                                                            _JoinFriendsMarkAvailability(
-                                                                OtherMarkAvailabilityData![
+                                                        child: (OtherMarkAvailabilityData![
                                                                         mainIndex]
-                                                                    .markavailId);
-                                                          },
-                                                          child: Text(
-                                                            "JOIN",
-                                                            style: TextStyle(
-                                                              fontSize: 12,
-                                                              color: Color
-                                                                  .fromRGBO(
-                                                                      94,
-                                                                      37,
-                                                                      108,
-                                                                      1),
-                                                              // fontWeight:
-                                                              //     FontWeight.w400
-                                                            ),
-                                                          ),
-                                                          style: TextButton
-                                                              .styleFrom(
-                                                            primary:
-                                                                Colors.white,
-                                                            side: BorderSide(
-                                                              width: 1.6,
-                                                              color: Colors.grey
-                                                                  .shade300,
-                                                            ),
-                                                          ),
-                                                        ),
+                                                                    .requestStatus ==
+                                                                "joined")
+                                                            ? TextButton(
+                                                                onPressed:
+                                                                    () {},
+                                                                child: Text(
+                                                                  "JOINED",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .grey
+
+                                                                      // fontWeight:
+                                                                      //     FontWeight.w400
+                                                                      ),
+                                                                ),
+                                                                style: TextButton
+                                                                    .styleFrom(
+                                                                  primary: Colors
+                                                                      .white,
+                                                                  side:
+                                                                      BorderSide(
+                                                                    width: 1.6,
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                  ),
+                                                                ),
+                                                              )
+                                                            : TextButton(
+                                                                onPressed: () {
+                                                                  _JoinFriendsMarkAvailability(
+                                                                      OtherMarkAvailabilityData![
+                                                                              mainIndex]
+                                                                          .markavailId);
+                                                                },
+                                                                child: Text(
+                                                                  "JOIN",
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                    color: Color
+                                                                        .fromRGBO(
+                                                                            94,
+                                                                            37,
+                                                                            108,
+                                                                            1),
+                                                                    // fontWeight:
+                                                                    //     FontWeight.w400
+                                                                  ),
+                                                                ),
+                                                                style: TextButton
+                                                                    .styleFrom(
+                                                                  primary: Colors
+                                                                      .white,
+                                                                  side:
+                                                                      BorderSide(
+                                                                    width: 1.6,
+                                                                    color: Colors
+                                                                        .grey
+                                                                        .shade300,
+                                                                  ),
+                                                                ),
+                                                              ),
                                                       ),
                                                     ),
                                                   ],

@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
+import 'package:playgroup/Models/GetChildProfile.dart';
+import 'package:playgroup/Models/OtherChildRes.dart';
 import 'package:playgroup/Models/PendingFriendReqRes.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
@@ -18,7 +20,8 @@ import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:provider/provider.dart';
 
 class ChildProfile extends StatefulWidget {
-  const ChildProfile({Key? key}) : super(key: key);
+  int? chooseChildId;
+  ChildProfile({Key? key, this.chooseChildId}) : super(key: key);
 
   @override
   State<ChildProfile> createState() => _ChildProfileState();
@@ -95,10 +98,11 @@ class _ChildProfileState extends State<ChildProfile>
 
   bool _isLoading = true;
 
+  List<Data>? childInfo;
+
   fetchData() {
-    var CID = Strings.SelectedChild.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetPendingFriendReq(CID).then((response) {
+    api.GetPendingFriendReq(widget.chooseChildId!).then((response) {
       print(response.status);
       if (response.status == true) {
         //_btnController.stop();
@@ -107,6 +111,7 @@ class _ChildProfileState extends State<ChildProfile>
 
         setState(() {
           _FriendReqData = response.data;
+          getProfile();
           _GetFriends();
         });
       } else {
@@ -118,9 +123,25 @@ class _ChildProfileState extends State<ChildProfile>
     });
   }
 
+  getProfile() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.getchildProfile(widget.chooseChildId!).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        childInfo = response.data!;
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "Unable to fetch details for child", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
   _GetFriends() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetAcceptedFriendReq(Strings.SelectedChild).then((response) {
+    api.GetAcceptedFriendReq(widget.chooseChildId!).then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
@@ -287,19 +308,22 @@ class _ChildProfileState extends State<ChildProfile>
                         )),
                   ),
                   CircleAvatar(
-                    backgroundImage: AssetImage("assets/imgs/child1.jpg"),
-                    radius: 45,
-                  ),
+                      radius: 45,
+                      backgroundImage: childInfo![0].profile! != "null"
+                          ? NetworkImage(
+                              Strings.imageUrl + (childInfo![0].profile!))
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider),
                   SizedBox(
                     height: 10,
                   ),
                   Text(
-                    "Anne Besta",
+                    childInfo![0].childName!,
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
+                    children: [
                       Icon(
                         Icons.location_pin,
                         color: Colors.red,
@@ -308,7 +332,7 @@ class _ChildProfileState extends State<ChildProfile>
                         width: 3,
                       ),
                       Text(
-                        "Gandhipuram, Coimbathore",
+                        childInfo![0].location!,
                         overflow: TextOverflow.fade,
                       )
                     ],
@@ -337,7 +361,7 @@ class _ChildProfileState extends State<ChildProfile>
                           height: 5,
                         ),
                         Text(
-                          "ADB Higher Secondary School",
+                          childInfo![0].school!,
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -361,7 +385,7 @@ class _ChildProfileState extends State<ChildProfile>
                           height: 5,
                         ),
                         Text(
-                          "04-06-2015",
+                          childInfo![0].dob!,
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],

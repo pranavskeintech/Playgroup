@@ -14,6 +14,7 @@ import 'package:playgroup/Models/EditAvailabilityReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
+import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
@@ -107,7 +108,11 @@ abstract class ApiService {
   @GET("user/getparent/{ChildID}")
   Future<UserDetailsRes> getParentsDetails(@Path("ChildID") int ChildID);
 
-  @GET("user/getchildid/{child_id}/{otherChild_id}")
+  @GET("user/getchildid/{child_id}")
+  Future<GetChildProfileRes> getchildProfile(
+      @Path("child_id") int ChildID);
+
+  @GET("user/checkfriendsbyid/{child_id}/{otherChild_id}")
   Future<OtherChildRes> getOtherchildDetails(
       @Path("child_id") int ChildID, @Path("otherChild_id") int otherChild_id);
 

@@ -239,7 +239,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         width: MediaQuery.of(context).size.width * 0.45,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children:  [
+                          children: [
                             Text(
                               "Password",
                               style: TextStyle(color: Colors.grey),
@@ -248,16 +248,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               height: 5,
                             ),
                             InkWell(
-                                child: Text(
-                              "Change Password",
-                              style: TextStyle(color: Colors.blue),
-                            ),onTap: (){
-                              Strings.fromProfile = true;
-                               Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Forgotpassword()));
-                            },)
+                              child: Text(
+                                "Change Password",
+                                style: TextStyle(color: Colors.blue),
+                              ),
+                              onTap: () {
+                                Strings.fromProfile = true;
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Forgotpassword()));
+                              },
+                            )
                           ],
                         ),
                       ),
@@ -347,17 +350,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       Container(
                                         height: 25,
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                              _ProfileData!.coParent?[0].parentName ??
+                                              _ProfileData!.coParent?[0]
+                                                      .parentName ??
                                                   "",
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w500),
                                             ),
-                                           // IconButton(onPressed: deleteCoParent(), icon: (Icon(Icons.delete_outline,size: 20)))
-                                         // GestureDetector(child: Icon(Icons.delete_outline,size: 20,),onDoubleTap: deleteCoParent(),)
+                                            // IconButton(onPressed: deleteCoParent(), icon: (Icon(Icons.delete_outline,size: 20)))
+                                            // GestureDetector(child: Icon(Icons.delete_outline,size: 20,),onDoubleTap: deleteCoParent(),)
                                           ],
                                         ),
                                       ),
@@ -424,17 +429,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: ListTile(
                               onTap: (() {
+                                var chooseChildId =
+                                    _ProfileData!.children![index].childId;
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        ChildProfile()));
+                                        ChildProfile(chooseChildId: chooseChildId)));
                               }),
                               leading: CircleAvatar(
-                                backgroundImage:_ProfileData!.children![index].profile != "null"
-                            ? NetworkImage(Strings.imageUrl +
-                                (_ProfileData!.children![index].profile ?? ""))
-                            : AssetImage("assets/imgs/appicon.png")
-                                as ImageProvider
-                              ),
+                                  backgroundImage: _ProfileData!
+                                              .children![index].profile !=
+                                          "null"
+                                      ? NetworkImage(Strings.imageUrl +
+                                          (_ProfileData!
+                                                  .children![index].profile ??
+                                              ""))
+                                      : AssetImage("assets/imgs/appicon.png")
+                                          as ImageProvider),
                               title: Text(
                                   _ProfileData!.children![index].childName!),
                               subtitle: Text(
@@ -575,8 +585,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   deleteCoParent() {
-
-showDialog(
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -603,25 +612,24 @@ showDialog(
                 onPressed: () {
                   AppUtils.showprogress();
                   final api = Provider.of<ApiService>(ctx!, listen: false);
-                    api.deleteCoParent().then((response) {
-                      print(response.status);
-                      print("object");
-                      if (response.status == true) {
-                        //_btnController.stop();
-                        AppUtils.dismissprogress();
-                        AppUtils.showToast("Co Parent deleted successfully", context);
-                        _GetProfile();
-
-                      } else {
-                        functions.createSnackBar(
-                            context, response.status.toString());
-                        AppUtils.dismissprogress();
-                      }
-                    }).catchError((onError) {
-                      print(onError.toString());
+                  api.deleteCoParent().then((response) {
+                    print(response.status);
+                    print("object");
+                    if (response.status == true) {
+                      //_btnController.stop();
                       AppUtils.dismissprogress();
-                    });
-                  
+                      AppUtils.showToast(
+                          "Co Parent deleted successfully", context);
+                      _GetProfile();
+                    } else {
+                      functions.createSnackBar(
+                          context, response.status.toString());
+                      AppUtils.dismissprogress();
+                    }
+                  }).catchError((onError) {
+                    print(onError.toString());
+                    AppUtils.dismissprogress();
+                  });
                 },
               )
             ],
