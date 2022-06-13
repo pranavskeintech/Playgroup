@@ -239,8 +239,11 @@ class _Own_AvailabilityState extends State<Own_Availability>
                               onPressed: () {
                                 Navigator.of(context).push(MaterialPageRoute(
                                   builder: (context) => EditAvailabilityTime(
-                                      FromTime: availabilityData[0].fromTime,
-                                      TOTime: availabilityData[0].toTime,),
+                                    markavailId:
+                                        availabilityData[0].markavailId,
+                                    FromTime: availabilityData[0].fromTime,
+                                    TOTime: availabilityData[0].toTime,
+                                  ),
                                 ));
                               },
                               icon: ImageIcon(
