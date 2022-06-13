@@ -10,6 +10,7 @@ import 'package:playgroup/Models/AvailabityRes.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
+import 'package:playgroup/Models/EditAvailabilityCommonReq.dart';
 import 'package:playgroup/Models/EditAvailabilityReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
@@ -17,6 +18,7 @@ import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
+import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/GetSportsRes.dart';
@@ -64,7 +66,7 @@ abstract class ApiService {
   Future<CommonRes> createAvailability(@Body() MarkAvailabilityReq body);
 
   @PUT("mark/updatemark")
-  Future<CommonRes> EditAvailability(@Body() EditAvailabilityReq body);
+  Future<CommonRes> EditAvailability(@Body() EditAvailabilityCommonReq body);
 
   @PUT("user/updatefcm")
   Future<CommonRes> updateFCM(@Body() deviceIdReq body);
@@ -109,8 +111,7 @@ abstract class ApiService {
   Future<UserDetailsRes> getParentsDetails(@Path("ChildID") int ChildID);
 
   @GET("user/getchildid/{child_id}")
-  Future<GetChildProfileRes> getchildProfile(
-      @Path("child_id") int ChildID);
+  Future<GetChildProfileRes> getchildProfile(@Path("child_id") int ChildID);
 
   @GET("user/checkfriendsbyid/{child_id}/{otherChild_id}")
   Future<OtherChildRes> getOtherchildDetails(
@@ -127,7 +128,6 @@ abstract class ApiService {
 
   @DELETE("user/coparent")
   Future<CommonRes> deleteCoParent();
-
 
   @PUT("mark/pausemark")
   Future<CommonRes> pauseAvailability(@Body() AvailPauseReq body);
@@ -179,6 +179,10 @@ abstract class ApiService {
 
   @PUT("mark/joinfriends")
   Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
+
+  @GET("user/notification_list/{ChildID}")
+  Future<GetNotificationListRes> GetNotificationList(
+      @Path("ChildID") int ChildID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

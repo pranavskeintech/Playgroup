@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:playgroup/Models/EditAvailabilityCommonReq.dart';
 import 'package:playgroup/Models/EditAvailabilityReq.dart';
 import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
@@ -500,17 +501,12 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
   }
 
   _EditTime() {
-    EditAvailabilityReq editAvailability = EditAvailabilityReq();
+    EditAvailabilityCommonReq editAvailability = EditAvailabilityCommonReq();
     editAvailability.from = _FromTimeController.text;
     editAvailability.to = _TOTimeController.text;
-    //   editAvailability.markId = availabilityData[0].markavailId;
-    //   editAvailability.childId = availabilityData[0].markavailId;
-    //   editAvailability.date = availabilityData[0].dateon;
-    //   editAvailability.description = availabilityData[0].description;
-    //   editAvailability.location = availabilityData[0].location;
-    //   editAvailability.activitiesId = availabilityData[0].markavailId;
-    //   editAvailability.sportId = availabilityData[0].markavailId;
-    //  // editAvailability.friendId = availabilityData[0].markavailId;
+    editAvailability.childId = availabilityData[0].childId!;
+    editAvailability.markId = availabilityData[0].markavailId!;
+    editAvailability.friendId = [];
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.EditAvailability(editAvailability).then((response) {
       print('response ${response.status}');

@@ -91,16 +91,15 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
     print("color");
     for (var i = 0; i < availabilityData[0].friendsdata!.length; i++) {
       for (var j = 0; j < _foundedUsers.length; j++) {
-
-          print("avail data ${availabilityData[0].friendsdata![i].childFriendId}");
-          print(" found ${_foundedUsers[j].childId}");
+        print(
+            "avail data ${availabilityData[0].friendsdata![i].childFriendId}");
+        print(" found ${_foundedUsers[j].childId}");
 
         if (availabilityData[0].friendsdata![i].childFriendId ==
             _foundedUsers[j].childId) {
-              setState(() {
-                  _isChecked![j] = true;
-              });
-              
+          setState(() {
+            _isChecked![j] = true;
+          });
         }
       }
     }
@@ -114,19 +113,17 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => _GetFriends());
   }
-  updateFriendsID()
-  {
-    for(var i=0;i<_isChecked!.length;i++)
-    {
-      if(_isChecked![i]==true)
-      {
+
+  updateFriendsID() {
+    for (var i = 0; i < _isChecked!.length; i++) {
+      if (_isChecked![i] == true) {
         FriendsId.add(_foundedUsers[i].childId);
       }
     }
 
-
     print(FriendsId);
   }
+
   onSearch(String search) {
     print("Searching for $search");
     setState(() {
