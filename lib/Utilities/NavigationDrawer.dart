@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/ChildDetails.dart';
 import 'package:playgroup/Screens/ChooseChild.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/LocationSelection.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Screens/OnBoardingScreen.dart';
@@ -91,7 +92,10 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                         color: Strings.appThemecolor),
                   ),
                 ),
-                onTap: () => {Navigator.pop(context)},
+                onTap: () => {
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => DashBoard()))
+                },
               ),
               ListTile(
                 leading: Image.asset(

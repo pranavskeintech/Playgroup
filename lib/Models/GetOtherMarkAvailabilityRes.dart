@@ -43,8 +43,10 @@ class Data {
   String? categoryName;
   String? categoryImg;
   String? childName;
+  String? profile;
   String? activitiesName;
   String? activitiesImg;
+  String? requestStatus;
   List<Friendsdata>? friendsdata;
 
   Data(
@@ -63,8 +65,10 @@ class Data {
       this.categoryName,
       this.categoryImg,
       this.childName,
+      this.profile,
       this.activitiesName,
       this.activitiesImg,
+      this.requestStatus,
       this.friendsdata});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -83,8 +87,10 @@ class Data {
     categoryName = json['category_name'];
     categoryImg = json['category_img'];
     childName = json['child_name'];
+    profile = json['profile'];
     activitiesName = json['activities_name'];
     activitiesImg = json['activities_img'];
+    requestStatus = json['request_status'];
     if (json['friendsdata'] != null) {
       friendsdata = <Friendsdata>[];
       json['friendsdata'].forEach((v) {
@@ -110,8 +116,10 @@ class Data {
     data['category_name'] = this.categoryName;
     data['category_img'] = this.categoryImg;
     data['child_name'] = this.childName;
+    data['profile'] = this.profile;
     data['activities_name'] = this.activitiesName;
     data['activities_img'] = this.activitiesImg;
+    data['request_status'] = this.requestStatus;
     if (this.friendsdata != null) {
       data['friendsdata'] = this.friendsdata!.map((v) => v.toJson()).toList();
     }

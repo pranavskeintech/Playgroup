@@ -66,13 +66,13 @@ class _Own_AvailabilityState extends State<Own_Availability>
     _tabController = TabController(length: 2, vsync: this);
     WidgetsBinding.instance!
         .addPostFrameCallback((_) => getAvailabilityDetails());
-        print("Data---> ${widget.markavailId}");
+    print("Data---> ${widget.markavailId}");
 
     Strings.selectedAvailability = widget.markavailId;
     super.initState();
   }
 
-   _JoinFriendsMarkAvailability() {
+  _JoinFriendsMarkAvailability() {
     //AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
 
@@ -222,7 +222,12 @@ class _Own_AvailabilityState extends State<Own_Availability>
                   children: [
                     CircleAvatar(
                       radius: 18,
-                      backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                      backgroundImage: (availabilityData[0].profile! != null ||
+                              availabilityData[0].profile! != "null")
+                          ? NetworkImage(
+                              Strings.imageUrl + availabilityData[0].profile!)
+                          : AssetImage("assets/images/user.png")
+                              as ImageProvider,
                     ),
                     SizedBox(
                       width: 10,
@@ -388,7 +393,12 @@ class _Own_AvailabilityState extends State<Own_Availability>
                           child: InkWell(
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SuggestTime()));
+                                  builder: (context) => SuggestTime(
+                                        markavailId:
+                                            availabilityData[0].markavailId,
+                                        FromTime: availabilityData[0].fromTime,
+                                        TOTime: availabilityData[0].toTime,
+                                      )));
                             },
                             child: Text(
                               "Suggest time Slot",
@@ -560,7 +570,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                     value: tag1,
                     onChanged: (val) {},
                     choiceItems: C2Choice.listFrom<int, String>(
-                      source: options,
+                      source: availabilityData[0].benefits!,
                       value: (i, v) => i,
                       label: (i, v) => v,
                     ),

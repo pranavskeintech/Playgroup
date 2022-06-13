@@ -316,6 +316,22 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<GetChildProfileRes> getchildProfile(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetChildProfileRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/getchildid/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetChildProfileRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<OtherChildRes> getOtherchildDetails(ChildID, otherChild_id) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -324,8 +340,8 @@ class _ApiService implements ApiService {
     final _result = await _dio.fetch<Map<String, dynamic>>(
         _setStreamType<OtherChildRes>(
             Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(
-                    _dio.options, 'user/getchildid/${ChildID}/${otherChild_id}',
+                .compose(_dio.options,
+                    'user/checkfriendsbyid/${ChildID}/${otherChild_id}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = OtherChildRes.fromJson(_result.data!);
