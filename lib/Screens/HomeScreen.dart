@@ -526,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     EdgeInsets.all(0),
                                                 leading: CircleAvatar(
                                                   backgroundImage: AssetImage(
-                                                      "assets/imgs/${childImgs[mainIndex]}"),
+                                                      "assets/imgs/${childImgs[1]}"),
                                                 ),
                                                 title: Text(
                                                   OtherMarkAvailabilityData![
@@ -661,10 +661,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   children: [
                                                     Expanded(
                                                       child: (OtherMarkAvailabilityData![
-                                                                      mainIndex]
-                                                                  .friendsdata!
-                                                                  .length ==
-                                                              0)
+                                                                  mainIndex]
+                                                              .friendsdata!
+                                                              .isEmpty)
                                                           ? Container(
                                                               width: 130,
                                                               height: 20,
@@ -752,7 +751,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         child: TextButton(
                                                           onPressed: () {
                                                             _JoinFriendsMarkAvailability(
-                                                                1);
+                                                                OtherMarkAvailabilityData![
+                                                                        mainIndex]
+                                                                    .markavailId);
                                                           },
                                                           child: Text(
                                                             "JOIN",

@@ -145,6 +145,8 @@ class _ForgotpasswordState extends State<Forgotpassword> {
               Container(
                 padding: EdgeInsets.symmetric(vertical: 25),
                 child: Text(
+
+                  Strings.fromProfile?"Change Password":
                   "Forgot Password",
                   style: TextStyle(color: Colors.black,fontSize: 20),
                 ),
