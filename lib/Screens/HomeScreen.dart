@@ -475,9 +475,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                   verticalOffset: 50.0,
                                   child: FadeInAnimation(
                                     child: GestureDetector(
-                                      onTap: (() {
+                                      onTap: (() async {
                                         Strings.activityConfirmed = false;
-                                        Navigator.of(context).push(
+                                        await Navigator.of(context).push(
                                             MaterialPageRoute(
                                                 builder:
                                                     (BuildContext context) =>
@@ -487,6 +487,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       mainIndex]
                                                                   .markavailId,
                                                         )));
+                                        setState(() {
+                                          _isLoading = true;
+                                          _GetMarkAvailability();
+                                        });
                                       }),
                                       child: Container(
                                         margin:
@@ -711,17 +715,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             .all(2),
                                                                     width: 32,
                                                                     height: 32,
-                                                                    child: InkWell(
-                                                                      onTap: () {
+                                                                    child:
+                                                                        InkWell(
+                                                                      onTap:
+                                                                          () {
                                                                         AppUtils.showParticipant(
-                                                                            context,OtherMarkAvailabilityData![mainIndex].friendsdata!
-                                                                            );
+                                                                            context,
+                                                                            OtherMarkAvailabilityData![mainIndex].friendsdata!);
                                                                       },
                                                                       child: CircleAvatar(
-                                                                          backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile !=
-                                                                                  "null"
-                                                                              ? NetworkImage(Strings.imageUrl +
-                                                                                  (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
+                                                                          backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile != "null"
+                                                                              ? NetworkImage(Strings.imageUrl + (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
                                                                               : AssetImage("assets/imgs/appicon.png") as ImageProvider),
                                                                     ),
                                                                   );
@@ -737,8 +741,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       onTap:
                                                                           () {
                                                                         AppUtils.showParticipant(
-                                                                            context,OtherMarkAvailabilityData![mainIndex].friendsdata!
-                                                                            );
+                                                                            context,
+                                                                            OtherMarkAvailabilityData![mainIndex].friendsdata!);
                                                                       },
                                                                       child:
                                                                           CircleAvatar(

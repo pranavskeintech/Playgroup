@@ -53,7 +53,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
 
   BuildContext? ctx;
 
-  List<OwnAvailabilityData> availabilityData = [];
+  List<Data> availabilityData = [];
 
   bool _isLoading = true;
   @override
@@ -77,7 +77,9 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
 
   getAvailabilityDetails() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getAvailabilityDetails(widget.markavailId!).then((response) {
+    api
+        .getAvailabilityDetails(widget.markavailId!, Strings.SelectedChild)
+        .then((response) {
       if (response.status == true) {
         //  print("hvhjvj:${availabilityData[0].friendsdata}");
         print("response ${response.status}");
@@ -198,6 +200,98 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                         width: MediaQuery.of(context).size.width * 0.4,
                         child: GestureDetector(
                           onTap: () {
+                            _selectFromTime(context);
+                          },
+                          child: TextField(
+                            controller: _FromTimeController,
+                            enabled: false,
+                            style: TextStyle(color: Colors.black),
+                            decoration: InputDecoration(
+                              fillColor: Strings.textFeildBg,
+                              filled: true,
+                              contentPadding: EdgeInsets.all(15),
+                              hintText: "Select Time",
+                              hintStyle: TextStyle(fontSize: 13.5),
+                              suffixIcon: Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.grey.withOpacity(0.3)),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                        ),
+                        // child: DropdownButtonHideUnderline(
+                        //   child: DropdownButton2(
+                        //     isExpanded: true,
+                        //     hint: Row(
+                        //       children: const [
+                        //         Expanded(
+                        //           child: Text(
+                        //             'Select time',
+                        //             style: TextStyle(
+                        //                 fontSize: 14,
+                        //                 fontWeight: FontWeight.bold,
+                        //                 color: Colors.black),
+                        //             overflow: TextOverflow.ellipsis,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //     items: items
+                        //         .map((item) => DropdownMenuItem<String>(
+                        //               value: item,
+                        //               child: Text(
+                        //                 item,
+                        //                 style: const TextStyle(
+                        //                   fontSize: 14,
+                        //                   fontWeight: FontWeight.bold,
+                        //                   color: Colors.black,
+                        //                 ),
+                        //                 overflow: TextOverflow.ellipsis,
+                        //               ),
+                        //             ))
+                        //         .toList(),
+                        //     value: selectedEndTime,
+                        //     onChanged: (value) {
+                        //       setState(() {
+                        //         selectedEndTime = value as String;
+                        //       });
+                        //     },
+                        //     icon: const Icon(
+                        //       Icons.arrow_forward_ios_outlined,
+                        //     ),
+                        //     iconSize: 14,
+                        //     iconEnabledColor: Colors.black,
+                        //     iconDisabledColor: Colors.grey,
+                        //     buttonHeight: 50,
+                        //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
+                        //     buttonPadding: const EdgeInsets.only(left: 14, right: 14),
+                        //     buttonDecoration: BoxDecoration(
+                        //       borderRadius: BorderRadius.circular(5),
+                        //       color: Color.fromARGB(255, 230, 230, 230),
+                        //     ),
+                        //     buttonElevation: 2,
+                        //     itemHeight: 40,
+                        //     itemPadding: const EdgeInsets.only(left: 14, right: 14),
+                        //     dropdownMaxHeight: 200,
+                        //     dropdownWidth: 300,
+                        //     dropdownPadding: null,
+                        //     dropdownDecoration: BoxDecoration(
+                        //       borderRadius: BorderRadius.circular(14),
+                        //       color: Colors.white,
+                        //     ),
+                        //     dropdownElevation: 8,
+                        //     scrollbarRadius: const Radius.circular(40),
+                        //     scrollbarThickness: 6,
+                        //     scrollbarAlwaysShow: true,
+                        //     offset: const Offset(0, 0),
+                        //   ),
+                        // ),
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.06,
+                        width: MediaQuery.of(context).size.width * 0.4,
+                        child: GestureDetector(
+                          onTap: () {
                             _selectTOTime();
                           },
                           child: Container(
@@ -303,98 +397,6 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                         //   ),
                         // ),
                       ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.06,
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        child: GestureDetector(
-                          onTap: () {
-                            _selectFromTime(context);
-                          },
-                          child: TextField(
-                            controller: _FromTimeController,
-                            enabled: false,
-                            style: TextStyle(color: Colors.black),
-                            decoration: InputDecoration(
-                              fillColor: Strings.textFeildBg,
-                              filled: true,
-                              contentPadding: EdgeInsets.all(15),
-                              hintText: "Select Time",
-                              hintStyle: TextStyle(fontSize: 13.5),
-                              suffixIcon: Icon(
-                                  Icons.keyboard_arrow_down_rounded,
-                                  color: Colors.grey.withOpacity(0.3)),
-                            ),
-                            keyboardType: TextInputType.emailAddress,
-                          ),
-                        ),
-                        // child: DropdownButtonHideUnderline(
-                        //   child: DropdownButton2(
-                        //     isExpanded: true,
-                        //     hint: Row(
-                        //       children: const [
-                        //         Expanded(
-                        //           child: Text(
-                        //             'Select time',
-                        //             style: TextStyle(
-                        //                 fontSize: 14,
-                        //                 fontWeight: FontWeight.bold,
-                        //                 color: Colors.black),
-                        //             overflow: TextOverflow.ellipsis,
-                        //           ),
-                        //         ),
-                        //       ],
-                        //     ),
-                        //     items: items
-                        //         .map((item) => DropdownMenuItem<String>(
-                        //               value: item,
-                        //               child: Text(
-                        //                 item,
-                        //                 style: const TextStyle(
-                        //                   fontSize: 14,
-                        //                   fontWeight: FontWeight.bold,
-                        //                   color: Colors.black,
-                        //                 ),
-                        //                 overflow: TextOverflow.ellipsis,
-                        //               ),
-                        //             ))
-                        //         .toList(),
-                        //     value: selectedEndTime,
-                        //     onChanged: (value) {
-                        //       setState(() {
-                        //         selectedEndTime = value as String;
-                        //       });
-                        //     },
-                        //     icon: const Icon(
-                        //       Icons.arrow_forward_ios_outlined,
-                        //     ),
-                        //     iconSize: 14,
-                        //     iconEnabledColor: Colors.black,
-                        //     iconDisabledColor: Colors.grey,
-                        //     buttonHeight: 50,
-                        //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
-                        //     buttonPadding: const EdgeInsets.only(left: 14, right: 14),
-                        //     buttonDecoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(5),
-                        //       color: Color.fromARGB(255, 230, 230, 230),
-                        //     ),
-                        //     buttonElevation: 2,
-                        //     itemHeight: 40,
-                        //     itemPadding: const EdgeInsets.only(left: 14, right: 14),
-                        //     dropdownMaxHeight: 200,
-                        //     dropdownWidth: 300,
-                        //     dropdownPadding: null,
-                        //     dropdownDecoration: BoxDecoration(
-                        //       borderRadius: BorderRadius.circular(14),
-                        //       color: Colors.white,
-                        //     ),
-                        //     dropdownElevation: 8,
-                        //     scrollbarRadius: const Radius.circular(40),
-                        //     scrollbarThickness: 6,
-                        //     scrollbarAlwaysShow: true,
-                        //     offset: const Offset(0, 0),
-                        //   ),
-                        // ),
-                      )
                     ],
                   ),
                   SizedBox(
@@ -506,6 +508,10 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
     editAvailability.to = _TOTimeController.text;
     editAvailability.childId = availabilityData[0].childId!;
     editAvailability.markId = availabilityData[0].markavailId!;
+    print("1:${_FromTimeController.text}");
+    print("2:${_TOTimeController.text}");
+    print("3:${availabilityData[0].childId!}");
+    print("4:${availabilityData[0].markavailId!}");
     editAvailability.friendId = [];
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.EditAvailability(editAvailability).then((response) {

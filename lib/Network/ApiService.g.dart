@@ -530,17 +530,18 @@ class _ApiService implements ApiService {
 
   @override
   Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(
-      availability_id) async {
+      availability_id, ChildID) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<OwnAvailabilityDetailsRes>(
-            Options(method: 'GET', headers: _headers, extra: _extra)
-                .compose(_dio.options, '/mark/getmarkbyid/${availability_id}',
-                    queryParameters: queryParameters, data: _data)
-                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+        _setStreamType<OwnAvailabilityDetailsRes>(Options(
+                method: 'GET', headers: _headers, extra: _extra)
+            .compose(
+                _dio.options, '/mark/getmarkbyid/${availability_id}/${ChildID}',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = OwnAvailabilityDetailsRes.fromJson(_result.data!);
     return value;
   }
@@ -669,6 +670,23 @@ class _ApiService implements ApiService {
         _setStreamType<CommonRes>(
             Options(method: 'PUT', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'mark/joinfriends',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> suggestTime(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/suggesttime',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);

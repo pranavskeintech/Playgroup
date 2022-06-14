@@ -17,10 +17,9 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ChildDetails extends StatefulWidget {
-
   final bool? fromProfile;
 
-   ChildDetails({Key? key, this.fromProfile}) : super(key: key);
+  ChildDetails({Key? key, this.fromProfile}) : super(key: key);
 
   @override
   State<ChildDetails> createState() => _ChildDetailsState();
@@ -155,8 +154,13 @@ class _ChildDetailsState extends State<ChildDetails> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => LoginPage()));
+                      if (Strings.profilepage == true) {
+                        Navigator.pop(context);
+                      } else {
+                        Strings.profilepage == false;
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (BuildContext context) => LoginPage()));
+                      }
                     },
                     child: const Align(
                         alignment: Alignment.topLeft,
@@ -448,32 +452,26 @@ class _ChildDetailsState extends State<ChildDetails> {
     }
     print(jsonEncode(ChildReg));
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.AddChild(ChildReg).then((response) 
-    {
+    api.AddChild(ChildReg).then((response) {
       print('response ${response.status}');
       print("result1:${response.toJson()}");
-      if (response.status == true) 
-      {
+      if (response.status == true) {
         AppUtils.dismissprogress();
 
         print("From profile ${widget.fromProfile}");
 
-        if(widget.fromProfile == true)
-        {
+        if (widget.fromProfile == true) {
           Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => ProfileScreen(),
             ),
           );
-        }
-        else
-        {
+        } else {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => ChildConfirmation()));
+              builder: (BuildContext context) => ChildConfirmation()));
         }
 
-        
         print("result2:$response");
       } else {
         AppUtils.dismissprogress();
@@ -482,11 +480,9 @@ class _ChildDetailsState extends State<ChildDetails> {
         print("error");
       }
     });
-  
   }
 
-  checkChild() 
-  {
+  checkChild() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.Checkchild(_nameController.text, Strings.Parent_Id).then((response) {
       print('response ${response.status}');
