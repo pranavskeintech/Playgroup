@@ -123,6 +123,9 @@ abstract class ApiService {
   @DELETE("user/child/{ChildID}")
   Future<GetChildRes> DeleteChild(@Path("ChildID") int ChildID);
 
+   @POST("user/changeAccess/{access}")
+  Future<CommonRes> updateAccess(@Path("access") String access);
+
   @DELETE("mark/deletemark/{avail_id}")
   Future<CommonRes> deleteAvailability(@Path("avail_id") int availID);
 
@@ -180,8 +183,8 @@ abstract class ApiService {
   @PUT("mark/joinfriends")
   Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
 
-  @PUT("/user/updateParent")
-  Future<CommonRes> updateCoParent(@Body() JoinfriendsReq body);
+  @PUT("/user/updateCoParent")
+  Future<CommonRes> updateCoParent(@Body() AddcoParentReq body);
 
   @GET("user/notification_list/{ChildID}")
   Future<GetNotificationListRes> GetNotificationList(

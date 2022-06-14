@@ -124,11 +124,13 @@ class _DashBoardState extends State<DashBoard> {
     ctx = context;
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
-      child: _isLoading
-          ? const Center(
-              child: CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-          : Scaffold(
+      child:
+      //  _isLoading
+      //     ? const Center(
+      //         child: CircularProgressIndicator(
+      //             valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+      //     : 
+          Scaffold(
               key: _scaffoldKey,
               drawer: NavigationDrawer(),
               appBar: AppBar(
@@ -168,9 +170,9 @@ class _DashBoardState extends State<DashBoard> {
                       SwitchChild.showChildDialog(ctx);
                     },
                     child: CircleAvatar(
-                      backgroundImage: (HeaderData!.profile != "null")
+                      backgroundImage: (HeaderData?.profile != "null")
                           ? NetworkImage(
-                              Strings.imageUrl + (HeaderData!.profile!),
+                              Strings.imageUrl + (HeaderData?.profile ?? ""),
                             )
                           : AssetImage("assets/imgs/appicon.png")
                               as ImageProvider,
