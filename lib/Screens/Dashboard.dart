@@ -63,11 +63,13 @@ class _DashBoardState extends State<DashBoard> {
   Children? ListViewData;
 
   Children? HeaderData;
+
   GetProfile() {
-    print("hiiii");
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetProfile().then((response) {
-      if (response.status == true) {
+    api.GetProfile().then((response) 
+    {
+      if (response.status == true) 
+      {
         // AppUtils.dismissprogress();
         setState(() {
           _ProfileData = response.profile;
@@ -75,9 +77,10 @@ class _DashBoardState extends State<DashBoard> {
           for (var i = 0; i < _ProfileData!.children!.length; i++) {
             if (_ProfileData!.children![i].childId == _SelectedChildId) {
               index1 = i;
+              print("Assigned data to header");
+              HeaderData = _ProfileData!.children![index1!];
             }
           }
-          HeaderData = _ProfileData!.children![index1!];
           print("profile:${HeaderData!.profile}");
           Strings.ProfilePic = HeaderData!.profile;
           ListViewData = _ProfileData!.children!.removeAt(index1!);

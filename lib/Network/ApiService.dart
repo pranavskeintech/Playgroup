@@ -184,6 +184,9 @@ abstract class ApiService {
   @POST("mark/suggesttime")
   Future<CommonRes> suggestTime(@Body() SuggestTimeReq body);
 
+  @PUT("/user/updateParent")
+  Future<CommonRes> updateCoParent(@Body() JoinfriendsReq body);
+
   @GET("user/notification_list/{ChildID}")
   Future<GetNotificationListRes> GetNotificationList(
       @Path("ChildID") int ChildID);
