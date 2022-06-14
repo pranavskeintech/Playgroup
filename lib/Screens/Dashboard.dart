@@ -172,9 +172,9 @@ class _DashBoardState extends State<DashBoard> {
                       });
                     },
                     child: CircleAvatar(
-                      backgroundImage: (HeaderData!.profile != "null")
+                      backgroundImage: (HeaderData?.profile != "null")
                           ? NetworkImage(
-                              Strings.imageUrl + (HeaderData!.profile!),
+                              Strings.imageUrl + (HeaderData?.profile ?? ""),
                             )
                           : AssetImage("assets/imgs/appicon.png")
                               as ImageProvider,

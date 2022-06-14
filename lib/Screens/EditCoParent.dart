@@ -452,15 +452,33 @@ class _EditCoParentState extends State<EditCoParent> {
     AddcoParentReq addcoParentReq = AddcoParentReq();
     addcoParentReq.parentName = _coParentNameController.text;
     addcoParentReq.emailId = _emailController.text;
-    addcoParentReq.access = selectedAccess?.toUpperCase();
+   // addcoParentReq.access = selectedAccess?.toUpperCase();
     addcoParentReq.password = _passwordController.text;
-    addcoParentReq.phone = _phoneController.text;
 
-    api.addCoParent(addcoParentReq).then((response) {
+    api.updateCoParent(addcoParentReq).then((response) 
+    {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
-        AppUtils.showToast("Co-Parent added successfully", ctx);
+
+            api.updateAccess(selectedAccess!.toUpperCase()).then((response) 
+            {
+                if(response.status!){
+                  AppUtils.dismissprogress();
+                  AppUtils.showToast("Co-Parent updated successfully", ctx);
+                  Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (BuildContext context) => ProfileScreen()));
+                }
+                {
+                    print("Unable to update access");
+                }
+
+            }).catchError((error) {
+              print('error ${error.toString()}');
+              AppUtils.dismissprogress();
+              AppUtils.showToast("Something went wrong", ctx);
+            });
+
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => ProfileScreen()));
       } else {

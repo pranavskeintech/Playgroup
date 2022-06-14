@@ -318,8 +318,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         .coParent?[0].access,
                                                   )));
                                     },
-                                    child: Row(
+                                    child: _ProfileData!
+                                                  .role == "PARENT"?Row(
                                       children: [
+                                        
                                         Text("Edit"),
                                         SizedBox(
                                           width: 5,
@@ -332,7 +334,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           height: 15,
                                         ),
                                       ],
-                                    ))
+                                    ):SizedBox())
                               ],
                             ),
                             Container(
