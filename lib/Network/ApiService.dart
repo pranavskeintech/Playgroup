@@ -180,6 +180,9 @@ abstract class ApiService {
   @PUT("mark/joinfriends")
   Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
 
+  @PUT("/user/updateParent")
+  Future<CommonRes> updateCoParent(@Body() JoinfriendsReq body);
+
   @GET("user/notification_list/{ChildID}")
   Future<GetNotificationListRes> GetNotificationList(
       @Path("ChildID") int ChildID);

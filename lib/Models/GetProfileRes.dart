@@ -140,7 +140,7 @@ class CoParent {
   String? access;
   String? phone;
   String? location;
-  Null? selectedChildId;
+  int? selectedChildId;
   int? parentId;
   String? createdDate;
 

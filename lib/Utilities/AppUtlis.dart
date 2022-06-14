@@ -238,8 +238,8 @@ class AppUtils {
                                 as ImageProvider,
                             radius: 17,
                           ),
-                          title: Text(
-                            ChildName[index],
+                          title: Text(friendsdata[index].friendName ?? ""
+                            ,
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 13.5),
                           ),

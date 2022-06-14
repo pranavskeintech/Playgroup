@@ -912,7 +912,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             radius: 17,
                           ),
                           title: Text(
-                            ChildName[index],
+                            availabilityData[0].friendsdata![index].friendName ?? "",
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 13.5),
                           ),

@@ -554,7 +554,7 @@ class _LoginPageState extends State<LoginPage> {
           Strings.parentName = response.data![0].parentName!;
           Strings.parentemail = response.data![0].emailId!;
           Strings.Parent_Id = response.data![0].userId!;
-          Strings.SelectedChild = response.data![0].selectedChildId!;
+          Strings.SelectedChild = response.data![0].selectedChildId ?? 0;
           updateDeviceId();
           // _isLoading = false;
           //  Get.off(() => DashPage());
