@@ -38,6 +38,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
         setState(() {
           _isLoading = false;
           NotificationList = response.data!;
+          for (int index = 0;
+                      index < NotificationList!.length;
+                      index++) {
+                    dateFormate.add(DateFormat("dd-MM-yyyy").format(
+                        DateTime.parse(NotificationList![index].createdDate!)));
+                  }
+                                          print(dateFormate);
+
         });
       } else {
         //functions.createSnackBar(context, response.message.toString());
@@ -71,19 +79,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
             padding: const EdgeInsets.only(bottom: 30),
             child: Container(
               child: ListView.builder(
-                reverse: true,
                 physics: BouncingScrollPhysics(),
                 itemCount: NotificationList!.length,
-                itemBuilder: (context, index) {
-                  for (int index = 0;
-                      index < NotificationList!.length;
-                      index++) {
-                    dateFormate!.add(DateFormat("dd-MM-yyyy").format(
-                        DateTime.parse(NotificationList![index].createdDate!)));
-                  }
+                itemBuilder: (context, mainIndex) {
                   Widget separator = SizedBox();
-                  if (index != 0 &&
-                      dateFormate![index] != dateFormate![index - 1]) {
+                  if (mainIndex != 0 &&
+                      dateFormate[mainIndex] != dateFormate[mainIndex - 1]) {
                     separator = Container(
                         height: 20,
                         decoration: BoxDecoration(
@@ -92,28 +93,35 @@ class _NotificationScreenState extends State<NotificationScreen> {
                         ),
                         padding: EdgeInsets.only(right: 5, left: 5),
                         child: Text(
-                          dateFormate![index],
+                          dateFormate[mainIndex],
+                          style: TextStyle(fontSize: 15, color: Colors.grey),
+                        ));
+                  }
+                  else if(mainIndex == 0)
+                  {
+                    separator = Container(
+                        height: 20,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          //color: Strings.chipsbg
+                        ),
+                        padding: EdgeInsets.only(right: 5, left: 5),
+                        child: Text(
+                          dateFormate[mainIndex],
                           style: TextStyle(fontSize: 15, color: Colors.grey),
                         ));
                   }
 
-                  print("date:${dateFormate![index]}");
+                  print("date:${dateFormate[mainIndex]}");
                   return Container(
-                    padding: EdgeInsets.fromLTRB(20, 20, 20, 0),
+                    padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        SizedBox(height: 10,),
                         separator,
-                        // Text(
-                        //   dateFormate!,
-                        //   style: TextStyle(color: Colors.grey, fontSize: 13),
-                        // ),
-                        // SizedBox(
-                        //   height: 10,
-                        // ),
-                        // for (int i = 0; i < 2; i++)
                         SizedBox(
-                          height: 100,
+                          height: 90,
                           child: Center(
                             child: Container(
                               decoration: BoxDecoration(
@@ -136,16 +144,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   Strings.FriendNotification = true;
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          ShowOtherChildProfile()));
+                                          ShowOtherChildProfile(otherChildID: NotificationList![mainIndex].childId,)));
                                 },
                                 title: Text(
-                                  NotificationList![index].title!,
+                                  NotificationList![mainIndex].title!,
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: 14),
                                 ),
                                 subtitle: Text(
-                                  NotificationList![index].body!,
+                                  NotificationList![mainIndex].body!,
                                   style: TextStyle(fontSize: 12),
                                 ),
                               ),
