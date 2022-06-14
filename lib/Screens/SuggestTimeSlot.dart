@@ -1,12 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
+import 'package:playgroup/Models/SuggestTimeReq.dart';
+import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 
 class SuggestTime extends StatefulWidget {
   final String? FromTime;
   final String? TOTime;
   int? markavailId;
-  SuggestTime({Key? key, this.FromTime, this.TOTime, this.markavailId})
+  int? ChildId;
+  int? OtherChildId;
+  SuggestTime(
+      {Key? key,
+      this.FromTime,
+      this.TOTime,
+      this.markavailId,
+      this.ChildId,
+      this.OtherChildId})
       : super(key: key);
 
   @override
@@ -36,6 +49,8 @@ class _SuggestTimeState extends State<SuggestTime> {
     "child5.jpg",
     "child6.jpg"
   ];
+
+  BuildContext? ctx;
 
   _selectFromTime(context) async {
     //print("time:${dt1!.hour}");
@@ -82,6 +97,18 @@ class _SuggestTimeState extends State<SuggestTime> {
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return SuggestTime(newContext);
+          }),
+        ));
+  }
+
+  SuggestTime(BuildContext context) {
+    ctx = context;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
@@ -205,7 +232,7 @@ class _SuggestTimeState extends State<SuggestTime> {
                 child: ElevatedButton(
                   child: Text("Save"),
                   onPressed: () {
-                    Navigator.pop(context);
+                    SuggestTimes();
                   },
                 ),
               ),
@@ -217,5 +244,29 @@ class _SuggestTimeState extends State<SuggestTime> {
         ),
       ),
     );
+  }
+
+  SuggestTimes() {
+    AppUtils.showprogress();
+
+    SuggestTimeReq suggestTime = SuggestTimeReq();
+
+    suggestTime.childId = Strings.SelectedChild;
+    suggestTime.otherChildId = widget.OtherChildId;
+    suggestTime.from = _FromTimeController.text;
+    suggestTime.to = _TOTimeController.text;
+
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.suggestTime(suggestTime).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.pop(context);
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        print("error");
+      }
+    });
   }
 }

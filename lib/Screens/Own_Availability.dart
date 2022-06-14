@@ -11,6 +11,7 @@ import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/EditAvailability_Time.dart';
 import 'package:playgroup/Screens/G-Map.dart';
 import 'package:playgroup/Screens/HomeScreen.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Screens/SuggestTimeSlot.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:provider/provider.dart';
@@ -34,7 +35,8 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
   TabController? _tabController;
   bool activityConfirmed = false;
-  List<OwnAvailabilityData> availabilityData = [];
+  bool? joined;
+  List<Data> availabilityData = [];
 
   List<String> childImgs = [
     "child1.jpg",
@@ -79,11 +81,15 @@ class _Own_AvailabilityState extends State<Own_Availability>
     JoinfriendsReq joinfriendsReq = JoinfriendsReq();
     joinfriendsReq.childId = Strings.SelectedChild;
     joinfriendsReq.markavailId = widget.markavailId;
-    joinfriendsReq.status = "joined";
+    (joined == true)
+        ? joinfriendsReq.status = "pending"
+        : joinfriendsReq.status = "joined";
+    print("reqSts:${joinfriendsReq.status}");
     api.JoinFriendsMarkAvailability(joinfriendsReq).then((response) {
       print(response.status);
       if (response.status == true) {
         setState(() {
+          getAvailabilityDetails();
           // AppUtils.dismissprogress();
           _isLoading = false;
         });
@@ -97,11 +103,16 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
   getAvailabilityDetails() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getAvailabilityDetails(widget.markavailId!).then((response) {
+    api
+        .getAvailabilityDetails(widget.markavailId!, Strings.SelectedChild)
+        .then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
           availabilityData = response.data!;
+          (availabilityData[0].requestStatus == "joined")
+              ? joined = true
+              : joined = false;
           _isLoading = false;
         });
       }
@@ -273,50 +284,51 @@ class _Own_AvailabilityState extends State<Own_Availability>
           SizedBox(
             height: 10,
           ),
-          Container(
-            height: 140,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              //borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 8.0, // soften the shadow
-                  spreadRadius: 5.0, //extend the shadow
-                  offset: Offset(
-                    2.0, // Move to right 10  horizontally
-                    2.0, // Move to bottom 10 Vertically
-                  ),
-                )
-              ],
-            ),
-            child: SizedBox(
-              height: 120,
-              child: ListTile(
-                title: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 10),
+          Flexible(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                //borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 8.0, // soften the shadow
+                    spreadRadius: 5.0, //extend the shadow
+                    offset: Offset(
+                      2.0, // Move to right 10  horizontally
+                      2.0, // Move to bottom 10 Vertically
+                    ),
+                  )
+                ],
+              ),
+              child: SizedBox(
+                //height: 120,
+                child: ListTile(
+                  title: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 10),
+                      child: Text(
+                        availabilityData[0].activitiesName! +
+                            " - " +
+                            availabilityData[0].categoryName!,
+                        style: TextStyle(
+                          color: Colors.black87,
+                          fontWeight: FontWeight.w700,
+                          fontSize: 14,
+                        ),
+                      )),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: Text(
-                      availabilityData[0].activitiesName! +
-                          " - " +
-                          availabilityData[0].categoryName!,
+                      availabilityData[0].description!,
+                      textAlign: TextAlign.justify,
                       style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                      ),
-                    )),
-                subtitle: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: Text(
-                    availabilityData[0].description!,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                        height: 1.4,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w400,
-                        color: Color.fromARGB(255, 150, 149, 149)),
+                          height: 1.4,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w400,
+                          color: Color.fromARGB(255, 150, 149, 149)),
+                    ),
                   ),
                 ),
               ),
@@ -391,14 +403,22 @@ class _Own_AvailabilityState extends State<Own_Availability>
                       : Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                           child: InkWell(
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => SuggestTime(
-                                        markavailId:
-                                            availabilityData[0].markavailId,
-                                        FromTime: availabilityData[0].fromTime,
-                                        TOTime: availabilityData[0].toTime,
-                                      )));
+                            onTap: () async {
+                              await Navigator.of(context)
+                                  .push(MaterialPageRoute(
+                                      builder: (context) => SuggestTime(
+                                            ChildId: Strings.SelectedChild,
+                                            OtherChildId:
+                                                availabilityData[0].childId,
+                                            markavailId:
+                                                availabilityData[0].markavailId,
+                                            FromTime:
+                                                availabilityData[0].fromTime,
+                                            TOTime: availabilityData[0].toTime,
+                                          )));
+                              setState(() {
+                                getAvailabilityDetails();
+                              });
                             },
                             child: Text(
                               "Suggest time Slot",
@@ -410,31 +430,31 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             ),
                           ))
                 ]),
-                InkWell(
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => MapsPage()));
-                    // setState(() {
-                    //   _getAddress();
-                    // });
-                  },
-                  child: Row(
-                    children: const [
-                      Text(
-                        "Map",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Icon(
-                        Icons.map,
-                        color: Colors.blue,
-                        size: 14,
-                      )
-                    ],
-                  ),
-                )
+                // InkWell(
+                //   onTap: () async {
+                //     await Navigator.of(context).push(
+                //         MaterialPageRoute(builder: (context) => MapsPage()));
+                //     // setState(() {
+                //     //   _getAddress();
+                //     // });
+                //   },
+                //   child: Row(
+                //     children: const [
+                //       Text(
+                //         "Map",
+                //         style: TextStyle(
+                //             color: Colors.blue,
+                //             fontSize: 13,
+                //             fontWeight: FontWeight.w600),
+                //       ),
+                //       Icon(
+                //         Icons.map,
+                //         color: Colors.blue,
+                //         size: 14,
+                //       )
+                //     ],
+                //   ),
+                // )
               ],
             ),
           ),
@@ -484,24 +504,24 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                     itemBuilder: ((context, index) {
                                       if (index < 5) {
                                         return InkWell(
-                                          onTap: (){
-                                            showParticipant(
-                                                  context);
+                                          onTap: () {
+                                            showParticipant(context);
                                           },
                                           child: Container(
                                             padding: EdgeInsets.all(3),
                                             width: 35,
                                             height: 35,
                                             child: CircleAvatar(
-                                              backgroundImage: availabilityData[0]
+                                              backgroundImage: availabilityData[
+                                                              0]
                                                           .friendsdata![index]
                                                           .profile !=
                                                       null
-                                                  ? NetworkImage(
-                                                      Strings.imageUrl +
-                                                          availabilityData[0]
-                                                              .friendsdata![index]
-                                                              .profile!)
+                                                  ? NetworkImage(Strings
+                                                          .imageUrl +
+                                                      availabilityData[0]
+                                                          .friendsdata![index]
+                                                          .profile!)
                                                   : AssetImage(
                                                           "assets/images/user.png")
                                                       as ImageProvider,
@@ -515,8 +535,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                           width: 40,
                                           child: InkWell(
                                             onTap: () {
-                                            showParticipant(
-                                                  context);
+                                              showParticipant(context);
                                             },
                                             child: CircleAvatar(
                                               backgroundColor:
@@ -757,7 +776,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                         ))
                   ],
                 )
-              : Strings.availConfirm
+              : (availabilityData[0].requestStatus == "joined")
                   ? Column(
                       children: [
                         Align(
@@ -781,7 +800,9 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             child: TextButton(
                               onPressed: () {
                                 setState(() {
-                                  Strings.availConfirm = !Strings.availConfirm;
+                                  joined = true;
+                                  _JoinFriendsMarkAvailability();
+                                  // Strings.availConfirm = !Strings.availConfirm;
                                 });
                               },
                               child: Row(
@@ -840,7 +861,9 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             child: TextButton(
                               onPressed: () {
                                 setState(() {
-                                  Strings.availConfirm = !Strings.availConfirm;
+                                  joined == false;
+                                  _JoinFriendsMarkAvailability();
+                                  // Strings.availConfirm = !Strings.availConfirm;
                                 });
                               },
                               child: Text(
@@ -871,16 +894,15 @@ class _Own_AvailabilityState extends State<Own_Availability>
     );
   }
 
-  showParticipant(context) 
-  {
+  showParticipant(context) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
               content: Container(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: Column(children: [
-                          InkWell(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(children: [
+              InkWell(
                 onTap: () {
                   Navigator.of(context).pop();
                 },
@@ -891,9 +913,9 @@ class _Own_AvailabilityState extends State<Own_Availability>
                     size: 20,
                   )),
                 ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
+              ),
+              SizedBox(height: 10),
+              Container(
                 height: MediaQuery.of(context).size.height * 0.55,
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: ListView.builder(
@@ -902,13 +924,23 @@ class _Own_AvailabilityState extends State<Own_Availability>
                     return Column(
                       children: [
                         ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OtherChildProfile()));
+                          },
                           leading: CircleAvatar(
-                            backgroundImage:
-                            availabilityData[0].friendsdata![index].profile != "null"
-                            ? NetworkImage(Strings.imageUrl +
-                                (availabilityData[0].friendsdata![index].profile ?? ""))
-                            : AssetImage("assets/imgs/appicon.png")
-                                as ImageProvider,
+                            backgroundImage: availabilityData[0]
+                                        .friendsdata![index]
+                                        .profile !=
+                                    "null"
+                                ? NetworkImage(Strings.imageUrl +
+                                    (availabilityData[0]
+                                            .friendsdata![index]
+                                            .profile ??
+                                        ""))
+                                : AssetImage("assets/imgs/appicon.png")
+                                    as ImageProvider,
                             radius: 17,
                           ),
                           title: Text(
@@ -917,14 +949,13 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                 fontWeight: FontWeight.w600, fontSize: 13.5),
                           ),
                         ),
-                       
                       ],
                     );
                   },
                 ),
-                          ),
-                        ]),
-              ));
+              ),
+            ]),
+          ));
         });
   }
 

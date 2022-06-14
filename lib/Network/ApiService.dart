@@ -33,6 +33,7 @@ import 'package:playgroup/Models/PendingFriendReqRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
+import 'package:playgroup/Models/SuggestTimeReq.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
 
@@ -153,9 +154,9 @@ abstract class ApiService {
   @GET("mark/getsports/{SportID}")
   Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
 
-  @GET("/mark/getmarkbyid/{availability_id}")
+  @GET("/mark/getmarkbyid/{availability_id}/{ChildID}")
   Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(
-      @Path("availability_id") int availability_id);
+      @Path("availability_id") int availability_id,@Path("ChildID") int ChildID);
 
   @GET("friends/{ChildID}/Pending")
   Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
@@ -182,6 +183,9 @@ abstract class ApiService {
 
   @PUT("mark/joinfriends")
   Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
+  
+  @POST("mark/suggesttime")
+  Future<CommonRes> suggestTime(@Body() SuggestTimeReq body);
 
   @PUT("/user/updateCoParent")
   Future<CommonRes> updateCoParent(@Body() AddcoParentReq body);

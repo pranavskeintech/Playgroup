@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
+import 'package:playgroup/Models/EditAvailabilityCommonReq.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
 import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
@@ -46,9 +47,9 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
 
   bool _isLoading = true;
 
-  var FriendsId = [];
+  List<Data> availabilityData = [];
 
-  List<OwnAvailabilityData> availabilityData = [];
+  List<int>? FriendsId = [];
 
   _GetFriends() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -60,6 +61,8 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
 
           setState(() {
             _foundedUsers = FriendsDatum!;
+            print("1:${_foundedUsers[0].childId!}");
+            print("2:${_foundedUsers[1].childId!}");
           });
           _isLoading = false;
           getAvailabilityDetails();
@@ -73,7 +76,10 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
   getAvailabilityDetails() {
     print("check");
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getAvailabilityDetails(Strings.selectedAvailability!).then((response) {
+    api
+        .getAvailabilityDetails(
+            Strings.selectedAvailability!, Strings.SelectedChild)
+        .then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
@@ -117,7 +123,7 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
   updateFriendsID() {
     for (var i = 0; i < _isChecked!.length; i++) {
       if (_isChecked![i] == true) {
-        FriendsId.add(_foundedUsers[i].childId);
+        FriendsId!.add(_foundedUsers[i].childId!);
       }
     }
 
@@ -276,11 +282,12 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
                                       () {
                                         if (val!) {
                                           _isChecked?[index] = val;
-                                          FriendsId.add(
+                                          FriendsId!.add(
                                               _foundedUsers[index].childId!);
+                                          print("friends:${FriendsId}");
                                         } else {
                                           _isChecked?[index] = val;
-                                          FriendsId.remove(
+                                          FriendsId!.remove(
                                               _foundedUsers[index].childId!);
                                         }
                                       },
@@ -305,7 +312,7 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          _MarkAvailability();
+                          _EditParticipatingFriends();
                         },
                         child: Text(
                           "Done",
@@ -326,32 +333,58 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
           );
   }
 
-  _MarkAvailability() {
-    AppUtils.showprogress();
+  // _MarkAvailability() {
+  //   AppUtils.showprogress();
 
-    MarkAvailabilityReq markavail = MarkAvailabilityReq();
+  //   MarkAvailabilityReq markavail = MarkAvailabilityReq();
 
-    markavail.childId = Strings.SelectedChild;
-    markavail.date = Strings.markAvailabiltydate;
-    markavail.from = Strings.markAvailabiltystartTime;
-    markavail.to = Strings.markAvailabiltyendTime;
-    markavail.description = Strings.markAvailabiltydesc;
-    markavail.location = Strings.markAvailabiltylocations;
-    markavail.activitiesId = Strings.markAvailabiltyTopic;
-    markavail.sportId = Strings.markAvailabiltycategory;
-    markavail.friendId = FriendsId;
+  //   markavail.childId = Strings.SelectedChild;
+  //   markavail.date = Strings.markAvailabiltydate;
+  //   markavail.from = Strings.markAvailabiltystartTime;
+  //   markavail.to = Strings.markAvailabiltyendTime;
+  //   markavail.description = Strings.markAvailabiltydesc;
+  //   markavail.location = Strings.markAvailabiltylocations;
+  //   markavail.activitiesId = Strings.markAvailabiltyTopic;
+  //   markavail.sportId = Strings.markAvailabiltycategory;
+  //   markavail.friendId = FriendsId;
 
-    var dat = jsonEncode(markavail);
-    print(dat);
+  //   var dat = jsonEncode(markavail);
+  //   print(dat);
+  //   final api = Provider.of<ApiService>(ctx!, listen: false);
+  //   api.createAvailability(markavail).then((response) {
+  //     print('response ${response.status}');
+  //     if (response.status == true) {
+  //       AppUtils.dismissprogress();
+  //       Navigator.of(context).push(
+  //           MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+  //     } else {
+  //       functions.createSnackBar(context, response.message.toString());
+  //       AppUtils.dismissprogress();
+  //       print("error");
+  //     }
+  //   });
+  // }
+
+  _EditParticipatingFriends() {
+    EditAvailabilityCommonReq editAvailability = EditAvailabilityCommonReq();
+    editAvailability.from = "";
+    editAvailability.to = "";
+    editAvailability.childId = availabilityData[0].childId!;
+    editAvailability.markId = availabilityData[0].markavailId!;
+    print("3:${availabilityData[0].childId!}");
+    print("4:${availabilityData[0].markavailId!}");
+    print("5:${FriendsId}");
+    editAvailability.friendId = FriendsId;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.createAvailability(markavail).then((response) {
+    api.EditAvailability(editAvailability).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        print("result2:$response");
       } else {
-        functions.createSnackBar(context, response.message.toString());
+        functions.createSnackBar(ctx, response.message.toString());
         AppUtils.dismissprogress();
         print("error");
       }

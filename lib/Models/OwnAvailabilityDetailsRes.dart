@@ -1,7 +1,7 @@
 class OwnAvailabilityDetailsRes {
   bool? status;
   String? message;
-  List<OwnAvailabilityData>? data;
+  List<Data>? data;
 
   OwnAvailabilityDetailsRes({this.status, this.message, this.data});
 
@@ -9,9 +9,9 @@ class OwnAvailabilityDetailsRes {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <OwnAvailabilityData>[];
+      data = <Data>[];
       json['data'].forEach((v) {
-        data!.add(new OwnAvailabilityData.fromJson(v));
+        data!.add(new Data.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class OwnAvailabilityDetailsRes {
   }
 }
 
-class OwnAvailabilityData {
+class Data {
   int? markavailId;
   int? parentId;
   int? childId;
@@ -47,9 +47,10 @@ class OwnAvailabilityData {
   String? activitiesName;
   String? activitiesImg;
   List<String>? benefits;
+  String? requestStatus;
   List<Friendsdata>? friendsdata;
 
-  OwnAvailabilityData(
+  Data(
       {this.markavailId,
       this.parentId,
       this.childId,
@@ -69,9 +70,10 @@ class OwnAvailabilityData {
       this.activitiesName,
       this.activitiesImg,
       this.benefits,
+      this.requestStatus,
       this.friendsdata});
 
-  OwnAvailabilityData.fromJson(Map<String, dynamic> json) {
+  Data.fromJson(Map<String, dynamic> json) {
     markavailId = json['markavail_id'];
     parentId = json['parent_id'];
     childId = json['child_id'];
@@ -91,6 +93,7 @@ class OwnAvailabilityData {
     activitiesName = json['activities_name'];
     activitiesImg = json['activities_img'];
     benefits = json['benefits'].cast<String>();
+    requestStatus = json['request_status'];
     if (json['friendsdata'] != null) {
       friendsdata = <Friendsdata>[];
       json['friendsdata'].forEach((v) {
@@ -120,6 +123,7 @@ class OwnAvailabilityData {
     data['activities_name'] = this.activitiesName;
     data['activities_img'] = this.activitiesImg;
     data['benefits'] = this.benefits;
+    data['request_status'] = this.requestStatus;
     if (this.friendsdata != null) {
       data['friendsdata'] = this.friendsdata!.map((v) => v.toJson()).toList();
     }

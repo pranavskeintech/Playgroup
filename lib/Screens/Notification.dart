@@ -141,10 +141,10 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               ),
                               child: ListTile(
                                 onTap: () {
-                                  Strings.FriendNotification = true;
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          ShowOtherChildProfile(otherChildID: NotificationList![mainIndex].childId,)));
+                                  // Strings.FriendNotification = true;
+                                  // Navigator.of(context).push(MaterialPageRoute(
+                                  //     builder: (BuildContext context) =>
+                                  //         ShowOtherChildProfile(otherChildID: NotificationList![mainIndex].childId,)));
                                 },
                                 title: Text(
                                   NotificationList![mainIndex].title!,
