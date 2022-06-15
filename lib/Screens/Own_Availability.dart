@@ -403,8 +403,8 @@ class _Own_AvailabilityState extends State<Own_Availability>
                       : Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                           child: InkWell(
-                            onTap: () async {
-                              await Navigator.of(context)
+                            onTap: ()  {
+                               Navigator.of(context)
                                   .push(MaterialPageRoute(
                                       builder: (context) => SuggestTime(
                                             ChildId: Strings.SelectedChild,
@@ -416,9 +416,6 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                                 availabilityData[0].fromTime,
                                             TOTime: availabilityData[0].toTime,
                                           )));
-                              setState(() {
-                                getAvailabilityDetails();
-                              });
                             },
                             child: Text(
                               "Suggest time Slot",
@@ -944,7 +941,10 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             radius: 17,
                           ),
                           title: Text(
-                            availabilityData[0].friendsdata![index].friendName ?? "",
+                            availabilityData[0]
+                                    .friendsdata![index]
+                                    .friendName ??
+                                "",
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 13.5),
                           ),

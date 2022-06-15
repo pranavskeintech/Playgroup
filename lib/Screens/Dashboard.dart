@@ -50,7 +50,8 @@ class _DashBoardState extends State<DashBoard> {
 
   var ctx;
 
-  bool _isLoading = true;
+  bool _isLoading1 = true;
+  bool _isLoading2 = true;
 
   Profile? _ProfileData;
 
@@ -65,12 +66,10 @@ class _DashBoardState extends State<DashBoard> {
   Children? HeaderData;
 
   GetProfile() {
-    print("fethching profile");
+    _isLoading2 = true;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetProfile().then((response) 
-    {
-      if (response.status == true) 
-      {
+    api.GetProfile().then((response) {
+      if (response.status == true) {
         // AppUtils.dismissprogress();
         setState(() {
           _ProfileData = response.profile;
@@ -82,18 +81,19 @@ class _DashBoardState extends State<DashBoard> {
               HeaderData = _ProfileData!.children![index1!];
             }
           }
-          print("profile:${HeaderData!.profile}");
           Strings.ProfilePic = HeaderData!.profile;
           ListViewData = _ProfileData!.children!.removeAt(index1!);
-          _isLoading = false;
+          _isLoading2 = false;
+          _isLoading1 = false;
           // _showDialog(ctx);
         });
       } else {
+        _isLoading1 = false;
+        _isLoading2 = false;
         functions.createSnackBar(ctx, response.status.toString());
         // _btnController.stop();
       }
     }).catchError((onError) {
-      
       print(onError.toString());
     });
   }
@@ -125,13 +125,11 @@ class _DashBoardState extends State<DashBoard> {
     ctx = context;
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
-      child:
-      //  _isLoading
-      //     ? const Center(
-      //         child: CircularProgressIndicator(
-      //             valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-      //     : 
-          Scaffold(
+      child: _isLoading1
+          ? const Center(
+              child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+          : Scaffold(
               key: _scaffoldKey,
               drawer: NavigationDrawer(),
               appBar: AppBar(
@@ -165,11 +163,13 @@ class _DashBoardState extends State<DashBoard> {
                 ),
                 actions: [
                   InkWell(
-                    onTap: () {
+                    onTap: () async {
                       // Navigator.of(context).push(MaterialPageRoute(
                       // builder: (BuildContext context) => ProfileScreen()))
-                      SwitchChild.showChildDialog(ctx);
-                      SwitchChild.GetProfile(ctx);
+                      await showChildDialog();
+                      setState(() {
+                        GetProfile();
+                      });
                     },
                     child: CircleAvatar(
                       backgroundImage: (HeaderData?.profile != "null")
@@ -206,9 +206,13 @@ class _DashBoardState extends State<DashBoard> {
               ),
               resizeToAvoidBottomInset: false,
               floatingActionButton: FloatingActionButton(
-                onPressed: () {
-                  Navigator.of(context).push(MaterialPageRoute(
+                onPressed: () async {
+                  await Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => Mark_Availabilty()));
+                  setState(() {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                        builder: (BuildContext context) => DashBoard()));
+                  });
                 },
                 backgroundColor: Strings.appThemecolor,
                 child: Icon(Icons.add),
@@ -261,5 +265,129 @@ class _DashBoardState extends State<DashBoard> {
   //     print(onError.toString());
   //   });
   // }
+  showChildDialog() {
+    _isLoading2
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : showDialog(
+            context: ctx,
+            barrierDismissible: true, // user must tap button!
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Switch Child",
+                          style: TextStyle(fontSize: 17),
+                        ),
+                        GestureDetector(
+                            onTap: (() {
+                              Navigator.pop(context);
+                            }),
+                            child: Icon(Icons.clear))
+                      ],
+                    ),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    // CircleAvatar(
+                    //     backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                    //     radius: 32),
 
+                    CircleAvatar(
+                      backgroundImage: HeaderData!.profile! != "null"
+                          ? NetworkImage(
+                              Strings.imageUrl + (HeaderData!.profile ?? ""))
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(HeaderData!.childName!,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500)),
+                  ],
+                ),
+                content: setupAlertDialoadContainer(ctx),
+                // Image(
+                //     image: AssetImage(
+                //         "assets/imgs/child5.jpg")), //Hard code for profile image
+              );
+            });
+  }
+
+  Widget setupAlertDialoadContainer(ctx) {
+    return (_ProfileData!.children!.length == 0)
+        ? Container(
+            height: 0,
+          )
+        : Container(
+            height: 150.0, // Change as per your requirement
+            width: 300.0, // Change as per your requirement
+            child: Center(
+              child: ListView.builder(
+                shrinkWrap: true,
+                itemCount: _ProfileData!.children!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 9),
+                    child: InkWell(
+                      onTap: () {
+                        AppUtils.showprogress();
+                        int ChildId = _ProfileData!.children![index].childId!;
+                        print("CiD:$ChildId");
+                        _ChooseChild(ChildId);
+                      },
+                      child: Container(
+                        width: 250,
+                        height: 40,
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey.withOpacity(0.15),
+                              width: 1.5,
+                            ),
+                            borderRadius: BorderRadius.circular(4)),
+                        padding: EdgeInsets.fromLTRB(12, 5, 0, 5),
+                        child: Center(
+                          child: Text(
+                            _ProfileData!.children![index].childName!,
+                            style: TextStyle(
+                                fontSize: 15, fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+  }
+
+  _ChooseChild(ChildId) {
+    //var Pid = Strings.Parent_Id.toInt();
+    ChooseChildReq ChooseChild = ChooseChildReq();
+    ChooseChild.selectedChildId = ChildId;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.ChooseChild(ChooseChild).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        Strings.SelectedChild = ChildId;
+        AppUtils.dismissprogress();
+        Navigator.push(
+            ctx, MaterialPageRoute(builder: (context) => DashBoard()));
+        Strings.SelectedChild = ChildId;
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(ctx, response.message.toString());
+        AppUtils.dismissprogress();
+        print("error");
+      }
+    });
+  }
 }
