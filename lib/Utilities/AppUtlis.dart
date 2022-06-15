@@ -294,7 +294,9 @@ class SwitchChild {
 
   static Children? ListViewData;
 
-  static GetProfile(ctx) {
+  static GetProfile(ctx) 
+  {
+    _isLoading = true;
     print("hiiii");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetProfile().then((response) {
@@ -307,10 +309,12 @@ class SwitchChild {
           if (_ProfileData!.children![i].childId == _SelectedChildId) {
             index1 = i;
           }
-        }
+        }       
         HeaderData = _ProfileData!.children![index1!];
         ListViewData = _ProfileData!.children!.removeAt(index1!);
         _isLoading = false;
+        Navigator.pop(ctx);
+        showChildDialog(ctx);
         // _showDialog(ctx);
       } else {
         functions.createSnackBar(ctx, response.status.toString());
@@ -321,17 +325,17 @@ class SwitchChild {
     });
   }
 
-  static showChildDialog(ctx) {
-    GetProfile(ctx);
-    _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-        : showDialog(
+  static showChildDialog(ctx)  {
+    showDialog(
             context: ctx,
             barrierDismissible: true, // user must tap button!
             builder: (BuildContext context) {
-              return AlertDialog(
+              return 
+              _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))):
+              AlertDialog(
                 title: Column(
                   children: [
                     Row(
