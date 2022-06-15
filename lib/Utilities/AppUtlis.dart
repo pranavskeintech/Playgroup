@@ -309,8 +309,7 @@ class SwitchChild {
           if (_ProfileData!.children![i].childId == _SelectedChildId) {
             index1 = i;
           }
-        }
-        
+        }       
         HeaderData = _ProfileData!.children![index1!];
         ListViewData = _ProfileData!.children!.removeAt(index1!);
         _isLoading = false;
