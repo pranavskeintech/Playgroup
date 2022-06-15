@@ -65,6 +65,7 @@ class _DashBoardState extends State<DashBoard> {
   Children? HeaderData;
 
   GetProfile() {
+    print("fethching profile");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetProfile().then((response) 
     {
@@ -168,6 +169,7 @@ class _DashBoardState extends State<DashBoard> {
                       // Navigator.of(context).push(MaterialPageRoute(
                       // builder: (BuildContext context) => ProfileScreen()))
                       SwitchChild.showChildDialog(ctx);
+                      SwitchChild.GetProfile(ctx);
                     },
                     child: CircleAvatar(
                       backgroundImage: (HeaderData?.profile != "null")

@@ -236,6 +236,7 @@ class _EditCoParentState extends State<EditCoParent> {
                         margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
                         width: MediaQuery.of(context).size.width * 0.70,
                         child: TextField(
+                          enabled: false,
                           style: TextStyle(color: Colors.black),
                           controller: _phoneController,
                           decoration: InputDecoration(
