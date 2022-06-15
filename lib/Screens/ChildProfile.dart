@@ -194,68 +194,74 @@ class _ChildProfileState extends State<ChildProfile>
   }
 
   Widget Tabbarwidgets() {
-    return Container(
-        // padding: EdgeInsets.all(5),
-        width: MediaQuery.of(context).size.width * 1.0,
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            height: 60,
-            child: TabBar(
-              tabs: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  child: Text('Profile Info',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  child: Text('Friends',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  child: Text('Friend Request',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  child: Text('Activities',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                )
-              ],
-              unselectedLabelColor: const Color(0xffacb3bf),
-              indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
-              labelColor: Colors.black,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorWeight: 3.0,
-              indicatorPadding: EdgeInsets.all(10),
-              isScrollable: true,
-              controller: _tabController,
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : Container(
+            // padding: EdgeInsets.all(5),
+            width: MediaQuery.of(context).size.width * 1.0,
+            decoration: BoxDecoration(
+              color: Colors.white,
             ),
-          ),
-          Expanded(
-              child: TabBarView(controller: _tabController, children: <Widget>[
-            ProfileInfo(),
-            Friends(),
-            FriendRequest(),
-            Activities(),
-          ])),
-        ]));
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                height: 60,
+                child: TabBar(
+                  tabs: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      child: Text('Profile Info',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      child: Text('Friends',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      child: Text('Friend Request',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      child: Text('Activities',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    )
+                  ],
+                  unselectedLabelColor: const Color(0xffacb3bf),
+                  indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
+                  labelColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorWeight: 3.0,
+                  indicatorPadding: EdgeInsets.all(10),
+                  isScrollable: true,
+                  controller: _tabController,
+                ),
+              ),
+              Expanded(
+                  child:
+                      TabBarView(controller: _tabController, children: <Widget>[
+                ProfileInfo(),
+                Friends(),
+                FriendRequest(),
+                Activities(),
+              ])),
+            ]));
   }
 
   Widget ProfileInfo() {

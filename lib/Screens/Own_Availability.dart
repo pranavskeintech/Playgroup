@@ -403,19 +403,17 @@ class _Own_AvailabilityState extends State<Own_Availability>
                       : Padding(
                           padding: EdgeInsets.fromLTRB(20, 0, 0, 0),
                           child: InkWell(
-                            onTap: ()  {
-                               Navigator.of(context)
-                                  .push(MaterialPageRoute(
-                                      builder: (context) => SuggestTime(
-                                            ChildId: Strings.SelectedChild,
-                                            OtherChildId:
-                                                availabilityData[0].childId,
-                                            markavailId:
-                                                availabilityData[0].markavailId,
-                                            FromTime:
-                                                availabilityData[0].fromTime,
-                                            TOTime: availabilityData[0].toTime,
-                                          )));
+                            onTap: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => SuggestTime(
+                                        ChildId: Strings.SelectedChild,
+                                        OtherChildId:
+                                            availabilityData[0].childId,
+                                        markavailId:
+                                            availabilityData[0].markavailId,
+                                        FromTime: availabilityData[0].fromTime,
+                                        TOTime: availabilityData[0].toTime,
+                                      )));
                             },
                             child: Text(
                               "Suggest time Slot",
@@ -588,7 +586,10 @@ class _Own_AvailabilityState extends State<Own_Availability>
                   child: ChipsChoice<int>.multiple(
                     wrapped: true,
                     verticalDirection: VerticalDirection.up,
-                    choiceStyle: C2ChoiceStyle(color: Colors.black),
+                    choiceStyle: C2ChoiceStyle(
+                        color: Colors.grey.shade600,
+                        labelStyle: TextStyle(
+                            fontWeight: FontWeight.w400, fontSize: 14)),
                     value: tag1,
                     onChanged: (val) {},
                     choiceItems: C2Choice.listFrom<int, String>(
