@@ -454,7 +454,6 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                                                     "null"
                                                 ? NetworkImage(Strings
                                                         .imageUrl +
-                                                    "activities/" +
                                                     (availabilityData[0]
                                                             .friendsdata![index]
                                                             .profile ??

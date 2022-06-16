@@ -439,10 +439,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: (() {
                                 var chooseChildId =
                                     _ProfileData!.children![index].childId;
+                                var chooseChildName =
+                                    _ProfileData!.children![index].childName;
+                                Strings.ChoosedChild =
+                                    _ProfileData!.children![index].childId!;
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         ChildProfile(
-                                            chooseChildId: chooseChildId)));
+                                            chooseChildId: chooseChildId,chooseChildName:chooseChildName)));
                               }),
                               leading: CircleAvatar(
                                   backgroundImage: _ProfileData!

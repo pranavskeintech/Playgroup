@@ -742,6 +742,89 @@ class _ApiService implements ApiService {
     return value;
   }
 
+  @override
+  Future<CreateGroupRes> CreateGroup(body, ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CreateGroupRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/create/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CreateGroupRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetGroupDetailsByIdRes> GetGroupDetailsbyId(groupId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetGroupDetailsByIdRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/getDetails/${groupId}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetGroupDetailsByIdRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetAllGroupDetailsRes> GetAllGroupDetails(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetAllGroupDetailsRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/getAll/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetAllGroupDetailsRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> addParticipantsGroup(body, groupId) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/add_participants/${groupId}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> removeParticipantsGroup(body, ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'DELETE', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/remove_participants/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||
