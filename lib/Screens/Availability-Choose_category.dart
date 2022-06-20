@@ -45,7 +45,7 @@ class _Choose_CategoryState extends State<Choose_Category> {
 
   _GetCatagories() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetSports(Strings.markAvailabiltyTopic).then((response) {
+    api.GetSports(Strings.markAvailabiltyTopic!).then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {

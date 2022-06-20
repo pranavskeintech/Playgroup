@@ -65,9 +65,9 @@ mixin Strings {
 
   static String markAvailabiltylocations = "";
 
-  static int markAvailabiltycategory = 0;
+  static int? markAvailabiltycategory;
 
-  static int markAvailabiltyTopic = 0;
+  static int? markAvailabiltyTopic;
 
   static bool FriendNotification = false;
 

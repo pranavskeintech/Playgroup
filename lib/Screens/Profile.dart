@@ -296,7 +296,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  "Co-Parent",
+                                  _ProfileData!
+                                                  .role == "PARENT"?
+                                  "Co-Parent":"Owner",
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 TextButton(

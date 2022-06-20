@@ -964,9 +964,19 @@ class _Own_AvailabilityState extends State<Own_Availability>
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.deleteAvailability(widget.markavailId!).then((response) {
       AppUtils.dismissprogress();
-      AppUtils.showToast(response.message, ctx);
+
+
+      if(response.status!)
+      {
+ AppUtils.showToast(response.message, ctx);
       Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+      }
+      else
+      {
+        AppUtils.showError(context, response.message, "onTap");
+      }
+     
     }).catchError((onError) {
       AppUtils.showToast(onError.toString(), ctx);
       print(onError.toString());

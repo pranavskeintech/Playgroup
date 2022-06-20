@@ -94,7 +94,6 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
   }
 
   updateSelectedChilds() {
-    print("color");
     for (var i = 0; i < availabilityData[0].friendsdata!.length; i++) {
       for (var j = 0; j < _foundedUsers.length; j++) {
         print(
@@ -127,7 +126,6 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
       }
     }
 
-    print(FriendsId);
   }
 
   onSearch(String search) {
@@ -231,6 +229,7 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
                             _isChecked![index] = false;
                           }
                         }
+                        updateFriendsID();
                       },
                     ),
                   ],
