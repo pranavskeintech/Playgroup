@@ -75,13 +75,18 @@ class _groupParticipantsState extends State<groupParticipants> {
           FriendsDatum = response.data!;
 
           _isChecked = List<bool>.filled(FriendsDatum!.length, false);
-          print("1:${FriendsDatum![0].childId}");
+          var frnds = [];
+          for (var i = 0; i < FriendsDatum!.length; i++) {
+            frnds.add(FriendsDatum![i].childId!);
+          }
+          print("1:${frnds}");
           print("2:${widget.groupMembersId}");
           for (var i = 0; i < FriendsDatum!.length; i++) {
             if (widget.groupMembersId!.contains(FriendsDatum![i].childId)) {
               index1 = i;
               ListViewData = FriendsDatum!.removeAt(index1!);
             }
+            print("3:${index1}");
           }
           _isLoading = false;
         });
@@ -109,7 +114,7 @@ class _groupParticipantsState extends State<groupParticipants> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Strings.appThemecolor,
-            title: Text("Your Availability"),
+            title: Text("Add Friends"),
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);

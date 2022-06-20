@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
+import 'package:playgroup/Models/FriendsAndGroups.dart';
 import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
@@ -121,6 +122,12 @@ class _ChildProfileState extends State<ChildProfile>
 
   List<GroupDetails>? GroupDetail;
 
+  List<GroupDetai>? newList;
+
+  List<GroupDetai>? GroupDetail1;
+
+  List<GroupDetai>? FriendsDat;
+
   fetchData() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetPendingFriendReq(widget.chooseChildId!).then((response) {
@@ -167,6 +174,7 @@ class _ChildProfileState extends State<ChildProfile>
         print("response ${response.status}");
         setState(() {
           FriendsDatum = response.data!;
+          // FriendsDat = response.data!.cast<GroupDetai>();
           GroupData();
         });
       }
@@ -181,8 +189,16 @@ class _ChildProfileState extends State<ChildProfile>
       print(response.status);
       if (response.status == true) {
         setState(() {
-          GroupDetail = response.groupDetails;
-          _isLoading = false;
+          if (response.message != "No Groups found") {
+            GroupDetail = response.groupDetails;
+            // GroupDetail1 = response.groupDetails!.cast<GroupDetai>();
+            _isLoading = false;
+            // newList = new List.from(FriendsDat!)..addAll(GroupDetail1!);
+            // print("1:${newList![0].childName}");
+          } else {
+            GroupDetail = [];
+            _isLoading = false;
+          }
         });
       } else {
         _isLoading = false;
@@ -222,7 +238,7 @@ class _ChildProfileState extends State<ChildProfile>
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
-        title: Text("Activity"),
+        title: Text(widget.chooseChildName!),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -230,7 +246,6 @@ class _ChildProfileState extends State<ChildProfile>
           icon: Icon(Icons.arrow_back_sharp),
         ),
       ),
-      bottomSheet: _showBottomSheet(),
       body: Tabbarwidgets(),
     );
   }
@@ -410,7 +425,7 @@ class _ChildProfileState extends State<ChildProfile>
                           height: 5,
                         ),
                         Text(
-                          childInfo![0].school!,
+                          childInfo![0].school ?? "",
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -700,77 +715,46 @@ class _ChildProfileState extends State<ChildProfile>
 /////////////////        All List    ///////////////////////////////////////
 
           (dropdownvalue == "ALL" && !_AddGroup)
-              ? FriendsDatum!.length > 0
+              ? (GroupDetail!.length) > 0
                   ? Expanded(
                       child: ListView.separated(
                         physics: BouncingScrollPhysics(),
-                        itemCount: FriendsDatum!.length,
+                        itemCount: GroupDetail!.length,
                         itemBuilder: (context, index) {
                           return Padding(
-                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        OtherChildProfile()));
-                              },
-                              leading: Transform.translate(
-                                offset: Offset(-16, 0),
-                                child: CircleAvatar(
-                                  backgroundImage: FriendsDatum![index]
-                                              .profile !=
-                                          "null"
-                                      ? NetworkImage(Strings.imageUrl +
-                                          (FriendsDatum![index].profile ?? ""))
-                                      : AssetImage("assets/imgs/appicon.png")
-                                          as ImageProvider,
-                                ),
-                              ),
-                              trailing: _AddGroup
-                                  ? Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(
-                                            color: Colors.grey, width: 1),
-                                        borderRadius:
-                                            BorderRadius.circular(3.0),
-                                      ),
-                                      width: 20,
-                                      height: 20,
-                                      child: Theme(
-                                        data: ThemeData(
-                                            unselectedWidgetColor:
-                                                Colors.white),
-                                        child: Checkbox(
-                                            // side: BorderSide(color: Colors.black),
-                                            checkColor: Colors.green,
-                                            activeColor: Colors.transparent,
-                                            //hoverColor: Colors.black,
-                                            value: _isChecked?[index],
-                                            onChanged: (val) {
-                                              setState(
-                                                () {
-                                                  if (val!) {
-                                                    _isChecked?[index] = val;
-                                                    FriendsId!.add(
-                                                        FriendsDatum![index]
-                                                            .childId!);
-                                                  } else {
-                                                    _isChecked?[index] = val;
-                                                    FriendsId!.remove(
-                                                        FriendsDatum![index]
-                                                            .childId!);
-                                                  }
-                                                },
-                                              );
-                                            }),
-                                      ),
-                                    )
-                                  : SizedBox(),
-                              title: Transform.translate(
+                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              child: ListTile(
+                                onTap: () async {
+                                  await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Groupinfo(
+                                                  groupId: GroupDetail![index]
+                                                      .groupId,
+                                                  choosedChildId:
+                                                      widget.chooseChildId)));
+                                  setState(() {
+                                    GroupData();
+                                  });
+                                },
+                                leading: Transform.translate(
                                   offset: Offset(-16, 0),
-                                  child: Text(FriendsDatum![index].childName!)),
-                            ),
-                          );
+                                  child: CircleAvatar(
+                                    backgroundImage: GroupDetail![index]
+                                                .groupImage !=
+                                            "null"
+                                        ? NetworkImage(Strings.imageUrl +
+                                            (GroupDetail![index].groupImage ??
+                                                ""))
+                                        : AssetImage("assets/imgs/appicon.png")
+                                            as ImageProvider,
+                                  ),
+                                ),
+                                title: Transform.translate(
+                                    offset: Offset(-16, 0),
+                                    child:
+                                        Text(GroupDetail![index].groupName!)),
+                              ));
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return Padding(
@@ -796,14 +780,18 @@ class _ChildProfileState extends State<ChildProfile>
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                             child: ListTile(
-                              onTap: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Groupinfo(
-                                            groupId:
-                                                GroupDetail![index].groupId,
-                                            choosedChildId:
-                                                widget.chooseChildId)));
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Groupinfo(
+                                                groupId:
+                                                    GroupDetail![index].groupId,
+                                                choosedChildId:
+                                                    widget.chooseChildId)));
+                                setState(() {
+                                  GroupData();
+                                });
                               },
                               leading: Transform.translate(
                                 offset: Offset(-16, 0),
@@ -963,19 +951,23 @@ class _ChildProfileState extends State<ChildProfile>
                         },
                       ),
                     )
-                  : Spacer()
+                  : Center(
+                      child: Text(
+                          "There are no Groups/Friends for your child, please add accordingly"))
               : SizedBox(),
           _AddGroup
               ? SizedBox(
                   height: 80,
                 )
-              : SizedBox()
+              : SizedBox(),
+
+          _showBottomSheet(),
         ],
       ),
     );
   }
 
-  Widget? _showBottomSheet() {
+  Widget _showBottomSheet() {
     if (_AddGroup) {
       return BottomSheet(
         onClosing: () {},
@@ -983,8 +975,11 @@ class _ChildProfileState extends State<ChildProfile>
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(15.0),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+                bottomLeft: Radius.zero,
+                bottomRight: Radius.zero,
               ),
               boxShadow: <BoxShadow>[
                 new BoxShadow(
@@ -1001,13 +996,19 @@ class _ChildProfileState extends State<ChildProfile>
             child: TextButton(
                 onPressed: () {
                   _AddGroup = false;
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AddGroup(
-                          friendsId: FriendsId,
-                          ChoosedChildId: widget.chooseChildId,
-                          FromGroupInfo: false,
-                          Groupimg: "null")));
-                  setState(() {});
+                  if (FriendsId!.length != 0) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => AddGroup(
+                            friendsId: FriendsId,
+                            ChoosedChildId: widget.chooseChildId,
+                            FromGroupInfo: false,
+                            Groupimg: "null")));
+                    setState(() {});
+                  } else {
+                    AppUtils.showToast(
+                        "Please add atleast one of your friend to the group",
+                        ctx);
+                  }
                 },
                 child: Container(
                   child: Row(
@@ -1032,7 +1033,7 @@ class _ChildProfileState extends State<ChildProfile>
         },
       );
     } else {
-      return null;
+      return SizedBox();
     }
   }
 

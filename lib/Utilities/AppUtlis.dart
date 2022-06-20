@@ -42,7 +42,6 @@ List<String> Images = [
   'child2.jpg'
 ];
 
-
 class AppUtils {
   static appbutton(String title, Function() ontap) {
     return InkWell(
@@ -198,16 +197,15 @@ class AppUtils {
         });
   }
 
-  static void showParticipant(context,List<Friendsdata> friendsdata) 
-  {
+  static void showParticipant(context, List<Friendsdata> friendsdata) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
               content: Container(
-                height: MediaQuery.of(context).size.height * 0.6,
-                child: Column(children: [
-                          InkWell(
+            height: MediaQuery.of(context).size.height * 0.6,
+            child: Column(children: [
+              InkWell(
                 onTap: () {
                   Navigator.of(context).pop();
                 },
@@ -218,9 +216,9 @@ class AppUtils {
                     size: 20,
                   )),
                 ),
-                          ),
-                          SizedBox(height: 10),
-                          Container(
+              ),
+              SizedBox(height: 10),
+              Container(
                 height: MediaQuery.of(context).size.height * 0.55,
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: ListView.builder(
@@ -231,27 +229,26 @@ class AppUtils {
                         ListTile(
                           leading: CircleAvatar(
                             backgroundImage:
-                            friendsdata[index].profile != "null"
-                            ? NetworkImage(Strings.imageUrl +
-                                (friendsdata[index].profile ?? ""))
-                            : AssetImage("assets/imgs/appicon.png")
-                                as ImageProvider,
+                                friendsdata[index].profile != "null"
+                                    ? NetworkImage(Strings.imageUrl +
+                                        (friendsdata[index].profile ?? ""))
+                                    : AssetImage("assets/imgs/appicon.png")
+                                        as ImageProvider,
                             radius: 17,
                           ),
-                          title: Text(friendsdata[index].friendName ?? ""
-                            ,
+                          title: Text(
+                            friendsdata[index].friendName ?? "",
                             style: TextStyle(
                                 fontWeight: FontWeight.w600, fontSize: 13.5),
                           ),
                         ),
-                       
                       ],
                     );
                   },
                 ),
-                          ),
-                        ]),
-              ));
+              ),
+            ]),
+          ));
         });
   }
 }
@@ -294,8 +291,7 @@ class SwitchChild {
 
   static Children? ListViewData;
 
-  static GetProfile(ctx) 
-  {
+  static GetProfile(ctx) {
     _isLoading = true;
     print("hiiii");
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -309,7 +305,7 @@ class SwitchChild {
           if (_ProfileData!.children![i].childId == _SelectedChildId) {
             index1 = i;
           }
-        }       
+        }
         HeaderData = _ProfileData!.children![index1!];
         ListViewData = _ProfileData!.children!.removeAt(index1!);
         _isLoading = false;
@@ -325,61 +321,60 @@ class SwitchChild {
     });
   }
 
-  static showChildDialog(ctx)  {
+  static showChildDialog(ctx) {
     showDialog(
-            context: ctx,
-            barrierDismissible: true, // user must tap button!
-            builder: (BuildContext context) {
-              return 
-              _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey))):
-              AlertDialog(
-                title: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "Switch Child",
-                          style: TextStyle(fontSize: 17),
-                        ),
-                        GestureDetector(
-                            onTap: (() {
-                              Navigator.pop(context);
-                            }),
-                            child: Icon(Icons.clear))
-                      ],
-                    ),
-                    SizedBox(
-                      height: 15,
-                    ),
-                    // CircleAvatar(
-                    //     backgroundImage: AssetImage("assets/imgs/child5.jpg"),
-                    //     radius: 32),
+        context: ctx,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return _isLoading
+              ? const Center(
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+              : AlertDialog(
+                  title: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Switch Child",
+                            style: TextStyle(fontSize: 17),
+                          ),
+                          GestureDetector(
+                              onTap: (() {
+                                Navigator.pop(context);
+                              }),
+                              child: Icon(Icons.clear))
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      // CircleAvatar(
+                      //     backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                      //     radius: 32),
 
-                    CircleAvatar(
-                      backgroundImage: HeaderData!.profile! != "null"
-                          ? NetworkImage(
-                              Strings.imageUrl + (HeaderData!.profile ?? ""))
-                          : AssetImage("assets/imgs/appicon.png")
-                              as ImageProvider,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(HeaderData!.childName!,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500)),
-                  ],
-                ),
-                content: setupAlertDialoadContainer(ctx),
-                // Image(
-                //     image: AssetImage(
-                //         "assets/imgs/child5.jpg")), //Hard code for profile image
-              );
-            });
+                      CircleAvatar(
+                        backgroundImage: HeaderData!.profile! != "null"
+                            ? NetworkImage(
+                                Strings.imageUrl + (HeaderData!.profile ?? ""))
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(HeaderData!.childName!,
+                          style: TextStyle(
+                              fontSize: 16, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                  content: setupAlertDialoadContainer(ctx),
+                  // Image(
+                  //     image: AssetImage(
+                  //         "assets/imgs/child5.jpg")), //Hard code for profile image
+                );
+        });
   }
 
   static Widget setupAlertDialoadContainer(ctx) {
@@ -442,7 +437,7 @@ class SwitchChild {
         AppUtils.dismissprogress();
         Navigator.push(
             ctx, MaterialPageRoute(builder: (context) => DashBoard()));
-                                    Strings.SelectedChild = ChildId;
+        Strings.SelectedChild = ChildId;
         print("result2:$response");
       } else {
         functions.createSnackBar(ctx, response.message.toString());

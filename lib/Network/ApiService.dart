@@ -41,6 +41,7 @@ import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/SuggestTimeReq.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Models/addGroupParticipants.dart';
+import 'package:playgroup/Models/updateGroupReq.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -206,21 +207,25 @@ abstract class ApiService {
   Future<CreateGroupRes> CreateGroup(
       @Body() CreateGroupReq body, @Path("ChildID") int ChildID);
 
+  @PUT("groups/update/{groupId}")
+  Future<CommonRes> updateGroup(
+      @Body() updateGroupReq body, @Path("groupId") int groupId);
+
   @GET("groups/getDetails/{groupId}")
   Future<GetGroupDetailsByIdRes> GetGroupDetailsbyId(
       @Path("groupId") int groupId);
 
-      
   @GET("groups/getAll/{ChildID}")
   Future<GetAllGroupDetailsRes> GetAllGroupDetails(
       @Path("ChildID") int ChildID);
-      
+
   @POST("groups/add_participants/{groupId}")
   Future<CommonRes> addParticipantsGroup(
       @Body() addGroupParticipants body, @Path("groupId") int groupId);
 
   @DELETE("groups/remove_participants/{ChildID}")
-  Future<CommonRes> removeParticipantsGroup(@Body() RemoveParticipantsGroupReq body,@Path("ChildID") int ChildID);
+  Future<CommonRes> removeParticipantsGroup(
+      @Body() RemoveParticipantsGroupReq body, @Path("ChildID") int ChildID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

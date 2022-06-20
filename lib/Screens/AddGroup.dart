@@ -3,9 +3,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/CreateGroupReq.dart';
+import 'package:playgroup/Models/updateGroupReq.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/ChildProfile.dart';
 import 'package:playgroup/Screens/GroupInfo.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
@@ -247,7 +249,12 @@ class _AddGroupState extends State<AddGroup> {
               child: !widget.FromGroupInfo!
                   ? ElevatedButton(
                       onPressed: () {
-                        createGrp();
+                        if (GroupNameController.text.isNotEmpty) {
+                          print("text:${GroupNameController.text}");
+                          createGrp();
+                        } else {
+                          AppUtils.showToast("Please add a group name", ctx);
+                        }
                       },
                       child: Text(
                         "Add Group+",
@@ -255,7 +262,12 @@ class _AddGroupState extends State<AddGroup> {
                       ))
                   : ElevatedButton(
                       onPressed: () {
-                        createGrp();
+                        if (GroupNameController.text.isNotEmpty) {
+                          print("text:${GroupNameController.text}");
+                          EditGroup();
+                        } else {
+                          AppUtils.showToast("Please add a group name", ctx);
+                        }
                       },
                       child: Text(
                         "Edit Group",
@@ -282,8 +294,8 @@ class _AddGroupState extends State<AddGroup> {
       if (response.status == true) {
         int GroupId = response.groupDetails!.insertId!.toInt();
         Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) =>
-                ChildProfile(chooseChildId: Strings.ChoosedChild)));
+            builder: (BuildContext context) => Groupinfo(
+                groupId: GroupId, choosedChildId: widget.ChoosedChildId)));
         print("result2:$response");
       } else {
         functions.createSnackBar(context, response.message.toString());
@@ -292,31 +304,26 @@ class _AddGroupState extends State<AddGroup> {
     });
   }
 
-  // EditGroup() {
-  //   EditGroupReq editGroup = EditGroupReq();
-  //   editGroup.childId = _ChildData![Strings.editIndex].childId.toString();
-  //   editGroup.childName = _numberController.text;
-  //   editGroup.dob = _dobController.text;
+  EditGroup() {
+    updateGroupReq editGroup = updateGroupReq();
+    editGroup.groupName = GroupNameController.text;
 
-  //   if (img64 == "") {
-  //     editGroup.profile = _ChildData![Strings.editIndex].profile;
-  //   } else {
-  //     editGroup.profile = "data:image/jpeg;base64,$img64";
-  //   }
-  //   print(jsonEncode(ChildEdit));
-  //   final api = Provider.of<ApiService>(ctx!, listen: false);
-  //   api.EditChild(ChildEdit).then((response) {
-  //     print('response ${response.status}');
-  //     if (response.status == true) {
-  //       AppUtils.dismissprogress();
-  //       Navigator.of(context).push(MaterialPageRoute(
-  //           builder: (BuildContext context) => ChildConfirmation()));
-  //       print("result2:$response");
-  //     } else {
-  //       functions.createSnackBar(context, response.message.toString());
-  //       _btnController.stop();
-  //       print("error");
-  //     }
-  //   });
-  // }
+    if (img64 == "") {
+      editGroup.groupImage = widget.Groupimg;
+    } else {
+      editGroup.groupImage = "data:image/jpeg;base64,$img64";
+    }
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.updateGroup(editGroup, widget.groupId!).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.pop(context);
+        functions.createSnackBarGreen(context, response.message.toString());
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
+      }
+    });
+  }
 }
