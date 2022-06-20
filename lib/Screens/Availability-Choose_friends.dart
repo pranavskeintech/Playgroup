@@ -335,7 +335,6 @@ class _Availability_choose_friendsState
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
-<<<<<<< HEAD
         AppUtils.showToast(response.message,context);
          Strings.markAvailabiltydate = "";
         Strings.markAvailabiltystartTime = "";
@@ -344,9 +343,6 @@ class _Availability_choose_friendsState
     Strings.markAvailabiltylocations = "";
     Strings.markAvailabiltyTopic = null;
     Strings.markAvailabiltycategory = null;
-=======
-        AppUtils.showToast(response.message, context);
->>>>>>> af852f35d9f97d08754c9f1d031130e3810e0be7
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else {
