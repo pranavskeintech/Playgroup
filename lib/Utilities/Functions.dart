@@ -14,8 +14,7 @@ class firebase {
   static String? smsOTP;
   static String? verId;
 
-  static void verifyPhone(context,phoneNumber) async 
-  {
+  static void verifyPhone(context, phoneNumber) async {
     final auth = FirebaseAuth.instance;
     final PhoneVerificationCompleted verificationCompleted =
         (AuthCredential phoneAuthCredential) async {
@@ -30,14 +29,13 @@ class firebase {
     };
 //
     final PhoneCodeSent smsOTPSent =
-        (String verificationId, [int? forceResendingToken]) async 
-        {
+        (String verificationId, [int? forceResendingToken]) async {
       print('verification id is $verificationId');
       verId = verificationId;
       // _isLoading = false;
       //  continued();
       // Get.to(() => OTPScreen());
-            AppUtils.dismissprogress();
+      AppUtils.dismissprogress();
       Navigator.of(context).push(
           MaterialPageRoute(builder: (BuildContext context) => OTPScreen()));
     };
@@ -57,11 +55,8 @@ class firebase {
         codeAutoRetrievalTimeout: codeAutoRetrievalTimeout);
   }
 
-  
-
-  static void signIn(context,smsCode) async {
-    try 
-    {
+  static void signIn(context, smsCode) async {
+    try {
       final AuthCredential credential =
           PhoneAuthProvider.credential(verificationId: verId!, smsCode: smsCode
               //smsOTP!,
@@ -75,48 +70,35 @@ class firebase {
       //Get.to(() => const LocationSelection());
       AppUtils.dismissprogress();
 
-      if(Strings.ForgotPassword)
-      {
+      if (Strings.ForgotPassword) {
         print("Moing to forgot pass");
         Strings.ForgotPassword = false;
         Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => ResetPassword()));
+            builder: (BuildContext context) => ResetPassword()));
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => LocationSelection()));
       }
-      else{
- Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => LocationSelection()));
-      }
-     
-    } on FirebaseAuthException catch (e) 
-    {
+    } on FirebaseAuthException catch (e) {
       AppUtils.dismissprogress();
       print('Error is $e');
 
-      if(
-        e.code.contains('invalid')
-      )
-      {
+      if (e.code.contains('invalid')) {
         functions.createSnackBar(context, 'Invalid OTP');
-      }
-      else
-      {
+      } else {
         functions.createSnackBar(context, e.code);
       }
-      
-      if (e.code == 'account-exists-with-different-credential') 
-      {
+
+      if (e.code == 'account-exists-with-different-credential') {
         //functions.createSnackBar(context, e.code.toString());
         // handle the error here
         print("account-exists-with-different-credential");
-      } else if (e.code == 'invalid-credential') 
-      {
+      } else if (e.code == 'invalid-credential') {
         functions.createSnackBar(context, e.code.toString());
         // handle the error here
         print("invalid-credential");
-
       }
-    } catch (e) 
-    {
+    } catch (e) {
       //  handleError(e);
       print("Error:$e");
       // functions.createSnackBar(context, e.toString());
@@ -124,15 +106,21 @@ class firebase {
   }
 }
 
- class functions 
-{
+class functions {
   static void createSnackBar(scaffoldContext, String message) {
-    final snackBar =  SnackBar(
-        content: Container(
-          height: 20,
-            child:  Text(message)
-        ),
+    final snackBar = SnackBar(
+        content: Container(height: 20, child: Text(message)),
         backgroundColor: Colors.red);
+
+    // Find the Scaffold in the Widget tree and use it to show a SnackBar!
+    ScaffoldMessenger.of(scaffoldContext).showSnackBar(snackBar);
+  }
+
+  
+  static void createSnackBarGreen(scaffoldContext, String message) {
+    final snackBar = SnackBar(
+        content: Container(height: 20, child: Text(message)),
+        backgroundColor: Colors.green);
 
     // Find the Scaffold in the Widget tree and use it to show a SnackBar!
     ScaffoldMessenger.of(scaffoldContext).showSnackBar(snackBar);

@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
+import 'package:playgroup/Models/FriendsAndGroups.dart';
+import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
 import 'package:playgroup/Models/PendingFriendReqRes.dart';
@@ -12,6 +16,7 @@ import 'package:playgroup/Screens/AddGroup.dart';
 import 'package:playgroup/Screens/EditChildDetails.dart';
 import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/EditLanguagesKnown.dart';
+import 'package:playgroup/Screens/GroupInfo.dart';
 import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -21,7 +26,12 @@ import 'package:provider/provider.dart';
 
 class ChildProfile extends StatefulWidget {
   int? chooseChildId;
-  ChildProfile({Key? key, this.chooseChildId}) : super(key: key);
+  String? chooseChildName;
+  ChildProfile({
+    Key? key,
+    this.chooseChildId,
+    this.chooseChildName,
+  }) : super(key: key);
 
   @override
   State<ChildProfile> createState() => _ChildProfileState();
@@ -85,10 +95,16 @@ class _ChildProfileState extends State<ChildProfile>
   ];
 
   bool value = false;
+  final List<String> _texts = [
+    "InduceSmile.com",
+    "Flutter.io",
+    "google.com",
+    "youtube.com",
+    "yahoo.com",
+    "gmail.com"
+  ];
 
   var _AddGroup = false;
-
-  bool _show = false;
 
   BuildContext? ctx;
 
@@ -99,6 +115,18 @@ class _ChildProfileState extends State<ChildProfile>
   bool _isLoading = true;
 
   List<Data>? childInfo;
+
+  List<bool>? _isChecked;
+
+  List<int>? FriendsId = [];
+
+  List<GroupDetails>? GroupDetail;
+
+  List<GroupDetai>? newList;
+
+  List<GroupDetai>? GroupDetail1;
+
+  List<GroupDetai>? FriendsDat;
 
   fetchData() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -112,7 +140,6 @@ class _ChildProfileState extends State<ChildProfile>
         setState(() {
           _FriendReqData = response.data;
           getProfile();
-          _GetFriends();
         });
       } else {
         functions.createSnackBar(context, response.status.toString());
@@ -129,6 +156,7 @@ class _ChildProfileState extends State<ChildProfile>
       print(response.status);
       if (response.status == true) {
         childInfo = response.data!;
+        _GetFriends();
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -146,8 +174,36 @@ class _ChildProfileState extends State<ChildProfile>
         print("response ${response.status}");
         setState(() {
           FriendsDatum = response.data!;
-          _isLoading = false;
+          // FriendsDat = response.data!.cast<GroupDetai>();
+          GroupData();
         });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  GroupData() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetAllGroupDetails(widget.chooseChildId!).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        setState(() {
+          if (response.message != "No Groups found") {
+            GroupDetail = response.groupDetails;
+            // GroupDetail1 = response.groupDetails!.cast<GroupDetai>();
+            _isLoading = false;
+            // newList = new List.from(FriendsDat!)..addAll(GroupDetail1!);
+            // print("1:${newList![0].childName}");
+          } else {
+            GroupDetail = [];
+            _isLoading = false;
+          }
+        });
+      } else {
+        _isLoading = false;
+        functions.createSnackBar(context, response.status.toString());
+        // _btnController.stop();
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -158,6 +214,7 @@ class _ChildProfileState extends State<ChildProfile>
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 4, vsync: this);
+    _isChecked = List<bool>.filled(_texts.length, false);
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => fetchData());
@@ -170,17 +227,18 @@ class _ChildProfileState extends State<ChildProfile>
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Builder(builder: (BuildContext newContext) {
-            return FriendReq(newContext);
+            return ChildProfile(newContext);
           }),
         ));
   }
 
-  FriendReq(BuildContext context) {
+  ChildProfile(BuildContext context) {
     ctx = context;
+    print("friend:${FriendsId}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
-        title: Text("Activity"),
+        title: Text(widget.chooseChildName!),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -188,74 +246,80 @@ class _ChildProfileState extends State<ChildProfile>
           icon: Icon(Icons.arrow_back_sharp),
         ),
       ),
-      bottomSheet: _showBottomSheet(),
       body: Tabbarwidgets(),
     );
   }
 
   Widget Tabbarwidgets() {
-    return Container(
-        // padding: EdgeInsets.all(5),
-        width: MediaQuery.of(context).size.width * 1.0,
-        decoration: BoxDecoration(
-          color: Colors.white,
-        ),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            height: 60,
-            child: TabBar(
-              tabs: [
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  child: Text('Profile Info',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  child: Text('Friends',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.25,
-                  child: Text('Friend Request',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.20,
-                  child: Text('Activities',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: const Color(0xFF9e9e9e))),
-                )
-              ],
-              unselectedLabelColor: const Color(0xffacb3bf),
-              indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
-              labelColor: Colors.black,
-              indicatorSize: TabBarIndicatorSize.tab,
-              indicatorWeight: 3.0,
-              indicatorPadding: EdgeInsets.all(10),
-              isScrollable: true,
-              controller: _tabController,
+    print("CHECK:$dropdownvalue");
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : Container(
+            // padding: EdgeInsets.all(5),
+            width: MediaQuery.of(context).size.width * 1.0,
+            decoration: BoxDecoration(
+              color: Colors.white,
             ),
-          ),
-          Expanded(
-              child: TabBarView(controller: _tabController, children: <Widget>[
-            ProfileInfo(),
-            Friends(),
-            FriendRequest(),
-            Activities(),
-          ])),
-        ]));
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              Container(
+                height: 60,
+                child: TabBar(
+                  tabs: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      child: Text('Profile Info',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      child: Text('Friends',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.25,
+                      child: Text('Friend Request',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      child: Text('Activities',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: const Color(0xFF9e9e9e))),
+                    )
+                  ],
+                  unselectedLabelColor: const Color(0xffacb3bf),
+                  indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
+                  labelColor: Colors.black,
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  indicatorWeight: 3.0,
+                  indicatorPadding: EdgeInsets.all(10),
+                  isScrollable: true,
+                  controller: _tabController,
+                ),
+              ),
+              Expanded(
+                  child:
+                      TabBarView(controller: _tabController, children: <Widget>[
+                ProfileInfo(),
+                Friends(),
+                FriendRequest(),
+                Activities(),
+              ])),
+            ]));
   }
 
   Widget ProfileInfo() {
@@ -361,7 +425,7 @@ class _ChildProfileState extends State<ChildProfile>
                           height: 5,
                         ),
                         Text(
-                          childInfo![0].school!,
+                          childInfo![0].school ?? "",
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -541,6 +605,7 @@ class _ChildProfileState extends State<ChildProfile>
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+/////////////////        SeachBar     ///////////////////////////////////////
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 15, 5, 10),
             child: Row(
@@ -626,7 +691,6 @@ class _ChildProfileState extends State<ChildProfile>
                           onPressed: () {
                             setState(() {
                               _AddGroup = false;
-                              _show = false;
                             });
                           },
                           child: Text(
@@ -637,6 +701,7 @@ class _ChildProfileState extends State<ChildProfile>
                           onPressed: () {
                             setState(() {
                               _AddGroup = true;
+                              dropdownvalue = "FRIENDS";
                             });
                           },
                           child: Text(
@@ -647,83 +712,274 @@ class _ChildProfileState extends State<ChildProfile>
               ],
             ),
           ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: FriendsDatum!.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
-                  child: ListTile(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              OtherChildProfile()));
-                    },
-                    leading: CircleAvatar(
-                      backgroundImage: FriendsDatum![index].profile != "null"
-                          ? NetworkImage(Strings.imageUrl +
-                              (FriendsDatum![index].profile ?? ""))
-                          : AssetImage("assets/imgs/appicon.png")
-                              as ImageProvider,
-                    ),
-                    trailing: _AddGroup
-                        ? Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius: BorderRadius.circular(3.0),
+/////////////////        All List    ///////////////////////////////////////
+
+          (dropdownvalue == "ALL" && !_AddGroup)
+              ? (GroupDetail!.length) > 0
+                  ? Expanded(
+                      child: ListView.separated(
+                        physics: BouncingScrollPhysics(),
+                        itemCount: GroupDetail!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                              child: ListTile(
+                                onTap: () async {
+                                  await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (BuildContext context) =>
+                                              Groupinfo(
+                                                  groupId: GroupDetail![index]
+                                                      .groupId,
+                                                  choosedChildId:
+                                                      widget.chooseChildId)));
+                                  setState(() {
+                                    GroupData();
+                                  });
+                                },
+                                leading: Transform.translate(
+                                  offset: Offset(-16, 0),
+                                  child: CircleAvatar(
+                                    backgroundImage: GroupDetail![index]
+                                                .groupImage !=
+                                            "null"
+                                        ? NetworkImage(Strings.imageUrl +
+                                            (GroupDetail![index].groupImage ??
+                                                ""))
+                                        : AssetImage("assets/imgs/appicon.png")
+                                            as ImageProvider,
+                                  ),
+                                ),
+                                title: Transform.translate(
+                                    offset: Offset(-16, 0),
+                                    child:
+                                        Text(GroupDetail![index].groupName!)),
+                              ));
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Divider(
+                              thickness: 1,
                             ),
-                            width: 20,
-                            height: 20,
-                            child: Theme(
-                              data: ThemeData(
-                                  unselectedWidgetColor: Colors.white),
-                              child: Checkbox(
-                                  // side: BorderSide(color: Colors.black),
-                                  checkColor: Colors.green,
-                                  activeColor: Colors.transparent,
-                                  //hoverColor: Colors.black,
-                                  value: this.value,
-                                  onChanged: (bool? value) {
-                                    setState(() {
-                                      this.value = value!;
-                                      print("value:$value");
-                                      if (value == true) {
-                                        _show = true;
-                                      }
-                                    });
-                                  }),
+                          );
+                        },
+                      ),
+                    )
+                  : Spacer()
+              : SizedBox(),
+/////////////////        Groups List    ///////////////////////////////////////
+
+          (dropdownvalue == "GROUPS" && !_AddGroup)
+              ? GroupDetail!.length > 0
+                  ? Expanded(
+                      child: ListView.separated(
+                        physics: BouncingScrollPhysics(),
+                        itemCount: GroupDetail!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            child: ListTile(
+                              onTap: () async {
+                                await Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            Groupinfo(
+                                                groupId:
+                                                    GroupDetail![index].groupId,
+                                                choosedChildId:
+                                                    widget.chooseChildId)));
+                                setState(() {
+                                  GroupData();
+                                });
+                              },
+                              leading: Transform.translate(
+                                offset: Offset(-16, 0),
+                                child: CircleAvatar(
+                                  backgroundImage: GroupDetail![index]
+                                              .groupImage !=
+                                          "null"
+                                      ? NetworkImage(Strings.imageUrl +
+                                          (GroupDetail![index].groupImage ??
+                                              ""))
+                                      : AssetImage("assets/imgs/appicon.png")
+                                          as ImageProvider,
+                                ),
+                              ),
+                              // trailing: _AddGroup
+                              //     ? Container(
+                              //         decoration: BoxDecoration(
+                              //           border: Border.all(
+                              //               color: Colors.grey, width: 1),
+                              //           borderRadius: BorderRadius.circular(3.0),
+                              //         ),
+                              //         width: 20,
+                              //         height: 20,
+                              //         child: Theme(
+                              //           data: ThemeData(
+                              //               unselectedWidgetColor: Colors.white),
+                              //           child: Checkbox(
+                              //               // side: BorderSide(color: Colors.black),
+                              //               checkColor: Colors.green,
+                              //               activeColor: Colors.transparent,
+                              //               //hoverColor: Colors.black,
+                              //               value: _isChecked?[index],
+                              //               onChanged: (val) {
+                              //                 setState(
+                              //                   () {
+                              //                     if (val!) {
+                              //                       _isChecked?[index] = val;
+                              //                       FriendsId!.add(
+                              //                           FriendsDatum![index]
+                              //                               .childId!);
+                              //                     } else {
+                              //                       _isChecked?[index] = val;
+                              //                       FriendsId!.remove(
+                              //                           FriendsDatum![index]
+                              //                               .childId!);
+                              //                     }
+                              //                   },
+                              //                 );
+                              //               }),
+                              //         ),
+                              //       )
+                              //     : Spacer(),
+                              title: Transform.translate(
+                                  offset: Offset(-16, 0),
+                                  child: Text(GroupDetail![index].groupName!)),
                             ),
-                          )
-                        : null,
-                    title: Text(FriendsDatum![index].childName!),
-                  ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider(
-                    thickness: 1,
-                  ),
-                );
-              },
-            ),
-          ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Divider(
+                              thickness: 1,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : Spacer()
+              : SizedBox(),
+
+/////////////////        FriendList    ///////////////////////////////////////
+
+          (dropdownvalue == "FRIENDS" || _AddGroup)
+              ? FriendsDatum!.length > 0
+                  ? Expanded(
+                      child: ListView.separated(
+                        physics: BouncingScrollPhysics(),
+                        itemCount: FriendsDatum!.length,
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
+                            child: ListTile(
+                              onTap: () {
+                                _AddGroup
+                                    ? null
+                                    : Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                OtherChildProfile()));
+                              },
+                              leading: Transform.translate(
+                                offset: Offset(-16, 0),
+                                child: CircleAvatar(
+                                  backgroundImage: FriendsDatum![index]
+                                              .profile !=
+                                          "null"
+                                      ? NetworkImage(Strings.imageUrl +
+                                          (FriendsDatum![index].profile ?? ""))
+                                      : AssetImage("assets/imgs/appicon.png")
+                                          as ImageProvider,
+                                ),
+                              ),
+                              trailing: _AddGroup
+                                  ? Container(
+                                      decoration: BoxDecoration(
+                                        border: Border.all(
+                                            color: Colors.grey, width: 1),
+                                        borderRadius:
+                                            BorderRadius.circular(3.0),
+                                      ),
+                                      width: 20,
+                                      height: 20,
+                                      child: Theme(
+                                        data: ThemeData(
+                                            unselectedWidgetColor:
+                                                Colors.white),
+                                        child: Checkbox(
+                                            // side: BorderSide(color: Colors.black),
+                                            checkColor: Colors.green,
+                                            activeColor: Colors.transparent,
+                                            //hoverColor: Colors.black,
+                                            value: _isChecked?[index],
+                                            onChanged: (val) {
+                                              setState(
+                                                () {
+                                                  if (val!) {
+                                                    _isChecked?[index] = val;
+                                                    FriendsId!.add(
+                                                        FriendsDatum![index]
+                                                            .childId!);
+                                                  } else {
+                                                    _isChecked?[index] = val;
+                                                    FriendsId!.remove(
+                                                        FriendsDatum![index]
+                                                            .childId!);
+                                                  }
+                                                },
+                                              );
+                                            }),
+                                      ),
+                                    )
+                                  : SizedBox(),
+                              title: Transform.translate(
+                                  offset: Offset(-16, 0),
+                                  child: Text(FriendsDatum![index].childName!)),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (BuildContext context, int index) {
+                          return Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                            child: Divider(
+                              thickness: 1,
+                            ),
+                          );
+                        },
+                      ),
+                    )
+                  : Center(
+                      child: Text(
+                          "There are no Groups/Friends for your child, please add accordingly"))
+              : SizedBox(),
+          _AddGroup
+              ? SizedBox(
+                  height: 80,
+                )
+              : SizedBox(),
+
+          _showBottomSheet(),
         ],
       ),
     );
   }
 
-  Widget? _showBottomSheet() {
-    if (_show) {
+  Widget _showBottomSheet() {
+    if (_AddGroup) {
       return BottomSheet(
         onClosing: () {},
         builder: (context) {
           return Container(
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.all(
-                Radius.circular(35.0),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.0),
+                topRight: Radius.circular(15.0),
+                bottomLeft: Radius.zero,
+                bottomRight: Radius.zero,
               ),
               boxShadow: <BoxShadow>[
                 new BoxShadow(
@@ -733,16 +989,26 @@ class _ChildProfileState extends State<ChildProfile>
                 ),
               ],
             ),
-            height: 100,
+            height: 70,
             width: double.infinity,
             // color: Colors.white,
             alignment: Alignment.center,
             child: TextButton(
                 onPressed: () {
-                  _show = false;
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => AddGroup()));
-                  setState(() {});
+                  _AddGroup = false;
+                  if (FriendsId!.length != 0) {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (BuildContext context) => AddGroup(
+                            friendsId: FriendsId,
+                            ChoosedChildId: widget.chooseChildId,
+                            FromGroupInfo: false,
+                            Groupimg: "null")));
+                    setState(() {});
+                  } else {
+                    AppUtils.showToast(
+                        "Please add atleast one of your friend to the group",
+                        ctx);
+                  }
                 },
                 child: Container(
                   child: Row(
@@ -767,7 +1033,7 @@ class _ChildProfileState extends State<ChildProfile>
         },
       );
     } else {
-      return null;
+      return SizedBox();
     }
   }
 

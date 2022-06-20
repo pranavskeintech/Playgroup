@@ -3,26 +3,25 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
-import 'package:playgroup/Models/MarkAvailabilityReq.dart';
+import 'package:playgroup/Models/addGroupParticipants.dart';
 import 'package:playgroup/Network/ApiService.dart';
-import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 
-class Availability_choose_friends extends StatefulWidget {
-  const Availability_choose_friends({Key? key}) : super(key: key);
+class groupParticipants extends StatefulWidget {
+  List<int>? groupMembersId;
+  int? groupId;
+  groupParticipants({Key? key, this.groupMembersId, this.groupId})
+      : super(key: key);
 
   @override
-  State<Availability_choose_friends> createState() =>
-      _Availability_choose_friendsState();
+  State<groupParticipants> createState() => _groupParticipantsState();
 }
 
-class _Availability_choose_friendsState
-    extends State<Availability_choose_friends> {
-  List<bool> values = [];
-
+class _groupParticipantsState extends State<groupParticipants> {
   final List<String> _texts = [
     "InduceSmile.com",
     "Flutter.io",
@@ -34,30 +33,61 @@ class _Availability_choose_friendsState
 
   List<bool>? _isChecked;
 
-  TextEditingController searchController = TextEditingController();
+  List<int>? FriendsId = [];
 
-  bool _switchValue = false;
+  bool _isLoading = true;
 
   BuildContext? ctx;
 
   List<FriendsData>? FriendsDatum;
 
+  int? index1;
+
+  bool _AddGroup = false;
+
+  bool _show = false;
+
   List<FriendsData> _foundedUsers = [];
 
-  bool _isLoading = true;
+  TextEditingController searchController = TextEditingController();
 
-  var FriendsId = [];
-  _GetFriends() {
+  bool _switchValue = false;
+
+  FriendsData? HeaderData;
+
+  FriendsData? ListViewData;
+
+  List<int>? first;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => getFriends());
+  }
+
+  getFriends() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetAcceptedFriendReq(Strings.SelectedChild).then((response) {
+    api.GetAcceptedFriendReq(Strings.ChoosedChild).then((response) {
       if (response.status == true) {
         print("response ${response.status}");
         setState(() {
           FriendsDatum = response.data!;
 
-          setState(() {
-            _foundedUsers = FriendsDatum!;
-          });
+          _isChecked = List<bool>.filled(FriendsDatum!.length, false);
+          var frnds = [];
+          for (var i = 0; i < FriendsDatum!.length; i++) {
+            frnds.add(FriendsDatum![i].childId!);
+          }
+          print("1:${frnds}");
+          print("2:${widget.groupMembersId}");
+          for (var i = 0; i < FriendsDatum!.length; i++) {
+            if (widget.groupMembersId!.contains(FriendsDatum![i].childId)) {
+              index1 = i;
+              ListViewData = FriendsDatum!.removeAt(index1!);
+            }
+            print("3:${index1}");
+          }
           _isLoading = false;
         });
       }
@@ -66,24 +96,16 @@ class _Availability_choose_friendsState
     });
   }
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    _isChecked = List<bool>.filled(_texts.length, false);
-    super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetFriends());
-  }
-
-  onSearch(String search) {
-    print("Searching for $search");
-    setState(() {
-      _foundedUsers = FriendsDatum!
-          .where((user) =>
-              user.childName!.toLowerCase().contains(search.toLowerCase()))
-          .toList();
-      print(_foundedUsers.length);
-    });
-  }
+  // onSearch(String search) {
+  //   print("Searching for $search");
+  //   setState(() {
+  //     _foundedUsers = FriendsDatum!
+  //         .where((user) =>
+  //             user.childName!.toLowerCase().contains(search.toLowerCase()))
+  //         .toList();
+  //     print(_foundedUsers.length);
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +114,7 @@ class _Availability_choose_friendsState
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Strings.appThemecolor,
-            title: Text("Your Availability"),
+            title: Text("Add Friends"),
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -102,12 +124,12 @@ class _Availability_choose_friendsState
           ),
           // resizeToAvoidBottomInset: false,
           body: Builder(builder: (BuildContext newContext) {
-            return MarkAvail(newContext);
+            return groupParticipants(newContext);
           }),
         ));
   }
 
-  MarkAvail(BuildContext context) {
+  groupParticipants(BuildContext context) {
     ctx = context;
     return _isLoading
         ? const Center(
@@ -141,7 +163,7 @@ class _Availability_choose_friendsState
                         height: 40,
                         child: TextField(
                           onChanged: (searchString) {
-                            onSearch(searchString);
+                            //onSearch(searchString);
                           },
                           enabled: true,
                           controller: searchController,
@@ -186,6 +208,7 @@ class _Availability_choose_friendsState
                                     index++) {
                                   _isChecked![index] = true;
                                 }
+
                                 updateFriendsID();
                               } else {
                                 for (var index = 0;
@@ -206,7 +229,8 @@ class _Availability_choose_friendsState
                 FriendsDatum!.length > 0
                     ? Expanded(
                         child: ListView.builder(
-                        itemCount: _foundedUsers.length,
+                        physics: BouncingScrollPhysics(),
+                        itemCount: FriendsDatum!.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
@@ -217,9 +241,9 @@ class _Availability_choose_friendsState
                                     offset: Offset(-16, 0),
                                     child: CircleAvatar(
                                       backgroundImage:
-                                          _foundedUsers[index].profile != "null"
+                                          FriendsDatum![index].profile != "null"
                                               ? NetworkImage(Strings.imageUrl +
-                                                  (_foundedUsers[index]
+                                                  (FriendsDatum![index]
                                                           .profile ??
                                                       ""))
                                               : AssetImage(
@@ -230,7 +254,7 @@ class _Availability_choose_friendsState
                                   title: Transform.translate(
                                     offset: Offset(-16, 0),
                                     child:
-                                        Text(_foundedUsers[index].childName!),
+                                        Text(FriendsDatum![index].childName!),
                                   ),
                                   trailing: Container(
                                     decoration: BoxDecoration(
@@ -252,13 +276,13 @@ class _Availability_choose_friendsState
                                             () {
                                               if (val!) {
                                                 _isChecked?[index] = val;
-                                                FriendsId.add(
-                                                    _foundedUsers[index]
+                                                FriendsId!.add(
+                                                    FriendsDatum![index]
                                                         .childId!);
                                               } else {
                                                 _isChecked?[index] = val;
-                                                FriendsId.remove(
-                                                    _foundedUsers[index]
+                                                FriendsId!.remove(
+                                                    FriendsDatum![index]
                                                         .childId!);
                                               }
                                             },
@@ -277,18 +301,20 @@ class _Availability_choose_friendsState
                           );
                         },
                       ))
-                    : Spacer(),
+                    : SizedBox(
+                        height: 5,
+                      ),
                 Center(
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (FriendsId.length == 0) {
-                            AppUtils.showWarning(context,
-                                "Choose Friends to join the availability", "");
+                          if (FriendsId!.length == 0) {
+                            AppUtils.showWarning(
+                                context, "Choose Friends to join group", "");
                           } else {
-                            _MarkAvailability();
+                            addGroupParticipant();
                           }
                         },
                         child: Text(
@@ -310,45 +336,20 @@ class _Availability_choose_friendsState
           );
   }
 
-  _MarkAvailability() 
-  {
+  addGroupParticipant() {
     AppUtils.showprogress();
-
-    MarkAvailabilityReq markavail = MarkAvailabilityReq();
-
-    markavail.childId = Strings.SelectedChild;
-    markavail.date = Strings.markAvailabiltydate;
-    markavail.from = Strings.markAvailabiltystartTime;
-    markavail.to = Strings.markAvailabiltyendTime;
-    markavail.description = Strings.markAvailabiltydesc;
-    markavail.location = Strings.markAvailabiltylocations;
-    markavail.activitiesId = Strings.markAvailabiltyTopic;
-    markavail.sportId = Strings.markAvailabiltycategory;
-    markavail.friendId = FriendsId;
-
     print("frnds:$FriendsId");
-
-    var dat = jsonEncode(markavail);
-    print(dat);
+    addGroupParticipants groupParticipants = addGroupParticipants();
+    groupParticipants.groupMembers = FriendsId;
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.createAvailability(markavail).then((response) {
+    api
+        .addParticipantsGroup(groupParticipants, widget.groupId!)
+        .then((response) {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
-<<<<<<< HEAD
-        AppUtils.showToast(response.message,context);
-         Strings.markAvailabiltydate = "";
-        Strings.markAvailabiltystartTime = "";
-    Strings.markAvailabiltyendTime = "";
-    Strings.markAvailabiltydesc = "";
-    Strings.markAvailabiltylocations = "";
-    Strings.markAvailabiltyTopic = null;
-    Strings.markAvailabiltycategory = null;
-=======
-        AppUtils.showToast(response.message, context);
->>>>>>> af852f35d9f97d08754c9f1d031130e3810e0be7
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+        functions.createSnackBarGreen(context, response.message.toString());
+        Navigator.pop(context);
       } else {
         functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -360,10 +361,8 @@ class _Availability_choose_friendsState
   updateFriendsID() {
     for (var i = 0; i < _isChecked!.length; i++) {
       if (_isChecked![i] == true) {
-        FriendsId.add(_foundedUsers[i].childId!);
+        FriendsId!.add(FriendsDatum![i].childId!);
       }
     }
-
-    print("frnds:$FriendsId");
   }
 }

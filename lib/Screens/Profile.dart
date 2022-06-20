@@ -320,23 +320,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         .coParent?[0].access,
                                                   )));
                                     },
-                                    child: _ProfileData!
-                                                  .role == "PARENT"?Row(
-                                      children: [
-                                        
-                                        Text("Edit"),
-                                        SizedBox(
-                                          width: 5,
-                                        ),
-                                        Image.asset(
-                                          "assets/imgs/compose.png",
-                                          fit: BoxFit.fill,
-                                          color: Colors.blue,
-                                          width: 15,
-                                          height: 15,
-                                        ),
-                                      ],
-                                    ):SizedBox())
+                                    child: _ProfileData!.role == "PARENT"
+                                        ? Row(
+                                            children: [
+                                              Text("Edit"),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Image.asset(
+                                                "assets/imgs/compose.png",
+                                                fit: BoxFit.fill,
+                                                color: Colors.blue,
+                                                width: 15,
+                                                height: 15,
+                                              ),
+                                            ],
+                                          )
+                                        : SizedBox())
                               ],
                             ),
                             Container(
@@ -377,9 +377,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(_ProfileData!
-                                                  .coParent?[0].emailId ??
-                                              ""),
+                                          Container(
+                                            width: 200,
+                                            child: Text(
+                                              _ProfileData!
+                                                      .coParent?[0].emailId ??
+                                                  "",
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
                                           Row(
                                             children: [
                                               Text("Access: "),
@@ -435,9 +441,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               onTap: (() {
                                 var chooseChildId =
                                     _ProfileData!.children![index].childId;
+                                var chooseChildName =
+                                    _ProfileData!.children![index].childName;
+                                Strings.ChoosedChild =
+                                    _ProfileData!.children![index].childId!;
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
-                                        ChildProfile(chooseChildId: chooseChildId)));
+                                        ChildProfile(
+                                            chooseChildId: chooseChildId,chooseChildName:chooseChildName)));
                               }),
                               leading: CircleAvatar(
                                   backgroundImage: _ProfileData!

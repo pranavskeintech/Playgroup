@@ -10,13 +10,17 @@ import 'package:playgroup/Models/AvailabityRes.dart';
 import 'package:playgroup/Models/CheckchildRes.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/CommonReq.dart';
+import 'package:playgroup/Models/CreateGroupReq.dart';
+import 'package:playgroup/Models/CreateGroupRes.dart';
 import 'package:playgroup/Models/EditAvailabilityCommonReq.dart';
 import 'package:playgroup/Models/EditAvailabilityReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
+import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
+import 'package:playgroup/Models/GetGroupDetailsByIdRes.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
@@ -32,9 +36,12 @@ import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
 import 'package:playgroup/Models/PendingFriendReqRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
+import 'package:playgroup/Models/RemoveParticipantsReq.dart';
 import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/SuggestTimeReq.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
+import 'package:playgroup/Models/addGroupParticipants.dart';
+import 'package:playgroup/Models/updateGroupReq.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -124,7 +131,7 @@ abstract class ApiService {
   @DELETE("user/child/{ChildID}")
   Future<GetChildRes> DeleteChild(@Path("ChildID") int ChildID);
 
-   @POST("user/changeAccess/{access}")
+  @POST("user/changeAccess/{access}")
   Future<CommonRes> updateAccess(@Path("access") String access);
 
   @DELETE("mark/deletemark/{avail_id}")
@@ -156,7 +163,8 @@ abstract class ApiService {
 
   @GET("/mark/getmarkbyid/{availability_id}/{ChildID}")
   Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(
-      @Path("availability_id") int availability_id,@Path("ChildID") int ChildID);
+      @Path("availability_id") int availability_id,
+      @Path("ChildID") int ChildID);
 
   @GET("friends/{ChildID}/Pending")
   Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
@@ -183,7 +191,7 @@ abstract class ApiService {
 
   @PUT("mark/joinfriends")
   Future<CommonRes> JoinFriendsMarkAvailability(@Body() JoinfriendsReq body);
-  
+
   @POST("mark/suggesttime")
   Future<CommonRes> suggestTime(@Body() SuggestTimeReq body);
 
@@ -193,6 +201,31 @@ abstract class ApiService {
   @GET("user/notification_list/{ChildID}")
   Future<GetNotificationListRes> GetNotificationList(
       @Path("ChildID") int ChildID);
+
+///////////  Groups /////////////////
+  @POST("groups/create/{ChildID}")
+  Future<CreateGroupRes> CreateGroup(
+      @Body() CreateGroupReq body, @Path("ChildID") int ChildID);
+
+  @PUT("groups/update/{groupId}")
+  Future<CommonRes> updateGroup(
+      @Body() updateGroupReq body, @Path("groupId") int groupId);
+
+  @GET("groups/getDetails/{groupId}")
+  Future<GetGroupDetailsByIdRes> GetGroupDetailsbyId(
+      @Path("groupId") int groupId);
+
+  @GET("groups/getAll/{ChildID}")
+  Future<GetAllGroupDetailsRes> GetAllGroupDetails(
+      @Path("ChildID") int ChildID);
+
+  @POST("groups/add_participants/{groupId}")
+  Future<CommonRes> addParticipantsGroup(
+      @Body() addGroupParticipants body, @Path("groupId") int groupId);
+
+  @DELETE("groups/remove_participants/{ChildID}")
+  Future<CommonRes> removeParticipantsGroup(
+      @Body() RemoveParticipantsGroupReq body, @Path("ChildID") int ChildID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

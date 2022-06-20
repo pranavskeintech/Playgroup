@@ -168,6 +168,9 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.15,
+                  ),
                   const Text(
                     "Timing",
                     style: TextStyle(
@@ -451,7 +454,6 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                                                     "null"
                                                 ? NetworkImage(Strings
                                                         .imageUrl +
-                                                    "activities/" +
                                                     (availabilityData[0]
                                                             .friendsdata![index]
                                                             .profile ??
@@ -495,7 +497,10 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                         },
                       ),
                     ),
-                  )
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.40,
+                  ),
                 ],
               ),
             ),
