@@ -94,23 +94,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             key: _scaffoldKey,
             drawer: NavigationDrawer(),
-            appBar: AppBar(
-              //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
-              backgroundColor: Strings.appThemecolor,
-              title: Text(
-                "Profile",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-              ),
-              leading: IconButton(
-                  onPressed: () {
-                    _scaffoldKey.currentState?.openDrawer();
-                  },
-                  icon: ImageIcon(
-                    AssetImage("assets/imgs/menu_ver2.png"),
-                    color: Colors.white,
-                  )),
-            ),
+           
             body: Container(
               // color: Colors.white,
               padding: EdgeInsets.fromLTRB(28, 10, 20, 20),

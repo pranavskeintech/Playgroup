@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
+import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Screens/Availability-Choose_category.dart';
@@ -22,6 +23,10 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 import 'package:playgroup/Utilities/Functions.dart';
+import 'package:badges/badges.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+
 
 import '../Network/ApiService.dart';
 
@@ -44,7 +49,8 @@ class _DashBoardState extends State<DashBoard> {
     InitialScreen(),
     // PastActivity(),
     SearchScreen(),
-    NotificationScreen(),
+    //NotificationScreen(),
+    ProfileScreen()
   ];
   final screen2 = [Mark_Availabilty()];
 
@@ -64,6 +70,11 @@ class _DashBoardState extends State<DashBoard> {
   Children? ListViewData;
 
   Children? HeaderData;
+
+  List<Data>? allNotificationList;
+
+  int notifictionCount = 0;
+
 
   GetProfile() {
     _isLoading2 = true;
@@ -97,6 +108,33 @@ class _DashBoardState extends State<DashBoard> {
       print(onError.toString());
     });
   }
+  GetNotificationList() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetNotificationList(Strings.SelectedChild).then((response) async {
+      print(response.status);
+      if (response.status == true) {
+
+        setState(() {
+              allNotificationList = response.data!;
+
+
+        });
+
+        final prefs = await SharedPreferences.getInstance();
+        final int? counter = prefs.getInt('counter');
+        notifictionCount = (counter ?? 0) - allNotificationList!.length;
+
+        await prefs.setInt('notificationCount', allNotificationList!.length);
+
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "Unable to fetch details for child", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
 
   @override
   void initState() {
@@ -104,7 +142,7 @@ class _DashBoardState extends State<DashBoard> {
     iconList.add(Icons.home_outlined);
     iconList.add(Icons.schedule);
     iconList.add(Icons.search);
-    iconList.add(Icons.notifications_outlined);
+    iconList.add(Icons.account_circle);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => GetProfile());
   }
@@ -184,16 +222,52 @@ class _DashBoardState extends State<DashBoard> {
                   SizedBox(
                     width: 3,
                   ),
+                  InkWell(
+                        onTap: (){
+                         Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          NotificationScreen()));
+                        },
+                        child: Container(
+                                        padding: EdgeInsets.only(left:5),
+                                        // child: Image.asset(
+                                        //   "assets/images/Notification.png",
+                                        //   width: 20,
+                                        // )
+                                        child: Badge(
+                                          showBadge: notifictionCount == 0
+                          ? false
+                          : true,
+                                          badgeColor: Strings.appThemecolor,
+                                          position: BadgePosition.topEnd(top: 10, end: 12),
+                                          borderRadius: BorderRadius.circular(50),
+                                          badgeContent: Text(
+                          "${allNotificationList != null ? notifictionCount : 0}",style: TextStyle(color: Colors.white),),
+                                          child: Image.asset(
+                        "assets/imgs/notification.png",
+                                                color: Colors.black,
+                      
+                        width: 25,
+                                          ),
+                                        ),
+                                        // Icon(
+                                        //   Icons.circle_notifications,
+                                        //   color: Colors.white,
+                                        // )
+                                      ),
+                      ),
                   IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) => Chat_List()));
                       },
                       icon: Image.asset(
+                        
                         "assets/imgs/chat.png",
                         width: 25,
                         height: 25,
-                      ))
+                      )),
+                      
                 ],
                 leading: IconButton(
                     onPressed: () {

@@ -125,6 +125,41 @@ class _SplashScreenState extends State<SplashScreen> {
       });
       
     });
+
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) 
+    {
+      setState(() {
+        print("message recieved inside get");
+        print("data received ---  ${message.notification!.body}");
+        //  _showMyDialog("", message.notification!.title ?? "", message.notification!.body ?? "", "doc");
+        print(message.data);
+       
+        
+      });
+    });
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) {
+
+          print("trying to open app");
+      
+    });
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+
+      print("on openening message: " + message.notification!.body!);
+     
+    });
+
+    
+
+    NotificationSettings settings = await _firebaseMessaging.requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      provisional: true,
+      sound: true,
+    );
   }
 
   @override
