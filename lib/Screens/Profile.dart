@@ -376,7 +376,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             MainAxisAlignment.spaceBetween,
                                         children: [
                                           Container(
-                                            width: 200,
+                                            width: 170,
                                             child: Text(
                                               _ProfileData!
                                                       .coParent?[0].emailId ??
@@ -446,7 +446,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         ChildProfile(
-                                            chooseChildId: chooseChildId,chooseChildName:chooseChildName)));
+                                            chooseChildId: chooseChildId,
+                                            chooseChildName: chooseChildName)));
                               }),
                               leading: CircleAvatar(
                                   backgroundImage: _ProfileData!

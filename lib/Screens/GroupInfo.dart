@@ -52,6 +52,9 @@ class _GroupinfoState extends State<Groupinfo> {
   int? index1;
 
   GroupMembers? ListViewData;
+
+  List<GroupMembers>? _foundedGroupMembers = [];
+
   @override
   void initState() {
     super.initState();
@@ -65,9 +68,11 @@ class _GroupinfoState extends State<Groupinfo> {
       if (response.status == true) {
         setState(() {
           _GroupData = response;
-
           _isChecked =
               List<bool>.filled(_GroupData!.groupMembers!.length, false);
+          setState(() {
+            _foundedGroupMembers = _GroupData!.groupMembers;
+          });
           _isLoading = false;
         });
       } else {
@@ -76,6 +81,15 @@ class _GroupinfoState extends State<Groupinfo> {
       }
     }).catchError((onError) {
       print(onError.toString());
+    });
+  }
+
+  onSearch(String search) {
+    setState(() {
+      _foundedGroupMembers = _GroupData!.groupMembers!
+          .where((user) =>
+              user.childName!.toLowerCase().contains(search.toLowerCase()))
+          .toList();
     });
   }
 
@@ -270,6 +284,9 @@ class _GroupinfoState extends State<Groupinfo> {
                   child: Container(
                     height: 35,
                     child: TextField(
+                      onChanged: (searchString) {
+                        onSearch(searchString);
+                      },
                       style: TextStyle(
                         height: 2.5,
                       ),
@@ -286,12 +303,12 @@ class _GroupinfoState extends State<Groupinfo> {
                     ),
                   ),
                 ),
-                _GroupData!.groupMembers!.length > 0
+                _foundedGroupMembers!.length > 0
                     ? Expanded(
                         flex: 1,
                         child: ListView.separated(
                           physics: BouncingScrollPhysics(),
-                          itemCount: _GroupData!.groupMembers!.length,
+                          itemCount: _foundedGroupMembers!.length,
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
@@ -327,13 +344,12 @@ class _GroupinfoState extends State<Groupinfo> {
                                     leading: Transform.translate(
                                       offset: Offset(-16, 0),
                                       child: CircleAvatar(
-                                        backgroundImage: _GroupData!
-                                                    .groupMembers![index]
+                                        backgroundImage: _foundedGroupMembers![
+                                                        index]
                                                     .profile !=
                                                 "null"
                                             ? NetworkImage(Strings.imageUrl +
-                                                (_GroupData!
-                                                        .groupMembers![index]
+                                                (_foundedGroupMembers![index]
                                                         .profile ??
                                                     ""))
                                             : AssetImage(
@@ -342,7 +358,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                       ),
                                     ),
                                     trailing: _isPressed
-                                        ? (_GroupData!.groupMembers![index]
+                                        ? (_foundedGroupMembers![index]
                                                     .childId! ==
                                                 _GroupData!.groupDetails![0]
                                                     .createdBy!)
@@ -397,7 +413,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                                       }),
                                                 ),
                                               )
-                                        : (_GroupData!.groupMembers![index]
+                                        : (_foundedGroupMembers![index]
                                                     .childId! ==
                                                 _GroupData!.groupDetails![0]
                                                     .createdBy!)
@@ -409,8 +425,8 @@ class _GroupinfoState extends State<Groupinfo> {
                                               )
                                             : null,
                                     title: (widget.choosedChildId ==
-                                            _GroupData!
-                                                .groupMembers![index].childId!)
+                                            _foundedGroupMembers![index]
+                                                .childId!)
                                         ? Transform.translate(
                                             offset: Offset(-16, 0),
                                             child: Text(
@@ -421,7 +437,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                         : Transform.translate(
                                             offset: Offset(-16, 0),
                                             child: Text(
-                                              _GroupData!.groupMembers![index]
+                                              _foundedGroupMembers![index]
                                                   .childName!,
                                               // style: TextStyle(fontWeight: FontWeight.w500),
                                             ),

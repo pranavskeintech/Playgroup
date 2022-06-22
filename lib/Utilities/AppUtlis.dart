@@ -91,6 +91,22 @@ class AppUtils {
         fontSize: 16.0);
   }
 
+  static void showToastTheme(message, ctx) {
+    // Toast.show(message, ctx,
+    //     backgroundColor: Strings.appColor,
+    //     textColor: Colors.white,
+    //     duration: Toast.LENGTH_LONG,
+    //     gravity: Toast.BOTTOM);
+    Fluttertoast.showToast(
+        msg: message,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Strings.appThemecolor,
+        textColor: Colors.white,
+        fontSize: 16.0);
+  }
+
   static void showToastCenter(message, ctx) {
     // Toast.show(message, ctx,
     //     duration: Toast.LENGTH_LONG,

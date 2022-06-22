@@ -809,6 +809,22 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<GroupsAndFriends> GetGroupFriends(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GroupsAndFriends>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/all/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GroupsAndFriends.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<CommonRes> addParticipantsGroup(body, groupId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -819,6 +835,22 @@ class _ApiService implements ApiService {
         _setStreamType<CommonRes>(
             Options(method: 'POST', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'groups/add_participants/${groupId}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> exitGroup(groupId, ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'DELETE', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'groups/exitGroup/${groupId}/${ChildID}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);

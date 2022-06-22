@@ -58,13 +58,10 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
         print("response ${response.status}");
         setState(() {
           FriendsDatum = response.data!;
-
           setState(() {
             _foundedUsers = FriendsDatum!;
-            print("1:${_foundedUsers[0].childId!}");
-            print("2:${_foundedUsers[1].childId!}");
           });
-          _isLoading = false;
+          // _isLoading = false;
           getAvailabilityDetails();
         });
       }
@@ -289,6 +286,7 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
                                           _isChecked?[index] = val;
                                           FriendsId!.remove(
                                               _foundedUsers[index].childId!);
+                                          print("friends:${FriendsId}");
                                         }
                                       },
                                     );
@@ -374,7 +372,12 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
     print("3:${availabilityData[0].childId!}");
     print("4:${availabilityData[0].markavailId!}");
     print("5:${FriendsId}");
-    editAvailability.friendId = FriendsId;
+    if (FriendsId == []) {
+      editAvailability.friendId = [0];
+    } else {
+      editAvailability.friendId = FriendsId;
+    }
+    print("test:${editAvailability.friendId}");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.EditAvailability(editAvailability).then((response) {
       print('response ${response.status}');

@@ -86,7 +86,10 @@ class _groupParticipantsState extends State<groupParticipants> {
               index1 = i;
               ListViewData = FriendsDatum!.removeAt(index1!);
             }
-            print("3:${index1}");
+
+            setState(() {
+              _foundedUsers = FriendsDatum!;
+            });
           }
           _isLoading = false;
         });
@@ -96,16 +99,16 @@ class _groupParticipantsState extends State<groupParticipants> {
     });
   }
 
-  // onSearch(String search) {
-  //   print("Searching for $search");
-  //   setState(() {
-  //     _foundedUsers = FriendsDatum!
-  //         .where((user) =>
-  //             user.childName!.toLowerCase().contains(search.toLowerCase()))
-  //         .toList();
-  //     print(_foundedUsers.length);
-  //   });
-  // }
+  onSearch(String search) {
+    print("Searching for $search");
+    setState(() {
+      _foundedUsers = FriendsDatum!
+          .where((user) =>
+              user.childName!.toLowerCase().contains(search.toLowerCase()))
+          .toList();
+      print(_foundedUsers.length);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -163,7 +166,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                         height: 40,
                         child: TextField(
                           onChanged: (searchString) {
-                            //onSearch(searchString);
+                            onSearch(searchString);
                           },
                           enabled: true,
                           controller: searchController,
@@ -230,7 +233,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                     ? Expanded(
                         child: ListView.builder(
                         physics: BouncingScrollPhysics(),
-                        itemCount: FriendsDatum!.length,
+                        itemCount: _foundedUsers.length,
                         itemBuilder: (context, index) {
                           return Column(
                             children: [
@@ -241,9 +244,9 @@ class _groupParticipantsState extends State<groupParticipants> {
                                     offset: Offset(-16, 0),
                                     child: CircleAvatar(
                                       backgroundImage:
-                                          FriendsDatum![index].profile != "null"
+                                          _foundedUsers[index].profile != "null"
                                               ? NetworkImage(Strings.imageUrl +
-                                                  (FriendsDatum![index]
+                                                  (_foundedUsers[index]
                                                           .profile ??
                                                       ""))
                                               : AssetImage(
@@ -254,7 +257,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                                   title: Transform.translate(
                                     offset: Offset(-16, 0),
                                     child:
-                                        Text(FriendsDatum![index].childName!),
+                                        Text(_foundedUsers[index].childName!),
                                   ),
                                   trailing: Container(
                                     decoration: BoxDecoration(
@@ -277,12 +280,12 @@ class _groupParticipantsState extends State<groupParticipants> {
                                               if (val!) {
                                                 _isChecked?[index] = val;
                                                 FriendsId!.add(
-                                                    FriendsDatum![index]
+                                                    _foundedUsers[index]
                                                         .childId!);
                                               } else {
                                                 _isChecked?[index] = val;
                                                 FriendsId!.remove(
-                                                    FriendsDatum![index]
+                                                    _foundedUsers[index]
                                                         .childId!);
                                               }
                                             },
@@ -361,7 +364,7 @@ class _groupParticipantsState extends State<groupParticipants> {
   updateFriendsID() {
     for (var i = 0; i < _isChecked!.length; i++) {
       if (_isChecked![i] == true) {
-        FriendsId!.add(FriendsDatum![i].childId!);
+        FriendsId!.add(_foundedUsers[i].childId!);
       }
     }
   }

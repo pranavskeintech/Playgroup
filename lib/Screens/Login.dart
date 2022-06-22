@@ -9,6 +9,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:playgroup/Models/LoginReq.dart';
 import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/ChildConfirmation.dart';
+import 'package:playgroup/Screens/ChooseChild.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Forgotpassword.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
@@ -547,36 +549,32 @@ class _LoginPageState extends State<LoginPage> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.login(Userlogin).then((response) {
       if (response.status == true) {
-       
-          AppUtils.dismissprogress();
-          Strings.authToken = response.token!;
-          Strings.refreshToken = response.refreshToken!.refreshToken!;
-          Strings.parentName = response.data![0].parentName!;
-          Strings.parentemail = response.data![0].emailId!;
-          Strings.Parent_Id = response.data![0].userId!;
-          Strings.SelectedChild = response.data![0].selectedChildId ?? 0;
-          updateDeviceId();
-          // _isLoading = false;
-          //  Get.off(() => DashPage());
-          // Navigator.of(context)
-          //     .push(MaterialPageRoute(builder: (context) =>  FeedsCommentsScreen(fid)));
-          // print("uhad:$fid");
-          // int feedid = fid;
-          // Navigator.of(context).pushReplacement(MaterialPageRoute(
-          //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
-          print("res:${response.message}");
-          _btnController.stop();
-
-           if (response.data![0].selectedChildId == null) {
+        AppUtils.dismissprogress();
+        Strings.authToken = response.token!;
+        Strings.refreshToken = response.refreshToken!.refreshToken!;
+        Strings.parentName = response.data![0].parentName!;
+        Strings.parentemail = response.data![0].emailId!;
+        Strings.Parent_Id = response.data![0].userId!;
+        Strings.SelectedChild = response.data![0].selectedChildId ?? 0;
+        updateDeviceId();
+        // _isLoading = false;
+        //  Get.off(() => DashPage());
+        // Navigator.of(context)
+        //     .push(MaterialPageRoute(builder: (context) =>  FeedsCommentsScreen(fid)));
+        // print("uhad:$fid");
+        // int feedid = fid;
+        // Navigator.of(context).pushReplacement(MaterialPageRoute(
+        //     builder: (BuildContext context) => FeedsCommentsScreen(feedid)));
+        print("res:${response.message}");
+        _btnController.stop();
+        if (response.data![0].selectedChildId == null) {
           Navigator.of(context).push(MaterialPageRoute(
-              builder: (BuildContext context) => ChildDetails()));
+              builder: (BuildContext context) => ChooseChild()));
         } else {
-
           Navigator.of(context).push(MaterialPageRoute(
               builder: (BuildContext context) => DashBoard()));
           print("result2:$response");
         }
-        
       } else {
         // functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -586,7 +584,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
-
   updateDeviceId() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     deviceIdReq deviceReq = deviceIdReq();

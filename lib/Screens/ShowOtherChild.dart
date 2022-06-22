@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 
@@ -72,7 +74,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
       print(response.status);
       if (response.status == true) {
         AppUtils.dismissprogress();
-        AppUtils.showToast(response.message, "");
+        AppUtils.showToastTheme(response.message, "");
         getProfile();
         // Navigator.push(
         //   context,
@@ -80,8 +82,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
         //     builder: (context) => OTPScreen(),
         //   ),
         // );
-      } else 
-      {
+      } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         AppUtils.showError(context, "User not registered", "");
@@ -102,8 +103,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
           isloading = false;
           childInfo = response.data!;
         });
-      } else 
-      {
+      } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         AppUtils.showError(context, "Unable to fetch details for child", "");
@@ -198,8 +198,8 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                       CircleAvatar(
                         backgroundColor: Colors.blue,
                         backgroundImage: childInfo[0].profile != "null"
-                            ? NetworkImage(Strings.imageUrl +
-                                (childInfo[0].profile ?? ""))
+                            ? NetworkImage(
+                                Strings.imageUrl + (childInfo[0].profile ?? ""))
                             : AssetImage("assets/imgs/appicon.png")
                                 as ImageProvider,
                         radius: 50,
@@ -234,7 +234,8 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                       SizedBox(
                         height: 10,
                       ),
-                      Strings.FriendNotification
+                      //Strings.FriendNotification
+                      (childInfo[0].status == "Pending")
                           ? Padding(
                               padding: const EdgeInsets.fromLTRB(20, 0, 30, 0),
                               child: Row(
@@ -245,7 +246,12 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                                     height: 30,
                                     width: 120,
                                     child: ElevatedButton(
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          int FID = childInfo[0].friendsId!;
+                                          int CID = Strings.SelectedChild;
+                                          int CFID = childInfo[0].childId!;
+                                          _AcceptFriendReq(CID, CFID, FID);
+                                        },
                                         child: Container(
                                           width: 140,
                                           child: Center(
@@ -267,7 +273,12 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                                               MaterialStateProperty.all<Color>(
                                                   Colors.white),
                                         ),
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          int FID = childInfo[0].friendsId!;
+                                          int CID = Strings.SelectedChild;
+                                          int CFID = childInfo[0].childId!;
+                                          _CancelFriendReq(CID, CFID);
+                                        },
                                         child: Container(
                                           width: 140,
                                           child: Center(
@@ -345,5 +356,52 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
               ),
             );
     }
+  }
+
+  _AcceptFriendReq(CID, CFID, FID) {
+    print("CID:$CID");
+    print("CFID:$CFID");
+    print("FID:$FID");
+    AcceptFriendReq friendReq = AcceptFriendReq();
+    friendReq.childId = CID;
+    friendReq.childFriendId = CFID;
+    friendReq.friendsId = FID;
+    ;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.AcceptFriendRequest(friendReq).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        getProfile();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
+    });
+  }
+
+  _CancelFriendReq(CID, CFID) {
+    print("CID:$CID");
+    print("CFID:$CFID");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.CancelFriendReq(CID, CFID).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        getProfile();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
+    });
   }
 }
