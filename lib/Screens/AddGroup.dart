@@ -293,7 +293,7 @@ class _AddGroupState extends State<AddGroup> {
     api.CreateGroup(GroupInfo, widget.ChoosedChildId!).then((response) {
       if (response.status == true) {
         int GroupId = response.groupDetails!.insertId!.toInt();
-        Navigator.of(context).push(MaterialPageRoute(
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => Groupinfo(
                 groupId: GroupId, choosedChildId: widget.ChoosedChildId)));
         print("result2:$response");

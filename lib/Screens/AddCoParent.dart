@@ -10,7 +10,6 @@ import '../Utilities/AppUtlis.dart';
 import '../Utilities/Strings.dart';
 import 'package:country_calling_code_picker/picker.dart';
 
-
 class AddCoParent extends StatefulWidget {
   const AddCoParent({Key? key}) : super(key: key);
 
@@ -24,7 +23,6 @@ class _AddCoParentState extends State<AddCoParent> {
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
   Country? _selectedCountry;
-
 
   final RoundedLoadingButtonController _btnController =
       RoundedLoadingButtonController();
@@ -131,7 +129,7 @@ class _AddCoParentState extends State<AddCoParent> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Container(
-                child:  Text(
+                child: Text(
                   "Email ID",
                   style: TextStyle(
                       fontSize: 15,
@@ -188,54 +186,54 @@ class _AddCoParentState extends State<AddCoParent> {
           ),
           SizedBox(height: 5),
           Container(
-                  decoration: BoxDecoration(
-                      color: Strings.textFeildBg,
-                      border: Border.all(color: const Color(0xFFf2f3f4)),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: GestureDetector(
-                            onTap: () {
-                              _showCountryPicker();
-                            },
-                            child: Text(
-                              _selectedCountry?.callingCode ?? "+91",
-                              style: TextStyle(color: Colors.blue),
-                            )),
+            decoration: BoxDecoration(
+                color: Strings.textFeildBg,
+                border: Border.all(color: const Color(0xFFf2f3f4)),
+                borderRadius: BorderRadius.circular(5)),
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: GestureDetector(
+                      onTap: () {
+                        _showCountryPicker();
+                      },
+                      child: Text(
+                        _selectedCountry?.callingCode ?? "+91",
+                        style: TextStyle(color: Colors.blue),
+                      )),
+                ),
+                Icon(Icons.arrow_drop_down),
+                Container(
+                  height: 40,
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  width: MediaQuery.of(context).size.width * 0.70,
+                  child: TextField(
+                    style: TextStyle(color: Colors.black),
+                    controller: _phoneController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      Icon(Icons.arrow_drop_down),
-                      Container(
-                        height: 40,
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        width: MediaQuery.of(context).size.width * 0.70,
-                        child: TextField(
-                          style: TextStyle(color: Colors.black),
-                          controller: _phoneController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Strings.textFeildBg, width: 0.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Strings.textFeildBg, width: 0.0),
-                            ),
-                            fillColor: Strings.textFeildBg,
-                            filled: true,
-                            hintText: "Enter Phone number",
-                            contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
-                          ),
-                          keyboardType: TextInputType.phone,
-                        ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Strings.textFeildBg, width: 0.0),
                       ),
-                    ],
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Strings.textFeildBg, width: 0.0),
+                      ),
+                      fillColor: Strings.textFeildBg,
+                      filled: true,
+                      hintText: "Enter Phone number",
+                      contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+                    ),
+                    keyboardType: TextInputType.phone,
                   ),
                 ),
+              ],
+            ),
+          ),
           SizedBox(height: 18),
           Container(
             child: Align(
@@ -374,7 +372,7 @@ class _AddCoParentState extends State<AddCoParent> {
           ),
           Spacer(),
           Container(
-            margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
+            // margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
             width: MediaQuery.of(context).size.width * 0.9,
             child: RoundedLoadingButton(
               animateOnTap: false,
@@ -387,41 +385,30 @@ class _AddCoParentState extends State<AddCoParent> {
               child: Text('Add',
                   style: TextStyle(color: Colors.white, fontSize: 18)),
               controller: _btnController,
-              onPressed: () 
-              {
-                if (_coParentNameController.text == "") 
-                {
-                  AppUtils.createSnackBar(
-                      context, "Please enter parent name");
-                } 
-                else if (_emailController.text == "") 
-                {
-        
-                  AppUtils.createSnackBar(
-                      context, "Please enter parent name");
-                }               
-                 else if (selectedAccess == "") {
-                  AppUtils.createSnackBar(
-                      context, "Please enter parent name");
+              onPressed: () {
+                if (_coParentNameController.text == "") {
+                  AppUtils.createSnackBar(context, "Please enter parent name");
+                } else if (_emailController.text == "") {
+                  AppUtils.createSnackBar(context, "Please enter parent name");
+                } else if (selectedAccess == "") {
+                  AppUtils.createSnackBar(context, "Please enter parent name");
                 } else if (_passwordController.text.length < 6) {
                   AppUtils.createSnackBar(
                       context, "Password must be at least 6 characters");
-                }else if (_phoneController.text.length != 10 ) {
+                } else if (_phoneController.text.length != 10) {
                   AppUtils.createSnackBar(
                       context, "Please enter valid phone number");
-                }               
-                 else {
-                   if (AppUtils.validateEmail(
-                                _emailController.text.replaceAll(' ', ''))) {
-                              AppUtils.showprogress();
-                              createCoparent();
-                            } else {
-                              AppUtils.createSnackBar(
-                                  context, "Invalid email");
-                              _btnController.stop();
-                            }
+                } else {
+                  if (AppUtils.validateEmail(
+                      _emailController.text.replaceAll(' ', ''))) {
+                    AppUtils.showprogress();
+                    createCoparent();
+                  } else {
+                    AppUtils.createSnackBar(context, "Invalid email");
+                    _btnController.stop();
+                  }
                 }
-        
+
                 //         Navigator.of(context).push(MaterialPageRoute(
                 // builder: (BuildContext context) => ProfileScreen()));
               },
@@ -442,23 +429,23 @@ class _AddCoParentState extends State<AddCoParent> {
     addcoParentReq.password = _passwordController.text;
     addcoParentReq.phone = _phoneController.text;
 
-
     api.addCoParent(addcoParentReq).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
-                AppUtils.dismissprogress();
-                AppUtils.showToast("Co-Parent added successfully", ctx);
-                Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => ProfileScreen()));
+        AppUtils.dismissprogress();
+        AppUtils.showToast("Co-Parent added successfully", ctx);
+        Navigator.of(context).pushReplacement(MaterialPageRoute(
+            builder: (BuildContext context) => ProfileScreen()));
       } else {
         AppUtils.dismissprogress();
-        AppUtils.showError(context,response.message,"");
+        AppUtils.showError(context, response.message, "");
         print("error");
       }
     }).onError((error, stackTrace) {
       AppUtils.showError(context, "Unable to reach servers", "");
     });
   }
+
   void _showCountryPicker() async {
     final country = await showCountryPickerDialog(
       context,

@@ -433,7 +433,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) =>
                                         ChildProfile(
-                                            chooseChildId: chooseChildId,chooseChildName:chooseChildName)));
+                                            chooseChildId: chooseChildId,
+                                            chooseChildName: chooseChildName)));
                               }),
                               leading: CircleAvatar(
                                   backgroundImage: _ProfileData!

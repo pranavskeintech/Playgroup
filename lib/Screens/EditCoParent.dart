@@ -213,55 +213,55 @@ class _EditCoParentState extends State<EditCoParent> {
           ),
           SizedBox(height: 5),
           Container(
-                  decoration: BoxDecoration(
-                      color: Strings.textFeildBg,
-                      border: Border.all(color: const Color(0xFFf2f3f4)),
-                      borderRadius: BorderRadius.circular(5)),
-                  child: Row(
-                    children: [
-                      Container(
-                        margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                        child: GestureDetector(
-                            onTap: () {
-                              _showCountryPicker();
-                            },
-                            child: Text(
-                              _selectedCountry?.callingCode ?? "+91",
-                              style: TextStyle(color: Colors.blue),
-                            )),
+            decoration: BoxDecoration(
+                color: Strings.textFeildBg,
+                border: Border.all(color: const Color(0xFFf2f3f4)),
+                borderRadius: BorderRadius.circular(5)),
+            child: Row(
+              children: [
+                Container(
+                  margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                  child: GestureDetector(
+                      onTap: () {
+                        _showCountryPicker();
+                      },
+                      child: Text(
+                        _selectedCountry?.callingCode ?? "+91",
+                        style: TextStyle(color: Colors.blue),
+                      )),
+                ),
+                Icon(Icons.arrow_drop_down),
+                Container(
+                  height: 40,
+                  margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  width: MediaQuery.of(context).size.width * 0.70,
+                  child: TextField(
+                    enabled: false,
+                    style: TextStyle(color: Colors.black),
+                    controller: _phoneController,
+                    decoration: InputDecoration(
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      Icon(Icons.arrow_drop_down),
-                      Container(
-                        height: 40,
-                        margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                        width: MediaQuery.of(context).size.width * 0.70,
-                        child: TextField(
-                          enabled: false,
-                          style: TextStyle(color: Colors.black),
-                          controller: _phoneController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Strings.textFeildBg, width: 0.0),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(
-                                  color: Strings.textFeildBg, width: 0.0),
-                            ),
-                            fillColor: Strings.textFeildBg,
-                            filled: true,
-                            hintText: "Enter Phone number",
-                            contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
-                          ),
-                          keyboardType: TextInputType.phone,
-                        ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Strings.textFeildBg, width: 0.0),
                       ),
-                    ],
+                      enabledBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Strings.textFeildBg, width: 0.0),
+                      ),
+                      fillColor: Strings.textFeildBg,
+                      filled: true,
+                      hintText: "Enter Phone number",
+                      contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+                    ),
+                    keyboardType: TextInputType.phone,
                   ),
                 ),
+              ],
+            ),
+          ),
           SizedBox(height: 18),
           Container(
             child: Align(
@@ -400,7 +400,7 @@ class _EditCoParentState extends State<EditCoParent> {
           ),
           Spacer(),
           Container(
-            margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
+            //margin: EdgeInsets.fromLTRB(0, 50, 0, 50),
             width: MediaQuery.of(context).size.width * 0.9,
             child: RoundedLoadingButton(
               animateOnTap: false,
@@ -453,32 +453,29 @@ class _EditCoParentState extends State<EditCoParent> {
     AddcoParentReq addcoParentReq = AddcoParentReq();
     addcoParentReq.parentName = _coParentNameController.text;
     addcoParentReq.emailId = _emailController.text;
-   // addcoParentReq.access = selectedAccess?.toUpperCase();
+    // addcoParentReq.access = selectedAccess?.toUpperCase();
     addcoParentReq.password = _passwordController.text;
 
-    api.updateCoParent(addcoParentReq).then((response) 
-    {
+    api.updateCoParent(addcoParentReq).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
 
-            api.updateAccess(selectedAccess!.toUpperCase()).then((response) 
-            {
-                if(response.status!){
-                  AppUtils.dismissprogress();
-                  AppUtils.showToast("Co-Parent updated successfully", ctx);
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                      builder: (BuildContext context) => ProfileScreen()));
-                }
-                {
-                    print("Unable to update access");
-                }
-
-            }).catchError((error) {
-              print('error ${error.toString()}');
-              AppUtils.dismissprogress();
-              AppUtils.showToast("Something went wrong", ctx);
-            });
+        api.updateAccess(selectedAccess!.toUpperCase()).then((response) {
+          if (response.status!) {
+            AppUtils.dismissprogress();
+            AppUtils.showToast("Co-Parent updated successfully", ctx);
+            Navigator.of(context).pushReplacement(MaterialPageRoute(
+                builder: (BuildContext context) => ProfileScreen()));
+          }
+          {
+            print("Unable to update access");
+          }
+        }).catchError((error) {
+          print('error ${error.toString()}');
+          AppUtils.dismissprogress();
+          AppUtils.showToast("Something went wrong", ctx);
+        });
 
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => ProfileScreen()));

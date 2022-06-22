@@ -28,44 +28,52 @@ class OtherChildRes {
 }
 
 class childData {
+  int? friendsId;
   int? childId;
   int? parentId;
   String? childName;
   String? dob;
   String? gender;
   String? profile;
+  String? location;
   String? createdDate;
   String? status;
 
   childData(
-      {this.childId,
+      {this.friendsId,
+      this.childId,
       this.parentId,
       this.childName,
       this.dob,
       this.gender,
       this.profile,
+      this.location,
       this.createdDate,
       this.status});
 
   childData.fromJson(Map<String, dynamic> json) {
+    friendsId = json['friends_id'];
     childId = json['child_id'];
     parentId = json['parent_id'];
     childName = json['child_name'];
     dob = json['dob'];
     gender = json['gender'];
     profile = json['profile'];
+    location = json['location'];
     createdDate = json['created_date'];
     status = json['status'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['friends_id'] = this.friendsId;
     data['child_id'] = this.childId;
     data['parent_id'] = this.parentId;
     data['child_name'] = this.childName;
     data['dob'] = this.dob;
     data['gender'] = this.gender;
     data['profile'] = this.profile;
+    data['location'] = this.location;
     data['created_date'] = this.createdDate;
     data['status'] = this.status;
     return data;

@@ -122,11 +122,13 @@ class _ChildProfileState extends State<ChildProfile>
 
   List<GroupDetails>? GroupDetail;
 
-  List<GroupDetai>? newList;
+  List<Datas>? FriendsGroupsData;
 
-  List<GroupDetai>? GroupDetail1;
+  List<FriendsData> _foundedUsers = [];
 
-  List<GroupDetai>? FriendsDat;
+  List<GroupDetails> _foundedGroups = [];
+
+  List<Datas> _foundedAllData = [];
 
   fetchData() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -142,6 +144,9 @@ class _ChildProfileState extends State<ChildProfile>
           getProfile();
         });
       } else {
+        setState(() {
+          _isLoading = false;
+        });
         functions.createSnackBar(context, response.status.toString());
         // _btnController.stop();
       }
@@ -159,8 +164,32 @@ class _ChildProfileState extends State<ChildProfile>
         _GetFriends();
       } else {
         //functions.createSnackBar(context, response.message.toString());
-        AppUtils.dismissprogress();
-        AppUtils.showError(context, "Unable to fetch details for child", "");
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  GetFriendsAndGroups() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetGroupFriends(widget.chooseChildId!).then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          FriendsGroupsData = response.datas;
+
+          setState(() {
+            _foundedAllData = FriendsGroupsData!;
+          });
+          GroupData();
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -174,8 +203,15 @@ class _ChildProfileState extends State<ChildProfile>
         print("response ${response.status}");
         setState(() {
           FriendsDatum = response.data!;
+          setState(() {
+            _foundedUsers = FriendsDatum!;
+          });
           // FriendsDat = response.data!.cast<GroupDetai>();
-          GroupData();
+          GetFriendsAndGroups();
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
         });
       }
     }).catchError((onError) {
@@ -191,6 +227,9 @@ class _ChildProfileState extends State<ChildProfile>
         setState(() {
           if (response.message != "No Groups found") {
             GroupDetail = response.groupDetails;
+            setState(() {
+              _foundedGroups = GroupDetail!;
+            });
             // GroupDetail1 = response.groupDetails!.cast<GroupDetai>();
             _isLoading = false;
             // newList = new List.from(FriendsDat!)..addAll(GroupDetail1!);
@@ -218,6 +257,43 @@ class _ChildProfileState extends State<ChildProfile>
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => fetchData());
+  }
+
+  onSearch(String search) {
+    print("Searching for $search");
+    setState(() {
+      if (dropdownvalue == "GROUPS") {
+        _foundedGroups = GroupDetail!
+            .where((user) =>
+                user.groupName!.toLowerCase().contains(search.toLowerCase()))
+            .toList();
+      } else if (dropdownvalue == "FRIENDS") {
+        _foundedUsers = FriendsDatum!
+            .where((user) =>
+                user.childName!.toLowerCase().contains(search.toLowerCase()))
+            .toList();
+      } else if (dropdownvalue == "ALL") {
+        for (var i = 0; i < _foundedAllData.length; i++) {
+          // (_foundedAllData[i].type != "GROUP")
+          //     ? _foundedAllData = FriendsGroupsData!
+          //         .where((user) => user.childName!
+          //             .toLowerCase()
+          //             .contains(search.toLowerCase()))
+          //         .toList()
+          //     : _foundedAllData = FriendsGroupsData!
+          //         .where((user) => user.groupName!
+          //             .toLowerCase()
+          //             .contains(search.toLowerCase()))
+          //         .toList();
+
+          _foundedAllData = FriendsGroupsData!
+              .where((user) =>
+                  user.name!.toLowerCase().contains(search.toLowerCase()))
+              .toList();
+        }
+        print(_foundedUsers.length);
+      }
+    });
   }
 
   @override
@@ -620,7 +696,10 @@ class _ChildProfileState extends State<ChildProfile>
                     children: [
                       Expanded(
                         child: TextField(
-                          enabled: false,
+                          onChanged: (searchString) {
+                            onSearch(searchString);
+                          },
+                          enabled: true,
                           style: TextStyle(height: 1.5),
                           decoration: InputDecoration(
                             border: InputBorder.none,
@@ -715,45 +794,90 @@ class _ChildProfileState extends State<ChildProfile>
 /////////////////        All List    ///////////////////////////////////////
 
           (dropdownvalue == "ALL" && !_AddGroup)
-              ? (GroupDetail!.length) > 0
+              ? (_foundedAllData.length) > 0
                   ? Expanded(
                       child: ListView.separated(
                         physics: BouncingScrollPhysics(),
-                        itemCount: GroupDetail!.length,
+                        itemCount: _foundedAllData.length,
                         itemBuilder: (context, index) {
                           return Padding(
                               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                               child: ListTile(
                                 onTap: () async {
-                                  await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (BuildContext context) =>
-                                              Groupinfo(
-                                                  groupId: GroupDetail![index]
-                                                      .groupId,
-                                                  choosedChildId:
-                                                      widget.chooseChildId)));
+                                  (_foundedAllData[index].type == "GROUP")
+                                      ? await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Groupinfo(
+                                                      groupId:
+                                                          _foundedAllData[index]
+                                                              .id,
+                                                      choosedChildId: widget
+                                                          .chooseChildId)))
+                                      : Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  OtherChildProfile()));
                                   setState(() {
                                     GroupData();
                                   });
                                 },
                                 leading: Transform.translate(
                                   offset: Offset(-16, 0),
-                                  child: CircleAvatar(
-                                    backgroundImage: GroupDetail![index]
-                                                .groupImage !=
-                                            "null"
-                                        ? NetworkImage(Strings.imageUrl +
-                                            (GroupDetail![index].groupImage ??
-                                                ""))
-                                        : AssetImage("assets/imgs/appicon.png")
-                                            as ImageProvider,
-                                  ),
+                                  child: (_foundedAllData[index].type ==
+                                          "GROUP")
+                                      ? Stack(children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsets.only(left: 5),
+                                            child: CircleAvatar(
+                                              backgroundImage: _foundedAllData[
+                                                              index]
+                                                          .image !=
+                                                      "null"
+                                                  ? NetworkImage(Strings
+                                                          .imageUrl +
+                                                      (_foundedAllData[index]
+                                                              .image ??
+                                                          ""))
+                                                  : AssetImage(
+                                                          "assets/imgs/appicon.png")
+                                                      as ImageProvider,
+                                              radius: 23,
+                                            ),
+                                          ),
+                                          Positioned(
+                                              right: 30,
+                                              bottom: 25,
+                                              child: CircleAvatar(
+                                                backgroundImage: AssetImage(
+                                                    "assets/imgs/add_friends.png"),
+                                                radius: 10,
+                                              ))
+                                        ])
+                                      : Padding(
+                                          padding:
+                                              const EdgeInsets.only(left: 5),
+                                          child: CircleAvatar(
+                                            backgroundImage: _foundedAllData[
+                                                            index]
+                                                        .image !=
+                                                    "null"
+                                                ? NetworkImage(
+                                                    Strings.imageUrl +
+                                                        (_foundedAllData[index]
+                                                                .image ??
+                                                            ""))
+                                                : AssetImage(
+                                                        "assets/imgs/appicon.png")
+                                                    as ImageProvider,
+                                            radius: 23,
+                                          ),
+                                        ),
                                 ),
                                 title: Transform.translate(
                                     offset: Offset(-16, 0),
-                                    child:
-                                        Text(GroupDetail![index].groupName!)),
+                                    child: Text(_foundedAllData[index].name!)),
                               ));
                         },
                         separatorBuilder: (BuildContext context, int index) {
@@ -771,11 +895,11 @@ class _ChildProfileState extends State<ChildProfile>
 /////////////////        Groups List    ///////////////////////////////////////
 
           (dropdownvalue == "GROUPS" && !_AddGroup)
-              ? GroupDetail!.length > 0
+              ? _foundedGroups.length > 0
                   ? Expanded(
                       child: ListView.separated(
                         physics: BouncingScrollPhysics(),
-                        itemCount: GroupDetail!.length,
+                        itemCount: _foundedGroups.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -785,8 +909,8 @@ class _ChildProfileState extends State<ChildProfile>
                                     MaterialPageRoute(
                                         builder: (BuildContext context) =>
                                             Groupinfo(
-                                                groupId:
-                                                    GroupDetail![index].groupId,
+                                                groupId: _foundedGroups[index]
+                                                    .groupId,
                                                 choosedChildId:
                                                     widget.chooseChildId)));
                                 setState(() {
@@ -795,58 +919,37 @@ class _ChildProfileState extends State<ChildProfile>
                               },
                               leading: Transform.translate(
                                 offset: Offset(-16, 0),
-                                child: CircleAvatar(
-                                  backgroundImage: GroupDetail![index]
-                                              .groupImage !=
-                                          "null"
-                                      ? NetworkImage(Strings.imageUrl +
-                                          (GroupDetail![index].groupImage ??
-                                              ""))
-                                      : AssetImage("assets/imgs/appicon.png")
-                                          as ImageProvider,
-                                ),
+                                child: Stack(children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 5),
+                                    child: CircleAvatar(
+                                      backgroundImage:
+                                          _foundedAllData[index].image != "null"
+                                              ? NetworkImage(Strings.imageUrl +
+                                                  (_foundedAllData[index]
+                                                          .image ??
+                                                      ""))
+                                              : AssetImage(
+                                                      "assets/imgs/appicon.png")
+                                                  as ImageProvider,
+                                      radius: 23,
+                                    ),
+                                  ),
+                                  Positioned(
+                                      right: 30,
+                                      bottom: 25,
+                                      child: CircleAvatar(
+                                        backgroundImage: AssetImage(
+                                          "assets/imgs/add_friends.png",
+                                        ),
+                                        radius: 10,
+                                      ))
+                                ]),
                               ),
-                              // trailing: _AddGroup
-                              //     ? Container(
-                              //         decoration: BoxDecoration(
-                              //           border: Border.all(
-                              //               color: Colors.grey, width: 1),
-                              //           borderRadius: BorderRadius.circular(3.0),
-                              //         ),
-                              //         width: 20,
-                              //         height: 20,
-                              //         child: Theme(
-                              //           data: ThemeData(
-                              //               unselectedWidgetColor: Colors.white),
-                              //           child: Checkbox(
-                              //               // side: BorderSide(color: Colors.black),
-                              //               checkColor: Colors.green,
-                              //               activeColor: Colors.transparent,
-                              //               //hoverColor: Colors.black,
-                              //               value: _isChecked?[index],
-                              //               onChanged: (val) {
-                              //                 setState(
-                              //                   () {
-                              //                     if (val!) {
-                              //                       _isChecked?[index] = val;
-                              //                       FriendsId!.add(
-                              //                           FriendsDatum![index]
-                              //                               .childId!);
-                              //                     } else {
-                              //                       _isChecked?[index] = val;
-                              //                       FriendsId!.remove(
-                              //                           FriendsDatum![index]
-                              //                               .childId!);
-                              //                     }
-                              //                   },
-                              //                 );
-                              //               }),
-                              //         ),
-                              //       )
-                              //     : Spacer(),
                               title: Transform.translate(
                                   offset: Offset(-16, 0),
-                                  child: Text(GroupDetail![index].groupName!)),
+                                  child:
+                                      Text(_foundedGroups[index].groupName!)),
                             ),
                           );
                         },
@@ -866,11 +969,11 @@ class _ChildProfileState extends State<ChildProfile>
 /////////////////        FriendList    ///////////////////////////////////////
 
           (dropdownvalue == "FRIENDS" || _AddGroup)
-              ? FriendsDatum!.length > 0
+              ? _foundedUsers.length > 0
                   ? Expanded(
                       child: ListView.separated(
                         physics: BouncingScrollPhysics(),
-                        itemCount: FriendsDatum!.length,
+                        itemCount: _foundedUsers.length,
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -885,14 +988,19 @@ class _ChildProfileState extends State<ChildProfile>
                               },
                               leading: Transform.translate(
                                 offset: Offset(-16, 0),
-                                child: CircleAvatar(
-                                  backgroundImage: FriendsDatum![index]
-                                              .profile !=
-                                          "null"
-                                      ? NetworkImage(Strings.imageUrl +
-                                          (FriendsDatum![index].profile ?? ""))
-                                      : AssetImage("assets/imgs/appicon.png")
-                                          as ImageProvider,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: CircleAvatar(
+                                    backgroundImage: _foundedUsers[index]
+                                                .profile !=
+                                            "null"
+                                        ? NetworkImage(Strings.imageUrl +
+                                            (_foundedUsers[index].profile ??
+                                                ""))
+                                        : AssetImage("assets/imgs/appicon.png")
+                                            as ImageProvider,
+                                    radius: 23,
+                                  ),
                                 ),
                               ),
                               trailing: _AddGroup
@@ -921,12 +1029,12 @@ class _ChildProfileState extends State<ChildProfile>
                                                   if (val!) {
                                                     _isChecked?[index] = val;
                                                     FriendsId!.add(
-                                                        FriendsDatum![index]
+                                                        _foundedUsers[index]
                                                             .childId!);
                                                   } else {
                                                     _isChecked?[index] = val;
                                                     FriendsId!.remove(
-                                                        FriendsDatum![index]
+                                                        _foundedUsers[index]
                                                             .childId!);
                                                   }
                                                 },
@@ -937,7 +1045,7 @@ class _ChildProfileState extends State<ChildProfile>
                                   : SizedBox(),
                               title: Transform.translate(
                                   offset: Offset(-16, 0),
-                                  child: Text(FriendsDatum![index].childName!)),
+                                  child: Text(_foundedUsers[index].childName!)),
                             ),
                           );
                         },
@@ -952,8 +1060,14 @@ class _ChildProfileState extends State<ChildProfile>
                       ),
                     )
                   : Center(
-                      child: Text(
-                          "There are no Groups/Friends for your child, please add accordingly"))
+                      child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                            "There are no Groups/Friends for your child, please add accordingly"),
+                      ],
+                    ))
               : SizedBox(),
           _AddGroup
               ? SizedBox(
@@ -994,16 +1108,18 @@ class _ChildProfileState extends State<ChildProfile>
             // color: Colors.white,
             alignment: Alignment.center,
             child: TextButton(
-                onPressed: () {
+                onPressed: () async {
                   _AddGroup = false;
                   if (FriendsId!.length != 0) {
-                    Navigator.of(context).push(MaterialPageRoute(
+                    await Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => AddGroup(
                             friendsId: FriendsId,
                             ChoosedChildId: widget.chooseChildId,
                             FromGroupInfo: false,
                             Groupimg: "null")));
-                    setState(() {});
+                    setState(() {
+                      _GetFriends();
+                    });
                   } else {
                     AppUtils.showToast(
                         "Please add atleast one of your friend to the group",

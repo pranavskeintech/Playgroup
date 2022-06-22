@@ -30,32 +30,44 @@ class GetNotificationListRes {
 class Data {
   int? notificationId;
   int? childId;
+  int? otherChildId;
+  int? markavailId;
   String? title;
   String? body;
   String? createdDate;
+  Null? markAvailId;
 
   Data(
       {this.notificationId,
       this.childId,
+      this.otherChildId,
+      this.markavailId,
       this.title,
       this.body,
-      this.createdDate});
+      this.createdDate,
+      this.markAvailId});
 
   Data.fromJson(Map<String, dynamic> json) {
     notificationId = json['notification_id'];
     childId = json['child_id'];
+    otherChildId = json['other_child_id'];
+    markavailId = json['markavail_id'];
     title = json['title'];
     body = json['body'];
     createdDate = json['created_date'];
+    markAvailId = json['mark_avail_id'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['notification_id'] = this.notificationId;
     data['child_id'] = this.childId;
+    data['other_child_id'] = this.otherChildId;
+    data['markavail_id'] = this.markavailId;
     data['title'] = this.title;
     data['body'] = this.body;
     data['created_date'] = this.createdDate;
+    data['mark_avail_id'] = this.markAvailId;
     return data;
   }
 }

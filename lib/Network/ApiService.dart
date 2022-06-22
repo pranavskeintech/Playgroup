@@ -16,6 +16,7 @@ import 'package:playgroup/Models/EditAvailabilityCommonReq.dart';
 import 'package:playgroup/Models/EditAvailabilityReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
+import 'package:playgroup/Models/FriendsAndGroups.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
@@ -219,9 +220,16 @@ abstract class ApiService {
   Future<GetAllGroupDetailsRes> GetAllGroupDetails(
       @Path("ChildID") int ChildID);
 
+  @GET("groups/all/{ChildID}")
+  Future<GroupsAndFriends> GetGroupFriends(@Path("ChildID") int ChildID);
+
   @POST("groups/add_participants/{groupId}")
   Future<CommonRes> addParticipantsGroup(
       @Body() addGroupParticipants body, @Path("groupId") int groupId);
+      
+      
+  @DELETE("groups/exitGroup/{groupId}/{ChildID}")
+  Future<CommonRes> exitGroup(@Path("groupId") int groupId, @Path("ChildID") int ChildID);
 
   @DELETE("groups/remove_participants/{ChildID}")
   Future<CommonRes> removeParticipantsGroup(
