@@ -271,9 +271,15 @@ class _ChooseTopicState extends State<ChooseTopic> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20),
-                Center(
-                      child: Container(
+              //  SizedBox(height: 20),
+Spacer(),
+                
+                Container(
+                  margin: EdgeInsets.only(bottom: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
                           width: MediaQuery.of(context).size.width * 0.9,
                           height: 50,
                           child: ElevatedButton(
@@ -305,12 +311,10 @@ class _ChooseTopicState extends State<ChooseTopic> {
                                 backgroundColor: MaterialStateProperty.all<Color>(
                                     Strings.appThemecolor)),
                           )),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Center(
-                      child: Container(
+                          SizedBox(
+                        height: 10,
+                      ),
+                      Container(
                           padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                           //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
                           // ),
@@ -330,11 +334,10 @@ class _ChooseTopicState extends State<ChooseTopic> {
                             style: ButtonStyle(
                                 backgroundColor:
                                     MaterialStateProperty.all<Color>(Colors.white)),
-                          )),
-                    ),
-                    SizedBox(
-                      height: 40,
-                    ),
+                          ))
+                    ],
+                  ),
+                ),
               ],
             ),
           );

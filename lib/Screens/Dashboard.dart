@@ -31,7 +31,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Network/ApiService.dart';
 
 class DashBoard extends StatefulWidget {
-  const DashBoard({Key? key}) : super(key: key);
+  int? screenindex;
+   DashBoard({Key? key, this.screenindex}) : super(key: key);
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -50,7 +51,8 @@ class _DashBoardState extends State<DashBoard> {
     // PastActivity(),
     SearchScreen(),
     //NotificationScreen(),
-    ProfileScreen()
+    ProfileScreen(),
+    Mark_Availabilty()
   ];
   final screen2 = [Mark_Availabilty()];
 
@@ -74,6 +76,8 @@ class _DashBoardState extends State<DashBoard> {
   List<Data>? allNotificationList;
 
   int notifictionCount = 0;
+
+  int markavailIndex = 0;
 
 
   GetProfile() {
@@ -138,6 +142,8 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
+
+    _bottomNavIndex = widget.screenindex == null ? 0 : widget.screenindex!;
     // TODO: implement initState
     iconList.add(Icons.home_outlined);
     iconList.add(Icons.schedule);
@@ -281,15 +287,27 @@ class _DashBoardState extends State<DashBoard> {
               resizeToAvoidBottomInset: false,
               floatingActionButton: FloatingActionButton(
                 onPressed: () async {
-                  await Navigator.of(context).push(MaterialPageRoute(
-                      builder: (BuildContext context) => Mark_Availabilty()));
-                  setState(() {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (BuildContext context) => DashBoard()));
+                  // await Navigator.of(context).push(MaterialPageRoute(
+                  //     builder: (BuildContext context) => Mark_Availabilty()));
+                  if(markavailIndex == 0) 
+                  {
+setState(() {
+                    _bottomNavIndex = 4;
+                    markavailIndex = 1;
                   });
+                  }
+                  else
+                  {
+                        setState(() {
+                          markavailIndex = 0;
+                    _bottomNavIndex = 0;
+                  });
+                  }
+                  
+                  
                 },
                 backgroundColor: Strings.appThemecolor,
-                child: Icon(Icons.add),
+                child: _bottomNavIndex != 4? Icon(Icons.add):Icon(Icons.clear),
 
                 //params
               ),

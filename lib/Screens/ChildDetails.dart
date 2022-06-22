@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:playgroup/Screens/Profile.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -461,10 +462,10 @@ class _ChildDetailsState extends State<ChildDetails> {
         print("From profile ${widget.fromProfile}");
 
         if (widget.fromProfile == true) {
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => ProfileScreen(),
+              builder: (context) => DashBoard(screenindex: 3),
             ),
           );
         } else {

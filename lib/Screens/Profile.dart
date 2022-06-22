@@ -95,316 +95,317 @@ class _ProfileScreenState extends State<ProfileScreen> {
             key: _scaffoldKey,
             drawer: NavigationDrawer(),
            
-            body: Container(
-              // color: Colors.white,
-              padding: EdgeInsets.fromLTRB(28, 10, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Your Profile",
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    SignupEmailScreen(
-                                      fromProfile: true,
-                                      name: _ProfileData!.parentName!,
-                                      email: _ProfileData!.emailId!,
-                                    )));
-                          },
-                          child: Row(
-                            children: [
-                              Text("Edit"),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Image.asset(
-                                "assets/imgs/compose.png",
-                                fit: BoxFit.fill,
-                                color: Colors.blue,
-                                width: 15,
-                                height: 15,
-                              ),
-                            ],
-                          ))
-                    ],
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                  ),
-                  Container(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Name",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              _ProfileData!.parentName!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
+            body: SingleChildScrollView(
+              child: Container(
+                // color: Colors.white,
+                padding: EdgeInsets.fromLTRB(28, 10, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Your Profile",
+                          style: TextStyle(color: Colors.grey),
                         ),
-                      ),
-                      Container(
-                        color: Colors.grey.withOpacity(0.3),
-                        width: 1,
-                        height: 40,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Email ID",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              _ProfileData!.emailId!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 28,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.30,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Number",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              _ProfileData!.phone!,
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ),
-                      ),
-                      Container(
-                        color: Colors.grey.withOpacity(0.3),
-                        width: 1,
-                        height: 40,
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.45,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Password",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            InkWell(
-                              child: Text(
-                                "Change Password",
-                                style: TextStyle(color: Colors.blue),
-                              ),
-                              onTap: () {
-                                Strings.fromProfile = true;
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            Forgotpassword()));
-                              },
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  (_ProfileData!.coParent!.length == 0)
-                      ? Container(
+                        TextButton(
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      SignupEmailScreen(
+                                        fromProfile: true,
+                                        name: _ProfileData!.parentName!,
+                                        email: _ProfileData!.emailId!,
+                                      )));
+                            },
+                            child: Row(
+                              children: [
+                                Text("Edit"),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Image.asset(
+                                  "assets/imgs/compose.png",
+                                  fit: BoxFit.fill,
+                                  color: Colors.blue,
+                                  width: 15,
+                                  height: 15,
+                                ),
+                              ],
+                            ))
+                      ],
+                    ),
+                    Divider(
+                      color: Colors.grey,
+                    ),
+                    Container(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.30,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "Co-Parent",
+                                "Name",
                                 style: TextStyle(color: Colors.grey),
                               ),
-                              ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pushReplacement(
-                                        MaterialPageRoute(
-                                            builder: (BuildContext context) =>
-                                                AddCoParent()));
-                                  },
-                                  child: Text("Add Co-Parent"))
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                _ProfileData!.parentName!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
                             ],
                           ),
-                        )
-                      : Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ),
+                        Container(
+                          color: Colors.grey.withOpacity(0.3),
+                          width: 1,
+                          height: 40,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Email ID",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                _ProfileData!.emailId!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 28,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.30,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Number",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                _ProfileData!.phone!,
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              )
+                            ],
+                          ),
+                        ),
+                        Container(
+                          color: Colors.grey.withOpacity(0.3),
+                          width: 1,
+                          height: 40,
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.45,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Password",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              InkWell(
+                                child: Text(
+                                  "Change Password",
+                                  style: TextStyle(color: Colors.blue),
+                                ),
+                                onTap: () {
+                                  Strings.fromProfile = true;
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Forgotpassword()));
+                                },
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    (_ProfileData!.coParent!.length == 0)
+                        ? Container(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  _ProfileData!
-                                                  .role == "PARENT"?
-                                  "Co-Parent":"Owner",
+                                  "Co-Parent",
                                   style: TextStyle(color: Colors.grey),
                                 ),
-                                TextButton(
+                                ElevatedButton(
                                     onPressed: () {
                                       Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  EditCoParent(
-                                                    name: _ProfileData!
-                                                        .coParent?[0]
-                                                        .parentName,
-                                                    email: _ProfileData!
-                                                        .coParent?[0].emailId,
-                                                    PhoneNumber: _ProfileData!
-                                                        .coParent?[0].phone,
-                                                    password: _ProfileData!
-                                                        .coParent?[0].password,
-                                                    selectedAcces: _ProfileData!
-                                                        .coParent?[0].access,
-                                                  )));
+                                                  AddCoParent()));
                                     },
-                                    child: _ProfileData!.role == "PARENT"
-                                        ? Row(
-                                            children: [
-                                              Text("Edit"),
-                                              SizedBox(
-                                                width: 5,
-                                              ),
-                                              Image.asset(
-                                                "assets/imgs/compose.png",
-                                                fit: BoxFit.fill,
-                                                color: Colors.blue,
-                                                width: 15,
-                                                height: 15,
-                                              ),
-                                            ],
-                                          )
-                                        : SizedBox())
+                                    child: Text("Add Co-Parent"))
                               ],
                             ),
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.95,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5),
-                                  color: Colors.grey.shade200,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(20.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        height: 25,
-                                        child: Row(
+                          )
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    _ProfileData!
+                                                    .role == "PARENT"?
+                                    "Co-Parent":"Owner",
+                                    style: TextStyle(color: Colors.grey),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(
+                                                builder: (BuildContext context) =>
+                                                    EditCoParent(
+                                                      name: _ProfileData!
+                                                          .coParent?[0]
+                                                          .parentName,
+                                                      email: _ProfileData!
+                                                          .coParent?[0].emailId,
+                                                      PhoneNumber: _ProfileData!
+                                                          .coParent?[0].phone,
+                                                      password: _ProfileData!
+                                                          .coParent?[0].password,
+                                                      selectedAcces: _ProfileData!
+                                                          .coParent?[0].access,
+                                                    )));
+                                      },
+                                      child: _ProfileData!.role == "PARENT"
+                                          ? Row(
+                                              children: [
+                                                Text("Edit"),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+                                                Image.asset(
+                                                  "assets/imgs/compose.png",
+                                                  fit: BoxFit.fill,
+                                                  color: Colors.blue,
+                                                  width: 15,
+                                                  height: 15,
+                                                ),
+                                              ],
+                                            )
+                                          : SizedBox())
+                                ],
+                              ),
+                              Container(
+                                  width: MediaQuery.of(context).size.width * 0.95,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5),
+                                    color: Colors.grey.shade200,
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(20.0),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          height: 25,
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                _ProfileData!.coParent?[0]
+                                                        .parentName ??
+                                                    "",
+                                                style: TextStyle(
+                                                    fontSize: 15,
+                                                    fontWeight: FontWeight.w500),
+                                              ),
+                                              // IconButton(onPressed: deleteCoParent(), icon: (Icon(Icons.delete_outline,size: 20)))
+                                              // GestureDetector(child: Icon(Icons.delete_outline,size: 20,),onDoubleTap: deleteCoParent(),)
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Row(
                                           mainAxisAlignment:
                                               MainAxisAlignment.spaceBetween,
                                           children: [
-                                            Text(
-                                              _ProfileData!.coParent?[0]
-                                                      .parentName ??
-                                                  "",
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w500),
+                                            Container(
+                                              width: 200,
+                                              child: Text(
+                                                _ProfileData!
+                                                        .coParent?[0].emailId ??
+                                                    "",
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
-                                            // IconButton(onPressed: deleteCoParent(), icon: (Icon(Icons.delete_outline,size: 20)))
-                                            // GestureDetector(child: Icon(Icons.delete_outline,size: 20,),onDoubleTap: deleteCoParent(),)
+                                            Row(
+                                              children: [
+                                                Text("Access: "),
+                                                Text(
+                                                    _ProfileData!.coParent?[0]
+                                                            .access ??
+                                                        "",
+                                                    style: TextStyle(
+                                                        color: _ProfileData!
+                                                                    .coParent?[0]
+                                                                    .access !=
+                                                                "VIEW"
+                                                            ? Colors.green
+                                                            : Colors.orange)),
+                                              ],
+                                            ),
                                           ],
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Container(
-                                            width: 200,
-                                            child: Text(
-                                              _ProfileData!
-                                                      .coParent?[0].emailId ??
-                                                  "",
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          Row(
-                                            children: [
-                                              Text("Access: "),
-                                              Text(
-                                                  _ProfileData!.coParent?[0]
-                                                          .access ??
-                                                      "",
-                                                  style: TextStyle(
-                                                      color: _ProfileData!
-                                                                  .coParent?[0]
-                                                                  .access !=
-                                                              "VIEW"
-                                                          ? Colors.green
-                                                          : Colors.orange)),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                )),
-                          ],
-                        ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                  Text("Children",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                      )),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Expanded(
-                    child: ListView.builder(
+                                      ],
+                                    ),
+                                  )),
+                            ],
+                          ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text("Children",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ListView.builder(
+                      shrinkWrap: true,
                       itemCount: _ProfileData!.children!.length,
                       itemBuilder: (context, index) {
                         return Padding(
@@ -479,48 +480,48 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         );
                       },
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: SizedBox(
-                          width: MediaQuery.of(context).size.width * 0.9,
-                          height: 50,
-                          child: ElevatedButton(
-                            onPressed: () {
-                              Strings.profilepage = true;
-                              Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (BuildContext context) =>
-                                      ChildDetails(
-                                        fromProfile: true,
-                                      )));
-                            },
-                            child: Text(
-                              "Add Child",
-                              style: TextStyle(
-                                color: Colors.grey.shade700,
+                    Padding(
+                      padding: const EdgeInsets.only(top: 10),
+                      child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.9,
+                            height: 50,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Strings.profilepage = true;
+                                Navigator.of(context).push(MaterialPageRoute(
+                                    builder: (BuildContext context) =>
+                                        ChildDetails(
+                                          fromProfile: true,
+                                        )));
+                              },
+                              child: Text(
+                                "Add Child",
+                                style: TextStyle(
+                                  color: Colors.grey.shade700,
+                                ),
                               ),
+                              style: ButtonStyle(
+                                  backgroundColor:
+                                      MaterialStateProperty.all(Colors.white),
+                                  shape: MaterialStateProperty.all<
+                                          RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(4.0),
+                                          side: BorderSide(
+                                              width: 2,
+                                              color: Colors.grey
+                                                  .withOpacity(0.2))))),
                             ),
-                            style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(4.0),
-                                        side: BorderSide(
-                                            width: 2,
-                                            color: Colors.grey
-                                                .withOpacity(0.2))))),
-                          ),
-                        )),
-                  ),
-                  SizedBox(
-                    height: 40,
-                  )
-                ],
+                          )),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    )
+                  ],
+                ),
               ),
             ),
           );

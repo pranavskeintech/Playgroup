@@ -284,12 +284,12 @@ class _Availability_choose_friendsState
                       height: 50,
                       child: ElevatedButton(
                         onPressed: () {
-                          if (FriendsId.length == 0) {
-                            AppUtils.showWarning(context,
-                                "Choose Friends to join the availability", "");
-                          } else {
+                          // if (FriendsId.length == 0) {
+                          //   AppUtils.showWarning(context,
+                          //       "Choose Friends to join the availability", "");
+                          // } else {
                             _MarkAvailability();
-                          }
+                          //}
                         },
                         child: Text(
                           "Done",
