@@ -97,23 +97,23 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                       builder: (BuildContext context) => DashBoard()))
                 },
               ),
-              ListTile(
-                leading: Image.asset(
-                  "assets/imgs/profile.png",
-                  width: 17,
-                  height: 17,
-                ),
-                title: Transform.translate(
-                  offset: Offset(-20, -3),
-                  child: Text('Profile'),
-                ),
-                onTap: () => {
-                  print("object"),
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => ProfileScreen()))
-                  // Navigator.of(context).pop()
-                },
-              ),
+              // ListTile(
+              //   leading: Image.asset(
+              //     "assets/imgs/profile.png",
+              //     width: 17,
+              //     height: 17,
+              //   ),
+              //   title: Transform.translate(
+              //     offset: Offset(-20, -3),
+              //     child: Text('Profile'),
+              //   ),
+              //   onTap: () => {
+              //     print("object"),
+              //     Navigator.of(context).push(
+              //         MaterialPageRoute(builder: (context) => ProfileScreen()))
+              //     // Navigator.of(context).pop()
+              //   },
+              // ),
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/add-user.png",

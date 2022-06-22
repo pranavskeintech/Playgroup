@@ -7,6 +7,7 @@ import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 
+
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
@@ -32,7 +33,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
   GetNotificationList() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.GetNotificationList(Strings.SelectedChild).then((response) {
+    api.GetNotificationList(Strings.SelectedChild).then((response) async {
       print(response.status);
       if (response.status == true) {
         setState(() {
@@ -47,10 +48,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                           print(dateFormate);
 
         });
+        
+
+
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
-        AppUtils.showError(context, "Unable to fetch details for child", "");
+        AppUtils.showError(context, "Unable to fetch deatils", "");
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -63,6 +67,21 @@ class _NotificationScreenState extends State<NotificationScreen> {
         create: (context) => ApiService.create(),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
+           appBar: AppBar(
+              //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
+              backgroundColor: Strings.appThemecolor,
+              title: Text(
+                "Notification",
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              leading: IconButton(
+                  onPressed: () {
+                   // _scaffoldKey.currentState?.openDrawer();
+                   Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.arrow_back,color: Colors.white,),
+            )),
           body: Builder(builder: (BuildContext newContext) {
             return NotificationScreen(newContext);
           }),

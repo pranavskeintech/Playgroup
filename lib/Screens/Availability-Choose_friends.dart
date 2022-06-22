@@ -310,7 +310,8 @@ class _Availability_choose_friendsState
           );
   }
 
-  _MarkAvailability() {
+  _MarkAvailability() 
+  {
     AppUtils.showprogress();
 
     MarkAvailabilityReq markavail = MarkAvailabilityReq();
@@ -334,7 +335,14 @@ class _Availability_choose_friendsState
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
-        AppUtils.showToast(response.message, context);
+        AppUtils.showToast(response.message,context);
+         Strings.markAvailabiltydate = "";
+        Strings.markAvailabiltystartTime = "";
+    Strings.markAvailabiltyendTime = "";
+    Strings.markAvailabiltydesc = "";
+    Strings.markAvailabiltylocations = "";
+    Strings.markAvailabiltyTopic = null;
+    Strings.markAvailabiltycategory = null;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else {
