@@ -35,7 +35,7 @@ class Data {
   String? title;
   String? body;
   String? createdDate;
-  Null? markAvailId;
+  int? markAvailId;
 
   Data(
       {this.notificationId,

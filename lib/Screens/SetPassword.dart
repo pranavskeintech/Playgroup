@@ -24,6 +24,8 @@ class _SetPasswordState extends State<SetPassword> {
   final _confirmPasswordController = TextEditingController();
 
   var errorpassword;
+  bool showpassword = false;
+  bool showconfirmpassword = false;
   bool validatePassword() {
     if (_passwordController.text == _confirmPasswordController.text) {
       setState(() {
@@ -107,9 +109,25 @@ class _SetPasswordState extends State<SetPassword> {
                   SizedBox(
                     height: 40,
                     child: TextField(
+                      
                       style: TextStyle(color: Colors.black),
                       controller: _passwordController,
                       decoration: InputDecoration(
+                        suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+               showpassword
+               ? Icons.visibility
+               : Icons.visibility_off,
+               color: Colors.grey,
+               ),
+            onPressed: () {
+               // Update the state i.e. toogle the state of passwordVisible variable
+               setState(() {
+                   showpassword = !showpassword;
+               });
+             },
+            ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -133,7 +151,7 @@ class _SetPasswordState extends State<SetPassword> {
                         contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
                       ),
                       keyboardType: TextInputType.text,
-                      obscureText: true,
+                      obscureText: showpassword,
                     ),
                   ),
                   const SizedBox(height: 5.0),
@@ -171,6 +189,21 @@ class _SetPasswordState extends State<SetPassword> {
                         style: TextStyle(color: Colors.black),
                         controller: _confirmPasswordController,
                         decoration: InputDecoration(
+                          suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+               showconfirmpassword
+               ? Icons.visibility
+               : Icons.visibility_off,
+               color: Colors.grey,
+               ),
+            onPressed: () {
+               // Update the state i.e. toogle the state of passwordVisible variable
+               setState(() {
+                   showconfirmpassword = !showconfirmpassword;
+               });
+             },
+            ),
                           errorText: errorpassword,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -194,7 +227,7 @@ class _SetPasswordState extends State<SetPassword> {
                               fontSize: 14.0, color: Colors.grey),
                         ),
                         keyboardType: TextInputType.visiblePassword,
-                        obscureText: true),
+                        obscureText: showconfirmpassword),
                   ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 60, 0, 0),

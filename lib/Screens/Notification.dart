@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/Mark_availability.dart';
+import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/ShowOtherChild.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -161,9 +163,24 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               child: ListTile(
                                 onTap: () {
                                   // Strings.FriendNotification = true;
-                                  // Navigator.of(context).push(MaterialPageRoute(
-                                  //     builder: (BuildContext context) =>
-                                  //         ShowOtherChildProfile(otherChildID: NotificationList![mainIndex].childId,)));
+
+
+                                  if(NotificationList![mainIndex].title!.contains("Mark"))
+                                  {
+
+                                    print(NotificationList![mainIndex].markavailId);
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Own_Availability(markavailId: NotificationList![mainIndex].markavailId,)));
+                                  }
+                                  else
+                                  {
+                                      Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          ShowOtherChildProfile(otherChildID: NotificationList![mainIndex].otherChildId,)));
+                                  }
+
+                                  
                                 },
                                 title: Text(
                                   NotificationList![mainIndex].title!,

@@ -405,6 +405,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       height: 10,
                     ),
                     ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
                       shrinkWrap: true,
                       itemCount: _ProfileData!.children!.length,
                       itemBuilder: (context, index) {
@@ -482,7 +483,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       },
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(top: 10),
+                      padding: const EdgeInsets.only(top: 20),
                       child: Align(
                           alignment: Alignment.bottomCenter,
                           child: SizedBox(

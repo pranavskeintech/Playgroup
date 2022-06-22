@@ -27,6 +27,10 @@ class _ResetPasswordState extends State<ResetPassword> {
   final _confirmPasswordController = TextEditingController();
   var ctx;
   var errorpassword;
+
+  bool showpassword = false;
+
+  bool showConfirmPassword = false;
   bool validatePassword() {
     if (_passwordController.text == _confirmPasswordController.text) {
       setState(() {
@@ -124,6 +128,21 @@ PasswordReset(BuildContext context)
                         style: TextStyle(color: Colors.black),
                         controller: _passwordController,
                         decoration: InputDecoration(
+                           suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+               showpassword
+               ? Icons.visibility
+               : Icons.visibility_off,
+               color: Colors.grey,
+               ),
+            onPressed: () {
+               // Update the state i.e. toogle the state of passwordVisible variable
+               setState(() {
+                   showpassword = !showpassword;
+               });
+             },
+            ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -185,6 +204,21 @@ PasswordReset(BuildContext context)
                           style: TextStyle(color: Colors.black),
                           controller: _confirmPasswordController,
                           decoration: InputDecoration(
+                             suffixIcon: IconButton(
+            icon: Icon(
+              // Based on passwordVisible state choose the icon
+               showConfirmPassword
+               ? Icons.visibility
+               : Icons.visibility_off,
+               color: Colors.grey,
+               ),
+            onPressed: () {
+               // Update the state i.e. toogle the state of passwordVisible variable
+               setState(() {
+                   showConfirmPassword = !showConfirmPassword;
+               });
+             },
+            ),
                             errorText: errorpassword,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),

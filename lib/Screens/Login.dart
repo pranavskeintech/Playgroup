@@ -50,8 +50,8 @@ class _LoginPageState extends State<LoginPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _emailIdController.text = "g@g.com";
-    _passwordController.text = "g";
+    _emailIdController.text = "pranav@test.com";
+    _passwordController.text = "Qwerty123";
   }
 
   void _doSomething() async {
