@@ -1,9 +1,17 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:playgroup/Models/EditChildReq.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 
 class EditLangKnwn extends StatefulWidget {
   const EditLangKnwn({Key? key}) : super(key: key);
@@ -43,8 +51,50 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
     false
   ];
   List<String> _selectedvalues = [];
+
+  BuildContext? ctx;
+
+  List<Data>? _ChildData;
+
+  bool _isLoading = true;
+
+  _GetChildData() {
+    //int? PId = Strings.Parent_Id;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetChild().then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          _ChildData = response.data;
+          _isLoading = false;
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetChildData());
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return EditLanguages(newContext);
+          }),
+        ));
+  }
+
+  EditLanguages(BuildContext context) {
+    ctx = context;
     return Scaffold(
       key: _scaffoldKey,
       appBar: AppBar(
@@ -127,7 +177,7 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
                         if (_tick[i] == true) {
                           // print(activities[i]);
                           _selectedvalues.add(Languages[i]);
-                          Navigator.pop(context);
+                          _EditChild();
                           print(_selectedvalues);
                           _selectedvalues[i] = Languages[i];
                         } else {
@@ -149,5 +199,30 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
         ],
       ),
     );
+  }
+
+  _EditChild() {
+    EditChildReq ChildEdit = EditChildReq();
+    ChildEdit.childId = _ChildData![Strings.editIndex].childId;
+    //ChildEdit.parentId = Strings.Parent_Id.toString();
+    ChildEdit.childName = _ChildData![Strings.editIndex].childName;
+    ChildEdit.dob = _ChildData![Strings.editIndex].dob;
+    ChildEdit.gender = _ChildData![Strings.editIndex].gender;
+    ChildEdit.school = _ChildData![Strings.editIndex].school;
+    ChildEdit.profile = _ChildData![Strings.editIndex].profile;
+    ChildEdit.language = _selectedvalues;
+    print(jsonEncode(ChildEdit));
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.EditChild(ChildEdit).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.pop(context);
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
+      }
+    });
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:playgroup/Models/SuggestTimeReq.dart';
@@ -56,7 +58,7 @@ class _SuggestTimeState extends State<SuggestTime> {
     //print("time:${dt1!.hour}");
     final ChoosenTime1 = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay(hour: 12, minute: 00),
       //TimeOfDay(hour: dt1!.hour, minute: dt1!.minute),
       initialEntryMode: TimePickerEntryMode.dial,
       confirmText: "CONFIRM",
@@ -75,7 +77,7 @@ class _SuggestTimeState extends State<SuggestTime> {
   _selectTOTime() async {
     final ChoosenTime2 = await showTimePicker(
         context: context,
-        initialTime: TimeOfDay.now(),
+        initialTime: TimeOfDay(hour: 12, minute: 00),
         initialEntryMode: TimePickerEntryMode.dial,
         confirmText: "CONFIRM",
         // cancelText: "NOT NOW",
@@ -126,7 +128,7 @@ class _SuggestTimeState extends State<SuggestTime> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              height: MediaQuery.of(context).size.height * 0.15,
+              height: MediaQuery.of(context).size.height * 0.05,
             ),
             const Text(
               "Timing",
@@ -160,7 +162,7 @@ class _SuggestTimeState extends State<SuggestTime> {
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: GestureDetector(
                     onTap: () {
-                      _selectTOTime();
+                      _selectFromTime(context);
                     },
                     child: Container(
                       decoration: BoxDecoration(
@@ -173,7 +175,7 @@ class _SuggestTimeState extends State<SuggestTime> {
                             child: Container(
                               height: MediaQuery.of(context).size.height * 0.04,
                               child: TextField(
-                                controller: _TOTimeController,
+                                controller: _FromTimeController,
                                 enabled: false,
                                 style: TextStyle(color: Colors.black),
                                 decoration: InputDecoration(
@@ -200,10 +202,10 @@ class _SuggestTimeState extends State<SuggestTime> {
                   width: MediaQuery.of(context).size.width * 0.4,
                   child: GestureDetector(
                     onTap: () {
-                      _selectFromTime(context);
+                      _selectTOTime();
                     },
                     child: TextField(
-                      controller: _FromTimeController,
+                      controller: _TOTimeController,
                       enabled: false,
                       style: TextStyle(color: Colors.black),
                       decoration: InputDecoration(
@@ -224,7 +226,9 @@ class _SuggestTimeState extends State<SuggestTime> {
             SizedBox(
               height: 10,
             ),
-            Spacer(),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.05,
+            ),
             Align(
               alignment: Alignment.bottomCenter,
               child: SizedBox(
@@ -237,9 +241,9 @@ class _SuggestTimeState extends State<SuggestTime> {
                 ),
               ),
             ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.40,
-            ),
+            // SizedBox(
+            //   height: MediaQuery.of(context).size.height * 0.40,
+            // ),
           ],
         ),
       ),
@@ -255,7 +259,7 @@ class _SuggestTimeState extends State<SuggestTime> {
     suggestTime.otherChildId = widget.OtherChildId;
     suggestTime.from = _FromTimeController.text;
     suggestTime.to = _TOTimeController.text;
-
+    print(jsonEncode(suggestTime));
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.suggestTime(suggestTime).then((response) {
       print('response ${response.status}');

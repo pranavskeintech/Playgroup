@@ -26,13 +26,11 @@ import 'package:playgroup/Utilities/Functions.dart';
 import 'package:badges/badges.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
 import '../Network/ApiService.dart';
 
 class DashBoard extends StatefulWidget {
   int? screenindex;
-   DashBoard({Key? key, this.screenindex}) : super(key: key);
+  DashBoard({Key? key, this.screenindex}) : super(key: key);
 
   @override
   State<DashBoard> createState() => _DashBoardState();
@@ -79,7 +77,6 @@ class _DashBoardState extends State<DashBoard> {
 
   int markavailIndex = 0;
 
-
   GetProfile() {
     _isLoading2 = true;
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -112,16 +109,14 @@ class _DashBoardState extends State<DashBoard> {
       print(onError.toString());
     });
   }
+
   GetNotificationList() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetNotificationList(Strings.SelectedChild).then((response) async {
       print(response.status);
       if (response.status == true) {
-
         setState(() {
-              allNotificationList = response.data!;
-
-
+          allNotificationList = response.data!;
         });
 
         final prefs = await SharedPreferences.getInstance();
@@ -129,7 +124,6 @@ class _DashBoardState extends State<DashBoard> {
         notifictionCount = (counter ?? 0) - allNotificationList!.length;
 
         await prefs.setInt('notificationCount', allNotificationList!.length);
-
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -142,7 +136,6 @@ class _DashBoardState extends State<DashBoard> {
 
   @override
   void initState() {
-
     _bottomNavIndex = widget.screenindex == null ? 0 : widget.screenindex!;
     // TODO: implement initState
     iconList.add(Icons.home_outlined);
@@ -229,51 +222,48 @@ class _DashBoardState extends State<DashBoard> {
                     width: 3,
                   ),
                   InkWell(
-                        onTap: (){
-                         Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          NotificationScreen()));
-                        },
-                        child: Container(
-                                        padding: EdgeInsets.only(left:5),
-                                        // child: Image.asset(
-                                        //   "assets/images/Notification.png",
-                                        //   width: 20,
-                                        // )
-                                        child: Badge(
-                                          showBadge: notifictionCount == 0
-                          ? false
-                          : true,
-                                          badgeColor: Strings.appThemecolor,
-                                          position: BadgePosition.topEnd(top: 10, end: 12),
-                                          borderRadius: BorderRadius.circular(50),
-                                          badgeContent: Text(
-                          "${allNotificationList != null ? notifictionCount : 0}",style: TextStyle(color: Colors.white),),
-                                          child: Image.asset(
-                        "assets/imgs/notification.png",
-                                                color: Colors.black,
-                      
-                        width: 25,
-                                          ),
-                                        ),
-                                        // Icon(
-                                        //   Icons.circle_notifications,
-                                        //   color: Colors.white,
-                                        // )
-                                      ),
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              NotificationScreen()));
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5),
+                      // child: Image.asset(
+                      //   "assets/images/Notification.png",
+                      //   width: 20,
+                      // )
+                      child: Badge(
+                        showBadge: notifictionCount == 0 ? false : true,
+                        badgeColor: Strings.appThemecolor,
+                        position: BadgePosition.topEnd(top: 10, end: 12),
+                        borderRadius: BorderRadius.circular(50),
+                        badgeContent: Text(
+                          "${allNotificationList != null ? notifictionCount : 0}",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        child: Image.asset(
+                          "assets/imgs/notification.png",
+                          color: Colors.black,
+                          width: 25,
+                        ),
                       ),
+                      // Icon(
+                      //   Icons.circle_notifications,
+                      //   color: Colors.white,
+                      // )
+                    ),
+                  ),
                   IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (BuildContext context) => Chat_List()));
                       },
                       icon: Image.asset(
-                        
                         "assets/imgs/chat.png",
                         width: 25,
                         height: 25,
                       )),
-                      
                 ],
                 leading: IconButton(
                     onPressed: () {
@@ -289,25 +279,21 @@ class _DashBoardState extends State<DashBoard> {
                 onPressed: () async {
                   // await Navigator.of(context).push(MaterialPageRoute(
                   //     builder: (BuildContext context) => Mark_Availabilty()));
-                  if(markavailIndex == 0) 
-                  {
-setState(() {
-                    _bottomNavIndex = 4;
-                    markavailIndex = 1;
-                  });
+                  if (markavailIndex == 0) {
+                    setState(() {
+                      _bottomNavIndex = 4;
+                      markavailIndex = 1;
+                    });
+                  } else {
+                    setState(() {
+                      markavailIndex = 0;
+                      _bottomNavIndex = 0;
+                    });
                   }
-                  else
-                  {
-                        setState(() {
-                          markavailIndex = 0;
-                    _bottomNavIndex = 0;
-                  });
-                  }
-                  
-                  
                 },
                 backgroundColor: Strings.appThemecolor,
-                child: _bottomNavIndex != 4? Icon(Icons.add):Icon(Icons.clear),
+                child:
+                    _bottomNavIndex != 4 ? Icon(Icons.add) : Icon(Icons.clear),
 
                 //params
               ),

@@ -205,6 +205,7 @@ class _ChildProfileState extends State<ChildProfile>
           FriendsDatum = response.data!;
           setState(() {
             _foundedUsers = FriendsDatum!;
+            _isChecked = List<bool>.filled(_foundedUsers.length, false);
           });
           // FriendsDat = response.data!.cast<GroupDetai>();
           GetFriendsAndGroups();
@@ -253,7 +254,6 @@ class _ChildProfileState extends State<ChildProfile>
   void initState() {
     // TODO: implement initState
     _tabController = TabController(length: 4, vsync: this);
-    _isChecked = List<bool>.filled(_texts.length, false);
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => fetchData());
@@ -551,7 +551,8 @@ class _ChildProfileState extends State<ChildProfile>
                   TextButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditChildInterests()));
+                            builder: (context) => EditChildInterests(
+                                chooseChildId: widget.chooseChildId)));
                       },
                       child: Row(
                         children: [
@@ -571,7 +572,7 @@ class _ChildProfileState extends State<ChildProfile>
             Container(
               height: 80,
               child: ListView.builder(
-                  itemCount: 6,
+                  itemCount: childInfo![0].interests!.length,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: ((context, index) {
                     return Container(
@@ -598,7 +599,7 @@ class _ChildProfileState extends State<ChildProfile>
                                   height: 5,
                                 ),
                                 Text(
-                                  activities[index],
+                                  childInfo![0].interests![index].interestName!,
                                   style: TextStyle(fontSize: 12),
                                 )
                               ],
@@ -637,9 +638,12 @@ class _ChildProfileState extends State<ChildProfile>
                   Text("Languages Known",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
+                      onPressed: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => EditLangKnwn()));
+                        setState(() {
+                          getProfile();
+                        });
                       },
                       child: Row(
                         children: [
@@ -664,7 +668,7 @@ class _ChildProfileState extends State<ChildProfile>
               value: tag1,
               onChanged: (val) {},
               choiceItems: C2Choice.listFrom<int, String>(
-                source: options,
+                source: childInfo![0].languages!,
                 value: (i, v) => i,
                 label: (i, v) => v,
               ),
@@ -1071,7 +1075,7 @@ class _ChildProfileState extends State<ChildProfile>
               : SizedBox(),
           _AddGroup
               ? SizedBox(
-                  height: 80,
+                  height: 0,
                 )
               : SizedBox(),
 

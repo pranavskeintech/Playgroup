@@ -477,6 +477,8 @@ class _EditCoParentState extends State<EditCoParent> {
           AppUtils.showToast("Something went wrong", ctx);
         });
 
+        //Navigator.pop(context);
+
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => ProfileScreen()));
       } else {

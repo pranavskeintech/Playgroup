@@ -436,6 +436,8 @@ class _AddCoParentState extends State<AddCoParent> {
         AppUtils.showToast("Co-Parent added successfully", ctx);
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => ProfileScreen()));
+
+        //Navigator.pop(context);
       } else {
         AppUtils.dismissprogress();
         AppUtils.showError(context, response.message, "");

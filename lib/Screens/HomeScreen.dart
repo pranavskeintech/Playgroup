@@ -617,15 +617,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                         SizedBox(
                                                           width: 3,
                                                         ),
-                                                        Text(
-                                                          OtherMarkAvailabilityData![
-                                                                  mainIndex]
-                                                              .location!,
-                                                          style: TextStyle(
-                                                            fontSize: 11,
+                                                        Container(
+                                                          width: 100,
+                                                          child: Text(
+                                                            OtherMarkAvailabilityData![
+                                                                    mainIndex]
+                                                                .location!,
+                                                            style: TextStyle(
+                                                              fontSize: 11,
+                                                            ),
+                                                            maxLines: 2,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                           ),
-                                                          overflow:
-                                                              TextOverflow.fade,
                                                         ),
                                                       ],
                                                     )

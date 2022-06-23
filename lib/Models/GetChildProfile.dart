@@ -32,33 +32,47 @@ class Data {
   int? parentId;
   String? childName;
   String? dob;
+  int? age;
   String? gender;
   String? profile;
   String? school;
   String? createdDate;
   String? location;
+  List<String>? languages;
+  List<Interests>? interests;
 
   Data(
       {this.childId,
       this.parentId,
       this.childName,
       this.dob,
+      this.age,
       this.gender,
       this.profile,
       this.school,
       this.createdDate,
-      this.location});
+      this.location,
+      this.languages,
+      this.interests});
 
   Data.fromJson(Map<String, dynamic> json) {
     childId = json['child_id'];
     parentId = json['parent_id'];
     childName = json['child_name'];
     dob = json['dob'];
+    age = json['age'];
     gender = json['gender'];
     profile = json['profile'];
     school = json['school'];
     createdDate = json['created_date'];
     location = json['location'];
+    languages = json['languages'].cast<String>();
+    if (json['interests'] != null) {
+      interests = <Interests>[];
+      json['interests'].forEach((v) {
+        interests!.add(new Interests.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -67,11 +81,49 @@ class Data {
     data['parent_id'] = this.parentId;
     data['child_name'] = this.childName;
     data['dob'] = this.dob;
+    data['age'] = this.age;
     data['gender'] = this.gender;
     data['profile'] = this.profile;
     data['school'] = this.school;
     data['created_date'] = this.createdDate;
     data['location'] = this.location;
+    data['languages'] = this.languages;
+    if (this.interests != null) {
+      data['interests'] = this.interests!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class Interests {
+  int? childInterestsId;
+  int? childId;
+  int? interestsId;
+  String? createdDate;
+  String? interestName;
+
+  Interests(
+      {this.childInterestsId,
+      this.childId,
+      this.interestsId,
+      this.createdDate,
+      this.interestName});
+
+  Interests.fromJson(Map<String, dynamic> json) {
+    childInterestsId = json['child_interests_id'];
+    childId = json['child_id'];
+    interestsId = json['interests_id'];
+    createdDate = json['created_date'];
+    interestName = json['interest_name'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['child_interests_id'] = this.childInterestsId;
+    data['child_id'] = this.childId;
+    data['interests_id'] = this.interestsId;
+    data['created_date'] = this.createdDate;
+    data['interest_name'] = this.interestName;
     return data;
   }
 }

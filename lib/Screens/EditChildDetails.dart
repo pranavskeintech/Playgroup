@@ -33,7 +33,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   final _dobController = TextEditingController();
   final _schoolController = TextEditingController();
 
-  List<ChildData>? _ChildData;
+  List<Data>? _ChildData;
 
   final _btnController = RoundedLoadingButtonController();
   late AppState state;
@@ -115,7 +115,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
           _numberController.text =
               _ChildData![Strings.editIndex].childName.toString();
           _dobController.text = _ChildData![Strings.editIndex].dob.toString();
-          // _schoolController.text= _ChildData![Strings.editIndex]..toString();
+          _schoolController.text = _ChildData![Strings.editIndex].school ?? "";
           selectedValue = _ChildData![Strings.editIndex].gender;
         });
       }
@@ -408,59 +408,59 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                         ),
                       ),
                       SizedBox(height: 32),
-                      // Container(
-                      //   child: Align(
-                      //     alignment: Alignment.centerLeft,
-                      //     child: Container(
-                      //       child: Text(
-                      //         "School Name",
-                      //         style: TextStyle(
-                      //           fontSize: 15,
-                      //           color: Strings.textFeildHeading,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ),
-                      // const SizedBox(
-                      //   height: 5,
-                      // ),
-                      // Container(
-                      //   decoration: BoxDecoration(
-                      //       color: Strings.textFeildBg,
-                      //       //border: Border.all(color: const Color(0xFFf2f3f4)),
-                      //       borderRadius: BorderRadius.circular(5)),
-                      //   child: Row(
-                      //     children: [
-                      //       Expanded(
-                      //         child: TextField(
-                      //           style: TextStyle(color: Colors.black),
-                      //           controller: _schoolController,
-                      //           decoration: InputDecoration(
-                      //             border: OutlineInputBorder(
-                      //               borderRadius: BorderRadius.circular(10),
-                      //             ),
-                      //             focusedBorder: OutlineInputBorder(
-                      //               borderSide: BorderSide(
-                      //                   color: Strings.textFeildBg, width: 0.0),
-                      //             ),
-                      //             enabledBorder: OutlineInputBorder(
-                      //               borderSide: BorderSide(
-                      //                   color: Strings.textFeildBg, width: 0.0),
-                      //             ),
-                      //             fillColor: Strings.textFeildBg,
-                      //             filled: true,
-                      //             hintText: "Enter Child Name",
-                      //             hintStyle: TextStyle(color: Colors.grey),
-                      //             contentPadding:
-                      //                 EdgeInsets.fromLTRB(20, 5, 0, 0),
-                      //           ),
-                      //           keyboardType: TextInputType.emailAddress,
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
+                      Container(
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            child: Text(
+                              "School Name",
+                              style: TextStyle(
+                                fontSize: 15,
+                                color: Strings.textFeildHeading,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                            color: Strings.textFeildBg,
+                            //border: Border.all(color: const Color(0xFFf2f3f4)),
+                            borderRadius: BorderRadius.circular(5)),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: TextField(
+                                style: TextStyle(color: Colors.black),
+                                controller: _schoolController,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Strings.textFeildBg, width: 0.0),
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Strings.textFeildBg, width: 0.0),
+                                  ),
+                                  fillColor: Strings.textFeildBg,
+                                  filled: true,
+                                  hintText: "Enter Child Name",
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                  contentPadding:
+                                      EdgeInsets.fromLTRB(20, 5, 0, 0),
+                                ),
+                                keyboardType: TextInputType.emailAddress,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.05,
                       ),
@@ -514,12 +514,13 @@ class _EditChildDetailsState extends State<EditChildDetails> {
 
   _EditChild() {
     EditChildReq ChildEdit = EditChildReq();
-    ChildEdit.childId = _ChildData![Strings.editIndex].childId.toString();
+    ChildEdit.childId = _ChildData![Strings.editIndex].childId;
     //ChildEdit.parentId = Strings.Parent_Id.toString();
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
     ChildEdit.gender = selectedValue;
-
+    ChildEdit.language = _ChildData![Strings.editIndex].languages!;
+    ChildEdit.school = _schoolController.text;
     if (img64 == "") {
       ChildEdit.profile = _ChildData![Strings.editIndex].profile;
     } else {

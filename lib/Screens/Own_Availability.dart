@@ -233,11 +233,10 @@ class _Own_AvailabilityState extends State<Own_Availability>
                   children: [
                     CircleAvatar(
                       radius: 18,
-                      backgroundImage: (availabilityData[0].profile! != null ||
-                              availabilityData[0].profile! != "null")
+                      backgroundImage: (availabilityData[0].profile! != "null")
                           ? NetworkImage(
                               Strings.imageUrl + availabilityData[0].profile!)
-                          : AssetImage("assets/images/user.png")
+                          : AssetImage("assets/imgs/appicon.png")
                               as ImageProvider,
                     ),
                     SizedBox(
@@ -511,14 +510,14 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                                               0]
                                                           .friendsdata![index]
                                                           .profile !=
-                                                      null
+                                                      "null"
                                                   ? NetworkImage(Strings
                                                           .imageUrl +
                                                       availabilityData[0]
                                                           .friendsdata![index]
                                                           .profile!)
                                                   : AssetImage(
-                                                          "assets/images/user.png")
+                                                          "assets/imgs/appicon.png")
                                                       as ImageProvider,
                                             ),
                                           ),
@@ -966,18 +965,13 @@ class _Own_AvailabilityState extends State<Own_Availability>
     api.deleteAvailability(widget.markavailId!).then((response) {
       AppUtils.dismissprogress();
 
-
-      if(response.status!)
-      {
- AppUtils.showToast(response.message, ctx);
-      Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
-      }
-      else
-      {
+      if (response.status!) {
+        AppUtils.showToast(response.message, ctx);
+        Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+      } else {
         AppUtils.showError(context, response.message, "onTap");
       }
-     
     }).catchError((onError) {
       AppUtils.showToast(onError.toString(), ctx);
       print(onError.toString());

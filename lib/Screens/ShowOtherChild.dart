@@ -389,7 +389,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
     print("CID:$CID");
     print("CFID:$CFID");
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.CancelFriendReq(CID, CFID).then((response) {
+    api.CancelFriendReq(CFID, CID).then((response) {
       print('response ${response.status}');
       print("result1:${response.toJson()}");
       if (response.status == true) {
