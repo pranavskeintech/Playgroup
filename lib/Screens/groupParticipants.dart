@@ -76,21 +76,25 @@ class _groupParticipantsState extends State<groupParticipants> {
 
           _isChecked = List<bool>.filled(FriendsDatum!.length, false);
           var frnds = [];
+          // for (var i = 0; i < FriendsDatum!.length; i++) {
+          //   frnds.add(FriendsDatum![i].childId!);
+          // }
+          print("1:${widget.groupMembersId}");
           for (var i = 0; i < FriendsDatum!.length; i++) {
-            frnds.add(FriendsDatum![i].childId!);
-          }
-          print("1:${frnds}");
-          print("2:${widget.groupMembersId}");
-          for (var i = 0; i < FriendsDatum!.length; i++) {
-            if (widget.groupMembersId!.contains(FriendsDatum![i].childId)) {
-              index1 = i;
+            //frnds.add(FriendsDatum![i].childId!);
+            print("2:${FriendsDatum![i].childId!}");
+            if (widget.groupMembersId!.contains(FriendsDatum![i].childId!)) {
+              index1 = i--;
               ListViewData = FriendsDatum!.removeAt(index1!);
+              print("i:$index1");
             }
-
-            setState(() {
-              _foundedUsers = FriendsDatum!;
-            });
           }
+
+          //   print("3:${FriendsDatum![i].childId}");
+
+          setState(() {
+            _foundedUsers = FriendsDatum!;
+          });
           _isLoading = false;
         });
       }

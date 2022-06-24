@@ -60,6 +60,7 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
           FriendsDatum = response.data!;
           setState(() {
             _foundedUsers = FriendsDatum!;
+            _isChecked = List<bool>.filled(_foundedUsers.length, false);
           });
           // _isLoading = false;
           getAvailabilityDetails();
@@ -111,7 +112,6 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
   @override
   void initState() {
     // TODO: implement initState
-    _isChecked = List<bool>.filled(_texts.length, false);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => _GetFriends());
   }
@@ -122,7 +122,6 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
         FriendsId!.add(_foundedUsers[i].childId!);
       }
     }
-
   }
 
   onSearch(String search) {
@@ -143,7 +142,7 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Strings.appThemecolor,
-            title: Text("Your Availability"),
+            title: Text("Edit Availability"),
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -371,12 +370,12 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
     print("3:${availabilityData[0].childId!}");
     print("4:${availabilityData[0].markavailId!}");
     print("5:${FriendsId}");
-    if (FriendsId == []) {
+    if (FriendsId != []) {
       editAvailability.friendId = [0];
     } else {
       editAvailability.friendId = FriendsId;
     }
-    print("test:${editAvailability.friendId}");
+    print(jsonEncode(editAvailability));
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.EditAvailability(editAvailability).then((response) {
       print('response ${response.status}');

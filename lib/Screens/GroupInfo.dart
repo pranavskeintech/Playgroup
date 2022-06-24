@@ -241,7 +241,7 @@ class _GroupinfoState extends State<Groupinfo> {
                               _GroupData!.groupDetails![0].createdBy!)
                           ? TextButton(
                               onPressed: () async {
-                                for (var i = 0;
+                                for (var i = 1;
                                     i < _GroupData!.groupMembers!.length;
                                     i++) {
                                   GroupMembersId!.add(

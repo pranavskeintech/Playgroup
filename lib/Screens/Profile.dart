@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   BuildContext? ctx;
-  List<ChildData>? _ChildData;
+  List<Data>? _ChildData;
 
   Profile? _ProfileData;
 
@@ -94,7 +94,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         : Scaffold(
             key: _scaffoldKey,
             drawer: NavigationDrawer(),
-           
             body: SingleChildScrollView(
               child: Container(
                 // color: Colors.white,
@@ -265,7 +264,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                                 ElevatedButton(
                                     onPressed: () {
-                                      Navigator.of(context).pushReplacement(
+                                      Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
                                                   AddCoParent()));
@@ -278,32 +277,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    _ProfileData!
-                                                    .role == "PARENT"?
-                                    "Co-Parent":"Owner",
+                                    _ProfileData!.role == "PARENT"
+                                        ? "Co-Parent"
+                                        : "Owner",
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   TextButton(
                                       onPressed: () {
-                                        Navigator.of(context).pushReplacement(
+                                        Navigator.of(context).push(
                                             MaterialPageRoute(
-                                                builder: (BuildContext context) =>
-                                                    EditCoParent(
-                                                      name: _ProfileData!
-                                                          .coParent?[0]
-                                                          .parentName,
-                                                      email: _ProfileData!
-                                                          .coParent?[0].emailId,
-                                                      PhoneNumber: _ProfileData!
-                                                          .coParent?[0].phone,
-                                                      password: _ProfileData!
-                                                          .coParent?[0].password,
-                                                      selectedAcces: _ProfileData!
-                                                          .coParent?[0].access,
-                                                    )));
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        EditCoParent(
+                                                          name: _ProfileData!
+                                                              .coParent?[0]
+                                                              .parentName,
+                                                          email: _ProfileData!
+                                                              .coParent?[0]
+                                                              .emailId,
+                                                          PhoneNumber:
+                                                              _ProfileData!
+                                                                  .coParent?[0]
+                                                                  .phone,
+                                                          password:
+                                                              _ProfileData!
+                                                                  .coParent?[0]
+                                                                  .password,
+                                                          selectedAcces:
+                                                              _ProfileData!
+                                                                  .coParent?[0]
+                                                                  .access,
+                                                        )));
                                       },
                                       child: _ProfileData!.role == "PARENT"
                                           ? Row(
@@ -325,7 +333,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ],
                               ),
                               Container(
-                                  width: MediaQuery.of(context).size.width * 0.95,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.95,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: Colors.grey.shade200,
@@ -348,7 +357,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                     "",
                                                 style: TextStyle(
                                                     fontSize: 15,
-                                                    fontWeight: FontWeight.w500),
+                                                    fontWeight:
+                                                        FontWeight.w500),
                                               ),
                                               // IconButton(onPressed: deleteCoParent(), icon: (Icon(Icons.delete_outline,size: 20)))
                                               // GestureDetector(child: Icon(Icons.delete_outline,size: 20,),onDoubleTap: deleteCoParent(),)
@@ -363,7 +373,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Container(
-                                              width: 200,
+                                              width: 170,
                                               child: Text(
                                                 _ProfileData!
                                                         .coParent?[0].emailId ??
@@ -380,7 +390,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         "",
                                                     style: TextStyle(
                                                         color: _ProfileData!
-                                                                    .coParent?[0]
+                                                                    .coParent?[
+                                                                        0]
                                                                     .access !=
                                                                 "VIEW"
                                                             ? Colors.green

@@ -102,7 +102,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
     //print("time:${dt1!.hour}");
     final ChoosenTime1 = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.now(),
+      initialTime: TimeOfDay(hour: 12, minute: 00),
       //TimeOfDay(hour: dt1!.hour, minute: dt1!.minute),
       initialEntryMode: TimePickerEntryMode.dial,
       confirmText: "CONFIRM",
@@ -126,20 +126,12 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
         confirmText: "CONFIRM",
         // cancelText: "NOT NOW",
         helpText: "SELECT TIME");
-    builder:
-    (BuildContext context, Widget child) {
-      
-      return MediaQuery(
-        data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-        child: child,
-      );
 
-      // if (ChoosenTime2 != null) {
-      //   setState(() {
-      //     _TOTimeController.text = ChoosenTime2.format(context);
-      //   });
-      // }
-    };
+    if (ChoosenTime2 != null) {
+      setState(() {
+        _TOTimeController.text = ChoosenTime2.format(context);
+      });
+    }
   }
 
   @override
@@ -159,7 +151,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
-        title: Text("Availability"),
+        title: Text("Edit Availability"),
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
@@ -177,7 +169,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.15,
+                    height: MediaQuery.of(context).size.height * 0.05,
                   ),
                   const Text(
                     "Timing",
@@ -493,7 +485,9 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                             ],
                           ),
                         ),
-                  Spacer(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.05,
+                  ),
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: SizedBox(
@@ -506,9 +500,9 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.40,
-                  ),
+                  // SizedBox(
+                  //   height: MediaQuery.of(context).size.height * 0.40,
+                  // ),
                 ],
               ),
             ),

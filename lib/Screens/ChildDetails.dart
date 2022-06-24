@@ -35,6 +35,7 @@ enum AppState {
 class _ChildDetailsState extends State<ChildDetails> {
   final _nameController = TextEditingController();
   final _dobController = TextEditingController();
+  final _schoolController = TextEditingController();
 
   final _btnController = RoundedLoadingButtonController();
   late AppState state;
@@ -397,6 +398,59 @@ class _ChildDetailsState extends State<ChildDetails> {
                       offset: const Offset(0, 0),
                     ),
                   ),
+                  SizedBox(height: 32),
+                  Container(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        child: Text(
+                          "School Name",
+                          style: TextStyle(
+                            fontSize: 15,
+                            color: Strings.textFeildHeading,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Strings.textFeildBg,
+                        //border: Border.all(color: const Color(0xFFf2f3f4)),
+                        borderRadius: BorderRadius.circular(5)),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: TextField(
+                            style: TextStyle(color: Colors.black),
+                            controller: _schoolController,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Strings.textFeildBg, width: 0.0),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Strings.textFeildBg, width: 0.0),
+                              ),
+                              fillColor: Strings.textFeildBg,
+                              filled: true,
+                              hintText: "Enter School Name",
+                              hintStyle: TextStyle(color: Colors.grey),
+                              contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+                            ),
+                            keyboardType: TextInputType.emailAddress,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.05,
                   ),
@@ -445,6 +499,7 @@ class _ChildDetailsState extends State<ChildDetails> {
     ChildReg.childName = _nameController.text;
     ChildReg.dob = _dobController.text;
     ChildReg.gender = selectedValue;
+    ChildReg.school = _schoolController.text;
 
     if (img64 != "") {
       ChildReg.profile = "data:image/jpeg;base64,$img64";

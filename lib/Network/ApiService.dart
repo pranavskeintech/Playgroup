@@ -22,6 +22,7 @@ import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetGroupDetailsByIdRes.dart';
+import 'package:playgroup/Models/GetInterestsRes.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
@@ -161,6 +162,9 @@ abstract class ApiService {
 
   @GET("mark/getsports/{SportID}")
   Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
+  
+  @GET("user/getinterest/{ChildID}")
+  Future<GetInterestsRes> GetInterests(@Path("ChildID") int ChildID);
 
   @GET("/mark/getmarkbyid/{availability_id}/{ChildID}")
   Future<OwnAvailabilityDetailsRes> getAvailabilityDetails(

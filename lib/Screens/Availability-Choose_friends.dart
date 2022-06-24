@@ -57,6 +57,7 @@ class _Availability_choose_friendsState
 
           setState(() {
             _foundedUsers = FriendsDatum!;
+            _isChecked = List<bool>.filled(_foundedUsers.length, false);
           });
           _isLoading = false;
         });
@@ -69,7 +70,6 @@ class _Availability_choose_friendsState
   @override
   void initState() {
     // TODO: implement initState
-    _isChecked = List<bool>.filled(_texts.length, false);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => _GetFriends());
   }
@@ -288,7 +288,7 @@ class _Availability_choose_friendsState
                           //   AppUtils.showWarning(context,
                           //       "Choose Friends to join the availability", "");
                           // } else {
-                            _MarkAvailability();
+                          _MarkAvailability();
                           //}
                         },
                         child: Text(
@@ -310,8 +310,7 @@ class _Availability_choose_friendsState
           );
   }
 
-  _MarkAvailability() 
-  {
+  _MarkAvailability() {
     AppUtils.showprogress();
 
     MarkAvailabilityReq markavail = MarkAvailabilityReq();
@@ -335,14 +334,14 @@ class _Availability_choose_friendsState
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
-        AppUtils.showToast(response.message,context);
-         Strings.markAvailabiltydate = "";
+        AppUtils.showToast(response.message, context);
+        Strings.markAvailabiltydate = "";
         Strings.markAvailabiltystartTime = "";
-    Strings.markAvailabiltyendTime = "";
-    Strings.markAvailabiltydesc = "";
-    Strings.markAvailabiltylocations = "";
-    Strings.markAvailabiltyTopic = null;
-    Strings.markAvailabiltycategory = null;
+        Strings.markAvailabiltyendTime = "";
+        Strings.markAvailabiltydesc = "";
+        Strings.markAvailabiltylocations = "";
+        Strings.markAvailabiltyTopic = null;
+        Strings.markAvailabiltycategory = null;
         Navigator.of(context).push(
             MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
       } else {
