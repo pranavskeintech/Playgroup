@@ -529,6 +529,22 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<GetAllActivities> GetAllActivity(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetAllActivities>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/get_all_activites/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetAllActivities.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<GetSportsRes> GetSports(sprotID) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -887,6 +903,39 @@ class _ApiService implements ApiService {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PastActivitiesRes> PastActivities(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<PastActivitiesRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/get_past_mark/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = PastActivitiesRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PastActivityByIdRes> PastActivityById(markavailId, ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<PastActivityByIdRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options,
+                    'mark/get_past_markbyid/${markavailId}/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = PastActivityByIdRes.fromJson(_result.data!);
     return value;
   }
 

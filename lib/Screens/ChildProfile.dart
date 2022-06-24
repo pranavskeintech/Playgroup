@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
 import 'package:playgroup/Models/FriendsAndGroups.dart';
+import 'package:playgroup/Models/GetAllActivities.dart';
 import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
@@ -18,6 +19,7 @@ import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/EditLanguagesKnown.dart';
 import 'package:playgroup/Screens/GroupInfo.dart';
 import 'package:playgroup/Screens/OtherChildProfile.dart';
+import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -84,6 +86,7 @@ class _ChildProfileState extends State<ChildProfile>
   ];
 
   List<int> tag1 = [];
+
   // Initial Selected Value
   String dropdownvalue = 'ALL';
 
@@ -92,6 +95,15 @@ class _ChildProfileState extends State<ChildProfile>
     'ALL',
     'GROUPS',
     'FRIENDS',
+  ];
+  // Initial Selected Value
+  String dropdownvalue2 = 'FILTER';
+
+  // List of items in our dropdown menu
+  var items2 = [
+    'FILTER',
+    'MY ACTIVITIES',
+    'JOINED ACTIVITIES',
   ];
 
   bool value = false;
@@ -129,6 +141,14 @@ class _ChildProfileState extends State<ChildProfile>
   List<GroupDetails> _foundedGroups = [];
 
   List<Datas> _foundedAllData = [];
+
+  List<ActData>? AllActivity;
+
+  List<ActData>? _foundedActivity = [];
+
+  int? index1;
+
+  List<ActData>? MyAct;
 
   fetchData() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -231,14 +251,43 @@ class _ChildProfileState extends State<ChildProfile>
             setState(() {
               _foundedGroups = GroupDetail!;
             });
+            GetAllActivity();
             // GroupDetail1 = response.groupDetails!.cast<GroupDetai>();
-            _isLoading = false;
+            // _isLoading = false;
             // newList = new List.from(FriendsDat!)..addAll(GroupDetail1!);
             // print("1:${newList![0].childName}");
           } else {
             GroupDetail = [];
-            _isLoading = false;
+            GetAllActivity();
+            // _isLoading = false;
           }
+        });
+      } else {
+        _isLoading = false;
+        functions.createSnackBar(context, response.status.toString());
+        // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  GetAllActivity() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetAllActivity(widget.chooseChildId!).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        setState(() {
+          AllActivity = response.data;
+
+          // for (var i = 0; i < _foundedActivity!.length; i++) {
+          //   if (AllActivity![i].type == "my_availability") index1 = i;
+          //   MyAct!.add(AllActivity!.removeAt(index1!));
+          // }
+          setState(() {
+            _foundedActivity = AllActivity!;
+          });
+          _isLoading = false;
         });
       } else {
         _isLoading = false;
@@ -274,18 +323,6 @@ class _ChildProfileState extends State<ChildProfile>
             .toList();
       } else if (dropdownvalue == "ALL") {
         for (var i = 0; i < _foundedAllData.length; i++) {
-          // (_foundedAllData[i].type != "GROUP")
-          //     ? _foundedAllData = FriendsGroupsData!
-          //         .where((user) => user.childName!
-          //             .toLowerCase()
-          //             .contains(search.toLowerCase()))
-          //         .toList()
-          //     : _foundedAllData = FriendsGroupsData!
-          //         .where((user) => user.groupName!
-          //             .toLowerCase()
-          //             .contains(search.toLowerCase()))
-          //         .toList();
-
           _foundedAllData = FriendsGroupsData!
               .where((user) =>
                   user.name!.toLowerCase().contains(search.toLowerCase()))
@@ -293,6 +330,32 @@ class _ChildProfileState extends State<ChildProfile>
         }
         print(_foundedUsers.length);
       }
+    });
+  }
+
+  onSearch3(String search) {
+    print("Searching for $search");
+    setState(() {
+      if (dropdownvalue == "FILTER") {
+        _foundedActivity = AllActivity!
+            .where((user) =>
+                user.categoryName!.toLowerCase().contains(search.toLowerCase()))
+            .toList();
+      } else if (dropdownvalue == "MY ACTIVITIES") {
+        _foundedActivity = MyAct!
+            .where((user) =>
+                user.categoryName!.toLowerCase().contains(search.toLowerCase()))
+            .toList();
+      }
+      //  else if (dropdownvalue == "JOINED ACTIVITIES") {
+      //   for (var i = 0; i < _foundedAllData.length; i++) {
+      //     _foundedAllData = FriendsGroupsData!
+      //         .where((user) =>
+      //             user.name!.toLowerCase().contains(search.toLowerCase()))
+      //         .toList();
+      //   }
+      //   print(_foundedUsers.length);
+      // }
     });
   }
 
@@ -590,10 +653,18 @@ class _ChildProfileState extends State<ChildProfile>
                                   width: 45,
                                   height: 45,
                                   child: CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                      "assets/imgs/${images[index]}",
-                                    ),
-                                  ),
+                                      backgroundImage: childInfo![0]
+                                                  .interests![index]
+                                                  .interestImage! !=
+                                              "null"
+                                          ? NetworkImage(Strings.imageUrl +
+                                              "sports/" +
+                                              (childInfo![0]
+                                                  .interests![index]
+                                                  .interestImage!))
+                                          : AssetImage(
+                                                  "assets/imgs/appicon.png")
+                                              as ImageProvider),
                                 ),
                                 SizedBox(
                                   height: 5,
@@ -821,7 +892,12 @@ class _ChildProfileState extends State<ChildProfile>
                                       : Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
-                                                  OtherChildProfile()));
+                                                  OtherChildProfile(
+                                                      otherChildID:
+                                                          _foundedAllData[index]
+                                                              .id,
+                                                      chooseChildId:
+                                                          widget.chooseChildId)));
                                   setState(() {
                                     GroupData();
                                   });
@@ -988,7 +1064,12 @@ class _ChildProfileState extends State<ChildProfile>
                                     : Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
-                                                OtherChildProfile()));
+                                                OtherChildProfile(
+                                                    otherChildID:
+                                                        _foundedUsers[index]
+                                                            .childFriendId,
+                                                    chooseChildId:
+                                                        widget.chooseChildId)));
                               },
                               leading: Transform.translate(
                                 offset: Offset(-16, 0),
@@ -1190,8 +1271,9 @@ class _ChildProfileState extends State<ChildProfile>
                 return ListTile(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) =>
-                            OtherChildProfile()));
+                        builder: (BuildContext context) => OtherChildProfile(
+                            otherChildID: _FriendReqData![index].childFriendId,
+                            chooseChildId: widget.chooseChildId)));
                   },
                   leading: CircleAvatar(
                     backgroundImage: AssetImage("assets/imgs/child1.jpg"),
@@ -1329,7 +1411,10 @@ class _ChildProfileState extends State<ChildProfile>
               children: [
                 Expanded(
                   child: TextField(
-                    enabled: false,
+                    onChanged: (searchString) {
+                      onSearch3(searchString);
+                    },
+                    enabled: true,
                     style: TextStyle(height: 1),
                     decoration: InputDecoration(
                       border: InputBorder.none,
@@ -1352,7 +1437,7 @@ class _ChildProfileState extends State<ChildProfile>
                     child: DropdownButton(
                       underline: SizedBox(),
                       // Initial Value
-                      value: dropdownvalue,
+                      value: dropdownvalue2,
 
                       // Down Arrow Icon
                       icon: const Icon(
@@ -1362,11 +1447,11 @@ class _ChildProfileState extends State<ChildProfile>
                       ),
 
                       // Array list of items
-                      items: items.map((String items) {
+                      items: items2.map((String items2) {
                         return DropdownMenuItem(
-                          value: items,
+                          value: items2,
                           child: Text(
-                            items,
+                            items2,
                             style: TextStyle(color: Colors.grey, fontSize: 12),
                           ),
                         );
@@ -1375,7 +1460,7 @@ class _ChildProfileState extends State<ChildProfile>
                       // change button value to selected value
                       onChanged: (String? newValue) {
                         setState(() {
-                          dropdownvalue = newValue!;
+                          dropdownvalue2 = newValue!;
                         });
                       },
                     ),
@@ -1387,92 +1472,261 @@ class _ChildProfileState extends State<ChildProfile>
           SizedBox(
             height: 15,
           ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: 6,
-                scrollDirection: Axis.vertical,
-                itemBuilder: ((context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          left: BorderSide(
-                            //                   <--- left side
-                            color: Colors.primaries[
-                                Random().nextInt(Colors.primaries.length)],
-                            width: 3.0,
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(3)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              blurRadius: 4,
-                              offset: Offset(1, 1), // Shadow position
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          title: Text(
-                            Games[index],
-                            style: TextStyle(
-                                fontSize: 13,
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500),
-                          ),
-                          trailing: Container(
-                            width: width * 0.28,
-                            child: Row(
-                              children: [
-                                Text(
-                                  "14 Jan 2021",
-                                  style: TextStyle(fontSize: 11),
+          (dropdownvalue2 == "FILTER")
+              ? AllActivity!.length > 0
+                  ? Expanded(
+                      child: ListView.builder(
+                          itemCount: AllActivity!.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: ((context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Own_Availability(
+                                            markavailId:
+                                                AllActivity![index].markavailId,
+                                          )));
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        //                   <--- left side
+                                        color: Colors.primaries[Random()
+                                            .nextInt(Colors.primaries.length)],
+                                        width: 3.0,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(3)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          blurRadius: 4,
+                                          offset:
+                                              Offset(1, 1), // Shadow position
+                                        ),
+                                      ],
+                                    ),
+                                    child: ListTile(
+                                      title: Row(
+                                        children: [
+                                          Text(
+                                            AllActivity![index].categoryName! +
+                                                " - ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Container(
+                                            width: 70,
+                                            child: Text(
+                                              AllActivity![index]
+                                                  .activitiesName!,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Container(
+                                        width: width * 0.36,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              AllActivity![index].dateon!,
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Container(
+                                              width: 1,
+                                              height: 10,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  AllActivity![index]
+                                                          .fromTime!
+                                                          .replaceAll(' PM', '')
+                                                          .replaceAll(
+                                                              ' AM', '') +
+                                                      " - ",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  AllActivity![index].toTime!,
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      isThreeLine: false,
+                                      subtitle: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text(
+                                            AllActivity![index].location!,
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                                SizedBox(width: 5),
-                                Container(
-                                  width: 1,
-                                  height: 10,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "4-5 Pm",
-                                  style: TextStyle(fontSize: 11),
-                                  overflow: TextOverflow.ellipsis,
-                                )
-                              ],
-                            ),
-                          ),
-                          isThreeLine: false,
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Icon(
-                                Icons.location_pin,
-                                color: Colors.red,
                               ),
-                              SizedBox(
-                                width: 3,
-                              ),
-                              Text(
-                                Places[index],
-                                style: TextStyle(fontSize: 12),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                })),
-          ),
+                            );
+                          })),
+                    )
+                  : Spacer()
+              : SizedBox(),
+
+/////////////////  My Act //////////////
+          // (dropdownvalue == "MY ACTIVITIES")
+          //     ? MyAct!.length > 0
+          //         ? Expanded(
+          //             child: ListView.builder(
+          //                 itemCount: MyAct!.length,
+          //                 scrollDirection: Axis.vertical,
+          //                 itemBuilder: ((context, index) {
+          //                   return Padding(
+          //                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
+          //                     child: Container(
+          //                       decoration: BoxDecoration(
+          //                         border: Border(
+          //                           left: BorderSide(
+          //                             //                   <--- left side
+          //                             color: Colors.primaries[Random()
+          //                                 .nextInt(Colors.primaries.length)],
+          //                             width: 3.0,
+          //                           ),
+          //                         ),
+          //                       ),
+          //                       child: Container(
+          //                         decoration: BoxDecoration(
+          //                           color: Colors.white,
+          //                           borderRadius:
+          //                               BorderRadius.all(Radius.circular(3)),
+          //                           boxShadow: [
+          //                             BoxShadow(
+          //                               color: Colors.grey,
+          //                               blurRadius: 4,
+          //                               offset: Offset(1, 1), // Shadow position
+          //                             ),
+          //                           ],
+          //                         ),
+          //                         child: ListTile(
+          //                           title: Row(
+          //                             children: [
+          //                               Text(
+          //                                 MyAct![index].categoryName! + " - ",
+          //                                 style: TextStyle(
+          //                                     fontSize: 13,
+          //                                     color: Colors.black,
+          //                                     fontWeight: FontWeight.w500),
+          //                               ),
+          //                               Text(
+          //                                 MyAct![index].activitiesName!,
+          //                                 style: TextStyle(
+          //                                     fontSize: 13,
+          //                                     color: Colors.black,
+          //                                     fontWeight: FontWeight.w500),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                           trailing: Container(
+          //                             width: width * 0.28,
+          //                             child: Row(
+          //                               children: [
+          //                                 Text(
+          //                                   MyAct![index].dateon!,
+          //                                   style: TextStyle(fontSize: 11),
+          //                                 ),
+          //                                 SizedBox(width: 5),
+          //                                 Container(
+          //                                   width: 1,
+          //                                   height: 10,
+          //                                   color: Colors.grey,
+          //                                 ),
+          //                                 SizedBox(
+          //                                   width: 5,
+          //                                 ),
+          //                                 Row(
+          //                                   children: [
+          //                                     Text(
+          //                                       MyAct![index].fromTime! + " - ",
+          //                                       style: TextStyle(fontSize: 11),
+          //                                       overflow: TextOverflow.ellipsis,
+          //                                     ),
+          //                                     Text(
+          //                                       MyAct![index].toTime!,
+          //                                       style: TextStyle(
+          //                                         fontSize: 11,
+          //                                       ),
+          //                                       overflow: TextOverflow.ellipsis,
+          //                                     ),
+          //                                   ],
+          //                                 )
+          //                               ],
+          //                             ),
+          //                           ),
+          //                           isThreeLine: false,
+          //                           subtitle: Row(
+          //                             mainAxisAlignment:
+          //                                 MainAxisAlignment.start,
+          //                             children: [
+          //                               Icon(
+          //                                 Icons.location_pin,
+          //                                 color: Colors.red,
+          //                               ),
+          //                               SizedBox(
+          //                                 width: 3,
+          //                               ),
+          //                               Text(
+          //                                 MyAct![index].location!,
+          //                                 style: TextStyle(fontSize: 12),
+          //                               ),
+          //                             ],
+          //                           ),
+          //                         ),
+          //                       ),
+          //                     ),
+          //                   );
+          //                 })),
+          //           )
+          //         : Spacer()
+          //     : SizedBox()
         ],
       ),
     );

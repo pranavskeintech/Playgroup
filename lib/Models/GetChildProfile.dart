@@ -101,13 +101,15 @@ class Interests {
   int? interestsId;
   String? createdDate;
   String? interestName;
+  String? interestImage;
 
   Interests(
       {this.childInterestsId,
       this.childId,
       this.interestsId,
       this.createdDate,
-      this.interestName});
+      this.interestName,
+      this.interestImage});
 
   Interests.fromJson(Map<String, dynamic> json) {
     childInterestsId = json['child_interests_id'];
@@ -115,6 +117,7 @@ class Interests {
     interestsId = json['interests_id'];
     createdDate = json['created_date'];
     interestName = json['interest_name'];
+    interestImage = json['interest_image'];
   }
 
   Map<String, dynamic> toJson() {
@@ -124,6 +127,7 @@ class Interests {
     data['interests_id'] = this.interestsId;
     data['created_date'] = this.createdDate;
     data['interest_name'] = this.interestName;
+    data['interest_image'] = this.interestImage;
     return data;
   }
 }

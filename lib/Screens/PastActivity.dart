@@ -1,8 +1,14 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
+import 'package:playgroup/Models/PastActivitiesRes.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/PastActivityDetailView.dart';
 import 'package:galleryimage/galleryimage.dart';
+import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 
 class PastActivity extends StatefulWidget {
   const PastActivity({Key? key}) : super(key: key);
@@ -22,150 +28,260 @@ class _PastActivityState extends State<PastActivity> {
   ];
 
   bool isHighlighted = true;
+
+  BuildContext? ctx;
+
+  bool _ShowNoData = false;
+
+  List<Data>? PastActData;
+
+  bool _isLoading = true;
+
+  _GetPastAct() {
+    //AppUtils.showprogress();
+    int CID = Strings.SelectedChild;
+    print("cID:$CID");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.PastActivities(CID).then((response) {
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          PastActData = response.data;
+          _isLoading = false;
+          print(jsonEncode(PastActData));
+          // if (PastActData != null) {
+          //   _ShowNoData = false;
+          // }
+        });
+      } else {
+        setState(() {
+          _ShowNoData = true;
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetPastAct());
+  }
+
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return PastActivity(newContext);
+          }),
+        ));
+  }
+
+  PastActivity(BuildContext context) {
+    ctx = context;
+    if (_isLoading) {
+      return const Center(
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)));
+    }
     return Container(
+      margin: EdgeInsets.fromLTRB(5, 20, 5, 0),
       color: Colors.white,
       child: Align(
         alignment: Alignment.topCenter,
-        child: Container(
-          height: 520,
-          width: 370,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            color: Colors.white,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.1),
-                blurRadius: 5.0, // soften the shadow
-                spreadRadius: 5.0, //extend the shadow
-                offset: Offset(
-                  2.0, // Move to right 10  horizontally
-                  2.0, // Move to bottom 10 Vertically
-                ),
-              )
-            ],
-          ),
-          padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ListTile(
-                isThreeLine: true,
-                leading: CircleAvatar(
-                  backgroundImage: AssetImage("assets/imgs/child.jpg"),
-                ),
-                title: Text("Kingston Jackey"),
-                subtitle: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+        child: ListView.builder(
+          itemCount: PastActData!.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
+              width: 370,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 5.0, // soften the shadow
+                    spreadRadius: 5.0, //extend the shadow
+                    offset: Offset(
+                      2.0, // Move to right 10  horizontally
+                      2.0, // Move to bottom 10 Vertically
+                    ),
+                  )
+                ],
+              ),
+              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ListTile(
+                    isThreeLine: true,
+                    leading:
+                        //  CircleAvatar(
+                        //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
+                        // ),
+                        CircleAvatar(
+                      backgroundImage: (PastActData![index].profile! != "null")
+                          ? NetworkImage(
+                              Strings.imageUrl + PastActData![index].profile!)
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
+                    ),
+                    title: Text(PastActData![index].childName!),
+                    subtitle: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("14 Jan 2021"),
-                        SizedBox(width: 5),
-                        Container(
-                          width: 1,
-                          height: 10,
-                          color: Colors.red,
+                        Row(
+                          children: [
+                            Text(
+                              PastActData![index].dateon!,
+                              style: TextStyle(
+                                fontSize: 11,
+                              ),
+                            ),
+                            SizedBox(width: 5),
+                            Container(
+                              width: 1,
+                              height: 10,
+                              color: Colors.red,
+                            ),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  PastActData![index].fromTime! + " - ",
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                Text(
+                                  PastActData![index].toTime!,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          "4-5 Pm",
-                          overflow: TextOverflow.ellipsis,
+                        GestureDetector(
+                          onTap: (() {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    Past_Activity_Details(
+                                                          markavailId:
+                                                              PastActData![index].markavailId!, childId:PastActData![index].childId!)));
+                          }),
+                          child: Text(
+                            "See More",
+                            style: TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.w600),
+                            //overflow: TextOverflow.fade,
+                          ),
                         )
                       ],
                     ),
-                    GestureDetector(
-                      onTap: (() {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (BuildContext context) =>
-                                Past_Activity_Details()));
-                      }),
-                      child: Text(
-                        "See More",
-                        style: TextStyle(
-                            color: Colors.blue, fontWeight: FontWeight.w600),
-                        //overflow: TextOverflow.fade,
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Row(
+                    children: [
+                      Text(
+                        PastActData![index].categoryName! + " - ",
+                        style: TextStyle(fontSize: 13),
+                      ),
+                      Text(
+                        PastActData![index].activitiesName!,
+                        style: TextStyle(fontSize: 13),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  GalleryImage(
+                    imageUrls: childImgs,
+                    titleGallery: "Playgroup",
+                  ),
+                  Row(children: [
+                    Column(
+                      children: [
+                        InkWell(
+                          highlightColor: Colors.transparent,
+                          splashColor: Colors.transparent,
+                          onHighlightChanged: (value) {
+                            setState(() {
+                              isHighlighted = !isHighlighted;
+                            });
+                          },
+                          onTap: () {
+                            setState(() {});
+                          },
+                          child: Image.asset(
+                            "assets/imgs/Like2.png",
+                            width: 60,
+                            height: 60,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: (() {}),
+                          child: Text("5 likes",
+                              style: TextStyle(
+                                  fontSize: 8, color: Colors.black87)),
+                        ),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Image.asset(
+                          "assets/imgs/Comments.png",
+                          width: 60,
+                          height: 60,
+                        ),
+                        Text("3 comments",
+                            style:
+                                TextStyle(fontSize: 8, color: Colors.black87)),
+                      ],
+                    ),
+                    Column(
+                      children: [
+                        Image.asset(
+                          "assets/imgs/share3.png",
+                          width: 60,
+                          height: 60,
+                        ),
+                        Text("3 share",
+                            style:
+                                TextStyle(fontSize: 8, color: Colors.black87)),
+                      ],
+                    ),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.bottomRight,
+                        child: Text(
+                            "Participants(${PastActData![index].totalParticipants!})",
+                            style:
+                                TextStyle(fontSize: 13, color: Colors.black87)),
                       ),
                     )
-                  ],
-                ),
+                  ]),
+                  SizedBox(
+                    height: 15,
+                  )
+                ],
               ),
-              SizedBox(
-                height: 5,
-              ),
-              Text("Art Work - Natural Painting"),
-              SizedBox(
-                height: 5,
-              ),
-              GalleryImage(
-                imageUrls: childImgs,
-                titleGallery: "Playgroup",
-              ),
-              Row(children: [
-                Column(
-                  children: [
-                    InkWell(
-                      highlightColor: Colors.transparent,
-                      splashColor: Colors.transparent,
-                      onHighlightChanged: (value) {
-                        setState(() {
-                          isHighlighted = !isHighlighted;
-                        });
-                      },
-                      onTap: () {
-                        setState(() {});
-                      },
-                      child: Image.asset(
-                        "assets/imgs/Like2.png",
-                        width: 60,
-                        height: 60,
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: (() {}),
-                      child: Text("5 likes",
-                          style: TextStyle(fontSize: 8, color: Colors.black87)),
-                    ),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Image.asset(
-                      "assets/imgs/Comments.png",
-                      width: 60,
-                      height: 60,
-                    ),
-                    Text("3 comments",
-                        style: TextStyle(fontSize: 8, color: Colors.black87)),
-                  ],
-                ),
-                Column(
-                  children: [
-                    Image.asset(
-                      "assets/imgs/share3.png",
-                      width: 60,
-                      height: 60,
-                    ),
-                    Text("3 share",
-                        style: TextStyle(fontSize: 8, color: Colors.black87)),
-                  ],
-                ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.bottomRight,
-                    child: Text("Participants(06)",
-                        style: TextStyle(fontSize: 13, color: Colors.black87)),
-                  ),
-                )
-              ]),
-              SizedBox(
-                height: 15,
-              )
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

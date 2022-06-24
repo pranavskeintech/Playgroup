@@ -5,6 +5,10 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
+import 'package:playgroup/Models/PastActivityById.dart';
+import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:provider/provider.dart';
 import '../Utilities/Strings.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -12,7 +16,10 @@ import 'EditAvailability_Time.dart';
 import 'G-Map.dart';
 
 class Past_Activity_Details extends StatefulWidget {
-  const Past_Activity_Details({Key? key}) : super(key: key);
+  int? markavailId;
+  int? childId;
+  Past_Activity_Details({Key? key, this.markavailId, this.childId})
+      : super(key: key);
 
   @override
   State<Past_Activity_Details> createState() => _Past_Activity_DetailsState();
@@ -66,9 +73,35 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   XFile? image;
   final ImagePicker _picker = ImagePicker();
   String img64 = "";
+
+  List<Data>? PastActData;
+
+  bool _isLoading = true;
+
+  BuildContext? ctx;
   String _getRandomImage(int width, int height) {
     var rng = new Random();
     return 'https://picsum.photos/$width/$height?random=${rng.nextInt(999999)}';
+  }
+
+  _GetPastAct() {
+    //AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.PastActivityById(widget.markavailId!, widget.childId!).then((response) {
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          PastActData = response.data;
+          _isLoading = false;
+          print(jsonEncode(PastActData));
+          // if (PastActData != null) {
+          //   _ShowNoData = false;
+          // }
+        });
+      } else {}
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 
   @override
@@ -76,10 +109,23 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     // TODO: implement initState
     _tabController = new TabController(length: 3, vsync: this);
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetPastAct());
   }
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return PastActivity(newContext);
+          }),
+        ));
+  }
+
+  PastActivity(BuildContext context) {
+    ctx = context;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
@@ -96,6 +142,11 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   }
 
   Widget Tabbarwidgets() {
+    if (_isLoading) {
+      return const Center(
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)));
+    }
     return Container(
         // padding: EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width * 1.0,
@@ -163,15 +214,19 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
               Container(
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Row(
-                  children: const [
+                  children: [
                     CircleAvatar(
                       radius: 18,
-                      backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                      backgroundImage: (PastActData![0].profile! != "null")
+                          ? NetworkImage(
+                              Strings.imageUrl + PastActData![0].profile!)
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
                     ),
                     SizedBox(
                       width: 10,
                     ),
-                    Text("Kingston Jackey")
+                    Text(PastActData![0].childName!),
                   ],
                 ),
               ),
@@ -239,23 +294,37 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
               ],
             ),
             child: SizedBox(
-              height: 120,
+              // height: 120,
               child: ListTile(
                 title: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 10),
-                    child: Text(
-                      "Art-Work - Natural Painting",
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          PastActData![0].categoryName! + " - ",
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          PastActData![0].activitiesName!,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     )),
                 subtitle: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Text(
-                    "Nature Painting also referred to as Landscape or scenery painting mostly shows reference of mountains, trees or other natural elements, in recent times.",
+                    PastActData![0].description!,
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                         height: 1.4,
@@ -288,7 +357,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                         width: 3,
                       ),
                       Text(
-                        'Gandhipuram, Tamilnadu',
+                        PastActData![0].location!,
                         overflow: TextOverflow.fade,
                         style: TextStyle(
                             fontSize: 12,
@@ -305,7 +374,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                     child: Row(
                       children: [
                         Text(
-                          "14 Jan 2021",
+                          PastActData![0].dateon!,
                           style: TextStyle(
                               color: Color.fromARGB(255, 150, 149, 149),
                               fontSize: 11),
@@ -319,12 +388,25 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          "4-5 pm",
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 150, 149, 149),
-                              fontSize: 11),
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              PastActData![0].fromTime! + " - ",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 150, 149, 149),
+                                fontSize: 11,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              PastActData![0].toTime!,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 150, 149, 149),
+                                fontSize: 11,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -410,37 +492,77 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                           width: 5,
                         ),
                         Expanded(
-                          child: ListView.builder(
-                              itemCount: 6,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: ((context, index) {
-                                if (index < 5) {
-                                  return Container(
-                                    padding: EdgeInsets.all(3),
-                                    width: 35,
-                                    height: 35,
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/imgs/${childImgs[index]}"),
-                                    ),
-                                  );
-                                } else {
-                                  return Container(
-                                    padding: EdgeInsets.all(3),
-                                    height: 40,
-                                    width: 40,
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          Colors.grey.withOpacity(0.3),
-                                      child: Text(
-                                        "3+",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                      ), //Text
-                                    ),
-                                  );
-                                }
-                              })),
+                          child: (PastActData![0].friendsdata!.isEmpty)
+                              ? Container(
+                                  width: 130,
+                                  height: 20,
+                                  child: Text(
+                                    "No one Participated",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.w600),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount:
+                                      PastActData![0].friendsdata!.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: ((context, index) {
+                                    if (index < 4) {
+                                      return Container(
+                                        padding: EdgeInsets.all(2),
+                                        width: 32,
+                                        height: 32,
+                                        child: InkWell(
+                                          onTap: () {
+                                            // AppUtils.showParticipant(
+                                            //     context,
+                                            //     PastActData![0].friendsdata!);
+                                          },
+                                          child: CircleAvatar(
+                                              backgroundImage: PastActData![0]
+                                                          .friendsdata![index]
+                                                          .profile !=
+                                                      "null"
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          (PastActData![0]
+                                                                  .friendsdata![
+                                                                      index]
+                                                                  .profile ??
+                                                              ""))
+                                                  : AssetImage(
+                                                          "assets/imgs/appicon.png")
+                                                      as ImageProvider),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        padding: EdgeInsets.all(2),
+                                        height: 32,
+                                        width: 32,
+                                        child: InkWell(
+                                          onTap: () {
+                                            // AppUtils.showParticipant(
+                                            //     context,
+                                            //     PastActData![0].friendsdata!);
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor:
+                                                Colors.grey.withOpacity(0.3),
+                                            child: Text(
+                                              "+${PastActData![0].friendsdata!.length - 5}",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12),
+                                            ), //Text
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  })),
                         ),
                       ],
                     ),
@@ -474,7 +596,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                   value: tag1,
                   onChanged: (val) {},
                   choiceItems: C2Choice.listFrom<int, String>(
-                    source: options,
+                    source: PastActData![0].benefits!,
                     value: (i, v) => i,
                     label: (i, v) => v,
                   ),

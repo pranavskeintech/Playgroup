@@ -45,8 +45,8 @@ class _DashBoardState extends State<DashBoard> {
   final screens = [
     HomeScreen(),
     //Center(child: Text("Past Activities")),
-    InitialScreen(),
-    // PastActivity(),
+    //InitialScreen(),
+    PastActivity(),
     SearchScreen(),
     //NotificationScreen(),
     ProfileScreen(),
