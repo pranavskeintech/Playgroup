@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/ShowOtherChild.dart';
@@ -30,6 +31,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    Strings.notifictionCount =0;
     WidgetsBinding.instance!.addPostFrameCallback((_) => GetNotificationList());
   }
 

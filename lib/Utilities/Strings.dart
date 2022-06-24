@@ -81,4 +81,6 @@ mixin Strings {
 
   static int ChoosedChild = 0;
 
+  static int notifictionCount = 0;
+
 }
