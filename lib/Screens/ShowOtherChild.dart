@@ -225,7 +225,7 @@ class _ShowOtherChildProfileState extends State<ShowOtherChildProfile> {
                             width: 3,
                           ),
                           Text(
-                            widget.ChildLocation ?? "",
+                            childInfo[0].location?? "",
                             style: TextStyle(
                                 fontSize: 10, fontWeight: FontWeight.w200),
                           ),

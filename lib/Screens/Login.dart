@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController forgotPassEmailID = TextEditingController();
 
   BuildContext? ctx;
-  FirebaseAuth _auth = FirebaseAuth.instance;
+ // FirebaseAuth _auth = FirebaseAuth.instance;
   //List<LoginData>? loginData;
 
   @override
@@ -61,8 +61,11 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
+  
+
   googleSignIn(context) async {
     await _googleSignIn.signOut();
+
 
     try {
       GoogleSignInAccount googleSignInAccount =
@@ -70,8 +73,11 @@ class _LoginPageState extends State<LoginPage> {
       GoogleSignInAuthentication googleAuth =
           await googleSignInAccount.authentication;
 
+      
+
       print('access Token ${googleAuth.accessToken}');
       print('id Token ${googleAuth.idToken}');
+            
       print(googleSignInAccount.email);
       print('${googleSignInAccount.displayName}');
       print(googleSignInAccount.photoUrl);
@@ -143,6 +149,8 @@ class _LoginPageState extends State<LoginPage> {
   //   print("------2");
   //   print(e);
   // }
+
+  
   Future signInWithFacebook() async {
     LoginResult loginResult = await FacebookAuth.instance
         .login(permissions: ["public_profile", "email"]);

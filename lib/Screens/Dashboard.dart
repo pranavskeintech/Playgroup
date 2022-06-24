@@ -82,6 +82,8 @@ class _DashBoardState extends State<DashBoard> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetProfile().then((response) {
       if (response.status == true) {
+            GetNotificationList();
+
         // AppUtils.dismissprogress();
         setState(() {
           _ProfileData = response.profile;
@@ -120,10 +122,17 @@ class _DashBoardState extends State<DashBoard> {
         });
 
         final prefs = await SharedPreferences.getInstance();
-        final int? counter = prefs.getInt('counter');
-        notifictionCount = (counter ?? 0) - allNotificationList!.length;
+        final int? counter = prefs.getInt('notificationCount');
+
+        setState(() {
+                  Strings.notifictionCount = (counter ?? 0) - allNotificationList!.length;
+
+        });
 
         await prefs.setInt('notificationCount', allNotificationList!.length);
+
+        print("notifictionCount--> $notifictionCount");
+
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -141,7 +150,7 @@ class _DashBoardState extends State<DashBoard> {
     iconList.add(Icons.home_outlined);
     iconList.add(Icons.schedule);
     iconList.add(Icons.search);
-    iconList.add(Icons.account_circle);
+    iconList.add(Icons.account_circle_outlined);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => GetProfile());
   }
@@ -222,37 +231,47 @@ class _DashBoardState extends State<DashBoard> {
                     width: 3,
                   ),
                   InkWell(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) =>
-                              NotificationScreen()));
-                    },
-                    child: Container(
-                      padding: EdgeInsets.only(left: 5),
-                      // child: Image.asset(
-                      //   "assets/images/Notification.png",
-                      //   width: 20,
-                      // )
-                      child: Badge(
-                        showBadge: notifictionCount == 0 ? false : true,
-                        badgeColor: Strings.appThemecolor,
-                        position: BadgePosition.topEnd(top: 10, end: 12),
-                        borderRadius: BorderRadius.circular(50),
-                        badgeContent: Text(
-                          "${allNotificationList != null ? notifictionCount : 0}",
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        child: Image.asset(
-                          "assets/imgs/notification.png",
-                          color: Colors.black,
-                          width: 25,
-                        ),
-                      ),
+                        onTap: (){
+                         Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          NotificationScreen())).then((_) {
+  setState(() {
+  });
+});;
+                        },
+                        child: Container(
+                                        padding: EdgeInsets.only(left:5),
+                                        // child: Image.asset(
+                                        //   "assets/images/Notification.png",
+                                        //   width: 20,
+                                        // )
+                                        child: Badge(
+                                          showBadge: Strings.notifictionCount == 0
+                          ? false
+                          : true,
+                                          badgeColor: Colors.red,
+                                          position: BadgePosition.topEnd(top: 15, end: 10),
+                                          borderRadius: BorderRadius.circular(20),
+                                          badgeContent: Text(
+                          "${allNotificationList != null ? Strings.notifictionCount : 0}",style: TextStyle(color: Colors.white,fontSize: 8),),
+                                          child: Image.asset(
+                        "assets/imgs/notification.png",
+                                                color: Colors.black,
+                      
+                        width: 35,
+                        height: 35,
+                                          ),
+                                        ),
+                                        // Icon(
+                                        //   Icons.circle_notifications,
+                                        //   color: Colors.white,
+                                        // )
+                                      ),
                       // Icon(
                       //   Icons.circle_notifications,
                       //   color: Colors.white,
                       // )
-                    ),
+                    
                   ),
                   IconButton(
                       onPressed: () {
