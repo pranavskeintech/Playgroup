@@ -234,7 +234,7 @@ class _SuggestTimeState extends State<SuggestTime> {
               child: SizedBox(
                 width: MediaQuery.of(context).size.width * 0.9,
                 child: ElevatedButton(
-                  child: Text("Save"),
+                  child: Text("Send"),
                   onPressed: () {
                     SuggestTimes();
                   },

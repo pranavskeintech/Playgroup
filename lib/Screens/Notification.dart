@@ -173,7 +173,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     print(NotificationList![mainIndex].markavailId);
                                     Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
-                                          Own_Availability(markavailId: NotificationList![mainIndex].markavailId,)));
+                                          Own_Availability(markavailId: NotificationList![mainIndex].markavailId,fromAct: false,)));
                                   }
                                   else
                                   {

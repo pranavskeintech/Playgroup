@@ -129,7 +129,13 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
 
     if (ChoosenTime2 != null) {
       setState(() {
-        _TOTimeController.text = ChoosenTime2.format(context);
+        if (ChoosenTime2.format(context) == _FromTimeController.text) {
+          AppUtils.showWarning(
+              context, "The from and to time should not be same", "");
+          _TOTimeController.text = "";
+        } else {
+          _TOTimeController.text = ChoosenTime2.format(context);
+        }
       });
     }
   }

@@ -33,7 +33,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   final _dobController = TextEditingController();
   final _schoolController = TextEditingController();
 
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
 
   final _btnController = RoundedLoadingButtonController();
   late AppState state;

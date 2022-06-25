@@ -1,7 +1,7 @@
 class GetChildRes {
   bool? status;
   String? message;
-  List<Data>? data;
+  List<childData>? data;
 
   GetChildRes({this.status, this.message, this.data});
 
@@ -9,9 +9,9 @@ class GetChildRes {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <childData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new childData.fromJson(v));
       });
     }
   }
@@ -27,7 +27,7 @@ class GetChildRes {
   }
 }
 
-class Data {
+class childData {
   int? childId;
   int? parentId;
   String? childName;
@@ -40,7 +40,7 @@ class Data {
   List<String>? languages;
   List<Interests>? interests;
 
-  Data(
+  childData(
       {this.childId,
       this.parentId,
       this.childName,
@@ -53,7 +53,7 @@ class Data {
       this.languages,
       this.interests});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  childData.fromJson(Map<String, dynamic> json) {
     childId = json['child_id'];
     parentId = json['parent_id'];
     childName = json['child_name'];

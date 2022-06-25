@@ -20,7 +20,9 @@ import '../Utilities/Strings.dart';
 
 class Own_Availability extends StatefulWidget {
   int? markavailId;
-  Own_Availability({Key? key, this.markavailId}) : super(key: key);
+  bool? fromAct;
+  Own_Availability({Key? key, this.markavailId, this.fromAct})
+      : super(key: key);
 
   @override
   State<Own_Availability> createState() => _Own_AvailabilityState();
@@ -252,28 +254,45 @@ class _Own_AvailabilityState extends State<Own_Availability>
                           children: [
                             IconButton(
                               onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => EditAvailabilityTime(
-                                    markavailId:
-                                        availabilityData[0].markavailId,
-                                    FromTime: availabilityData[0].fromTime,
-                                    TOTime: availabilityData[0].toTime,
-                                  ),
-                                ));
+                                availabilityData[0].status != "pause"
+                                    ? Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                        builder: (context) =>
+                                            EditAvailabilityTime(
+                                          markavailId:
+                                              availabilityData[0].markavailId,
+                                          FromTime:
+                                              availabilityData[0].fromTime,
+                                          TOTime: availabilityData[0].toTime,
+                                        ),
+                                      ))
+                                    : AppUtils.showWarning(
+                                        context,
+                                        "Edit Not available for paused availability",
+                                        "");
                               },
                               icon: ImageIcon(
-                                AssetImage('assets/imgs/edit.png'),
-                                size: 15,
-                                color: Colors.grey.shade600,
-                              ),
+                                  AssetImage('assets/imgs/edit.png'),
+                                  size: 15,
+                                  color: availabilityData[0].status != "pause"
+                                      ? Colors.grey.shade600
+                                      : Colors.grey.shade400),
                             ),
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                availabilityData[0].status != "pause"
+                                    ? null
+                                    : AppUtils.showWarning(
+                                        context,
+                                        "Share Not available for paused availability",
+                                        "");
+                              },
                               icon: ImageIcon(
-                                AssetImage('assets/imgs/share .png'),
-                                size: 16,
-                                color: Colors.grey.shade600,
-                              ),
+                                  AssetImage('assets/imgs/share .png'),
+                                  size: 16,
+                                  color: availabilityData[0].status != "pause"
+                                      ? Colors.grey.shade600
+                                      : Colors.grey.shade400),
                             )
                           ],
                         )
@@ -307,16 +326,25 @@ class _Own_AvailabilityState extends State<Own_Availability>
                   title: Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 16, horizontal: 10),
-                      child: Text(
-                        availabilityData[0].activitiesName! +
-                            " - " +
-                            availabilityData[0].categoryName!,
-                        style: TextStyle(
-                          color: Colors.black87,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 14,
-                        ),
-                      )),
+                      child: (availabilityData[0].activitiesName != null)
+                          ? Text(
+                              availabilityData[0].activitiesName! +
+                                  " - " +
+                                  availabilityData[0].categoryName!,
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            )
+                          : Text(
+                              "Open to Anything",
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 14,
+                              ),
+                            )),
                   subtitle: Padding(
                     padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                     child: Text(
@@ -580,309 +608,350 @@ class _Own_AvailabilityState extends State<Own_Availability>
                     ),
                   ),
                 ),
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: ChipsChoice<int>.multiple(
-                    wrapped: true,
-                    verticalDirection: VerticalDirection.up,
-                    choiceStyle: C2ChoiceStyle(
-                        color: Colors.grey.shade600,
-                        labelStyle: TextStyle(
-                            fontWeight: FontWeight.w400, fontSize: 14)),
-                    value: tag1,
-                    onChanged: (val) {},
-                    choiceItems: C2Choice.listFrom<int, String>(
-                      source: availabilityData[0].benefits!,
-                      value: (i, v) => i,
-                      label: (i, v) => v,
-                    ),
-                  ),
-                ),
+                (availabilityData[0].benefits!.length == 0)
+                    ? SizedBox(
+                        height: 50,
+                        child: Align(
+                            alignment: Alignment.centerLeft,
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: Text(
+                                "No Details AVailable yet!",
+                                style: TextStyle(color: Colors.grey),
+                              ),
+                            )),
+                      )
+                    : Align(
+                        alignment: Alignment.centerLeft,
+                        child: ChipsChoice<int>.multiple(
+                          wrapped: true,
+                          verticalDirection: VerticalDirection.up,
+                          choiceStyle: C2ChoiceStyle(
+                              color: Colors.grey.shade600,
+                              labelStyle: TextStyle(
+                                  fontWeight: FontWeight.w400, fontSize: 14)),
+                          value: tag1,
+                          onChanged: (val) {},
+                          choiceItems: C2Choice.listFrom<int, String>(
+                            source: availabilityData[0].benefits!,
+                            value: (i, v) => i,
+                            label: (i, v) => v,
+                          ),
+                        ),
+                      ),
               ],
             ),
           ),
           Spacer(),
-          Strings.activityConfirmed
-              ? Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    SizedBox(
-                      //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
-                      // ),
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      height: 40,
-                      child: TextButton(
-                        onPressed: () {
-                          showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  content: SizedBox(
-                                    height: 110,
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          "Are you sure to pause the availability ?",
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        SizedBox(height: 20),
-                                        Row(
+          widget.fromAct!
+              ? SizedBox()
+              : Strings.activityConfirmed
+                  ? Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        SizedBox(
+                          //    decoration: BoxDecoration(border: Border.all(color: Colors.grey,width: 1),
+                          // ),
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          height: 40,
+                          child: TextButton(
+                            onPressed: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      content: SizedBox(
+                                        height: 110,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
                                           children: [
-                                            Expanded(
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  print('yes selected');
-                                                  pauseAvailability();
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("Yes"),
-                                                style: ElevatedButton.styleFrom(
-                                                    primary:
-                                                        Strings.appThemecolor),
-                                              ),
+                                            Text(
+                                              "Are you sure to pause the availability ?",
+                                              textAlign: TextAlign.center,
                                             ),
-                                            SizedBox(width: 15),
-                                            Expanded(
-                                                child: ElevatedButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                              },
-                                              child: Text("No",
-                                                  style: TextStyle(
-                                                      color: Colors.black)),
-                                              style: ElevatedButton.styleFrom(
-                                                primary: Colors.white,
-                                              ),
-                                            ))
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              });
-                        },
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              availabilityData[0].status != "pause"
-                                  ? "Pause"
-                                  : "Resume",
-                              style: TextStyle(color: Colors.grey),
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            ImageIcon(
-                              AssetImage('assets/imgs/pause_1.png'),
-                              color: Colors.grey,
-                              size: 16,
-                            )
-                          ],
-                        ),
-                        style: ButtonStyle(
-                            side: MaterialStateProperty.all(BorderSide(
-                                width: 2, color: Colors.grey.withOpacity(0.2))),
-                            backgroundColor:
-                                MaterialStateProperty.all<Color>(Colors.white)),
-                      ),
-                    ),
-                    SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.4,
-                        height: 40,
-                        child: TextButton(
-                          onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    content: SizedBox(
-                                      height: 110,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Text(
-                                            "Are you sure to delete the availability ?",
-                                            textAlign: TextAlign.center,
-                                          ),
-                                          SizedBox(height: 20),
-                                          Row(
-                                            children: [
-                                              Expanded(
-                                                child: ElevatedButton(
+                                            SizedBox(height: 20),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: ElevatedButton(
+                                                    onPressed: () {
+                                                      print('yes selected');
+                                                      pauseAvailability();
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                    },
+                                                    child: Text("Yes"),
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                            primary: Strings
+                                                                .appThemecolor),
+                                                  ),
+                                                ),
+                                                SizedBox(width: 15),
+                                                Expanded(
+                                                    child: ElevatedButton(
                                                   onPressed: () {
-                                                    print('yes selected');
-                                                    deleteAvailability();
                                                     Navigator.of(context).pop();
                                                   },
-                                                  child: Text("Yes"),
+                                                  child: Text("No",
+                                                      style: TextStyle(
+                                                          color: Colors.black)),
                                                   style:
                                                       ElevatedButton.styleFrom(
-                                                          primary: Strings
-                                                              .appThemecolor),
-                                                ),
-                                              ),
-                                              SizedBox(width: 15),
-                                              Expanded(
-                                                  child: ElevatedButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: Text("No",
-                                                    style: TextStyle(
-                                                        color: Colors.black)),
-                                                style: ElevatedButton.styleFrom(
-                                                  primary: Colors.white,
-                                                ),
-                                              ))
-                                            ],
-                                          )
-                                        ],
+                                                    primary: Colors.white,
+                                                  ),
+                                                ))
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  );
-                                });
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Text(
-                                "Delete",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              ImageIcon(
-                                AssetImage('assets/imgs/delete_2.png'),
-                                color: Colors.grey,
-                                size: 16,
-                              )
-                            ],
-                          ),
-                          style: ButtonStyle(
-                              side: MaterialStateProperty.all(BorderSide(
-                                  width: 2,
-                                  color: Colors.grey.withOpacity(0.2))),
-                              backgroundColor: MaterialStateProperty.all<Color>(
-                                  Colors.white)),
-                        ))
-                  ],
-                )
-              : (availabilityData[0].requestStatus == "joined")
-                  ? Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  blurRadius: 8.0, // soften the shadow
-                                  spreadRadius: 5.0, //extend the shadow
-                                  offset: Offset(
-                                    2.0, // Move to right 10  horizontally
-                                    9.0, // Move to bottom 10 Vertically
-                                  ),
+                                    );
+                                  });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  availabilityData[0].status != "pause"
+                                      ? "Pause"
+                                      : "Resume",
+                                  style: TextStyle(color: Colors.grey.shade600),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                ImageIcon(
+                                  AssetImage('assets/imgs/pause_1.png'),
+                                  color: Colors.grey,
+                                  size: 16,
                                 )
                               ],
                             ),
+                            style: ButtonStyle(
+                                side: MaterialStateProperty.all(BorderSide(
+                                    width: 2,
+                                    color:
+                                        Colors.grey.shade600.withOpacity(0.2))),
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        Colors.white)),
+                          ),
+                        ),
+                        SizedBox(
+                            width: MediaQuery.of(context).size.width * 0.4,
+                            height: 40,
                             child: TextButton(
                               onPressed: () {
-                                setState(() {
-                                  joined = true;
-                                  _JoinFriendsMarkAvailability();
-                                  // Strings.availConfirm = !Strings.availConfirm;
-                                });
+                                availabilityData[0].status != "pause"
+                                    ? showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            content: SizedBox(
+                                              height: 110,
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    "Are you sure to delete the availability ?",
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(height: 20),
+                                                  Row(
+                                                    children: [
+                                                      Expanded(
+                                                        child: ElevatedButton(
+                                                          onPressed: () {
+                                                            print(
+                                                                'yes selected');
+                                                            deleteAvailability();
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                          },
+                                                          child: Text("Yes"),
+                                                          style: ElevatedButton
+                                                              .styleFrom(
+                                                                  primary: Strings
+                                                                      .appThemecolor),
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 15),
+                                                      Expanded(
+                                                          child: ElevatedButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: Text("No",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black)),
+                                                        style: ElevatedButton
+                                                            .styleFrom(
+                                                          primary: Colors.white,
+                                                        ),
+                                                      ))
+                                                    ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        })
+                                    : AppUtils.showWarning(
+                                        context,
+                                        "Delete Not available for paused availability",
+                                        "");
                               },
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Text(
-                                    "Remove",
-                                    style: TextStyle(
-                                        color: Colors.black54,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
-                                  ),
+                                children: [
+                                  Text("Delete",
+                                      style: TextStyle(
+                                        color: availabilityData[0].status !=
+                                                "pause"
+                                            ? Colors.grey.shade600
+                                            : Colors.grey.shade400,
+                                      )),
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Icon(
-                                    Icons.close,
-                                    color: Colors.black,
-                                    size: 17,
+                                  ImageIcon(
+                                    AssetImage('assets/imgs/delete_2.png'),
+                                    color: availabilityData[0].status != "pause"
+                                        ? Colors.grey.shade600
+                                        : Colors.grey.shade400,
+                                    size: 16,
                                   )
                                 ],
                               ),
                               style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Colors.white),
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        )
+                                  side: MaterialStateProperty.all(BorderSide(
+                                    width: 2,
+                                    color: availabilityData[0].status != "pause"
+                                        ? Colors.grey.shade600.withOpacity(0.2)
+                                        : Colors.grey.shade400.withOpacity(0.2),
+                                  )),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Colors.white)),
+                            ))
                       ],
                     )
-                  : Column(
-                      children: [
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            height: 40,
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.2),
-                                  blurRadius: 8.0, // soften the shadow
-                                  spreadRadius: 2.0, //extend the shadow
-                                  offset: Offset(
-                                    2.0, // Move to right 10  horizontally
-                                    10.0, // Move to bottom 10 Vertically
+                  : (availabilityData[0].requestStatus == "joined")
+                      ? Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                height: 40,
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      blurRadius: 8.0, // soften the shadow
+                                      spreadRadius: 5.0, //extend the shadow
+                                      offset: Offset(
+                                        2.0, // Move to right 10  horizontally
+                                        9.0, // Move to bottom 10 Vertically
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      joined = true;
+                                      _JoinFriendsMarkAvailability();
+                                      // Strings.availConfirm = !Strings.availConfirm;
+                                    });
+                                  },
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: const [
+                                      Text(
+                                        "Remove",
+                                        style: TextStyle(
+                                            color: Colors.black54,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Icon(
+                                        Icons.close,
+                                        color: Colors.black,
+                                        size: 17,
+                                      )
+                                    ],
                                   ),
-                                )
-                              ],
-                            ),
-                            child: TextButton(
-                              onPressed: () {
-                                setState(() {
-                                  joined == false;
-                                  _JoinFriendsMarkAvailability();
-                                  // Strings.availConfirm = !Strings.availConfirm;
-                                });
-                              },
-                              child: Text(
-                                "Join",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700),
-                              ),
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        Strings.appThemecolor),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Colors.white),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
+                            SizedBox(
+                              height: 10,
+                            )
+                          ],
                         )
-                      ],
-                    ),
+                      : Column(
+                          children: [
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                height: 40,
+                                width: MediaQuery.of(context).size.width * 0.8,
+                                decoration: BoxDecoration(
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.2),
+                                      blurRadius: 8.0, // soften the shadow
+                                      spreadRadius: 2.0, //extend the shadow
+                                      offset: Offset(
+                                        2.0, // Move to right 10  horizontally
+                                        10.0, // Move to bottom 10 Vertically
+                                      ),
+                                    )
+                                  ],
+                                ),
+                                child: TextButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      joined == false;
+                                      _JoinFriendsMarkAvailability();
+                                      // Strings.availConfirm = !Strings.availConfirm;
+                                    });
+                                  },
+                                  child: Text(
+                                    "Join",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w700),
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            Strings.appThemecolor),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            )
+                          ],
+                        ),
           SizedBox(
             height: 5,
           )
@@ -960,6 +1029,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
   }
 
   deleteAvailability() {
+    print("mark:${widget.markavailId!}");
     AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.deleteAvailability(widget.markavailId!).then((response) {

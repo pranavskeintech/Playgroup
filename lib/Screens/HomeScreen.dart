@@ -4,6 +4,7 @@ import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/InitialHome.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
@@ -200,9 +201,13 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? Container(
                           child: TextButton(
                               onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Mark_Availabilty()));
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DashBoard(screenindex: 4),
+                                  ),
+                                );
                               },
                               child: Text("Tap to add availability")))
                       : SizedBox(
@@ -223,6 +228,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             markavailId:
                                                 GetMarkAvailabilityData![index]
                                                     .markavailId,
+                                            fromAct: false,
                                           ),
                                         ));
                                       },
@@ -241,16 +247,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: CircleAvatar(
                                           backgroundColor: Colors.blue,
                                           backgroundImage:
-                                              GetMarkAvailabilityData![index]
-                                                          .categoryImg !=
-                                                      "null"
+                                              (GetMarkAvailabilityData![index]
+                                                              .categoryImg !=
+                                                          "null" &&
+                                                      GetMarkAvailabilityData![
+                                                                  index]
+                                                              .categoryImg !=
+                                                          null)
                                                   ? NetworkImage(Strings
                                                           .imageUrl +
                                                       "sports/" +
                                                       (GetMarkAvailabilityData![
-                                                                  index]
-                                                              .categoryImg ??
-                                                          ""))
+                                                              index]
+                                                          .categoryImg!))
                                                   : AssetImage(
                                                           "assets/imgs/appicon.png")
                                                       as ImageProvider,
@@ -260,12 +269,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text(
-                                        GetMarkAvailabilityData![index]
-                                            .categoryName!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 11.0))
+                                    Container(
+                                      width: 50,
+                                      child: Center(
+                                        child: Text(
+                                          GetMarkAvailabilityData![index]
+                                                  .categoryName ??
+                                              "Open to Anything",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: 11.0),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 );
                               })),
@@ -385,9 +402,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       ? Container(
                           child: TextButton(
                               onPressed: () {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (BuildContext context) =>
-                                        Mark_Availabilty()));
+                                // Navigator.of(context).push(MaterialPageRoute(
+                                //     builder: (BuildContext context) =>
+                                //         Mark_Availabilty()));
+
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DashBoard(screenindex: 4),
+                                  ),
+                                );
                               },
                               child: Text("Tap to add availability")))
                       : SizedBox(
@@ -408,6 +433,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             markavailId:
                                                 GetMarkAvailabilityData![index]
                                                     .markavailId,
+                                            fromAct: false,
                                           ),
                                         ));
                                       },
@@ -426,9 +452,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: CircleAvatar(
                                           backgroundColor: Colors.blue,
                                           backgroundImage:
-                                              GetMarkAvailabilityData![index]
-                                                          .categoryImg !=
-                                                      "null"
+                                              (GetMarkAvailabilityData![index]
+                                                              .categoryImg !=
+                                                          "null" &&
+                                                      GetMarkAvailabilityData![
+                                                                  index]
+                                                              .categoryImg !=
+                                                          null)
                                                   ? NetworkImage(Strings
                                                           .imageUrl +
                                                       "sports/" +
@@ -445,12 +475,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text(
-                                        GetMarkAvailabilityData![index]
-                                            .categoryName!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w300,
-                                            fontSize: 11.0))
+                                    Container(
+                                      width: 50,
+                                      child: Center(
+                                        child: Text(
+                                          GetMarkAvailabilityData![index]
+                                                  .categoryName ??
+                                              "Open to Anything",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w300,
+                                              fontSize: 11.0),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    )
                                   ],
                                 );
                               })),
@@ -486,6 +524,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               OtherMarkAvailabilityData![
                                                                       mainIndex]
                                                                   .markavailId,
+                                                          fromAct: false,
                                                         )));
                                         setState(() {
                                           _isLoading = true;
@@ -777,13 +816,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                 right: 8.0),
                                                         child: (OtherMarkAvailabilityData![
                                                                         mainIndex]
-                                                                    .requestStatus ==
-                                                                "joined")
+                                                                    .status ==
+                                                                "pause")
                                                             ? TextButton(
                                                                 onPressed:
                                                                     () {},
                                                                 child: Text(
-                                                                  "JOINED",
+                                                                  "PAUSED",
                                                                   style: TextStyle(
                                                                       fontSize:
                                                                           12,
@@ -807,42 +846,77 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   ),
                                                                 ),
                                                               )
-                                                            : TextButton(
-                                                                onPressed: () {
-                                                                  _JoinFriendsMarkAvailability(
-                                                                      OtherMarkAvailabilityData![
-                                                                              mainIndex]
-                                                                          .markavailId);
-                                                                },
-                                                                child: Text(
-                                                                  "JOIN",
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Color
-                                                                        .fromRGBO(
+                                                            : (OtherMarkAvailabilityData![
+                                                                            mainIndex]
+                                                                        .requestStatus ==
+                                                                    "joined")
+                                                                ? TextButton(
+                                                                    onPressed:
+                                                                        () {},
+                                                                    child: Text(
+                                                                      "JOINED",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          color:
+                                                                              Colors.grey
+
+                                                                          // fontWeight:
+                                                                          //     FontWeight.w400
+                                                                          ),
+                                                                    ),
+                                                                    style: TextButton
+                                                                        .styleFrom(
+                                                                      primary:
+                                                                          Colors
+                                                                              .white,
+                                                                      side:
+                                                                          BorderSide(
+                                                                        width:
+                                                                            1.6,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade300,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                : TextButton(
+                                                                    onPressed:
+                                                                        () {
+                                                                      _JoinFriendsMarkAvailability(
+                                                                          OtherMarkAvailabilityData![mainIndex]
+                                                                              .markavailId);
+                                                                    },
+                                                                    child: Text(
+                                                                      "JOIN",
+                                                                      style:
+                                                                          TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        color: Color.fromRGBO(
                                                                             94,
                                                                             37,
                                                                             108,
                                                                             1),
-                                                                    // fontWeight:
-                                                                    //     FontWeight.w400
+                                                                        // fontWeight:
+                                                                        //     FontWeight.w400
+                                                                      ),
+                                                                    ),
+                                                                    style: TextButton
+                                                                        .styleFrom(
+                                                                      primary:
+                                                                          Colors
+                                                                              .white,
+                                                                      side:
+                                                                          BorderSide(
+                                                                        width:
+                                                                            1.6,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade300,
+                                                                      ),
+                                                                    ),
                                                                   ),
-                                                                ),
-                                                                style: TextButton
-                                                                    .styleFrom(
-                                                                  primary: Colors
-                                                                      .white,
-                                                                  side:
-                                                                      BorderSide(
-                                                                    width: 1.6,
-                                                                    color: Colors
-                                                                        .grey
-                                                                        .shade300,
-                                                                  ),
-                                                                ),
-                                                              ),
                                                       ),
                                                     ),
                                                   ],

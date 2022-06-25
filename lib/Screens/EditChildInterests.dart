@@ -1,10 +1,15 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:playgroup/Models/EditChildReq.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetInterestsRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +70,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
     false,
     false
   ];
-  List<String> _selectedvalues = [];
+  List<int> _selectedvalues = [];
   bool _limitImage = true;
 
   BuildContext? ctx;
@@ -73,6 +78,8 @@ class _EditChildInterestsState extends State<EditChildInterests> {
   bool _isLoading = true;
 
   List<Data>? _InterestData;
+
+  List<childData>? _ChildData;
 
   fetchInterest() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -85,6 +92,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
 
         setState(() {
           _InterestData = response.data;
+          _GetChildData();
         });
       } else {
         setState(() {
@@ -92,6 +100,22 @@ class _EditChildInterestsState extends State<EditChildInterests> {
         });
         functions.createSnackBar(context, response.status.toString());
         // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  _GetChildData() {
+    //int? PId = Strings.Parent_Id;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetChild().then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          _ChildData = response.data;
+          _isLoading = false;
+        });
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -219,11 +243,12 @@ class _EditChildInterestsState extends State<EditChildInterests> {
                           onPressed: () {
                             for (int i = 0; i < 12; i++) {
                               if (_tick[i] == true) {
-                                print(activities[i]);
-                                _selectedvalues.add(activities[i]);
-                                Navigator.pop(context);
+                                _selectedvalues
+                                    .add(_InterestData![i].interestsId!);
+                                _EditChild();
                                 print(_selectedvalues);
-                                // _selectedvalues[i] = activities[i];
+                                _selectedvalues[i] =
+                                    _InterestData![i].interestsId!;
                               } else {
                                 // _selectedvalues[i] = "null";
                                 continue;
@@ -243,5 +268,31 @@ class _EditChildInterestsState extends State<EditChildInterests> {
               ],
             ),
           );
+  }
+
+  _EditChild() {
+    EditChildReq ChildEdit = EditChildReq();
+    ChildEdit.childId = _ChildData![Strings.editIndex].childId;
+    //ChildEdit.parentId = Strings.Parent_Id.toString();
+    ChildEdit.childName = _ChildData![Strings.editIndex].childName;
+    ChildEdit.dob = _ChildData![Strings.editIndex].dob;
+    ChildEdit.gender = _ChildData![Strings.editIndex].gender;
+    ChildEdit.school = _ChildData![Strings.editIndex].school;
+    ChildEdit.profile = _ChildData![Strings.editIndex].profile;
+    ChildEdit.language = _ChildData![Strings.editIndex].languages;
+    ChildEdit.childInterest = _selectedvalues;
+    print(jsonEncode(ChildEdit));
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.EditChild(ChildEdit).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.pop(context);
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
+      }
+    });
   }
 }

@@ -9,6 +9,7 @@ import 'package:playgroup/Screens/PastActivityDetailView.dart';
 import 'package:galleryimage/galleryimage.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
+import 'package:social_share/social_share.dart';
 
 class PastActivity extends StatefulWidget {
   const PastActivity({Key? key}) : super(key: key);
@@ -37,10 +38,11 @@ class _PastActivityState extends State<PastActivity> {
 
   bool _isLoading = true;
 
+  bool _showNoPastAct = false;
+
   _GetPastAct() {
     //AppUtils.showprogress();
     int CID = Strings.SelectedChild;
-    print("cID:$CID");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.PastActivities(CID).then((response) {
       if (response.status == true) {
@@ -56,6 +58,7 @@ class _PastActivityState extends State<PastActivity> {
       } else {
         setState(() {
           _ShowNoData = true;
+          _isLoading = false;
         });
       }
     }).catchError((onError) {
@@ -94,195 +97,281 @@ class _PastActivityState extends State<PastActivity> {
       color: Colors.white,
       child: Align(
         alignment: Alignment.topCenter,
-        child: ListView.builder(
-          itemCount: PastActData!.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Container(
-              width: 370,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.1),
-                    blurRadius: 5.0, // soften the shadow
-                    spreadRadius: 5.0, //extend the shadow
-                    offset: Offset(
-                      2.0, // Move to right 10  horizontally
-                      2.0, // Move to bottom 10 Vertically
+        child: _ShowNoData
+            ? Padding(
+                padding: const EdgeInsets.fromLTRB(20, 5, 20, 0),
+                child: Column(
+                  children: [
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "Invite Friends",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        )),
+                    SizedBox(
+                      height: 20,
                     ),
-                  )
-                ],
-              ),
-              padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ListTile(
-                    isThreeLine: true,
-                    leading:
-                        //  CircleAvatar(
-                        //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
-                        // ),
-                        CircleAvatar(
-                      backgroundImage: (PastActData![index].profile! != "null")
-                          ? NetworkImage(
-                              Strings.imageUrl + PastActData![index].profile!)
-                          : AssetImage("assets/imgs/appicon.png")
-                              as ImageProvider,
+                    Text(
+                      "Invite your Friends to the Playgroup App.",
+                      style: TextStyle(color: Colors.grey),
                     ),
-                    title: Text(PastActData![index].childName!),
-                    subtitle: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              PastActData![index].dateon!,
-                              style: TextStyle(
-                                fontSize: 11,
+                    SizedBox(
+                      height: 10,
+                    ),
+                    ElevatedButton(
+                        onPressed: () {
+                          SocialShare.shareOptions(
+                                  "Hey I found an new app Named Playgroup, Install With my link https://play.google.com/store/apps/details?id=com.netflix.mediaclient")
+                              .then((data) {
+                            print(data);
+                          });
+                        },
+                        child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Image.asset(
+                                "assets/imgs/add-user.png",
+                                width: 15,
+                                height: 15,
+                                color: Colors.white,
                               ),
-                            ),
-                            SizedBox(width: 5),
-                            Container(
-                              width: 1,
-                              height: 10,
-                              color: Colors.red,
-                            ),
-                            SizedBox(
-                              width: 5,
-                            ),
-                            Row(
-                              children: [
-                                Text(
-                                  PastActData![index].fromTime! + " - ",
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Text("Invite Friends")
+                            ])),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          "No Availabilities",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 18),
+                        )),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Card(
+                      elevation: 8,
+                      shadowColor: Colors.grey.withOpacity(0.1),
+                      child: Container(
+                        height: 140,
+                        padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "There are no friend's availabilities please add friends and view their availabilities",
+                                style: TextStyle(
+                                    color: Strings.textFeildHeading,
+                                    fontSize: 15),
+                              ),
+                              SizedBox(height: 10),
+                              Text(
+                                  "Add your friends and share with your availabilities",
                                   style: TextStyle(
-                                    fontSize: 11,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                                Text(
-                                  PastActData![index].toTime!,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                  ),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ],
-                            )
-                          ],
-                        ),
-                        GestureDetector(
-                          onTap: (() {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (BuildContext context) =>
-                                    Past_Activity_Details(
-                                                          markavailId:
-                                                              PastActData![index].markavailId!, childId:PastActData![index].childId!)));
-                          }),
-                          child: Text(
-                            "See More",
-                            style: TextStyle(
-                                color: Colors.blue,
-                                fontWeight: FontWeight.w600),
-                            //overflow: TextOverflow.fade,
+                                      color: Strings.textFeildHeading)),
+                            ]),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            : ListView.builder(
+                itemCount: PastActData!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    width: 370,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.1),
+                          blurRadius: 5.0, // soften the shadow
+                          spreadRadius: 5.0, //extend the shadow
+                          offset: Offset(
+                            2.0, // Move to right 10  horizontally
+                            2.0, // Move to bottom 10 Vertically
                           ),
                         )
                       ],
                     ),
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Row(
-                    children: [
-                      Text(
-                        PastActData![index].categoryName! + " - ",
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      Text(
-                        PastActData![index].activitiesName!,
-                        style: TextStyle(fontSize: 13),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  GalleryImage(
-                    imageUrls: childImgs,
-                    titleGallery: "Playgroup",
-                  ),
-                  Row(children: [
-                    Column(
+                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        InkWell(
-                          highlightColor: Colors.transparent,
-                          splashColor: Colors.transparent,
-                          onHighlightChanged: (value) {
-                            setState(() {
-                              isHighlighted = !isHighlighted;
-                            });
-                          },
-                          onTap: () {
-                            setState(() {});
-                          },
-                          child: Image.asset(
-                            "assets/imgs/Like2.png",
-                            width: 60,
-                            height: 60,
+                        ListTile(
+                          isThreeLine: true,
+                          leading:
+                              //  CircleAvatar(
+                              //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
+                              // ),
+                              CircleAvatar(
+                            backgroundImage:
+                                (PastActData![index].profile! != "null")
+                                    ? NetworkImage(Strings.imageUrl +
+                                        PastActData![index].profile!)
+                                    : AssetImage("assets/imgs/appicon.png")
+                                        as ImageProvider,
+                          ),
+                          title: Text(PastActData![index].childName!),
+                          subtitle: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    PastActData![index].dateon!,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                    ),
+                                  ),
+                                  SizedBox(width: 5),
+                                  Container(
+                                    width: 1,
+                                    height: 10,
+                                    color: Colors.red,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        PastActData![index].fromTime! + " - ",
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        PastActData![index].toTime!,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              GestureDetector(
+                                onTap: (() {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (BuildContext context) =>
+                                          Past_Activity_Details(
+                                              markavailId: PastActData![index]
+                                                  .markavailId!,
+                                              childId: PastActData![index]
+                                                  .childId!)));
+                                }),
+                                child: Text(
+                                  "See More",
+                                  style: TextStyle(
+                                      color: Colors.blue,
+                                      fontWeight: FontWeight.w600),
+                                  //overflow: TextOverflow.fade,
+                                ),
+                              )
+                            ],
                           ),
                         ),
-                        GestureDetector(
-                          onTap: (() {}),
-                          child: Text("5 likes",
-                              style: TextStyle(
-                                  fontSize: 8, color: Colors.black87)),
+                        SizedBox(
+                          height: 5,
                         ),
+                        Row(
+                          children: [
+                            Text(
+                              PastActData![index].categoryName! + " - ",
+                              style: TextStyle(fontSize: 13),
+                            ),
+                            Text(
+                              PastActData![index].activitiesName!,
+                              style: TextStyle(fontSize: 13),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        GalleryImage(
+                          imageUrls: childImgs,
+                          titleGallery: "Playgroup",
+                        ),
+                        Row(children: [
+                          Column(
+                            children: [
+                              InkWell(
+                                highlightColor: Colors.transparent,
+                                splashColor: Colors.transparent,
+                                onHighlightChanged: (value) {
+                                  setState(() {
+                                    isHighlighted = !isHighlighted;
+                                  });
+                                },
+                                onTap: () {
+                                  setState(() {});
+                                },
+                                child: Image.asset(
+                                  "assets/imgs/Like2.png",
+                                  width: 60,
+                                  height: 60,
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: (() {}),
+                                child: Text("5 likes",
+                                    style: TextStyle(
+                                        fontSize: 8, color: Colors.black87)),
+                              ),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Image.asset(
+                                "assets/imgs/Comments.png",
+                                width: 60,
+                                height: 60,
+                              ),
+                              Text("3 comments",
+                                  style: TextStyle(
+                                      fontSize: 8, color: Colors.black87)),
+                            ],
+                          ),
+                          Column(
+                            children: [
+                              Image.asset(
+                                "assets/imgs/share3.png",
+                                width: 60,
+                                height: 60,
+                              ),
+                              Text("3 share",
+                                  style: TextStyle(
+                                      fontSize: 8, color: Colors.black87)),
+                            ],
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.bottomRight,
+                              child: Text(
+                                  "Participants(${PastActData![index].totalParticipants!})",
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.black87)),
+                            ),
+                          )
+                        ]),
+                        SizedBox(
+                          height: 15,
+                        )
                       ],
                     ),
-                    Column(
-                      children: [
-                        Image.asset(
-                          "assets/imgs/Comments.png",
-                          width: 60,
-                          height: 60,
-                        ),
-                        Text("3 comments",
-                            style:
-                                TextStyle(fontSize: 8, color: Colors.black87)),
-                      ],
-                    ),
-                    Column(
-                      children: [
-                        Image.asset(
-                          "assets/imgs/share3.png",
-                          width: 60,
-                          height: 60,
-                        ),
-                        Text("3 share",
-                            style:
-                                TextStyle(fontSize: 8, color: Colors.black87)),
-                      ],
-                    ),
-                    Expanded(
-                      child: Align(
-                        alignment: Alignment.bottomRight,
-                        child: Text(
-                            "Participants(${PastActData![index].totalParticipants!})",
-                            style:
-                                TextStyle(fontSize: 13, color: Colors.black87)),
-                      ),
-                    )
-                  ]),
-                  SizedBox(
-                    height: 15,
-                  )
-                ],
+                  );
+                },
               ),
-            );
-          },
-        ),
       ),
     );
   }

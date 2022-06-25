@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   BuildContext? ctx;
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
 
   Profile? _ProfileData;
 

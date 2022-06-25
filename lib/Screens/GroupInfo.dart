@@ -457,11 +457,12 @@ class _GroupinfoState extends State<Groupinfo> {
                           },
                         ),
                       )
-                    : _isPressed
-                        ? SizedBox(
-                            height: 70,
-                          )
-                        : SizedBox(),
+                    : SizedBox(),
+                _isPressed
+                    ? SizedBox(
+                        height: 75,
+                      )
+                    : SizedBox(),
               ],
             ),
           );

@@ -311,7 +311,7 @@ class _Availability_choose_friendsState
   }
 
   _MarkAvailability() {
-    AppUtils.showprogress();
+    //AppUtils.showprogress();
 
     MarkAvailabilityReq markavail = MarkAvailabilityReq();
 
@@ -321,11 +321,13 @@ class _Availability_choose_friendsState
     markavail.to = Strings.markAvailabiltyendTime;
     markavail.description = Strings.markAvailabiltydesc;
     markavail.location = Strings.markAvailabiltylocations;
-    markavail.activitiesId = Strings.markAvailabiltyTopic;
-    markavail.sportId = Strings.markAvailabiltycategory;
+    (Strings.markAvailabiltyTopic != null)
+        ? markavail.activitiesId = Strings.markAvailabiltyTopic
+        : markavail.activitiesId = 0;
+    (Strings.markAvailabiltycategory != null)
+        ? markavail.sportId = Strings.markAvailabiltycategory
+        : markavail.sportId = 0;
     markavail.friendId = FriendsId;
-
-    print("frnds:$FriendsId");
 
     var dat = jsonEncode(markavail);
     print(dat);

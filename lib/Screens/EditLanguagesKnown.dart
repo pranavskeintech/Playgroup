@@ -54,7 +54,7 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
 
   BuildContext? ctx;
 
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
 
   bool _isLoading = true;
 

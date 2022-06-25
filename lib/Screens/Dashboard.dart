@@ -52,7 +52,6 @@ class _DashBoardState extends State<DashBoard> {
     ProfileScreen(),
     Mark_Availabilty()
   ];
-  final screen2 = [Mark_Availabilty()];
 
   var ctx;
 
@@ -82,7 +81,7 @@ class _DashBoardState extends State<DashBoard> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetProfile().then((response) {
       if (response.status == true) {
-            GetNotificationList();
+        GetNotificationList();
 
         // AppUtils.dismissprogress();
         setState(() {
@@ -125,14 +124,13 @@ class _DashBoardState extends State<DashBoard> {
         final int? counter = prefs.getInt('notificationCount');
 
         setState(() {
-                  Strings.notifictionCount = (counter ?? 0) - allNotificationList!.length;
-
+          Strings.notifictionCount =
+              (counter ?? 0) - allNotificationList!.length;
         });
 
         await prefs.setInt('notificationCount', allNotificationList!.length);
 
         print("notifictionCount--> $notifictionCount");
-
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -231,47 +229,47 @@ class _DashBoardState extends State<DashBoard> {
                     width: 3,
                   ),
                   InkWell(
-                        onTap: (){
-                         Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          NotificationScreen())).then((_) {
-  setState(() {
-  });
-});;
-                        },
-                        child: Container(
-                                        padding: EdgeInsets.only(left:5),
-                                        // child: Image.asset(
-                                        //   "assets/images/Notification.png",
-                                        //   width: 20,
-                                        // )
-                                        child: Badge(
-                                          showBadge: Strings.notifictionCount == 0
-                          ? false
-                          : true,
-                                          badgeColor: Colors.red,
-                                          position: BadgePosition.topEnd(top: 15, end: 10),
-                                          borderRadius: BorderRadius.circular(20),
-                                          badgeContent: Text(
-                          "${allNotificationList != null ? Strings.notifictionCount : 0}",style: TextStyle(color: Colors.white,fontSize: 8),),
-                                          child: Image.asset(
-                        "assets/imgs/notification.png",
-                                                color: Colors.black,
-                      
-                        width: 35,
-                        height: 35,
-                                          ),
-                                        ),
-                                        // Icon(
-                                        //   Icons.circle_notifications,
-                                        //   color: Colors.white,
-                                        // )
-                                      ),
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  NotificationScreen()))
+                          .then((_) {
+                        setState(() {});
+                      });
+                      ;
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5),
+                      // child: Image.asset(
+                      //   "assets/images/Notification.png",
+                      //   width: 20,
+                      // )
+                      child: Badge(
+                        showBadge: Strings.notifictionCount == 0 ? false : true,
+                        badgeColor: Colors.red,
+                        position: BadgePosition.topEnd(top: 15, end: 10),
+                        borderRadius: BorderRadius.circular(20),
+                        badgeContent: Text(
+                          "${allNotificationList != null ? Strings.notifictionCount : 0}",
+                          style: TextStyle(color: Colors.white, fontSize: 8),
+                        ),
+                        child: Image.asset(
+                          "assets/imgs/notification.png",
+                          color: Colors.black,
+                          width: 35,
+                          height: 35,
+                        ),
+                      ),
                       // Icon(
                       //   Icons.circle_notifications,
                       //   color: Colors.white,
                       // )
-                    
+                    ),
+                    // Icon(
+                    //   Icons.circle_notifications,
+                    //   color: Colors.white,
+                    // )
                   ),
                   IconButton(
                       onPressed: () {

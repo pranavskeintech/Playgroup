@@ -142,13 +142,18 @@ class _ChildProfileState extends State<ChildProfile>
 
   List<Datas> _foundedAllData = [];
 
+  int? index1;
   List<ActData>? AllActivity;
+
+  List<ActData>? JoinedAct = [];
+
+  List<ActData>? MyAct = [];
 
   List<ActData>? _foundedActivity = [];
 
-  int? index1;
+  List<ActData>? _foundedMyActivity = [];
 
-  List<ActData>? MyAct;
+  List<ActData>? _foundedJoinedActivity = [];
 
   fetchData() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -279,19 +284,35 @@ class _ChildProfileState extends State<ChildProfile>
       if (response.status == true) {
         setState(() {
           AllActivity = response.data;
-
-          // for (var i = 0; i < _foundedActivity!.length; i++) {
-          //   if (AllActivity![i].type == "my_availability") index1 = i;
-          //   MyAct!.add(AllActivity!.removeAt(index1!));
-          // }
           setState(() {
             _foundedActivity = AllActivity!;
           });
+
+          for (var i = 0; i < AllActivity!.length; i++) {
+            if (AllActivity![i].type == "my_availability") {
+              MyAct!.add(AllActivity![i]);
+              setState(() {
+                _foundedMyActivity = MyAct;
+              });
+            } else {
+              JoinedAct!.add(AllActivity![i]);
+              setState(() {
+                _foundedJoinedActivity = JoinedAct;
+              });
+            }
+          }
+
           _isLoading = false;
         });
       } else {
-        _isLoading = false;
-        functions.createSnackBar(context, response.status.toString());
+        // AllActivity = [];
+        // MyAct = [];
+        // JoinedAct = [];
+        //functions.createSnackBar(context, response.status.toString());
+
+        setState(() {
+          _isLoading = false;
+        });
         // _btnController.stop();
       }
     }).catchError((onError) {
@@ -336,26 +357,22 @@ class _ChildProfileState extends State<ChildProfile>
   onSearch3(String search) {
     print("Searching for $search");
     setState(() {
-      if (dropdownvalue == "FILTER") {
+      if (dropdownvalue2 == "FILTER") {
         _foundedActivity = AllActivity!
             .where((user) =>
                 user.categoryName!.toLowerCase().contains(search.toLowerCase()))
             .toList();
-      } else if (dropdownvalue == "MY ACTIVITIES") {
-        _foundedActivity = MyAct!
+      } else if (dropdownvalue2 == "MY ACTIVITIES") {
+        _foundedMyActivity = MyAct!
+            .where((user) =>
+                user.categoryName!.toLowerCase().contains(search.toLowerCase()))
+            .toList();
+      } else if (dropdownvalue2 == "JOINED ACTIVITIES") {
+        _foundedJoinedActivity = JoinedAct!
             .where((user) =>
                 user.categoryName!.toLowerCase().contains(search.toLowerCase()))
             .toList();
       }
-      //  else if (dropdownvalue == "JOINED ACTIVITIES") {
-      //   for (var i = 0; i < _foundedAllData.length; i++) {
-      //     _foundedAllData = FriendsGroupsData!
-      //         .where((user) =>
-      //             user.name!.toLowerCase().contains(search.toLowerCase()))
-      //         .toList();
-      //   }
-      //   print(_foundedUsers.length);
-      // }
     });
   }
 
@@ -373,7 +390,6 @@ class _ChildProfileState extends State<ChildProfile>
 
   ChildProfile(BuildContext context) {
     ctx = context;
-    print("friend:${FriendsId}");
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
@@ -390,7 +406,6 @@ class _ChildProfileState extends State<ChildProfile>
   }
 
   Widget Tabbarwidgets() {
-    print("CHECK:$dropdownvalue");
     return _isLoading
         ? const Center(
             child: CircularProgressIndicator(
@@ -564,7 +579,7 @@ class _ChildProfileState extends State<ChildProfile>
                           height: 5,
                         ),
                         Text(
-                          childInfo![0].school ?? "",
+                          childInfo![0].school ?? "Add School Name",
                           style: TextStyle(color: Colors.grey),
                         ),
                       ],
@@ -619,12 +634,16 @@ class _ChildProfileState extends State<ChildProfile>
                       },
                       child: Row(
                         children: [
-                          Text("Edit"),
+                          (childInfo![0].interests!.length == 0)
+                              ? Text("Add")
+                              : Text("Edit"),
                           SizedBox(
                             width: 5,
                           ),
                           Icon(
-                            Icons.edit_outlined,
+                            (childInfo![0].interests!.length == 0)
+                                ? Icons.add_circle_outline_rounded
+                                : Icons.edit_outlined,
                             size: 15,
                           )
                         ],
@@ -632,68 +651,74 @@ class _ChildProfileState extends State<ChildProfile>
                 ],
               ),
             ),
-            Container(
-              height: 80,
-              child: ListView.builder(
-                  itemCount: childInfo![0].interests!.length,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: ((context, index) {
-                    return Container(
-                      child: Column(
-                        children: [
-                          if (index < 5)
-                            Column(
+            (childInfo![0].interests!.length == 0)
+                ? Text("Add Interests")
+                : Container(
+                    height: 80,
+                    child: ListView.builder(
+                        itemCount: childInfo![0].interests!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: ((context, index) {
+                          return Container(
+                            child: Column(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                  decoration: new BoxDecoration(
-                                    shape: BoxShape.circle,
+                                if (index < 5)
+                                  Column(
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                        padding: EdgeInsets.all(2),
+                                        width: 45,
+                                        height: 45,
+                                        child: CircleAvatar(
+                                            backgroundImage: childInfo![0]
+                                                        .interests![index]
+                                                        .interestImage! !=
+                                                    "null"
+                                                ? NetworkImage(
+                                                    Strings.imageUrl +
+                                                        "sports/" +
+                                                        (childInfo![0]
+                                                            .interests![index]
+                                                            .interestImage!))
+                                                : AssetImage(
+                                                        "assets/imgs/appicon.png")
+                                                    as ImageProvider),
+                                      ),
+                                      SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                        childInfo![0]
+                                            .interests![index]
+                                            .interestName!,
+                                        style: TextStyle(fontSize: 12),
+                                      )
+                                    ],
+                                  )
+                                else
+                                  Container(
+                                    padding: EdgeInsets.all(3),
+                                    height: 40,
+                                    width: 40,
+                                    child: CircleAvatar(
+                                      backgroundColor:
+                                          Colors.grey.withOpacity(0.3),
+                                      child: Text(
+                                        "3+",
+                                        style: TextStyle(
+                                            color: Colors.black, fontSize: 12),
+                                      ), //Text
+                                    ),
                                   ),
-                                  padding: EdgeInsets.all(2),
-                                  width: 45,
-                                  height: 45,
-                                  child: CircleAvatar(
-                                      backgroundImage: childInfo![0]
-                                                  .interests![index]
-                                                  .interestImage! !=
-                                              "null"
-                                          ? NetworkImage(Strings.imageUrl +
-                                              "sports/" +
-                                              (childInfo![0]
-                                                  .interests![index]
-                                                  .interestImage!))
-                                          : AssetImage(
-                                                  "assets/imgs/appicon.png")
-                                              as ImageProvider),
-                                ),
-                                SizedBox(
-                                  height: 5,
-                                ),
-                                Text(
-                                  childInfo![0].interests![index].interestName!,
-                                  style: TextStyle(fontSize: 12),
-                                )
                               ],
-                            )
-                          else
-                            Container(
-                              padding: EdgeInsets.all(3),
-                              height: 40,
-                              width: 40,
-                              child: CircleAvatar(
-                                backgroundColor: Colors.grey.withOpacity(0.3),
-                                child: Text(
-                                  "3+",
-                                  style: TextStyle(
-                                      color: Colors.black, fontSize: 12),
-                                ), //Text
-                              ),
                             ),
-                        ],
-                      ),
-                    );
-                  })),
-            ),
+                          );
+                        })),
+                  ),
             SizedBox(
               height: 0,
             ),
@@ -718,12 +743,16 @@ class _ChildProfileState extends State<ChildProfile>
                       },
                       child: Row(
                         children: [
-                          Text("Edit"),
+                          (childInfo![0].languages!.length == 0)
+                              ? Text("Add")
+                              : Text("Edit"),
                           SizedBox(
                             width: 5,
                           ),
                           Icon(
-                            Icons.edit_outlined,
+                            (childInfo![0].languages!.length == 0)
+                                ? Icons.add_circle_outline_rounded
+                                : Icons.edit_outlined,
                             size: 15,
                           )
                         ],
@@ -731,19 +760,21 @@ class _ChildProfileState extends State<ChildProfile>
                 ],
               ),
             ),
-            ChipsChoice<int>.multiple(
-              spacing: 20,
-              wrapped: true,
-              verticalDirection: VerticalDirection.up,
-              choiceStyle: C2ChoiceStyle(color: Colors.black),
-              value: tag1,
-              onChanged: (val) {},
-              choiceItems: C2Choice.listFrom<int, String>(
-                source: childInfo![0].languages!,
-                value: (i, v) => i,
-                label: (i, v) => v,
-              ),
-            ),
+            (childInfo![0].languages!.length == 0)
+                ? Text("Add Languages")
+                : ChipsChoice<int>.multiple(
+                    spacing: 20,
+                    wrapped: true,
+                    verticalDirection: VerticalDirection.up,
+                    choiceStyle: C2ChoiceStyle(color: Colors.black),
+                    value: tag1,
+                    onChanged: (val) {},
+                    choiceItems: C2Choice.listFrom<int, String>(
+                      source: childInfo![0].languages!,
+                      value: (i, v) => i,
+                      label: (i, v) => v,
+                    ),
+                  ),
           ],
         ),
       ),
@@ -1116,11 +1147,13 @@ class _ChildProfileState extends State<ChildProfile>
                                                     FriendsId!.add(
                                                         _foundedUsers[index]
                                                             .childId!);
+                                                    print(FriendsId);
                                                   } else {
                                                     _isChecked?[index] = val;
                                                     FriendsId!.remove(
                                                         _foundedUsers[index]
                                                             .childId!);
+                                                    print(FriendsId);
                                                   }
                                                 },
                                               );
@@ -1194,7 +1227,6 @@ class _ChildProfileState extends State<ChildProfile>
             alignment: Alignment.center,
             child: TextButton(
                 onPressed: () async {
-                  _AddGroup = false;
                   if (FriendsId!.length != 0) {
                     await Navigator.of(context).push(MaterialPageRoute(
                         builder: (BuildContext context) => AddGroup(
@@ -1202,6 +1234,8 @@ class _ChildProfileState extends State<ChildProfile>
                             ChoosedChildId: widget.chooseChildId,
                             FromGroupInfo: false,
                             Groupimg: "null")));
+                    _AddGroup = false;
+                    FriendsId = [];
                     setState(() {
                       _GetFriends();
                     });
@@ -1473,10 +1507,10 @@ class _ChildProfileState extends State<ChildProfile>
             height: 15,
           ),
           (dropdownvalue2 == "FILTER")
-              ? AllActivity!.length > 0
+              ? _foundedActivity!.length > 0
                   ? Expanded(
                       child: ListView.builder(
-                          itemCount: AllActivity!.length,
+                          itemCount: _foundedActivity!.length,
                           scrollDirection: Axis.vertical,
                           itemBuilder: ((context, index) {
                             return Padding(
@@ -1486,7 +1520,9 @@ class _ChildProfileState extends State<ChildProfile>
                                   Navigator.of(context).push(MaterialPageRoute(
                                       builder: (context) => Own_Availability(
                                             markavailId:
-                                                AllActivity![index].markavailId,
+                                                _foundedActivity![index]
+                                                    .markavailId,
+                                            fromAct: true,
                                           )));
                                 },
                                 child: Container(
@@ -1518,7 +1554,8 @@ class _ChildProfileState extends State<ChildProfile>
                                       title: Row(
                                         children: [
                                           Text(
-                                            AllActivity![index].categoryName! +
+                                            _foundedActivity![index]
+                                                    .categoryName! +
                                                 " - ",
                                             style: TextStyle(
                                                 fontSize: 12,
@@ -1529,7 +1566,7 @@ class _ChildProfileState extends State<ChildProfile>
                                           Container(
                                             width: 70,
                                             child: Text(
-                                              AllActivity![index]
+                                              _foundedActivity![index]
                                                   .activitiesName!,
                                               style: TextStyle(
                                                   fontSize: 12,
@@ -1545,7 +1582,7 @@ class _ChildProfileState extends State<ChildProfile>
                                         child: Row(
                                           children: [
                                             Text(
-                                              AllActivity![index].dateon!,
+                                              _foundedActivity![index].dateon!,
                                               style: TextStyle(fontSize: 11),
                                             ),
                                             SizedBox(width: 5),
@@ -1560,7 +1597,7 @@ class _ChildProfileState extends State<ChildProfile>
                                             Row(
                                               children: [
                                                 Text(
-                                                  AllActivity![index]
+                                                  _foundedActivity![index]
                                                           .fromTime!
                                                           .replaceAll(' PM', '')
                                                           .replaceAll(
@@ -1572,7 +1609,8 @@ class _ChildProfileState extends State<ChildProfile>
                                                       TextOverflow.ellipsis,
                                                 ),
                                                 Text(
-                                                  AllActivity![index].toTime!,
+                                                  _foundedActivity![index]
+                                                      .toTime!,
                                                   style: TextStyle(
                                                     fontSize: 11,
                                                   ),
@@ -1597,7 +1635,7 @@ class _ChildProfileState extends State<ChildProfile>
                                             width: 3,
                                           ),
                                           Text(
-                                            AllActivity![index].location!,
+                                            _foundedActivity![index].location!,
                                             style: TextStyle(fontSize: 12),
                                           ),
                                         ],
@@ -1613,120 +1651,297 @@ class _ChildProfileState extends State<ChildProfile>
               : SizedBox(),
 
 /////////////////  My Act //////////////
-          // (dropdownvalue == "MY ACTIVITIES")
-          //     ? MyAct!.length > 0
-          //         ? Expanded(
-          //             child: ListView.builder(
-          //                 itemCount: MyAct!.length,
-          //                 scrollDirection: Axis.vertical,
-          //                 itemBuilder: ((context, index) {
-          //                   return Padding(
-          //                     padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
-          //                     child: Container(
-          //                       decoration: BoxDecoration(
-          //                         border: Border(
-          //                           left: BorderSide(
-          //                             //                   <--- left side
-          //                             color: Colors.primaries[Random()
-          //                                 .nextInt(Colors.primaries.length)],
-          //                             width: 3.0,
-          //                           ),
-          //                         ),
-          //                       ),
-          //                       child: Container(
-          //                         decoration: BoxDecoration(
-          //                           color: Colors.white,
-          //                           borderRadius:
-          //                               BorderRadius.all(Radius.circular(3)),
-          //                           boxShadow: [
-          //                             BoxShadow(
-          //                               color: Colors.grey,
-          //                               blurRadius: 4,
-          //                               offset: Offset(1, 1), // Shadow position
-          //                             ),
-          //                           ],
-          //                         ),
-          //                         child: ListTile(
-          //                           title: Row(
-          //                             children: [
-          //                               Text(
-          //                                 MyAct![index].categoryName! + " - ",
-          //                                 style: TextStyle(
-          //                                     fontSize: 13,
-          //                                     color: Colors.black,
-          //                                     fontWeight: FontWeight.w500),
-          //                               ),
-          //                               Text(
-          //                                 MyAct![index].activitiesName!,
-          //                                 style: TextStyle(
-          //                                     fontSize: 13,
-          //                                     color: Colors.black,
-          //                                     fontWeight: FontWeight.w500),
-          //                               ),
-          //                             ],
-          //                           ),
-          //                           trailing: Container(
-          //                             width: width * 0.28,
-          //                             child: Row(
-          //                               children: [
-          //                                 Text(
-          //                                   MyAct![index].dateon!,
-          //                                   style: TextStyle(fontSize: 11),
-          //                                 ),
-          //                                 SizedBox(width: 5),
-          //                                 Container(
-          //                                   width: 1,
-          //                                   height: 10,
-          //                                   color: Colors.grey,
-          //                                 ),
-          //                                 SizedBox(
-          //                                   width: 5,
-          //                                 ),
-          //                                 Row(
-          //                                   children: [
-          //                                     Text(
-          //                                       MyAct![index].fromTime! + " - ",
-          //                                       style: TextStyle(fontSize: 11),
-          //                                       overflow: TextOverflow.ellipsis,
-          //                                     ),
-          //                                     Text(
-          //                                       MyAct![index].toTime!,
-          //                                       style: TextStyle(
-          //                                         fontSize: 11,
-          //                                       ),
-          //                                       overflow: TextOverflow.ellipsis,
-          //                                     ),
-          //                                   ],
-          //                                 )
-          //                               ],
-          //                             ),
-          //                           ),
-          //                           isThreeLine: false,
-          //                           subtitle: Row(
-          //                             mainAxisAlignment:
-          //                                 MainAxisAlignment.start,
-          //                             children: [
-          //                               Icon(
-          //                                 Icons.location_pin,
-          //                                 color: Colors.red,
-          //                               ),
-          //                               SizedBox(
-          //                                 width: 3,
-          //                               ),
-          //                               Text(
-          //                                 MyAct![index].location!,
-          //                                 style: TextStyle(fontSize: 12),
-          //                               ),
-          //                             ],
-          //                           ),
-          //                         ),
-          //                       ),
-          //                     ),
-          //                   );
-          //                 })),
-          //           )
-          //         : Spacer()
-          //     : SizedBox()
+          (dropdownvalue2 == "MY ACTIVITIES")
+              ? _foundedMyActivity!.length > 0
+                  ? Expanded(
+                      child: ListView.builder(
+                          itemCount: _foundedMyActivity!.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: ((context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Own_Availability(
+                                            markavailId:
+                                                _foundedMyActivity![index]
+                                                    .markavailId,
+                                            fromAct: true,
+                                          )));
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        //                   <--- left side
+                                        color: Colors.primaries[Random()
+                                            .nextInt(Colors.primaries.length)],
+                                        width: 3.0,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(3)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          blurRadius: 4,
+                                          offset:
+                                              Offset(1, 1), // Shadow position
+                                        ),
+                                      ],
+                                    ),
+                                    child: ListTile(
+                                      title: Row(
+                                        children: [
+                                          Text(
+                                            _foundedMyActivity![index]
+                                                    .categoryName! +
+                                                " - ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Container(
+                                            width: 70,
+                                            child: Text(
+                                              _foundedMyActivity![index]
+                                                  .activitiesName!,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Container(
+                                        width: width * 0.36,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              _foundedMyActivity![index]
+                                                  .dateon!,
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Container(
+                                              width: 1,
+                                              height: 10,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  _foundedMyActivity![index]
+                                                          .fromTime!
+                                                          .replaceAll(' PM', '')
+                                                          .replaceAll(
+                                                              ' AM', '') +
+                                                      " - ",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  _foundedMyActivity![index]
+                                                      .toTime!,
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      isThreeLine: false,
+                                      subtitle: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text(
+                                            _foundedMyActivity![index]
+                                                .location!,
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          })),
+                    )
+                  : Spacer()
+              : SizedBox(),
+/////////////////  Joined Act //////////////
+          (dropdownvalue2 == "JOINED ACTIVITIES")
+              ? _foundedJoinedActivity!.length > 0
+                  ? Expanded(
+                      child: ListView.builder(
+                          itemCount: _foundedJoinedActivity!.length,
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: ((context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(15, 5, 15, 10),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(MaterialPageRoute(
+                                      builder: (context) => Own_Availability(
+                                            markavailId:
+                                                _foundedJoinedActivity![index]
+                                                    .markavailId,
+                                            fromAct: true,
+                                          )));
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        //                   <--- left side
+                                        color: Colors.primaries[Random()
+                                            .nextInt(Colors.primaries.length)],
+                                        width: 3.0,
+                                      ),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(3)),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey,
+                                          blurRadius: 4,
+                                          offset:
+                                              Offset(1, 1), // Shadow position
+                                        ),
+                                      ],
+                                    ),
+                                    child: ListTile(
+                                      title: Row(
+                                        children: [
+                                          Text(
+                                            _foundedJoinedActivity![index]
+                                                    .categoryName! +
+                                                " - ",
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w500),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Container(
+                                            width: 70,
+                                            child: Text(
+                                              _foundedJoinedActivity![index]
+                                                  .activitiesName!,
+                                              style: TextStyle(
+                                                  fontSize: 12,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.w500),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Container(
+                                        width: width * 0.36,
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              _foundedJoinedActivity![index]
+                                                  .dateon!,
+                                              style: TextStyle(fontSize: 11),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Container(
+                                              width: 1,
+                                              height: 10,
+                                              color: Colors.grey,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  _foundedJoinedActivity![index]
+                                                          .fromTime!
+                                                          .replaceAll(' PM', '')
+                                                          .replaceAll(
+                                                              ' AM', '') +
+                                                      " - ",
+                                                  style:
+                                                      TextStyle(fontSize: 11),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  _foundedJoinedActivity![index]
+                                                      .toTime!,
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                      isThreeLine: false,
+                                      subtitle: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Icon(
+                                            Icons.location_pin,
+                                            color: Colors.red,
+                                          ),
+                                          SizedBox(
+                                            width: 3,
+                                          ),
+                                          Text(
+                                            _foundedJoinedActivity![index]
+                                                .location!,
+                                            style: TextStyle(fontSize: 12),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          })),
+                    )
+                  : Spacer()
+              : SizedBox()
         ],
       ),
     );
