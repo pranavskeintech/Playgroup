@@ -579,7 +579,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       mainIndex]
                                                                   .profile!)
                                                           : AssetImage(
-                                                                  "assets/images/user.png")
+                                                                  "assets/imgs/appicon.png")
                                                               as ImageProvider,
                                                 ),
                                                 title: Text(
@@ -657,7 +657,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           width: 3,
                                                         ),
                                                         Container(
-                                                          width: 100,
+                                                          width: 90,
                                                           child: Text(
                                                             OtherMarkAvailabilityData![
                                                                     mainIndex]
@@ -679,25 +679,34 @@ class _HomeScreenState extends State<HomeScreen> {
                                               SizedBox(
                                                 height: 12,
                                               ),
-                                              Row(
-                                                children: [
-                                                  Text(
-                                                    OtherMarkAvailabilityData![
-                                                                mainIndex]
-                                                            .categoryName! +
-                                                        " - ",
-                                                    style:
-                                                        TextStyle(fontSize: 13),
-                                                  ),
-                                                  Text(
-                                                    OtherMarkAvailabilityData![
-                                                            mainIndex]
-                                                        .activitiesName!,
-                                                    style:
-                                                        TextStyle(fontSize: 13),
-                                                  ),
-                                                ],
-                                              ),
+                                              (OtherMarkAvailabilityData![
+                                                              mainIndex]
+                                                          .categoryName !=
+                                                      null)
+                                                  ? Row(
+                                                      children: [
+                                                        Text(
+                                                          OtherMarkAvailabilityData![
+                                                                      mainIndex]
+                                                                  .categoryName! +
+                                                              " - ",
+                                                          style: TextStyle(
+                                                              fontSize: 13),
+                                                        ),
+                                                        Text(
+                                                          OtherMarkAvailabilityData![
+                                                                  mainIndex]
+                                                              .activitiesName!,
+                                                          style: TextStyle(
+                                                              fontSize: 13),
+                                                        ),
+                                                      ],
+                                                    )
+                                                  : Text(
+                                                      "Open to anything",
+                                                      style: TextStyle(
+                                                          fontSize: 13),
+                                                    ),
                                               SizedBox(
                                                 height: 20,
                                               ),

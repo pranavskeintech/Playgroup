@@ -92,6 +92,16 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
         // String time1 = "${ChoosenTime1.hour}:${ChoosenTime1.minute}";
         _FromTimeController.text = ChoosenTime1.format(context);
       });
+
+      setState(() {
+        if (ChoosenTime1.format(context) == _TOTimeController.text) {
+          AppUtils.showWarning(
+              context, "The from and to time should not be same", "");
+          _FromTimeController.text = "";
+        } else {
+          _FromTimeController.text = ChoosenTime1.format(context);
+        }
+      });
     }
   }
 

@@ -293,6 +293,7 @@ class _ChildProfileState extends State<ChildProfile>
               MyAct!.add(AllActivity![i]);
               setState(() {
                 _foundedMyActivity = MyAct;
+                print("myAct:${_foundedMyActivity!.length}");
               });
             } else {
               JoinedAct!.add(AllActivity![i]);
@@ -1578,7 +1579,7 @@ class _ChildProfileState extends State<ChildProfile>
                                         ],
                                       ),
                                       trailing: Container(
-                                        width: width * 0.36,
+                                        width: width * 0.4,
                                         child: Row(
                                           children: [
                                             Text(
@@ -1723,7 +1724,7 @@ class _ChildProfileState extends State<ChildProfile>
                                         ],
                                       ),
                                       trailing: Container(
-                                        width: width * 0.36,
+                                        width: width * 0.4,
                                         child: Row(
                                           children: [
                                             Text(
@@ -1869,7 +1870,7 @@ class _ChildProfileState extends State<ChildProfile>
                                         ],
                                       ),
                                       trailing: Container(
-                                        width: width * 0.36,
+                                        width: width * 0.4,
                                         child: Row(
                                           children: [
                                             Text(

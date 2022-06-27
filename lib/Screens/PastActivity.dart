@@ -10,6 +10,7 @@ import 'package:galleryimage/galleryimage.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 import 'package:social_share/social_share.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 
 class PastActivity extends StatefulWidget {
   const PastActivity({Key? key}) : super(key: key);
@@ -180,197 +181,272 @@ class _PastActivityState extends State<PastActivity> {
                   ],
                 ),
               )
-            : ListView.builder(
-                itemCount: PastActData!.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    width: 370,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.1),
-                          blurRadius: 5.0, // soften the shadow
-                          spreadRadius: 5.0, //extend the shadow
-                          offset: Offset(
-                            2.0, // Move to right 10  horizontally
-                            2.0, // Move to bottom 10 Vertically
-                          ),
-                        )
-                      ],
-                    ),
-                    padding: EdgeInsets.fromLTRB(20, 10, 20, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        ListTile(
-                          isThreeLine: true,
-                          leading:
-                              //  CircleAvatar(
-                              //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
-                              // ),
-                              CircleAvatar(
-                            backgroundImage:
-                                (PastActData![index].profile! != "null")
-                                    ? NetworkImage(Strings.imageUrl +
-                                        PastActData![index].profile!)
-                                    : AssetImage("assets/imgs/appicon.png")
-                                        as ImageProvider,
-                          ),
-                          title: Text(PastActData![index].childName!),
-                          subtitle: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    PastActData![index].dateon!,
-                                    style: TextStyle(
-                                      fontSize: 11,
+            : AnimationLimiter(
+                child: ListView.builder(
+                  itemCount: PastActData!.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return AnimationConfiguration.staggeredList(
+                      position: index,
+                      duration: const Duration(milliseconds: 375),
+                      child: SlideAnimation(
+                        verticalOffset: 50.0,
+                        child: FadeInAnimation(
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                            color: Colors.white,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.1),
+                                    blurRadius: 8.0, // soften the shadow
+                                    spreadRadius: 5.0, //extend the shadow
+                                    offset: Offset(
+                                      2.0, // Move to right 10  horizontally
+                                      2.0, // Move to bottom 10 Vertically
                                     ),
-                                  ),
-                                  SizedBox(width: 5),
-                                  Container(
-                                    width: 1,
-                                    height: 10,
-                                    color: Colors.red,
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                        PastActData![index].fromTime! + " - ",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        PastActData![index].toTime!,
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
                                   )
                                 ],
                               ),
-                              GestureDetector(
-                                onTap: (() {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Past_Activity_Details(
-                                              markavailId: PastActData![index]
-                                                  .markavailId!,
-                                              childId: PastActData![index]
-                                                  .childId!)));
-                                }),
-                                child: Text(
-                                  "See More",
-                                  style: TextStyle(
-                                      color: Colors.blue,
-                                      fontWeight: FontWeight.w600),
-                                  //overflow: TextOverflow.fade,
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              PastActData![index].categoryName! + " - ",
-                              style: TextStyle(fontSize: 13),
+                              padding: EdgeInsets.fromLTRB(13, 2, 12, 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  ListTile(
+                                    isThreeLine: true,
+                                    leading:
+                                        //  CircleAvatar(
+                                        //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
+                                        // ),
+                                        CircleAvatar(
+                                      backgroundImage:
+                                          (PastActData![index].profile! !=
+                                                  "null")
+                                              ? NetworkImage(Strings.imageUrl +
+                                                  PastActData![index].profile!)
+                                              : AssetImage(
+                                                      "assets/imgs/appicon.png")
+                                                  as ImageProvider,
+                                    ),
+                                    title: Text(PastActData![index].childName!),
+                                    subtitle: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              PastActData![index].dateon!,
+                                              style: TextStyle(
+                                                fontSize: 11,
+                                              ),
+                                            ),
+                                            SizedBox(width: 5),
+                                            Container(
+                                              width: 1,
+                                              height: 10,
+                                              color: Colors.red,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Row(
+                                              children: [
+                                                Text(
+                                                  PastActData![index]
+                                                          .fromTime! +
+                                                      " - ",
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  PastActData![index].toTime!,
+                                                  style: TextStyle(
+                                                    fontSize: 11,
+                                                  ),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
+                                        GestureDetector(
+                                          onTap: (() {
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        Past_Activity_Details(
+                                                            markavailId:
+                                                                PastActData![
+                                                                        index]
+                                                                    .markavailId!,
+                                                            childId:
+                                                                PastActData![
+                                                                        index]
+                                                                    .childId!)));
+                                          }),
+                                          child: Text(
+                                            "See More",
+                                            style: TextStyle(
+                                                color: Colors.blue,
+                                                fontWeight: FontWeight.w600),
+                                            //overflow: TextOverflow.fade,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  (PastActData![index].categoryName != null)
+                                      ? Row(
+                                          children: [
+                                            Text(
+                                              PastActData![index]
+                                                      .categoryName! +
+                                                  " - ",
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                            Text(
+                                              PastActData![index]
+                                                  .activitiesName!,
+                                              style: TextStyle(fontSize: 13),
+                                            ),
+                                          ],
+                                        )
+                                      : Text(
+                                          "Open to anything",
+                                          style: TextStyle(fontSize: 13),
+                                        ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  // GalleryImage(
+                                  //   imageUrls: childImgs,
+                                  //   titleGallery: "Playgroup",
+                                  // ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 10, bottom: 10),
+                                    child: Center(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            border: Border.all(
+                                              width: 5.3,
+                                              color: Strings.appThemecolor,
+                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10)),
+                                        padding: EdgeInsets.all(2),
+                                        width: 130,
+                                        height: 130,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons
+                                                  .add_photo_alternate_outlined,
+                                              size: 50,
+                                              color: Strings.appThemecolor,
+                                            ),
+                                            Text(
+                                              "Add Photos",
+                                              style: TextStyle(
+                                                  color: Strings.appThemecolor),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Row(children: [
+                                    Column(
+                                      children: [
+                                        InkWell(
+                                          highlightColor: Colors.transparent,
+                                          splashColor: Colors.transparent,
+                                          onHighlightChanged: (value) {
+                                            setState(() {
+                                              isHighlighted = !isHighlighted;
+                                            });
+                                          },
+                                          onTap: () {
+                                            setState(() {});
+                                          },
+                                          child: Image.asset(
+                                            "assets/imgs/Like2.png",
+                                            width: 60,
+                                            height: 60,
+                                          ),
+                                        ),
+                                        GestureDetector(
+                                          onTap: (() {}),
+                                          child: Text("5 likes",
+                                              style: TextStyle(
+                                                  fontSize: 8,
+                                                  color: Colors.black87)),
+                                        ),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Image.asset(
+                                          "assets/imgs/Comments.png",
+                                          width: 60,
+                                          height: 60,
+                                        ),
+                                        Text("3 comments",
+                                            style: TextStyle(
+                                                fontSize: 8,
+                                                color: Colors.black87)),
+                                      ],
+                                    ),
+                                    Column(
+                                      children: [
+                                        Image.asset(
+                                          "assets/imgs/share3.png",
+                                          width: 60,
+                                          height: 60,
+                                        ),
+                                        Text("3 share",
+                                            style: TextStyle(
+                                                fontSize: 8,
+                                                color: Colors.black87)),
+                                      ],
+                                    ),
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.bottomRight,
+                                        child: Text(
+                                            "Participants(${PastActData![index].totalParticipants!})",
+                                            style: TextStyle(
+                                                fontSize: 13,
+                                                color: Colors.black87)),
+                                      ),
+                                    )
+                                  ]),
+                                  SizedBox(
+                                    height: 15,
+                                  )
+                                ],
+                              ),
                             ),
-                            Text(
-                              PastActData![index].activitiesName!,
-                              style: TextStyle(fontSize: 13),
-                            ),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        GalleryImage(
-                          imageUrls: childImgs,
-                          titleGallery: "Playgroup",
-                        ),
-                        Row(children: [
-                          Column(
-                            children: [
-                              InkWell(
-                                highlightColor: Colors.transparent,
-                                splashColor: Colors.transparent,
-                                onHighlightChanged: (value) {
-                                  setState(() {
-                                    isHighlighted = !isHighlighted;
-                                  });
-                                },
-                                onTap: () {
-                                  setState(() {});
-                                },
-                                child: Image.asset(
-                                  "assets/imgs/Like2.png",
-                                  width: 60,
-                                  height: 60,
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: (() {}),
-                                child: Text("5 likes",
-                                    style: TextStyle(
-                                        fontSize: 8, color: Colors.black87)),
-                              ),
-                            ],
                           ),
-                          Column(
-                            children: [
-                              Image.asset(
-                                "assets/imgs/Comments.png",
-                                width: 60,
-                                height: 60,
-                              ),
-                              Text("3 comments",
-                                  style: TextStyle(
-                                      fontSize: 8, color: Colors.black87)),
-                            ],
-                          ),
-                          Column(
-                            children: [
-                              Image.asset(
-                                "assets/imgs/share3.png",
-                                width: 60,
-                                height: 60,
-                              ),
-                              Text("3 share",
-                                  style: TextStyle(
-                                      fontSize: 8, color: Colors.black87)),
-                            ],
-                          ),
-                          Expanded(
-                            child: Align(
-                              alignment: Alignment.bottomRight,
-                              child: Text(
-                                  "Participants(${PastActData![index].totalParticipants!})",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.black87)),
-                            ),
-                          )
-                        ]),
-                        SizedBox(
-                          height: 15,
-                        )
-                      ],
-                    ),
-                  );
-                },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
       ),
     );
