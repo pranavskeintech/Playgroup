@@ -5,12 +5,18 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
+import 'package:intl/intl.dart';
 import 'package:playgroup/Models/PastActivityById.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
+import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/PhotosView.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
 import '../Utilities/Strings.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import 'EditAvailability_Time.dart';
 import 'G-Map.dart';
@@ -69,9 +75,13 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   int tag = 1;
   List<int> tag1 = [];
 
-  late File imageFile;
   XFile? image;
+
   final ImagePicker _picker = ImagePicker();
+
+  File? _imageFile;
+  List<XFile>? imageFileList = [];
+
   String img64 = "";
 
   List<Data>? PastActData;
@@ -79,9 +89,17 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   bool _isLoading = true;
 
   BuildContext? ctx;
+
+  List<imgData>? PastActPhotos;
+
+  List<String> listBase64Images = [];
+
+  bool _isLoading2 = false;
+
   String _getRandomImage(int width, int height) {
     var rng = new Random();
     return 'https://picsum.photos/$width/$height?random=${rng.nextInt(999999)}';
+    //return Strings.imageUrl + PastActPhotos![rng.nextInt(999999)].profile!;
   }
 
   _GetPastAct() {
@@ -90,15 +108,36 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     api.PastActivityById(widget.markavailId!, widget.childId!).then((response) {
       if (response.status == true) {
         setState(() {
-          // AppUtils.dismissprogress();
           PastActData = response.data;
+          _GetPastActPhotos();
+          print(jsonEncode(PastActData));
+        });
+      } else {}
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  _GetPastActPhotos() {
+    //AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.getPastActPhoto(widget.markavailId!, widget.childId!).then((response) {
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          PastActPhotos = response.data;
           _isLoading = false;
           print(jsonEncode(PastActData));
           // if (PastActData != null) {
           //   _ShowNoData = false;
           // }
         });
-      } else {}
+      } else {
+        setState(() {
+          PastActPhotos = [];
+          _isLoading = false;
+        });
+      }
     }).catchError((onError) {
       print(onError.toString());
     });
@@ -767,7 +806,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
 
   Widget Gallery() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
@@ -791,7 +830,8 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                               side: BorderSide(
                                   color: Colors.grey.withOpacity(0.3))))),
                   onPressed: () {
-                    _showPicker(context);
+                    // _showPicker(context);
+                    _getFromGallery();
                   },
                   child: Text(
                     "Add Photos",
@@ -800,111 +840,180 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
             ],
           ),
         ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              //itemCount: images.length,
-              itemCount: 30,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.25,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  child: Stack(
-                    fit: StackFit.passthrough,
-                    children: [
-                      Image.network(
-                        //images[index],
-                        _getRandomImage(512, 512),
-                        fit: BoxFit.cover,
-                        colorBlendMode: BlendMode.softLight,
-                      ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: FractionalOffset.topCenter,
-                            end: FractionalOffset.bottomCenter,
-                            colors: [
-                              Colors.transparent.withOpacity(0),
-                              Colors.black.withOpacity(0.8),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "Kingston Jackey",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
+        (PastActPhotos!.length == 0)
+            ? Expanded(child: Center(child: Text("Photos not yet added")))
+            : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GridView.builder(
+                    //itemCount: images.length,
+                    itemCount: PastActPhotos!.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.25,
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        child: Stack(
+                          fit: StackFit.passthrough,
+                          children: [
+                            Image.network(
+                              //images[index],
+                              Strings.imageUrl +
+                                  "past_photos/" +
+                                  (PastActPhotos![index].imageName ?? ""),
+                              fit: BoxFit.cover,
+                              colorBlendMode: BlendMode.softLight,
+                            ),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: FractionalOffset.topCenter,
+                                  end: FractionalOffset.bottomCenter,
+                                  colors: [
+                                    Colors.transparent.withOpacity(0),
+                                    Colors.black.withOpacity(0.8),
+                                  ],
+                                ),
                               ),
                             ),
-                            Text(
-                              "12/03/2021",
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.white),
-                            )
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    PastActPhotos![index].childName!,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    (DateFormat("dd/MM/yyyy").format(
+                                        DateTime.parse(PastActPhotos![index]
+                                            .createdDate!))),
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-        ),
+                ),
+              ),
       ],
     );
   }
 
-  void _showPicker(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery'),
-                      onTap: () {
-                        _getFromGallery();
-                        Navigator.of(context).pop();
-                      }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
-                    onTap: () {
-                      _getFromCamera();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
+  // void _showPicker(context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext bc) {
+  //         return SafeArea(
+  //           child: Container(
+  //             child: new Wrap(
+  //               children: <Widget>[
+  //                 new ListTile(
+  //                     leading: new Icon(Icons.photo_library),
+  //                     title: new Text('Gallery'),
+  //                     onTap: () {
+  //                       _getFromGallery();
+  //                       Navigator.of(context).pop();
+  //                     }),
+  //                 new ListTile(
+  //                   leading: new Icon(Icons.photo_camera),
+  //                   title: new Text('Camera'),
+  //                   onTap: () {
+  //                     _getFromCamera();
+  //                     Navigator.of(context).pop();
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
 
   _getFromGallery() async {
-    image =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    // final pickedFile = await _picker.getImage(
+    //   source: ImageSource.gallery,
+    // );
+    // File? croppedFile = await ImageCropper().cropImage(
+    //     sourcePath: pickedFile!.path,
+    //     aspectRatioPresets: [
+    //       CropAspectRatioPreset.square,
+    //       CropAspectRatioPreset.original,
+    //     ],
+    //     androidUiSettings: AndroidUiSettings(
+    //         toolbarTitle: 'Cropper',
+    //         toolbarColor: Colors.black,
+    //         toolbarWidgetColor: Colors.white,
+    //         initAspectRatio: CropAspectRatioPreset.square,
+    //         lockAspectRatio: true),
+    //     iosUiSettings: IOSUiSettings(
+    //       minimumAspectRatio: 1.0,
+    //     ));
+
+    // if (croppedFile?.path != null) {
+    //   setState(() {
+    //     print("Img selected");
+    //     _imageFile = croppedFile;
+    //     final bytes = File(_imageFile!.path).readAsBytesSync();
+    //     img64 = base64Encode(bytes);
+    //     print("img64" + img64);
+    //     showImages();
+    //     setState(() {});
+    //   });
+    // }
+
+    final pickedFile = await _picker.pickMultiImage();
+    if (pickedFile!.isNotEmpty) {
+      imageFileList!.addAll(pickedFile);
+      for (var file in imageFileList!) {
+        List<int> imageBytes = File(file.path).readAsBytesSync();
+        String base64Image = base64Encode(imageBytes);
+        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      }
+      showImages();
+    }
+    print("Image List Length:" + listBase64Images.toString());
+    setState(() {});
+  }
+
+  /// Get from Camera
+  _getFromCamera() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    File? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile!.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.original,
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
     setState(() {
-      if (image != null) {
-        final bytes = File(image!.path).readAsBytesSync();
+      if (croppedFile?.path != null) {
+        final bytes = File(_imageFile!.path).readAsBytesSync();
         img64 = base64Encode(bytes);
-        print("img64" + img64);
         setState(() {});
         print('image selected.');
       } else {
@@ -914,19 +1023,176 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     });
   }
 
-  /// Get from Camera
-  _getFromCamera() async {
-    image =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
-    setState(() {
-      if (image != null) {
-        final bytes = File(image!.path).readAsBytesSync();
-        img64 = base64Encode(bytes);
-        setState(() {});
-        print('image selected.');
+  void selectImages() async {
+    final List<XFile>? selectedImages = await _picker.pickMultiImage();
+    if (selectedImages!.isNotEmpty) {
+      imageFileList!.addAll(selectedImages);
+      for (var file in imageFileList!) {
+        List<int> imageBytes = File(file.path).readAsBytesSync();
+        String base64Image = base64Encode(imageBytes);
+        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      }
+    }
+    print("Image List Length:" + imageFileList!.length.toString());
+  }
+
+  showImages() {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return (_isLoading2)
+              ? Center(
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+              : Container(
+                  color: Colors.white,
+                  // insetPadding:
+                  //     EdgeInsets.symmetric(vertical: 150.0, horizontal: 45.0),
+                  // child: Column(children: [
+                  //   (_imageFile != null)
+                  //       ? Stack(children: [
+                  //           Image.file(
+                  //             File(_imageFile!.path),
+                  //             width: 250,
+                  //             height: 190,
+                  //             fit: BoxFit.fitHeight,
+                  //           ),
+                  //           Positioned(
+                  //             top: 1,
+                  //             right: 1,
+                  //             child: GestureDetector(
+                  //               onTap: () {
+                  //                 setState(() {
+                  //                   _imageFile = null;
+                  //                 });
+                  //               },
+                  //               child: Container(
+                  //                 height: 30,
+                  //                 width: 30,
+                  //                 decoration: BoxDecoration(
+                  //                     color: Strings.appThemecolor,
+                  //                     borderRadius:
+                  //                         BorderRadius.all(Radius.circular(20))),
+                  //                 child: Icon(
+                  //                   Icons.clear,
+                  //                   size: 17,
+                  //                   color: Colors.white,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           )
+                  //         ])
+                  //       : Container(),
+                  //   // child: GridView.builder(
+                  //   //     itemCount: imageFileList!.length,
+                  //   //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //   //         crossAxisCount: 3),
+                  //   //     itemBuilder: (BuildContext context, int index) {
+                  //   //       return Image.file(
+                  //   //         File(imageFileList![index].path),
+                  //   //         fit: BoxFit.cover,
+                  //   //       );
+                  //   //     }),
+
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor:
+                  //               MaterialStateProperty.all(Colors.indigoAccent),
+                  //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //               RoundedRectangleBorder(
+                  //                   borderRadius: BorderRadius.circular(5.0),
+                  //                   side: BorderSide(
+                  //                       color: Colors.grey.withOpacity(0.3))))),
+                  //       onPressed: () {
+                  //         _isLoading = true;
+                  //         uploadPastActImgs();
+                  //       },
+                  //       child: Text(
+                  //         "Upload Photos",
+                  //         style: TextStyle(color: Colors.white),
+                  //       )),
+                  // ]),
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            selectImages();
+                          },
+                          child: Text('Select Images'),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GridView.builder(
+                                itemCount: imageFileList!.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Image.file(
+                                    File(imageFileList![index].path),
+                                    fit: BoxFit.cover,
+                                  );
+                                }),
+                          ),
+                        ),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.indigoAccent),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        side: BorderSide(
+                                            color: Colors.grey
+                                                .withOpacity(0.3))))),
+                            onPressed: () {
+                              if (imageFileList!.length != 0) {
+                                _isLoading2 = true;
+                                uploadPastActImgs();
+                              } else {
+                                AppUtils.showWarning(
+                                    context, "Does not Select photos", "");
+                              }
+                            },
+                            child: Text(
+                              "Upload Photos",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ],
+                    ),
+                  ));
+        });
+  }
+
+  uploadPastActImgs() {
+    uploadPastActPhotos ImgDetails = uploadPastActPhotos();
+    ImgDetails.childId = PastActData![0].childId;
+    ImgDetails.markavailId = PastActData![0].markavailId!;
+    if (listBase64Images.length == 0) {
+      ImgDetails.image = [];
+    } else {
+      // ImgDetails.image = ["data:image/jpeg;base64,${listBase64Images}"];
+      ImgDetails.image = listBase64Images;
+    }
+    print("object:${jsonEncode(ImgDetails)}");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.uploadPastActPhoto(ImgDetails).then((response) {
+      if (response.status == true) {
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (BuildContext context) => ChildDetails()));
+        setState(() {
+          _isLoading2 = false;
+          Navigator.pop(context);
+          _GetPastAct();
+        });
       } else {
-        setState(() {});
-        print('No image selected.');
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
       }
     });
   }

@@ -46,7 +46,13 @@ import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/SuggestTimeReq.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Models/addGroupParticipants.dart';
+import 'package:playgroup/Models/editChildInterests.dart';
+import 'package:playgroup/Models/editChildLanguage.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/updateGroupReq.dart';
+import 'package:playgroup/Models/uploadPastActPhotos.dart';
+import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -151,6 +157,12 @@ abstract class ApiService {
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
 
+  @PUT("user/editlanguage")
+  Future<CommonRes> editChildLanguages(@Body() editChildLanguage body);
+
+  @PUT("user/editinterest")
+  Future<CommonRes> EditChildInterest(@Body() editChildInt body);
+
   @PUT("user/updatechild")
   Future<CommonRes> ChooseChild(@Body() ChooseChildReq body);
 
@@ -162,7 +174,7 @@ abstract class ApiService {
 
   @GET("mark/getactivities")
   Future<GetActivitiesRes> GetActivities();
-  
+
   @GET("mark/get_all_activites/{ChildID}")
   Future<GetAllActivities> GetAllActivity(@Path("ChildID") int ChildID);
 
@@ -253,6 +265,13 @@ abstract class ApiService {
   @GET("mark/get_past_markbyid/{markavailId}/{ChildID}")
   Future<PastActivityByIdRes> PastActivityById(
       @Path("markavailId") int markavailId, @Path("ChildID") int ChildID);
+
+  @GET("mark/get_past_images/{markavailId}/{ChildID}")
+  Future<getPastActPhotos> getPastActPhoto(
+      @Path("markavailId") int markavailId, @Path("ChildID") int ChildID);
+
+  @POST("mark/add_past_photos")
+  Future<CommonRes> uploadPastActPhoto(@Body() uploadPastActPhotos body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

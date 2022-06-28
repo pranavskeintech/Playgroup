@@ -506,9 +506,13 @@ class _ChildProfileState extends State<ChildProfile>
                       right: 20,
                     ),
                     child: TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(
+                        onPressed: () async {
+                          await Navigator.of(context).push(MaterialPageRoute(
                               builder: (context) => EditChildDetails()));
+                          setState(() {
+                            _isLoading = true;
+                            getProfile();
+                          });
                         },
                         child: Container(
                           child: Row(
@@ -628,10 +632,14 @@ class _ChildProfileState extends State<ChildProfile>
                   Text("Interests",
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
+                      onPressed: () async {
+                        await Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => EditChildInterests(
                                 chooseChildId: widget.chooseChildId)));
+                        setState(() {
+                          _isLoading = true;
+                          getProfile();
+                        });
                       },
                       child: Row(
                         children: [
@@ -1311,7 +1319,12 @@ class _ChildProfileState extends State<ChildProfile>
                             chooseChildId: widget.chooseChildId)));
                   },
                   leading: CircleAvatar(
-                    backgroundImage: AssetImage("assets/imgs/child1.jpg"),
+                    backgroundImage: _FriendReqData![index].profile != "null"
+                        ? NetworkImage(Strings.imageUrl +
+                            (_FriendReqData![index].profile ?? ""))
+                        : AssetImage("assets/imgs/appicon.png")
+                            as ImageProvider,
+                    radius: 23,
                   ),
                   title: Text(
                     _FriendReqData![index].childName!,

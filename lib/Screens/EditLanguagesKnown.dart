@@ -6,6 +6,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
+import 'package:playgroup/Models/editChildLanguage.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
@@ -176,10 +177,10 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
                       for (int i = 0; i < 12; i++) {
                         if (_tick[i] == true) {
                           // print(activities[i]);
-                          _selectedvalues.add(Languages[i]);
+                          // _selectedvalues.add(Languages[i]);
                           _EditChild();
                           print(_selectedvalues);
-                          _selectedvalues[i] = Languages[i];
+                          // _selectedvalues[i] = Languages[i];
                         } else {
                           // _selectedvalues[i] = "null";
                           continue;
@@ -202,18 +203,12 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
   }
 
   _EditChild() {
-    EditChildReq ChildEdit = EditChildReq();
+    editChildLanguage ChildEdit = editChildLanguage();
     ChildEdit.childId = _ChildData![Strings.editIndex].childId;
-    //ChildEdit.parentId = Strings.Parent_Id.toString();
-    ChildEdit.childName = _ChildData![Strings.editIndex].childName;
-    ChildEdit.dob = _ChildData![Strings.editIndex].dob;
-    ChildEdit.gender = _ChildData![Strings.editIndex].gender;
-    ChildEdit.school = _ChildData![Strings.editIndex].school;
-    ChildEdit.profile = _ChildData![Strings.editIndex].profile;
     ChildEdit.language = _selectedvalues;
     print(jsonEncode(ChildEdit));
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.EditChild(ChildEdit).then((response) {
+    api.editChildLanguages(ChildEdit).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();

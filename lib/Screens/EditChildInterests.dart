@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetInterestsRes.dart';
+import 'package:playgroup/Models/editChildInterests.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
@@ -181,57 +182,60 @@ class _EditChildInterestsState extends State<EditChildInterests> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
-                  child: GridView.builder(
-                      padding: EdgeInsets.fromLTRB(14, 100, 14, 0),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          mainAxisSpacing: 20,
-                          mainAxisExtent: 120),
-                      itemCount: _InterestData!.length,
-                      itemBuilder: (BuildContext ctx, index) {
-                        return Container(
-                          //padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _tick[index] = !_tick[index];
-                              });
-                            },
-                            child: Column(children: [
-                              Stack(children: [
-                                Opacity(
-                                  opacity: _tick[index] ? 0.2 : 1.0,
-                                  child: CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        "assets/imgs/${images[index]}"),
-                                    radius: 33,
-                                  ),
-                                ),
-                                Container(
-                                  child: Visibility(
-                                    visible: _tick[index],
-                                    child: Positioned(
-                                      right: 3,
+                  child: (_InterestData!.length == 0)
+                      ? Center(child: Text("Child age should be more 8 years"))
+                      : GridView.builder(
+                          padding: EdgeInsets.fromLTRB(14, 100, 14, 0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  mainAxisSpacing: 20,
+                                  mainAxisExtent: 120),
+                          itemCount: _InterestData!.length,
+                          itemBuilder: (BuildContext ctx, index) {
+                            return Container(
+                              //padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _tick[index] = !_tick[index];
+                                  });
+                                },
+                                child: Column(children: [
+                                  Stack(children: [
+                                    Opacity(
+                                      opacity: _tick[index] ? 0.2 : 1.0,
                                       child: CircleAvatar(
-                                        backgroundImage:
-                                            AssetImage("assets/imgs/tick.png"),
-                                        radius: 8,
+                                        backgroundImage: AssetImage(
+                                            "assets/imgs/${images[index]}"),
+                                        radius: 33,
                                       ),
                                     ),
+                                    Container(
+                                      child: Visibility(
+                                        visible: _tick[index],
+                                        child: Positioned(
+                                          right: 3,
+                                          child: CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                                "assets/imgs/tick.png"),
+                                            radius: 8,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ]),
+                                  SizedBox(
+                                    height: 12,
                                   ),
-                                )
-                              ]),
-                              SizedBox(
-                                height: 12,
+                                  Text(_InterestData![index].interestName!,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                ]),
                               ),
-                              Text(_InterestData![index].interestName!,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500)),
-                            ]),
-                          ),
-                        );
-                      }),
+                            );
+                          }),
                 ),
                 Center(
                   child: Padding(
@@ -271,19 +275,12 @@ class _EditChildInterestsState extends State<EditChildInterests> {
   }
 
   _EditChild() {
-    EditChildReq ChildEdit = EditChildReq();
+    editChildInt ChildEdit = editChildInt();
     ChildEdit.childId = _ChildData![Strings.editIndex].childId;
-    //ChildEdit.parentId = Strings.Parent_Id.toString();
-    ChildEdit.childName = _ChildData![Strings.editIndex].childName;
-    ChildEdit.dob = _ChildData![Strings.editIndex].dob;
-    ChildEdit.gender = _ChildData![Strings.editIndex].gender;
-    ChildEdit.school = _ChildData![Strings.editIndex].school;
-    ChildEdit.profile = _ChildData![Strings.editIndex].profile;
-    ChildEdit.language = _ChildData![Strings.editIndex].languages;
     ChildEdit.childInterest = _selectedvalues;
     print(jsonEncode(ChildEdit));
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.EditChild(ChildEdit).then((response) {
+    api.EditChildInterest(ChildEdit).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
