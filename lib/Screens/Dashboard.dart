@@ -256,10 +256,10 @@ class _DashBoardState extends State<DashBoard> {
                           "${allNotificationList != null ? Strings.notifictionCount : 0}",style: TextStyle(color: Colors.white,fontSize: 8),),
                                           child: Image.asset(
                         "assets/imgs/notification.png",
-                                                color: Colors.black,
+                                                color: Colors.black.withOpacity(0.8),
                       
-                        width: 35,
-                        height: 35,
+                        width: 30,
+                        height: 30,
                                           ),
                                         ),
                                         // Icon(
