@@ -26,7 +26,7 @@ class _ChooseChildState extends State<ChooseChild> {
     "Angel Timo"
   ];
   var ctx;
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
   bool _isLoading = true;
   @override
   void initState() {

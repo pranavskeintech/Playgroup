@@ -5,14 +5,27 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
+import 'package:intl/intl.dart';
+import 'package:playgroup/Models/PastActivityById.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
+import 'package:playgroup/Models/uploadPastActPhotos.dart';
+import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/PhotosView.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+import 'package:provider/provider.dart';
 import '../Utilities/Strings.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 import 'EditAvailability_Time.dart';
 import 'G-Map.dart';
 
 class Past_Activity_Details extends StatefulWidget {
-  const Past_Activity_Details({Key? key}) : super(key: key);
+  int? markavailId;
+  int? childId;
+  Past_Activity_Details({Key? key, this.markavailId, this.childId})
+      : super(key: key);
 
   @override
   State<Past_Activity_Details> createState() => _Past_Activity_DetailsState();
@@ -62,13 +75,72 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   int tag = 1;
   List<int> tag1 = [];
 
-  late File imageFile;
   XFile? image;
+
   final ImagePicker _picker = ImagePicker();
+
+  File? _imageFile;
+  List<XFile>? imageFileList = [];
+
   String img64 = "";
+
+  List<Data>? PastActData;
+
+  bool _isLoading = true;
+
+  BuildContext? ctx;
+
+  List<imgData>? PastActPhotos;
+
+  List<String> listBase64Images = [];
+
+  bool _isLoading2 = false;
+
   String _getRandomImage(int width, int height) {
     var rng = new Random();
     return 'https://picsum.photos/$width/$height?random=${rng.nextInt(999999)}';
+    //return Strings.imageUrl + PastActPhotos![rng.nextInt(999999)].profile!;
+  }
+
+  _GetPastAct() {
+    //AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.PastActivityById(widget.markavailId!, widget.childId!).then((response) {
+      if (response.status == true) {
+        setState(() {
+          PastActData = response.data;
+          _GetPastActPhotos();
+          print(jsonEncode(PastActData));
+        });
+      } else {}
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  _GetPastActPhotos() {
+    //AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.getPastActPhoto(widget.markavailId!, widget.childId!).then((response) {
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          PastActPhotos = response.data;
+          _isLoading = false;
+          print(jsonEncode(PastActData));
+          // if (PastActData != null) {
+          //   _ShowNoData = false;
+          // }
+        });
+      } else {
+        setState(() {
+          PastActPhotos = [];
+          _isLoading = false;
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 
   @override
@@ -76,10 +148,23 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     // TODO: implement initState
     _tabController = new TabController(length: 3, vsync: this);
     super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => _GetPastAct());
   }
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return PastActivity(newContext);
+          }),
+        ));
+  }
+
+  PastActivity(BuildContext context) {
+    ctx = context;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Strings.appThemecolor,
@@ -96,6 +181,11 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   }
 
   Widget Tabbarwidgets() {
+    if (_isLoading) {
+      return const Center(
+          child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)));
+    }
     return Container(
         // padding: EdgeInsets.all(5),
         width: MediaQuery.of(context).size.width * 1.0,
@@ -163,15 +253,19 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
               Container(
                 padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: Row(
-                  children: const [
+                  children: [
                     CircleAvatar(
                       radius: 18,
-                      backgroundImage: AssetImage("assets/imgs/child5.jpg"),
+                      backgroundImage: (PastActData![0].profile! != "null")
+                          ? NetworkImage(
+                              Strings.imageUrl + PastActData![0].profile!)
+                          : AssetImage("assets/imgs/appicon.png")
+                              as ImageProvider,
                     ),
                     SizedBox(
                       width: 10,
                     ),
-                    Text("Kingston Jackey")
+                    Text(PastActData![0].childName!),
                   ],
                 ),
               ),
@@ -239,23 +333,37 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
               ],
             ),
             child: SizedBox(
-              height: 120,
+              // height: 120,
               child: ListTile(
                 title: Padding(
                     padding: const EdgeInsets.symmetric(
                         vertical: 16, horizontal: 10),
-                    child: Text(
-                      "Art-Work - Natural Painting",
-                      style: TextStyle(
-                        color: Colors.black87,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                      ),
+                    child: Row(
+                      children: [
+                        Text(
+                          PastActData![0].categoryName! + " - ",
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        Text(
+                          PastActData![0].activitiesName!,
+                          style: TextStyle(
+                            color: Colors.black87,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
                     )),
                 subtitle: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
                   child: Text(
-                    "Nature Painting also referred to as Landscape or scenery painting mostly shows reference of mountains, trees or other natural elements, in recent times.",
+                    PastActData![0].description!,
                     textAlign: TextAlign.justify,
                     style: TextStyle(
                         height: 1.4,
@@ -288,7 +396,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                         width: 3,
                       ),
                       Text(
-                        'Gandhipuram, Tamilnadu',
+                        PastActData![0].location!,
                         overflow: TextOverflow.fade,
                         style: TextStyle(
                             fontSize: 12,
@@ -305,7 +413,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                     child: Row(
                       children: [
                         Text(
-                          "14 Jan 2021",
+                          PastActData![0].dateon!,
                           style: TextStyle(
                               color: Color.fromARGB(255, 150, 149, 149),
                               fontSize: 11),
@@ -319,12 +427,25 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                         SizedBox(
                           width: 5,
                         ),
-                        Text(
-                          "4-5 pm",
-                          style: TextStyle(
-                              color: Color.fromARGB(255, 150, 149, 149),
-                              fontSize: 11),
-                          overflow: TextOverflow.ellipsis,
+                        Row(
+                          children: [
+                            Text(
+                              PastActData![0].fromTime! + " - ",
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 150, 149, 149),
+                                fontSize: 11,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            Text(
+                              PastActData![0].toTime!,
+                              style: TextStyle(
+                                color: Color.fromARGB(255, 150, 149, 149),
+                                fontSize: 11,
+                              ),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
                         )
                       ],
                     ),
@@ -410,37 +531,77 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                           width: 5,
                         ),
                         Expanded(
-                          child: ListView.builder(
-                              itemCount: 6,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: ((context, index) {
-                                if (index < 5) {
-                                  return Container(
-                                    padding: EdgeInsets.all(3),
-                                    width: 35,
-                                    height: 35,
-                                    child: CircleAvatar(
-                                      backgroundImage: AssetImage(
-                                          "assets/imgs/${childImgs[index]}"),
-                                    ),
-                                  );
-                                } else {
-                                  return Container(
-                                    padding: EdgeInsets.all(3),
-                                    height: 40,
-                                    width: 40,
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          Colors.grey.withOpacity(0.3),
-                                      child: Text(
-                                        "3+",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                      ), //Text
-                                    ),
-                                  );
-                                }
-                              })),
+                          child: (PastActData![0].friendsdata!.isEmpty)
+                              ? Container(
+                                  width: 130,
+                                  height: 20,
+                                  child: Text(
+                                    "No one Participated",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        color: Colors.blue,
+                                        fontWeight: FontWeight.w600),
+                                    textAlign: TextAlign.left,
+                                  ),
+                                )
+                              : ListView.builder(
+                                  itemCount:
+                                      PastActData![0].friendsdata!.length,
+                                  scrollDirection: Axis.horizontal,
+                                  itemBuilder: ((context, index) {
+                                    if (index < 4) {
+                                      return Container(
+                                        padding: EdgeInsets.all(2),
+                                        width: 32,
+                                        height: 32,
+                                        child: InkWell(
+                                          onTap: () {
+                                            // AppUtils.showParticipant(
+                                            //     context,
+                                            //     PastActData![0].friendsdata!);
+                                          },
+                                          child: CircleAvatar(
+                                              backgroundImage: PastActData![0]
+                                                          .friendsdata![index]
+                                                          .profile !=
+                                                      "null"
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          (PastActData![0]
+                                                                  .friendsdata![
+                                                                      index]
+                                                                  .profile ??
+                                                              ""))
+                                                  : AssetImage(
+                                                          "assets/imgs/appicon.png")
+                                                      as ImageProvider),
+                                        ),
+                                      );
+                                    } else {
+                                      return Container(
+                                        padding: EdgeInsets.all(2),
+                                        height: 32,
+                                        width: 32,
+                                        child: InkWell(
+                                          onTap: () {
+                                            // AppUtils.showParticipant(
+                                            //     context,
+                                            //     PastActData![0].friendsdata!);
+                                          },
+                                          child: CircleAvatar(
+                                            backgroundColor:
+                                                Colors.grey.withOpacity(0.3),
+                                            child: Text(
+                                              "+${PastActData![0].friendsdata!.length - 5}",
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 12),
+                                            ), //Text
+                                          ),
+                                        ),
+                                      );
+                                    }
+                                  })),
                         ),
                       ],
                     ),
@@ -474,7 +635,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                   value: tag1,
                   onChanged: (val) {},
                   choiceItems: C2Choice.listFrom<int, String>(
-                    source: options,
+                    source: PastActData![0].benefits!,
                     value: (i, v) => i,
                     label: (i, v) => v,
                   ),
@@ -645,7 +806,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
 
   Widget Gallery() {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Padding(
           padding: const EdgeInsets.fromLTRB(25, 0, 25, 0),
@@ -669,7 +830,8 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                               side: BorderSide(
                                   color: Colors.grey.withOpacity(0.3))))),
                   onPressed: () {
-                    _showPicker(context);
+                    // _showPicker(context);
+                    _getFromGallery();
                   },
                   child: Text(
                     "Add Photos",
@@ -678,111 +840,180 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
             ],
           ),
         ),
-        Expanded(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: GridView.builder(
-              //itemCount: images.length,
-              itemCount: 30,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1.25,
-                crossAxisSpacing: 10.0,
-                mainAxisSpacing: 10.0,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return Container(
-                  child: Stack(
-                    fit: StackFit.passthrough,
-                    children: [
-                      Image.network(
-                        //images[index],
-                        _getRandomImage(512, 512),
-                        fit: BoxFit.cover,
-                        colorBlendMode: BlendMode.softLight,
-                      ),
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: FractionalOffset.topCenter,
-                            end: FractionalOffset.bottomCenter,
-                            colors: [
-                              Colors.transparent.withOpacity(0),
-                              Colors.black.withOpacity(0.8),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "Kingston Jackey",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.white,
+        (PastActPhotos!.length == 0)
+            ? Expanded(child: Center(child: Text("Photos not yet added")))
+            : Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: GridView.builder(
+                    //itemCount: images.length,
+                    itemCount: PastActPhotos!.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 1.25,
+                      crossAxisSpacing: 10.0,
+                      mainAxisSpacing: 10.0,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        child: Stack(
+                          fit: StackFit.passthrough,
+                          children: [
+                            Image.network(
+                              //images[index],
+                              Strings.imageUrl +
+                                  "past_photos/" +
+                                  (PastActPhotos![index].imageName ?? ""),
+                              fit: BoxFit.cover,
+                              colorBlendMode: BlendMode.softLight,
+                            ),
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  begin: FractionalOffset.topCenter,
+                                  end: FractionalOffset.bottomCenter,
+                                  colors: [
+                                    Colors.transparent.withOpacity(0),
+                                    Colors.black.withOpacity(0.8),
+                                  ],
+                                ),
                               ),
                             ),
-                            Text(
-                              "12/03/2021",
-                              style:
-                                  TextStyle(fontSize: 12, color: Colors.white),
-                            )
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    PastActPhotos![index].childName!,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    (DateFormat("dd/MM/yyyy").format(
+                                        DateTime.parse(PastActPhotos![index]
+                                            .createdDate!))),
+                                    style: TextStyle(
+                                        fontSize: 12, color: Colors.white),
+                                  )
+                                ],
+                              ),
+                            ),
                           ],
                         ),
-                      ),
-                    ],
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
-        ),
+                ),
+              ),
       ],
     );
   }
 
-  void _showPicker(context) {
-    showModalBottomSheet(
-        context: context,
-        builder: (BuildContext bc) {
-          return SafeArea(
-            child: Container(
-              child: new Wrap(
-                children: <Widget>[
-                  new ListTile(
-                      leading: new Icon(Icons.photo_library),
-                      title: new Text('Gallery'),
-                      onTap: () {
-                        _getFromGallery();
-                        Navigator.of(context).pop();
-                      }),
-                  new ListTile(
-                    leading: new Icon(Icons.photo_camera),
-                    title: new Text('Camera'),
-                    onTap: () {
-                      _getFromCamera();
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
+  // void _showPicker(context) {
+  //   showModalBottomSheet(
+  //       context: context,
+  //       builder: (BuildContext bc) {
+  //         return SafeArea(
+  //           child: Container(
+  //             child: new Wrap(
+  //               children: <Widget>[
+  //                 new ListTile(
+  //                     leading: new Icon(Icons.photo_library),
+  //                     title: new Text('Gallery'),
+  //                     onTap: () {
+  //                       _getFromGallery();
+  //                       Navigator.of(context).pop();
+  //                     }),
+  //                 new ListTile(
+  //                   leading: new Icon(Icons.photo_camera),
+  //                   title: new Text('Camera'),
+  //                   onTap: () {
+  //                     _getFromCamera();
+  //                     Navigator.of(context).pop();
+  //                   },
+  //                 ),
+  //               ],
+  //             ),
+  //           ),
+  //         );
+  //       });
+  // }
 
   _getFromGallery() async {
-    image =
-        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
+    // final pickedFile = await _picker.getImage(
+    //   source: ImageSource.gallery,
+    // );
+    // File? croppedFile = await ImageCropper().cropImage(
+    //     sourcePath: pickedFile!.path,
+    //     aspectRatioPresets: [
+    //       CropAspectRatioPreset.square,
+    //       CropAspectRatioPreset.original,
+    //     ],
+    //     androidUiSettings: AndroidUiSettings(
+    //         toolbarTitle: 'Cropper',
+    //         toolbarColor: Colors.black,
+    //         toolbarWidgetColor: Colors.white,
+    //         initAspectRatio: CropAspectRatioPreset.square,
+    //         lockAspectRatio: true),
+    //     iosUiSettings: IOSUiSettings(
+    //       minimumAspectRatio: 1.0,
+    //     ));
+
+    // if (croppedFile?.path != null) {
+    //   setState(() {
+    //     print("Img selected");
+    //     _imageFile = croppedFile;
+    //     final bytes = File(_imageFile!.path).readAsBytesSync();
+    //     img64 = base64Encode(bytes);
+    //     print("img64" + img64);
+    //     showImages();
+    //     setState(() {});
+    //   });
+    // }
+
+    final pickedFile = await _picker.pickMultiImage();
+    if (pickedFile!.isNotEmpty) {
+      imageFileList!.addAll(pickedFile);
+      for (var file in imageFileList!) {
+        List<int> imageBytes = File(file.path).readAsBytesSync();
+        String base64Image = base64Encode(imageBytes);
+        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      }
+      showImages();
+    }
+    print("Image List Length:" + listBase64Images.toString());
+    setState(() {});
+  }
+
+  /// Get from Camera
+  _getFromCamera() async {
+    final pickedFile = await _picker.pickImage(
+      source: ImageSource.camera,
+    );
+
+    File? croppedFile = await ImageCropper().cropImage(
+        sourcePath: pickedFile!.path,
+        aspectRatioPresets: [
+          CropAspectRatioPreset.square,
+          CropAspectRatioPreset.original,
+        ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Cropper',
+            toolbarColor: Colors.black,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.square,
+            lockAspectRatio: true),
+        iosUiSettings: IOSUiSettings(
+          minimumAspectRatio: 1.0,
+        ));
     setState(() {
-      if (image != null) {
-        final bytes = File(image!.path).readAsBytesSync();
+      if (croppedFile?.path != null) {
+        final bytes = File(_imageFile!.path).readAsBytesSync();
         img64 = base64Encode(bytes);
-        print("img64" + img64);
         setState(() {});
         print('image selected.');
       } else {
@@ -792,19 +1023,176 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     });
   }
 
-  /// Get from Camera
-  _getFromCamera() async {
-    image =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 50);
-    setState(() {
-      if (image != null) {
-        final bytes = File(image!.path).readAsBytesSync();
-        img64 = base64Encode(bytes);
-        setState(() {});
-        print('image selected.');
+  void selectImages() async {
+    final List<XFile>? selectedImages = await _picker.pickMultiImage();
+    if (selectedImages!.isNotEmpty) {
+      imageFileList!.addAll(selectedImages);
+      for (var file in imageFileList!) {
+        List<int> imageBytes = File(file.path).readAsBytesSync();
+        String base64Image = base64Encode(imageBytes);
+        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      }
+    }
+    print("Image List Length:" + imageFileList!.length.toString());
+  }
+
+  showImages() {
+    showDialog<void>(
+        context: context,
+        barrierDismissible: true, // user must tap button!
+        builder: (BuildContext context) {
+          return (_isLoading2)
+              ? Center(
+                  child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+              : Container(
+                  color: Colors.white,
+                  // insetPadding:
+                  //     EdgeInsets.symmetric(vertical: 150.0, horizontal: 45.0),
+                  // child: Column(children: [
+                  //   (_imageFile != null)
+                  //       ? Stack(children: [
+                  //           Image.file(
+                  //             File(_imageFile!.path),
+                  //             width: 250,
+                  //             height: 190,
+                  //             fit: BoxFit.fitHeight,
+                  //           ),
+                  //           Positioned(
+                  //             top: 1,
+                  //             right: 1,
+                  //             child: GestureDetector(
+                  //               onTap: () {
+                  //                 setState(() {
+                  //                   _imageFile = null;
+                  //                 });
+                  //               },
+                  //               child: Container(
+                  //                 height: 30,
+                  //                 width: 30,
+                  //                 decoration: BoxDecoration(
+                  //                     color: Strings.appThemecolor,
+                  //                     borderRadius:
+                  //                         BorderRadius.all(Radius.circular(20))),
+                  //                 child: Icon(
+                  //                   Icons.clear,
+                  //                   size: 17,
+                  //                   color: Colors.white,
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           )
+                  //         ])
+                  //       : Container(),
+                  //   // child: GridView.builder(
+                  //   //     itemCount: imageFileList!.length,
+                  //   //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  //   //         crossAxisCount: 3),
+                  //   //     itemBuilder: (BuildContext context, int index) {
+                  //   //       return Image.file(
+                  //   //         File(imageFileList![index].path),
+                  //   //         fit: BoxFit.cover,
+                  //   //       );
+                  //   //     }),
+
+                  //   ElevatedButton(
+                  //       style: ButtonStyle(
+                  //           backgroundColor:
+                  //               MaterialStateProperty.all(Colors.indigoAccent),
+                  //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  //               RoundedRectangleBorder(
+                  //                   borderRadius: BorderRadius.circular(5.0),
+                  //                   side: BorderSide(
+                  //                       color: Colors.grey.withOpacity(0.3))))),
+                  //       onPressed: () {
+                  //         _isLoading = true;
+                  //         uploadPastActImgs();
+                  //       },
+                  //       child: Text(
+                  //         "Upload Photos",
+                  //         style: TextStyle(color: Colors.white),
+                  //       )),
+                  // ]),
+                  child: SafeArea(
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          onPressed: () {
+                            selectImages();
+                          },
+                          child: Text('Select Images'),
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GridView.builder(
+                                itemCount: imageFileList!.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3),
+                                itemBuilder: (BuildContext context, int index) {
+                                  return Image.file(
+                                    File(imageFileList![index].path),
+                                    fit: BoxFit.cover,
+                                  );
+                                }),
+                          ),
+                        ),
+                        ElevatedButton(
+                            style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all(
+                                    Colors.indigoAccent),
+                                shape: MaterialStateProperty.all<
+                                        RoundedRectangleBorder>(
+                                    RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        side: BorderSide(
+                                            color: Colors.grey
+                                                .withOpacity(0.3))))),
+                            onPressed: () {
+                              if (imageFileList!.length != 0) {
+                                _isLoading2 = true;
+                                uploadPastActImgs();
+                              } else {
+                                AppUtils.showWarning(
+                                    context, "Does not Select photos", "");
+                              }
+                            },
+                            child: Text(
+                              "Upload Photos",
+                              style: TextStyle(color: Colors.white),
+                            )),
+                      ],
+                    ),
+                  ));
+        });
+  }
+
+  uploadPastActImgs() {
+    uploadPastActPhotos ImgDetails = uploadPastActPhotos();
+    ImgDetails.childId = PastActData![0].childId;
+    ImgDetails.markavailId = PastActData![0].markavailId!;
+    if (listBase64Images.length == 0) {
+      ImgDetails.image = [];
+    } else {
+      // ImgDetails.image = ["data:image/jpeg;base64,${listBase64Images}"];
+      ImgDetails.image = listBase64Images;
+    }
+    print("object:${jsonEncode(ImgDetails)}");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.uploadPastActPhoto(ImgDetails).then((response) {
+      if (response.status == true) {
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (BuildContext context) => ChildDetails()));
+        setState(() {
+          _isLoading2 = false;
+          Navigator.pop(context);
+          _GetPastAct();
+        });
       } else {
-        setState(() {});
-        print('No image selected.');
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
       }
     });
   }

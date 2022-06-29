@@ -18,6 +18,7 @@ import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/FriendsAndGroups.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
+import 'package:playgroup/Models/GetAllActivities.dart';
 import 'package:playgroup/Models/GetAllGroupDetails.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
@@ -35,6 +36,8 @@ import 'package:playgroup/Models/LoginRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
 import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
+import 'package:playgroup/Models/PastActivitiesRes.dart';
+import 'package:playgroup/Models/PastActivityById.dart';
 import 'package:playgroup/Models/PendingFriendReqRes.dart';
 import 'package:playgroup/Models/RegisterReq.dart';
 import 'package:playgroup/Models/Register_Res.dart';
@@ -43,7 +46,13 @@ import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/SuggestTimeReq.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Models/addGroupParticipants.dart';
+import 'package:playgroup/Models/editChildInterests.dart';
+import 'package:playgroup/Models/editChildLanguage.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/updateGroupReq.dart';
+import 'package:playgroup/Models/uploadPastActPhotos.dart';
+import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
@@ -148,6 +157,12 @@ abstract class ApiService {
   @PUT("user/editchild")
   Future<CommonRes> EditChild(@Body() EditChildReq body);
 
+  @PUT("user/editlanguage")
+  Future<CommonRes> editChildLanguages(@Body() editChildLanguage body);
+
+  @PUT("user/editinterest")
+  Future<CommonRes> EditChildInterest(@Body() editChildInt body);
+
   @PUT("user/updatechild")
   Future<CommonRes> ChooseChild(@Body() ChooseChildReq body);
 
@@ -160,9 +175,12 @@ abstract class ApiService {
   @GET("mark/getactivities")
   Future<GetActivitiesRes> GetActivities();
 
+  @GET("mark/get_all_activites/{ChildID}")
+  Future<GetAllActivities> GetAllActivity(@Path("ChildID") int ChildID);
+
   @GET("mark/getsports/{SportID}")
   Future<GetSportsRes> GetSports(@Path("SportID") int sprotID);
-  
+
   @GET("user/getinterest/{ChildID}")
   Future<GetInterestsRes> GetInterests(@Path("ChildID") int ChildID);
 
@@ -230,14 +248,30 @@ abstract class ApiService {
   @POST("groups/add_participants/{groupId}")
   Future<CommonRes> addParticipantsGroup(
       @Body() addGroupParticipants body, @Path("groupId") int groupId);
-      
-      
+
   @DELETE("groups/exitGroup/{groupId}/{ChildID}")
-  Future<CommonRes> exitGroup(@Path("groupId") int groupId, @Path("ChildID") int ChildID);
+  Future<CommonRes> exitGroup(
+      @Path("groupId") int groupId, @Path("ChildID") int ChildID);
 
   @DELETE("groups/remove_participants/{ChildID}")
   Future<CommonRes> removeParticipantsGroup(
       @Body() RemoveParticipantsGroupReq body, @Path("ChildID") int ChildID);
+
+///////////  Past Activites /////////////////
+
+  @GET("mark/get_past_mark/{ChildID}")
+  Future<PastActivitiesRes> PastActivities(@Path("ChildID") int ChildID);
+
+  @GET("mark/get_past_markbyid/{markavailId}/{ChildID}")
+  Future<PastActivityByIdRes> PastActivityById(
+      @Path("markavailId") int markavailId, @Path("ChildID") int ChildID);
+
+  @GET("mark/get_past_images/{markavailId}/{ChildID}")
+  Future<getPastActPhotos> getPastActPhoto(
+      @Path("markavailId") int markavailId, @Path("ChildID") int ChildID);
+
+  @POST("mark/add_past_photos")
+  Future<CommonRes> uploadPastActPhoto(@Body() uploadPastActPhotos body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

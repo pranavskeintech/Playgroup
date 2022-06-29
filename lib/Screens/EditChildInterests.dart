@@ -1,10 +1,16 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:playgroup/Models/EditChildReq.dart';
+import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetInterestsRes.dart';
+import 'package:playgroup/Models/editChildInterests.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
@@ -65,7 +71,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
     false,
     false
   ];
-  List<String> _selectedvalues = [];
+  List<int> _selectedvalues = [];
   bool _limitImage = true;
 
   BuildContext? ctx;
@@ -73,6 +79,8 @@ class _EditChildInterestsState extends State<EditChildInterests> {
   bool _isLoading = true;
 
   List<Data>? _InterestData;
+
+  List<childData>? _ChildData;
 
   fetchInterest() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
@@ -85,6 +93,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
 
         setState(() {
           _InterestData = response.data;
+          _GetChildData();
         });
       } else {
         setState(() {
@@ -92,6 +101,22 @@ class _EditChildInterestsState extends State<EditChildInterests> {
         });
         functions.createSnackBar(context, response.status.toString());
         // _btnController.stop();
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
+  _GetChildData() {
+    //int? PId = Strings.Parent_Id;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetChild().then((response) {
+      if (response.status == true) {
+        print("response ${response.status}");
+        setState(() {
+          _ChildData = response.data;
+          _isLoading = false;
+        });
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -157,57 +182,60 @@ class _EditChildInterestsState extends State<EditChildInterests> {
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Expanded(
-                  child: GridView.builder(
-                      padding: EdgeInsets.fromLTRB(14, 100, 14, 0),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 4,
-                          mainAxisSpacing: 20,
-                          mainAxisExtent: 120),
-                      itemCount: _InterestData!.length,
-                      itemBuilder: (BuildContext ctx, index) {
-                        return Container(
-                          //padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
-                          child: InkWell(
-                            onTap: () {
-                              setState(() {
-                                _tick[index] = !_tick[index];
-                              });
-                            },
-                            child: Column(children: [
-                              Stack(children: [
-                                Opacity(
-                                  opacity: _tick[index] ? 0.2 : 1.0,
-                                  child: CircleAvatar(
-                                    backgroundImage: AssetImage(
-                                        "assets/imgs/${images[index]}"),
-                                    radius: 33,
-                                  ),
-                                ),
-                                Container(
-                                  child: Visibility(
-                                    visible: _tick[index],
-                                    child: Positioned(
-                                      right: 3,
+                  child: (_InterestData!.length == 0)
+                      ? Center(child: Text("Child age should be more 8 years"))
+                      : GridView.builder(
+                          padding: EdgeInsets.fromLTRB(14, 100, 14, 0),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  mainAxisSpacing: 20,
+                                  mainAxisExtent: 120),
+                          itemCount: _InterestData!.length,
+                          itemBuilder: (BuildContext ctx, index) {
+                            return Container(
+                              //padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    _tick[index] = !_tick[index];
+                                  });
+                                },
+                                child: Column(children: [
+                                  Stack(children: [
+                                    Opacity(
+                                      opacity: _tick[index] ? 0.2 : 1.0,
                                       child: CircleAvatar(
-                                        backgroundImage:
-                                            AssetImage("assets/imgs/tick.png"),
-                                        radius: 8,
+                                        backgroundImage: AssetImage(
+                                            "assets/imgs/${images[index]}"),
+                                        radius: 33,
                                       ),
                                     ),
+                                    Container(
+                                      child: Visibility(
+                                        visible: _tick[index],
+                                        child: Positioned(
+                                          right: 3,
+                                          child: CircleAvatar(
+                                            backgroundImage: AssetImage(
+                                                "assets/imgs/tick.png"),
+                                            radius: 8,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  ]),
+                                  SizedBox(
+                                    height: 12,
                                   ),
-                                )
-                              ]),
-                              SizedBox(
-                                height: 12,
+                                  Text(_InterestData![index].interestName!,
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500)),
+                                ]),
                               ),
-                              Text(_InterestData![index].interestName!,
-                                  style: TextStyle(
-                                      fontSize: 12,
-                                      fontWeight: FontWeight.w500)),
-                            ]),
-                          ),
-                        );
-                      }),
+                            );
+                          }),
                 ),
                 Center(
                   child: Padding(
@@ -219,11 +247,12 @@ class _EditChildInterestsState extends State<EditChildInterests> {
                           onPressed: () {
                             for (int i = 0; i < 12; i++) {
                               if (_tick[i] == true) {
-                                print(activities[i]);
-                                _selectedvalues.add(activities[i]);
-                                Navigator.pop(context);
+                                _selectedvalues
+                                    .add(_InterestData![i].interestsId!);
+                                _EditChild();
                                 print(_selectedvalues);
-                                // _selectedvalues[i] = activities[i];
+                                _selectedvalues[i] =
+                                    _InterestData![i].interestsId!;
                               } else {
                                 // _selectedvalues[i] = "null";
                                 continue;
@@ -243,5 +272,24 @@ class _EditChildInterestsState extends State<EditChildInterests> {
               ],
             ),
           );
+  }
+
+  _EditChild() {
+    editChildInt ChildEdit = editChildInt();
+    ChildEdit.childId = _ChildData![Strings.editIndex].childId;
+    ChildEdit.childInterest = _selectedvalues;
+    print(jsonEncode(ChildEdit));
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.EditChildInterest(ChildEdit).then((response) {
+      print('response ${response.status}');
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        Navigator.pop(context);
+        print("result2:$response");
+      } else {
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
+      }
+    });
   }
 }

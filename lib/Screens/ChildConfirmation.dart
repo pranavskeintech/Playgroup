@@ -21,7 +21,7 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
   BuildContext? ctx;
   bool _isLoading = true;
 
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
 
   @override
   void initState() {

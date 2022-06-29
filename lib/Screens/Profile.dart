@@ -31,7 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   BuildContext? ctx;
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
 
   Profile? _ProfileData;
 
@@ -263,11 +263,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   style: TextStyle(color: Colors.grey),
                                 ),
                                 ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.of(context).push(
+                                    onPressed: () async {
+                                      await Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
                                                   AddCoParent()));
+                                      setState(() {
+                                        _GetProfile();
+                                      });
                                     },
                                     child: Text("Add Co-Parent"))
                               ],
@@ -287,8 +290,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     style: TextStyle(color: Colors.grey),
                                   ),
                                   TextButton(
-                                      onPressed: () {
-                                        Navigator.of(context).push(
+                                      onPressed: () async {
+                                        await Navigator.of(context).push(
                                             MaterialPageRoute(
                                                 builder:
                                                     (BuildContext context) =>
@@ -312,6 +315,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                                   .coParent?[0]
                                                                   .access,
                                                         )));
+
+                                        setState(() {
+                                          _GetProfile();
+                                        });
                                       },
                                       child: _ProfileData!.role == "PARENT"
                                           ? Row(

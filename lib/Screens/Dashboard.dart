@@ -45,14 +45,13 @@ class _DashBoardState extends State<DashBoard> {
   final screens = [
     HomeScreen(),
     //Center(child: Text("Past Activities")),
-    InitialScreen(),
-    // PastActivity(),
+    //InitialScreen(),
+    PastActivity(),
     SearchScreen(),
     //NotificationScreen(),
     ProfileScreen(),
     Mark_Availabilty()
   ];
-  final screen2 = [Mark_Availabilty()];
 
   var ctx;
 
@@ -82,7 +81,7 @@ class _DashBoardState extends State<DashBoard> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetProfile().then((response) {
       if (response.status == true) {
-            GetNotificationList();
+        GetNotificationList();
 
         // AppUtils.dismissprogress();
         setState(() {
@@ -125,14 +124,13 @@ class _DashBoardState extends State<DashBoard> {
         final int? counter = prefs.getInt('notificationCount');
 
         setState(() {
-                  Strings.notifictionCount = (counter ?? 0) - allNotificationList!.length;
-
+          Strings.notifictionCount =
+              (counter ?? 0) - allNotificationList!.length;
         });
 
         await prefs.setInt('notificationCount', allNotificationList!.length);
 
         print("notifictionCount--> $notifictionCount");
-
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -266,13 +264,17 @@ class _DashBoardState extends State<DashBoard> {
                                         //   Icons.circle_notifications,
                                         //   color: Colors.white,
                                         // )
-                                      ),
+                  ),
                       // Icon(
                       //   Icons.circle_notifications,
                       //   color: Colors.white,
                       // )
-                    
-                  ),
+                    ),
+                    // Icon(
+                    //   Icons.circle_notifications,
+                    //   color: Colors.white,
+                    // )
+                  
                   IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(

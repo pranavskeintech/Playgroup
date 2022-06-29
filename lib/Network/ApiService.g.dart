@@ -463,6 +463,40 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<CommonRes> editChildLanguages(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'PUT', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/editlanguage',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> EditChildInterest(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'PUT', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'user/editinterest',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<CommonRes> ChooseChild(body) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -525,6 +559,22 @@ class _ApiService implements ApiService {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = GetActivitiesRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetAllActivities> GetAllActivity(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetAllActivities>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/get_all_activites/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetAllActivities.fromJson(_result.data!);
     return value;
   }
 
@@ -884,6 +934,73 @@ class _ApiService implements ApiService {
         _setStreamType<CommonRes>(
             Options(method: 'DELETE', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'groups/remove_participants/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PastActivitiesRes> PastActivities(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<PastActivitiesRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/get_past_mark/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = PastActivitiesRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<PastActivityByIdRes> PastActivityById(markavailId, ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<PastActivityByIdRes>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options,
+                    'mark/get_past_markbyid/${markavailId}/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = PastActivityByIdRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<getPastActPhotos> getPastActPhoto(markavailId, ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<getPastActPhotos>(Options(
+                method: 'GET', headers: _headers, extra: _extra)
+            .compose(
+                _dio.options, 'mark/get_past_images/${markavailId}/${ChildID}',
+                queryParameters: queryParameters, data: _data)
+            .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = getPastActPhotos.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CommonRes> uploadPastActPhoto(body) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body.toJson());
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<CommonRes>(
+            Options(method: 'POST', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'mark/add_past_photos',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);

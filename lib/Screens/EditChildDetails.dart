@@ -33,7 +33,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   final _dobController = TextEditingController();
   final _schoolController = TextEditingController();
 
-  List<Data>? _ChildData;
+  List<childData>? _ChildData;
 
   final _btnController = RoundedLoadingButtonController();
   late AppState state;
@@ -519,7 +519,6 @@ class _EditChildDetailsState extends State<EditChildDetails> {
     ChildEdit.childName = _numberController.text;
     ChildEdit.dob = _dobController.text;
     ChildEdit.gender = selectedValue;
-    ChildEdit.language = _ChildData![Strings.editIndex].languages!;
     ChildEdit.school = _schoolController.text;
     if (img64 == "") {
       ChildEdit.profile = _ChildData![Strings.editIndex].profile;
@@ -532,8 +531,9 @@ class _EditChildDetailsState extends State<EditChildDetails> {
       print('response ${response.status}');
       if (response.status == true) {
         AppUtils.dismissprogress();
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (BuildContext context) => ChildConfirmation()));
+        // Navigator.of(context).push(MaterialPageRoute(
+        //     builder: (BuildContext context) => ChildConfirmation()));
+        Navigator.pop(context);
         print("result2:$response");
       } else {
         functions.createSnackBar(context, response.message.toString());

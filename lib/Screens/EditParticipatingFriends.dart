@@ -370,11 +370,9 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
     print("3:${availabilityData[0].childId!}");
     print("4:${availabilityData[0].markavailId!}");
     print("5:${FriendsId}");
-    if (FriendsId != []) {
-      editAvailability.friendId = [0];
-    } else {
-      editAvailability.friendId = FriendsId;
-    }
+    (FriendsId!.length == 0)
+        ? editAvailability.friendId = [0]
+        : editAvailability.friendId = FriendsId;
     print(jsonEncode(editAvailability));
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.EditAvailability(editAvailability).then((response) {
