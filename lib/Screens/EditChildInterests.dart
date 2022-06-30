@@ -183,7 +183,14 @@ class _EditChildInterestsState extends State<EditChildInterests> {
               children: [
                 Expanded(
                   child: (_InterestData!.length == 0)
-                      ? Center(child: Text("Child age should be more 8 years"))
+                      ? Center(
+                          child: Padding(
+                          padding: const EdgeInsets.only(left: 85, right: 85),
+                          child: Text(
+                            "Interests are not available for this child age category",
+                            textAlign: TextAlign.center,
+                          ),
+                        ))
                       : GridView.builder(
                           padding: EdgeInsets.fromLTRB(14, 100, 14, 0),
                           gridDelegate:
@@ -206,8 +213,16 @@ class _EditChildInterestsState extends State<EditChildInterests> {
                                     Opacity(
                                       opacity: _tick[index] ? 0.2 : 1.0,
                                       child: CircleAvatar(
-                                        backgroundImage: AssetImage(
-                                            "assets/imgs/${images[index]}"),
+                                        backgroundImage: _InterestData![index]
+                                                    .interestImage! !=
+                                                "null"
+                                            ? NetworkImage(Strings.imageUrl +
+                                                "interests/" +
+                                                (_InterestData![index]
+                                                    .interestImage!))
+                                            : AssetImage(
+                                                    "assets/imgs/appicon.png")
+                                                as ImageProvider,
                                         radius: 33,
                                       ),
                                     ),

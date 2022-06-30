@@ -842,116 +842,161 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             ))
                       ],
                     )
-                  : (availabilityData[0].requestStatus == "joined")
-                      ? Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                height: 40,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 8.0, // soften the shadow
-                                      spreadRadius: 5.0, //extend the shadow
-                                      offset: Offset(
-                                        2.0, // Move to right 10  horizontally
-                                        9.0, // Move to bottom 10 Vertically
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      joined = true;
-                                      _JoinFriendsMarkAvailability();
-                                      // Strings.availConfirm = !Strings.availConfirm;
-                                    });
-                                  },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: const [
-                                      Text(
-                                        "Remove",
-                                        style: TextStyle(
-                                            color: Colors.black54,
-                                            fontSize: 17,
-                                            fontWeight: FontWeight.w500),
-                                      ),
-                                      SizedBox(
-                                        width: 5,
-                                      ),
-                                      Icon(
-                                        Icons.close,
-                                        color: Colors.black,
-                                        size: 17,
-                                      )
-                                    ],
+                  : (availabilityData[0].status == "pause")
+                      ? Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 40,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 8.0, // soften the shadow
+                                  spreadRadius: 5.0, //extend the shadow
+                                  offset: Offset(
+                                    2.0, // Move to right 10  horizontally
+                                    9.0, // Move to bottom 10 Vertically
                                   ),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Colors.white),
-                                  ),
-                                ),
-                              ),
+                                )
+                              ],
                             ),
-                            SizedBox(
-                              height: 10,
-                            )
-                          ],
-                        )
-                      : Column(
-                          children: [
-                            Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                height: 40,
-                                width: MediaQuery.of(context).size.width * 0.8,
-                                decoration: BoxDecoration(
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.2),
-                                      blurRadius: 8.0, // soften the shadow
-                                      spreadRadius: 2.0, //extend the shadow
-                                      offset: Offset(
-                                        2.0, // Move to right 10  horizontally
-                                        10.0, // Move to bottom 10 Vertically
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                child: TextButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      joined == false;
-                                      _JoinFriendsMarkAvailability();
-                                      // Strings.availConfirm = !Strings.availConfirm;
-                                    });
-                                  },
-                                  child: Text(
-                                    "Join",
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: const [
+                                  Text(
+                                    "Paused",
                                     style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w700),
+                                        color: Colors.black54,
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w500),
                                   ),
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all<Color>(
-                                            Strings.appThemecolor),
+                                  SizedBox(
+                                    width: 5,
                                   ),
-                                ),
+                                ],
                               ),
                             ),
-                            SizedBox(
-                              height: 10,
+                          ),
+                        )
+                      : (availabilityData[0].requestStatus == "joined")
+                          ? Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    height: 40,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          blurRadius: 8.0, // soften the shadow
+                                          spreadRadius: 5.0, //extend the shadow
+                                          offset: Offset(
+                                            2.0, // Move to right 10  horizontally
+                                            9.0, // Move to bottom 10 Vertically
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          joined = true;
+                                          _JoinFriendsMarkAvailability();
+                                          // Strings.availConfirm = !Strings.availConfirm;
+                                        });
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Text(
+                                            "Remove",
+                                            style: TextStyle(
+                                                color: Colors.black54,
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.w500),
+                                          ),
+                                          SizedBox(
+                                            width: 5,
+                                          ),
+                                          Icon(
+                                            Icons.close,
+                                            color: Colors.black,
+                                            size: 17,
+                                          )
+                                        ],
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ],
                             )
-                          ],
-                        ),
+                          : Column(
+                              children: [
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    height: 40,
+                                    width:
+                                        MediaQuery.of(context).size.width * 0.8,
+                                    decoration: BoxDecoration(
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.grey.withOpacity(0.2),
+                                          blurRadius: 8.0, // soften the shadow
+                                          spreadRadius: 2.0, //extend the shadow
+                                          offset: Offset(
+                                            2.0, // Move to right 10  horizontally
+                                            10.0, // Move to bottom 10 Vertically
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                    child: TextButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          joined == false;
+                                          _JoinFriendsMarkAvailability();
+                                          // Strings.availConfirm = !Strings.availConfirm;
+                                        });
+                                      },
+                                      child: Text(
+                                        "Join",
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Strings.appThemecolor),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10,
+                                )
+                              ],
+                            ),
           SizedBox(
             height: 5,
           )

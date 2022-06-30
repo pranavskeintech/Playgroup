@@ -88,6 +88,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
     );
 
     if (ChoosenTime1 != null) {
+     // if(ChoosenTime1.difference(TimeOfDay.now()).isNegative)
       setState(() {
         // String time1 = "${ChoosenTime1.hour}:${ChoosenTime1.minute}";
         _FromTimeController.text = ChoosenTime1.format(context);

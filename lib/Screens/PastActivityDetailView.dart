@@ -10,6 +10,7 @@ import 'package:playgroup/Models/PastActivityById.dart';
 import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Screens/PhotosView.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
@@ -105,7 +106,8 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   _GetPastAct() {
     //AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.PastActivityById(widget.markavailId!, widget.childId!).then((response) {
+    api.PastActivityById(widget.markavailId!, Strings.SelectedChild)
+        .then((response) {
       if (response.status == true) {
         setState(() {
           PastActData = response.data;
@@ -121,7 +123,9 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   _GetPastActPhotos() {
     //AppUtils.showprogress();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.getPastActPhoto(widget.markavailId!, widget.childId!).then((response) {
+    api
+        .getPastActPhoto(widget.markavailId!, Strings.SelectedChild)
+        .then((response) {
       if (response.status == true) {
         setState(() {
           // AppUtils.dismissprogress();
@@ -250,65 +254,33 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
-                child: Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 18,
-                      backgroundImage: (PastActData![0].profile! != "null")
-                          ? NetworkImage(
-                              Strings.imageUrl + PastActData![0].profile!)
-                          : AssetImage("assets/imgs/appicon.png")
-                              as ImageProvider,
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text(PastActData![0].childName!),
-                  ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => OtherChildProfile(
+                          otherChildID: PastActData![0].childId,
+                          chooseChildId: Strings.ChoosedChild)));
+                },
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+                  child: Row(
+                    children: [
+                      CircleAvatar(
+                        radius: 18,
+                        backgroundImage: (PastActData![0].profile! != "null")
+                            ? NetworkImage(
+                                Strings.imageUrl + PastActData![0].profile!)
+                            : AssetImage("assets/imgs/appicon.png")
+                                as ImageProvider,
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text(PastActData![0].childName!),
+                    ],
+                  ),
                 ),
               ),
-              Container(
-                  child: !Strings.activityConfirmed
-                      ? Row(
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        EditAvailabilityTime(),
-                                  ));
-                                },
-                                icon: Icon(
-                                  Icons.edit_note_rounded,
-                                  size: 20,
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: Icon(
-                                  Icons.share,
-                                  size: 20,
-                                ))
-                          ],
-                        )
-                      : InkWell(
-                          child: Row(
-                            children: const [
-                              Icon(
-                                Icons.edit_note_outlined,
-                                size: 15,
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.share,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        ))
             ],
           ),
           SizedBox(
@@ -395,13 +367,17 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                       SizedBox(
                         width: 3,
                       ),
-                      Text(
-                        PastActData![0].location!,
-                        overflow: TextOverflow.fade,
-                        style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w400,
-                            color: Color.fromARGB(255, 150, 149, 149)),
+                      Container(
+                        width: 120,
+                        child: Text(
+                          PastActData![0].location!,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w400,
+                              color: Color.fromARGB(255, 150, 149, 149)),
+                          maxLines: 2,
+                        ),
                       ),
                     ],
                   ),
@@ -556,9 +532,17 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                         height: 32,
                                         child: InkWell(
                                           onTap: () {
-                                            // AppUtils.showParticipant(
-                                            //     context,
-                                            //     PastActData![0].friendsdata!);
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    OtherChildProfile(
+                                                        otherChildID:
+                                                            PastActData![0]
+                                                                .friendsdata![
+                                                                    index]
+                                                                .childFriendId!,
+                                                        chooseChildId: Strings
+                                                            .ChoosedChild)));
                                           },
                                           child: CircleAvatar(
                                               backgroundImage: PastActData![0]
@@ -628,16 +612,19 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                     ),
                   ),
                 ),
-                ChipsChoice<int>.multiple(
-                  wrapped: true,
-                  verticalDirection: VerticalDirection.up,
-                  choiceStyle: C2ChoiceStyle(color: Colors.black),
-                  value: tag1,
-                  onChanged: (val) {},
-                  choiceItems: C2Choice.listFrom<int, String>(
-                    source: PastActData![0].benefits!,
-                    value: (i, v) => i,
-                    label: (i, v) => v,
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: ChipsChoice<int>.multiple(
+                    wrapped: true,
+                    verticalDirection: VerticalDirection.up,
+                    choiceStyle: C2ChoiceStyle(color: Colors.black),
+                    value: tag1,
+                    onChanged: (val) {},
+                    choiceItems: C2Choice.listFrom<int, String>(
+                      source: PastActData![0].benefits!,
+                      value: (i, v) => i,
+                      label: (i, v) => v,
+                    ),
                   ),
                 ),
               ],
@@ -859,13 +846,16 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                         child: Stack(
                           fit: StackFit.passthrough,
                           children: [
-                            Image.network(
-                              //images[index],
-                              Strings.imageUrl +
-                                  "past_photos/" +
-                                  (PastActPhotos![index].imageName ?? ""),
-                              fit: BoxFit.cover,
-                              colorBlendMode: BlendMode.softLight,
+                            GestureDetector(
+                              onTap: () {},
+                              child: Image.network(
+                                //images[index],
+                                Strings.imageUrl +
+                                    "past_photos/" +
+                                    (PastActPhotos![index].imageName ?? ""),
+                                fit: BoxFit.cover,
+                                colorBlendMode: BlendMode.softLight,
+                              ),
                             ),
                             DecoratedBox(
                               decoration: BoxDecoration(
@@ -885,12 +875,29 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
-                                    PastActPhotos![index].childName!,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.white,
-                                    ),
+                                  Row(
+                                    children: [
+                                      CircleAvatar(
+                                        backgroundImage: PastActPhotos![index]
+                                                    .profile !=
+                                                "null"
+                                            ? NetworkImage(Strings.imageUrl +
+                                                (PastActPhotos![index]
+                                                        .profile ??
+                                                    ""))
+                                            : AssetImage(
+                                                    "assets/imgs/appicon.png")
+                                                as ImageProvider,
+                                        radius: 10,
+                                      ),
+                                      Text(
+                                        PastActPhotos![index].childName!,
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   Text(
                                     (DateFormat("dd/MM/yyyy").format(
@@ -942,48 +949,27 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   //         );
   //       });
   // }
-
   _getFromGallery() async {
-    // final pickedFile = await _picker.getImage(
-    //   source: ImageSource.gallery,
-    // );
-    // File? croppedFile = await ImageCropper().cropImage(
-    //     sourcePath: pickedFile!.path,
-    //     aspectRatioPresets: [
-    //       CropAspectRatioPreset.square,
-    //       CropAspectRatioPreset.original,
-    //     ],
-    //     androidUiSettings: AndroidUiSettings(
-    //         toolbarTitle: 'Cropper',
-    //         toolbarColor: Colors.black,
-    //         toolbarWidgetColor: Colors.white,
-    //         initAspectRatio: CropAspectRatioPreset.square,
-    //         lockAspectRatio: true),
-    //     iosUiSettings: IOSUiSettings(
-    //       minimumAspectRatio: 1.0,
-    //     ));
-
-    // if (croppedFile?.path != null) {
-    //   setState(() {
-    //     print("Img selected");
-    //     _imageFile = croppedFile;
-    //     final bytes = File(_imageFile!.path).readAsBytesSync();
-    //     img64 = base64Encode(bytes);
-    //     print("img64" + img64);
-    //     showImages();
-    //     setState(() {});
-    //   });
-    // }
-
-    final pickedFile = await _picker.pickMultiImage();
+    final pickedFile = await _picker.pickMultiImage(imageQuality: 50);
     if (pickedFile!.isNotEmpty) {
       imageFileList!.addAll(pickedFile);
-      for (var file in imageFileList!) {
-        List<int> imageBytes = File(file.path).readAsBytesSync();
-        String base64Image = base64Encode(imageBytes);
-        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
-      }
-      showImages();
+      // for (var file in imageFileList!) {
+      //   List<int> imageBytes = File(file.path).readAsBytesSync();
+      //   String base64Image = base64Encode(imageBytes);
+      //   listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      // }
+      //showImages();
+
+      int? MID = widget.markavailId;
+      int? CID = Strings.ChoosedChild;
+      //widget.childId;
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) =>
+              photosView(imageFileList: imageFileList, MID: MID, CID: CID)));
+      setState(() {
+        imageFileList = [];
+        _GetPastAct();
+      });
     }
     print("Image List Length:" + listBase64Images.toString());
     setState(() {});
@@ -1034,167 +1020,6 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
       }
     }
     print("Image List Length:" + imageFileList!.length.toString());
-  }
-
-  showImages() {
-    showDialog<void>(
-        context: context,
-        barrierDismissible: true, // user must tap button!
-        builder: (BuildContext context) {
-          return (_isLoading2)
-              ? Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-              : Container(
-                  color: Colors.white,
-                  // insetPadding:
-                  //     EdgeInsets.symmetric(vertical: 150.0, horizontal: 45.0),
-                  // child: Column(children: [
-                  //   (_imageFile != null)
-                  //       ? Stack(children: [
-                  //           Image.file(
-                  //             File(_imageFile!.path),
-                  //             width: 250,
-                  //             height: 190,
-                  //             fit: BoxFit.fitHeight,
-                  //           ),
-                  //           Positioned(
-                  //             top: 1,
-                  //             right: 1,
-                  //             child: GestureDetector(
-                  //               onTap: () {
-                  //                 setState(() {
-                  //                   _imageFile = null;
-                  //                 });
-                  //               },
-                  //               child: Container(
-                  //                 height: 30,
-                  //                 width: 30,
-                  //                 decoration: BoxDecoration(
-                  //                     color: Strings.appThemecolor,
-                  //                     borderRadius:
-                  //                         BorderRadius.all(Radius.circular(20))),
-                  //                 child: Icon(
-                  //                   Icons.clear,
-                  //                   size: 17,
-                  //                   color: Colors.white,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           )
-                  //         ])
-                  //       : Container(),
-                  //   // child: GridView.builder(
-                  //   //     itemCount: imageFileList!.length,
-                  //   //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  //   //         crossAxisCount: 3),
-                  //   //     itemBuilder: (BuildContext context, int index) {
-                  //   //       return Image.file(
-                  //   //         File(imageFileList![index].path),
-                  //   //         fit: BoxFit.cover,
-                  //   //       );
-                  //   //     }),
-
-                  //   ElevatedButton(
-                  //       style: ButtonStyle(
-                  //           backgroundColor:
-                  //               MaterialStateProperty.all(Colors.indigoAccent),
-                  //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  //               RoundedRectangleBorder(
-                  //                   borderRadius: BorderRadius.circular(5.0),
-                  //                   side: BorderSide(
-                  //                       color: Colors.grey.withOpacity(0.3))))),
-                  //       onPressed: () {
-                  //         _isLoading = true;
-                  //         uploadPastActImgs();
-                  //       },
-                  //       child: Text(
-                  //         "Upload Photos",
-                  //         style: TextStyle(color: Colors.white),
-                  //       )),
-                  // ]),
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            selectImages();
-                          },
-                          child: Text('Select Images'),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GridView.builder(
-                                itemCount: imageFileList!.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Image.file(
-                                    File(imageFileList![index].path),
-                                    fit: BoxFit.cover,
-                                  );
-                                }),
-                          ),
-                        ),
-                        ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.indigoAccent),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(
-                                            color: Colors.grey
-                                                .withOpacity(0.3))))),
-                            onPressed: () {
-                              if (imageFileList!.length != 0) {
-                                _isLoading2 = true;
-                                uploadPastActImgs();
-                              } else {
-                                AppUtils.showWarning(
-                                    context, "Does not Select photos", "");
-                              }
-                            },
-                            child: Text(
-                              "Upload Photos",
-                              style: TextStyle(color: Colors.white),
-                            )),
-                      ],
-                    ),
-                  ));
-        });
-  }
-
-  uploadPastActImgs() {
-    uploadPastActPhotos ImgDetails = uploadPastActPhotos();
-    ImgDetails.childId = PastActData![0].childId;
-    ImgDetails.markavailId = PastActData![0].markavailId!;
-    if (listBase64Images.length == 0) {
-      ImgDetails.image = [];
-    } else {
-      // ImgDetails.image = ["data:image/jpeg;base64,${listBase64Images}"];
-      ImgDetails.image = listBase64Images;
-    }
-    print("object:${jsonEncode(ImgDetails)}");
-    final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.uploadPastActPhoto(ImgDetails).then((response) {
-      if (response.status == true) {
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (BuildContext context) => ChildDetails()));
-        setState(() {
-          _isLoading2 = false;
-          Navigator.pop(context);
-          _GetPastAct();
-        });
-      } else {
-        functions.createSnackBar(context, response.message.toString());
-        print("error");
-      }
-    });
   }
 }
 

@@ -689,7 +689,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                     "null"
                                                 ? NetworkImage(
                                                     Strings.imageUrl +
-                                                        "sports/" +
+                                                        "interests/" +
                                                         (childInfo![0]
                                                             .interests![index]
                                                             .interestImage!))
@@ -771,17 +771,20 @@ class _ChildProfileState extends State<ChildProfile>
             ),
             (childInfo![0].languages!.length == 0)
                 ? Text("Add Languages")
-                : ChipsChoice<int>.multiple(
-                    spacing: 20,
-                    wrapped: true,
-                    verticalDirection: VerticalDirection.up,
-                    choiceStyle: C2ChoiceStyle(color: Colors.black),
-                    value: tag1,
-                    onChanged: (val) {},
-                    choiceItems: C2Choice.listFrom<int, String>(
-                      source: childInfo![0].languages!,
-                      value: (i, v) => i,
-                      label: (i, v) => v,
+                : Align(
+                    alignment: Alignment.topLeft,
+                    child: ChipsChoice<int>.multiple(
+                      spacing: 20,
+                      wrapped: true,
+                      verticalDirection: VerticalDirection.up,
+                      choiceStyle: C2ChoiceStyle(color: Colors.black),
+                      value: tag1,
+                      onChanged: (val) {},
+                      choiceItems: C2Choice.listFrom<int, String>(
+                        source: childInfo![0].languages!,
+                        value: (i, v) => i,
+                        label: (i, v) => v,
+                      ),
                     ),
                   ),
           ],
@@ -971,7 +974,7 @@ class _ChildProfileState extends State<ChildProfile>
                                               bottom: 25,
                                               child: CircleAvatar(
                                                 backgroundImage: AssetImage(
-                                                    "assets/imgs/add_friends.png"),
+                                                    "assets/imgs/group.png"),
                                                 radius: 10,
                                               ))
                                         ])
@@ -1060,7 +1063,7 @@ class _ChildProfileState extends State<ChildProfile>
                                       bottom: 25,
                                       child: CircleAvatar(
                                         backgroundImage: AssetImage(
-                                          "assets/imgs/add_friends.png",
+                                          "assets/imgs/group.png",
                                         ),
                                         radius: 10,
                                       ))

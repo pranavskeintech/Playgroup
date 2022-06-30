@@ -9,6 +9,7 @@ import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/PastActivityDetailView.dart';
 import 'package:galleryimage/galleryimage.dart';
+import 'package:playgroup/Screens/PhotosView.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -243,6 +244,7 @@ class _PastActivityState extends State<PastActivity> {
                                 children: [
                                   ListTile(
                                     isThreeLine: true,
+                                    contentPadding: EdgeInsets.all(0),
                                     leading:
                                         //  CircleAvatar(
                                         //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
@@ -371,58 +373,72 @@ class _PastActivityState extends State<PastActivity> {
                                               growable: false),
                                           titleGallery: "Playgroup",
                                         )
-                                      : Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 10, bottom: 10),
-                                          child: Center(
-                                            child: GestureDetector(
-                                              onTap: () async {
+                                      : Container(
+                                          //  padding: EdgeInsets.all(0),
+                                          child: TextButton(
+                                              onPressed: () {
                                                 MID = PastActData![index]
                                                     .markavailId;
-                                                CID =
-                                                    PastActData![index].childId;
-                                                await _getFromGallery();
-                                                setState(() {
-                                                  _GetPastAct();
-                                                });
+                                                CID = Strings.ChoosedChild;
+                                                //PastActData![index].childId;
+                                                _getFromGallery(MID, CID);
                                               },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.rectangle,
-                                                    border: Border.all(
-                                                      width: 5.3,
-                                                      color:
-                                                          Strings.appThemecolor,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                padding: EdgeInsets.all(2),
-                                                width: 110,
-                                                height: 110,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .add_photo_alternate_outlined,
-                                                      size: 50,
-                                                      color:
-                                                          Strings.appThemecolor,
-                                                    ),
-                                                    Text(
-                                                      "Add Photos",
-                                                      style: TextStyle(
-                                                          color: Strings
-                                                              .appThemecolor),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                              child: Text(
+                                                  "Tap to Add photos for the activity"))),
+                                  // Padding(
+                                  //     padding: const EdgeInsets.only(
+                                  //         top: 10, bottom: 10),
+                                  //     child: Center(
+                                  //       child: GestureDetector(
+                                  //         onTap: () async {
+                                  //           MID = PastActData![index]
+                                  //               .markavailId;
+                                  //           CID =
+                                  //               PastActData![index].childId;
+                                  //           await _getFromGallery();
+                                  //           setState(() {
+                                  //             _GetPastAct();
+                                  //           });
+                                  //         },
+                                  //         child: Container(
+                                  //           decoration: BoxDecoration(
+                                  //               shape: BoxShape.rectangle,
+                                  //               border: Border.all(
+                                  //                 width: 5.3,
+                                  //                 color:
+                                  //                     Strings.appThemecolor,
+                                  //               ),
+                                  //               borderRadius:
+                                  //                   BorderRadius.circular(
+                                  //                       10)),
+                                  //           padding: EdgeInsets.all(2),
+                                  //           width: 240,
+                                  //           height: 90,
+                                  //           child: Row(
+                                  //             mainAxisAlignment:
+                                  //                 MainAxisAlignment.center,
+                                  //             children: [
+                                  //               // Icon(
+                                  //               //   Icons
+                                  //               //       .add_photo_alternate_outlined,
+                                  //               //   size: 50,
+                                  //               //   color:
+                                  //               //       Strings.appThemecolor,
+                                  //               // ),
+                                  //               Text(
+                                  //                 "Add photos for the activity",
+                                  //                 style: TextStyle(
+                                  //                     color: Strings
+                                  //                         .appThemecolor),
+                                  //                 textAlign:
+                                  //                     TextAlign.center,
+                                  //               ),
+                                  //             ],
+                                  //           ),
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ),
                                   Row(children: [
                                     Column(
                                       children: [
@@ -506,194 +522,26 @@ class _PastActivityState extends State<PastActivity> {
     );
   }
 
-  _getFromGallery() async {
-    final pickedFile = await _picker.pickMultiImage();
+  _getFromGallery(MID, CID) async {
+    final pickedFile = await _picker.pickMultiImage(imageQuality: 50);
     if (pickedFile!.isNotEmpty) {
       imageFileList!.addAll(pickedFile);
-      for (var file in imageFileList!) {
-        List<int> imageBytes = File(file.path).readAsBytesSync();
-        String base64Image = base64Encode(imageBytes);
-        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
-      }
-      showImages();
+      // for (var file in imageFileList!) {
+      //   List<int> imageBytes = File(file.path).readAsBytesSync();
+      //   String base64Image = base64Encode(imageBytes);
+      //   listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      // }
+      //showImages();
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) =>
+              photosView(imageFileList: imageFileList, MID: MID, CID: CID)));
+      setState(() {
+        imageFileList = [];
+        _GetPastAct();
+      });
     }
     print("Image List Length:" + listBase64Images.toString());
     setState(() {});
-  }
-
-  void selectImages() async {
-    final List<XFile>? selectedImages = await _picker.pickMultiImage();
-    if (selectedImages!.isNotEmpty) {
-      imageFileList!.addAll(selectedImages);
-      for (var file in imageFileList!) {
-        List<int> imageBytes = File(file.path).readAsBytesSync();
-        String base64Image = base64Encode(imageBytes);
-        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
-      }
-    }
-    setState(() {});
-    print("Image List Length:" + imageFileList!.length.toString());
-  }
-
-  showImages() {
-    showDialog<void>(
-        context: context,
-        barrierDismissible: true, // user must tap button!
-        builder: (BuildContext context) {
-          return (_isLoading2)
-              ? Center(
-                  child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-              : Container(
-                  color: Colors.white,
-                  // insetPadding:
-                  //     EdgeInsets.symmetric(vertical: 150.0, horizontal: 45.0),
-                  // child: Column(children: [
-                  //   (_imageFile != null)
-                  //       ? Stack(children: [
-                  //           Image.file(
-                  //             File(_imageFile!.path),
-                  //             width: 250,
-                  //             height: 190,
-                  //             fit: BoxFit.fitHeight,
-                  //           ),
-                  //           Positioned(
-                  //             top: 1,
-                  //             right: 1,
-                  //             child: GestureDetector(
-                  //               onTap: () {
-                  //                 setState(() {
-                  //                   _imageFile = null;
-                  //                 });
-                  //               },
-                  //               child: Container(
-                  //                 height: 30,
-                  //                 width: 30,
-                  //                 decoration: BoxDecoration(
-                  //                     color: Strings.appThemecolor,
-                  //                     borderRadius:
-                  //                         BorderRadius.all(Radius.circular(20))),
-                  //                 child: Icon(
-                  //                   Icons.clear,
-                  //                   size: 17,
-                  //                   color: Colors.white,
-                  //                 ),
-                  //               ),
-                  //             ),
-                  //           )
-                  //         ])
-                  //       : Container(),
-                  //   // child: GridView.builder(
-                  //   //     itemCount: imageFileList!.length,
-                  //   //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  //   //         crossAxisCount: 3),
-                  //   //     itemBuilder: (BuildContext context, int index) {
-                  //   //       return Image.file(
-                  //   //         File(imageFileList![index].path),
-                  //   //         fit: BoxFit.cover,
-                  //   //       );
-                  //   //     }),
-
-                  //   ElevatedButton(
-                  //       style: ButtonStyle(
-                  //           backgroundColor:
-                  //               MaterialStateProperty.all(Colors.indigoAccent),
-                  //           shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  //               RoundedRectangleBorder(
-                  //                   borderRadius: BorderRadius.circular(5.0),
-                  //                   side: BorderSide(
-                  //                       color: Colors.grey.withOpacity(0.3))))),
-                  //       onPressed: () {
-                  //         _isLoading = true;
-                  //         uploadPastActImgs();
-                  //       },
-                  //       child: Text(
-                  //         "Upload Photos",
-                  //         style: TextStyle(color: Colors.white),
-                  //       )),
-                  // ]),
-                  child: SafeArea(
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          onPressed: () {
-                            selectImages();
-                          },
-                          child: Text('Select Images'),
-                        ),
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: GridView.builder(
-                                itemCount: imageFileList!.length,
-                                gridDelegate:
-                                    SliverGridDelegateWithFixedCrossAxisCount(
-                                        crossAxisCount: 3),
-                                itemBuilder: (BuildContext context, int index) {
-                                  return Image.file(
-                                    File(imageFileList![index].path),
-                                    fit: BoxFit.cover,
-                                  );
-                                }),
-                          ),
-                        ),
-                        ElevatedButton(
-                            style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all(
-                                    Colors.indigoAccent),
-                                shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        side: BorderSide(
-                                            color: Colors.grey
-                                                .withOpacity(0.3))))),
-                            onPressed: () {
-                              if (imageFileList!.length != 0) {
-                                _isLoading2 = true;
-                                uploadPastActImgs();
-                              } else {
-                                AppUtils.showWarning(
-                                    context, "Does not Select photos", "");
-                              }
-                            },
-                            child: Text(
-                              "Upload Photos",
-                              style: TextStyle(color: Colors.white),
-                            )),
-                      ],
-                    ),
-                  ));
-        });
-  }
-
-  uploadPastActImgs() {
-    uploadPastActPhotos ImgDetails = uploadPastActPhotos();
-    ImgDetails.childId = CID;
-    ImgDetails.markavailId = MID;
-    if (listBase64Images.length == 0) {
-      ImgDetails.image = [];
-    } else {
-      // ImgDetails.image = ["data:image/jpeg;base64,${listBase64Images}"];
-      ImgDetails.image = listBase64Images;
-    }
-    print("object:${jsonEncode(ImgDetails)}");
-    final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.uploadPastActPhoto(ImgDetails).then((response) {
-      if (response.status == true) {
-        // Navigator.of(context).push(MaterialPageRoute(
-        //     builder: (BuildContext context) => ChildDetails()));
-        setState(() {
-          _isLoading2 = false;
-          Navigator.pop(context);
-          _GetPastAct();
-        });
-      } else {
-        functions.createSnackBar(context, response.message.toString());
-        print("error");
-      }
-    });
   }
 }
 

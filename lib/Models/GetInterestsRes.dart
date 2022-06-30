@@ -33,6 +33,7 @@ class Data {
   int? fromAge;
   int? toAge;
   String? country;
+  String? interestImage;
   String? createdDate;
 
   Data(
@@ -41,6 +42,7 @@ class Data {
       this.fromAge,
       this.toAge,
       this.country,
+      this.interestImage,
       this.createdDate});
 
   Data.fromJson(Map<String, dynamic> json) {
@@ -49,6 +51,7 @@ class Data {
     fromAge = json['from_age'];
     toAge = json['to_age'];
     country = json['country'];
+    interestImage = json['interest_image'];
     createdDate = json['created_date'];
   }
 
@@ -59,6 +62,7 @@ class Data {
     data['from_age'] = this.fromAge;
     data['to_age'] = this.toAge;
     data['country'] = this.country;
+    data['interest_image'] = this.interestImage;
     data['created_date'] = this.createdDate;
     return data;
   }
