@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
@@ -550,7 +551,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                             ),
                                           ),
                                         );
-                                      } else {
+                                      } else if(index == 6) {
                                         return Container(
                                           padding: EdgeInsets.all(3),
                                           height: 40,
@@ -571,6 +572,10 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                             ),
                                           ),
                                         );
+                                      }
+                                      else 
+                                      {
+                                        return SizedBox();
                                       }
                                     })),
                               ),

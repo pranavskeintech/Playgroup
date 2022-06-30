@@ -782,7 +782,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               : AssetImage("assets/imgs/appicon.png") as ImageProvider),
                                                                     ),
                                                                   );
-                                                                } else {
+                                                                } else if (index == 5){
                                                                   return Container(
                                                                     padding:
                                                                         EdgeInsets
@@ -813,6 +813,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                     ),
                                                                   );
                                                                 }
+                                                                else
+                                                                {
+                                                                 return SizedBox();
+                                                                }
+
                                                               })),
                                                     ),
                                                     SizedBox(
