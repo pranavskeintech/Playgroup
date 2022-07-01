@@ -229,42 +229,38 @@ class _DashBoardState extends State<DashBoard> {
                     width: 3,
                   ),
                   InkWell(
-                        onTap: (){
-                         Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          NotificationScreen())).then((_) {
-  setState(() {
-  });
-});;
-                        },
-                        child: Container(
-                                        padding: EdgeInsets.only(left:5),
-                                        // child: Image.asset(
-                                        //   "assets/images/Notification.png",
-                                        //   width: 20,
-                                        // )
-                                        child: Badge(
-                                          showBadge: Strings.notifictionCount == 0
-                          ? false
-                          : true,
-                                          badgeColor: Colors.red,
-                                          position: BadgePosition.topEnd(top: 15, end: 10),
-                                          borderRadius: BorderRadius.circular(20),
-                                          badgeContent: Text(
-                          "${allNotificationList != null ? Strings.notifictionCount : 0}",style: TextStyle(color: Colors.white,fontSize: 8),),
-                                          child: Image.asset(
-                        "assets/imgs/notification.png",
-                                                color: Colors.black.withOpacity(0.8),
-                      
-                        width: 30,
-                        height: 30,
-                                          ),
-                                        ),
-                                        // Icon(
-                                        //   Icons.circle_notifications,
-                                        //   color: Colors.white,
-                                        // )
-                  ),
+                    onTap: () {
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  NotificationScreen()))
+                          .then((_) {
+                        setState(() {});
+                      });
+                      ;
+                    },
+                    child: Container(
+                      padding: EdgeInsets.only(left: 5),
+                      // child: Image.asset(
+                      //   "assets/images/Notification.png",
+                      //   width: 20,
+                      // )
+                      child: Badge(
+                        showBadge: Strings.notifictionCount == 0 ? false : true,
+                        badgeColor: Colors.red,
+                        position: BadgePosition.topEnd(top: 15, end: 10),
+                        borderRadius: BorderRadius.circular(20),
+                        badgeContent: Text(
+                          "${allNotificationList != null ? Strings.notifictionCount : 0}",
+                          style: TextStyle(color: Colors.white, fontSize: 8),
+                        ),
+                        child: Image.asset(
+                          "assets/imgs/notification.png",
+                          color: Colors.black.withOpacity(0.8),
+                          width: 30,
+                          height: 30,
+                        ),
+                      ),
                       // Icon(
                       //   Icons.circle_notifications,
                       //   color: Colors.white,
@@ -274,7 +270,12 @@ class _DashBoardState extends State<DashBoard> {
                     //   Icons.circle_notifications,
                     //   color: Colors.white,
                     // )
-                  
+                  ),
+                  // Icon(
+                  //   Icons.circle_notifications,
+                  //   color: Colors.white,
+                  // )
+
                   IconButton(
                       onPressed: () {
                         Navigator.of(context).push(MaterialPageRoute(

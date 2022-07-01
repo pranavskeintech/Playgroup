@@ -842,20 +842,25 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                       mainAxisSpacing: 10.0,
                     ),
                     itemBuilder: (BuildContext context, int index) {
-                      return Container(
+                      return InkWell(
+                        onTap: () {
+                          print("object:$index");
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  picsFromGallery(
+                                      PastActPhotos: PastActPhotos,
+                                      currentPage: index)));
+                        },
                         child: Stack(
                           fit: StackFit.passthrough,
                           children: [
-                            GestureDetector(
-                              onTap: () {},
-                              child: Image.network(
-                                //images[index],
-                                Strings.imageUrl +
-                                    "past_photos/" +
-                                    (PastActPhotos![index].imageName ?? ""),
-                                fit: BoxFit.cover,
-                                colorBlendMode: BlendMode.softLight,
-                              ),
+                            Image.network(
+                              //images[index],
+                              Strings.imageUrl +
+                                  "past_photos/" +
+                                  (PastActPhotos![index].imageName ?? ""),
+                              fit: BoxFit.cover,
+                              colorBlendMode: BlendMode.softLight,
                             ),
                             DecoratedBox(
                               decoration: BoxDecoration(

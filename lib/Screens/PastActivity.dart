@@ -384,7 +384,9 @@ class _PastActivityState extends State<PastActivity> {
                                                 _getFromGallery(MID, CID);
                                               },
                                               child: Text(
-                                                  "Tap to Add photos for the activity"))),
+                                                  "Tap to Add photos for the activity",
+                                                  style: TextStyle(
+                                                      fontSize: 13)))),
                                   // Padding(
                                   //     padding: const EdgeInsets.only(
                                   //         top: 10, bottom: 10),

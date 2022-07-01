@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:html';
 
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
@@ -551,7 +550,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                             ),
                                           ),
                                         );
-                                      } else if(index == 6) {
+                                      } else if (index == 6) {
                                         return Container(
                                           padding: EdgeInsets.all(3),
                                           height: 40,
@@ -572,9 +571,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                             ),
                                           ),
                                         );
-                                      }
-                                      else 
-                                      {
+                                      } else {
                                         return SizedBox();
                                       }
                                     })),
@@ -671,10 +668,16 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                           crossAxisAlignment:
                                               CrossAxisAlignment.center,
                                           children: [
-                                            Text(
-                                              "Are you sure to pause the availability ?",
-                                              textAlign: TextAlign.center,
-                                            ),
+                                            availabilityData[0].status !=
+                                                    "pause"
+                                                ? Text(
+                                                    "Are you sure to pause the availability ?",
+                                                    textAlign: TextAlign.center,
+                                                  )
+                                                : Text(
+                                                    "Are you sure to resume the availability ?",
+                                                    textAlign: TextAlign.center,
+                                                  ),
                                             SizedBox(height: 20),
                                             Row(
                                               children: [

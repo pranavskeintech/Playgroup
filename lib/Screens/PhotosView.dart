@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
@@ -92,7 +93,8 @@ class _photosViewState extends State<photosView> {
                               onTap: (() {
                                 Navigator.of(context).push(MaterialPageRoute(
                                     builder: (BuildContext context) => picView(
-                                        imageFileList: widget.imageFileList)));
+                                        imageFileList: widget.imageFileList,
+                                        CurrentPosition: index)));
                               }),
                               child: Image.file(
                                 File(widget.imageFileList![index].path),
@@ -212,7 +214,9 @@ class _photosViewState extends State<photosView> {
 
 class picView extends StatefulWidget {
   List<XFile>? imageFileList;
-  picView({Key? key, this.imageFileList}) : super(key: key);
+  int? CurrentPosition;
+  picView({Key? key, this.imageFileList, this.CurrentPosition})
+      : super(key: key);
 
   @override
   State<picView> createState() => _picViewState();
@@ -222,8 +226,8 @@ class _picViewState extends State<picView> {
   final picker = ImagePicker();
   late Future<PickedFile?> pickedFile = Future.value(null);
 
-  final _controller = PageController();
-  int _currentPage = 0;
+  // final _controller = PageController();
+  // int _currentPage = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -246,7 +250,10 @@ class _picViewState extends State<picView> {
               flex: 1,
               child: PageView.builder(
                 physics: BouncingScrollPhysics(),
-                controller: _controller,
+                controller: PageController(
+                    initialPage: widget.CurrentPosition!,
+                    keepPage: true,
+                    viewportFraction: 1),
                 itemCount: widget.imageFileList!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Column(
@@ -268,7 +275,80 @@ class _picViewState extends State<picView> {
                     ],
                   );
                 },
-                onPageChanged: (value) => setState(() => _currentPage = value),
+                //onPageChanged: (value) => setState(() => _currentPage = value),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class picsFromGallery extends StatefulWidget {
+  List<imgData>? PastActPhotos;
+  int? currentPage;
+  picsFromGallery({Key? key, this.PastActPhotos, this.currentPage})
+      : super(key: key);
+
+  @override
+  State<picsFromGallery> createState() => _picsFromGalleryState();
+}
+
+class _picsFromGalleryState extends State<picsFromGallery> {
+  //final _controller = PageController();
+  //int _currentPage = 1;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black87,
+      body: SafeArea(
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 20, right: 25),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: GestureDetector(
+                    onTap: (() {
+                      Navigator.pop(context);
+                    }),
+                    child: Icon(Icons.clear, size: 35, color: Colors.white)),
+              ),
+            ),
+            Expanded(
+              flex: 1,
+              child: PageView.builder(
+                physics: BouncingScrollPhysics(),
+                controller: PageController(
+                    initialPage: widget.currentPage!,
+                    keepPage: true,
+                    viewportFraction: 1),
+                itemCount: widget.PastActPhotos!.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      //Spacer(flex: 1),
+
+                      Padding(
+                        padding: const EdgeInsets.all(36.0),
+                        child: Image.network(
+                          Strings.imageUrl +
+                              "past_photos/" +
+                              (widget.PastActPhotos![index].imageName ?? ""),
+                          fit: BoxFit.cover,
+                          colorBlendMode: BlendMode.softLight,
+                        ),
+                      ),
+                      // Spacer(
+                      //   flex: 2,
+                      // ),
+                      //Spacer(),
+                    ],
+                  );
+                },
+                //onPageChanged: (value) => setState(() => _currentPage = value),
               ),
             ),
           ],
