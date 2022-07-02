@@ -1,3 +1,4 @@
+
 import 'package:dio/dio.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
@@ -123,6 +124,10 @@ abstract class ApiService {
   Future<CommonRes> deleteFriendRequest(
       @Path("user_id") int ChildID, @Path("otherChild_id") int otherChildID);
 
+  @DELETE("comment/deletelike/{child_id}/{markavail_id}")
+  Future<CommonRes> unLike(
+      @Path("child_id") int ChildID, @Path("markavail_id") int markavailId);
+
   @POST("user/addchild")
   Future<CommonRes> AddChild2(@Body() AddChildReq2 body);
 
@@ -225,6 +230,10 @@ abstract class ApiService {
   Future<GetNotificationListRes> GetNotificationList(
       @Path("ChildID") int ChildID);
 
+  @PUT("user/update_notification_status")
+  Future<CommonRes> updateNotificationstatus(
+      @Body() CommonReq body);
+
 ///////////  Groups /////////////////
   @POST("groups/create/{ChildID}")
   Future<CreateGroupRes> CreateGroup(
@@ -272,6 +281,9 @@ abstract class ApiService {
 
   @POST("mark/add_past_photos")
   Future<CommonRes> uploadPastActPhoto(@Body() uploadPastActPhotos body);
+
+  @POST("comment/addlike")
+  Future<CommonRes> addLike(@Body() CommonReq body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

@@ -3,10 +3,12 @@ import 'dart:math';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/PastActivitiesRes.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/Comments.dart';
 import 'package:playgroup/Screens/PastActivityDetailView.dart';
 import 'package:galleryimage/galleryimage.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
@@ -88,6 +90,40 @@ class _PastActivityState extends State<PastActivity> {
           _ShowNoData = true;
           _isLoading = false;
         });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+  addLike(markavailId) {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    CommonReq req = CommonReq();
+    req.childId = Strings.SelectedChild;
+    req.markavailId = markavailId;
+
+    print(jsonEncode(req));
+    api.addLike(req).then((response) {
+      if (response.status == true) {
+        print("Like added successfully");
+        _GetPastAct();
+      
+      } else {
+        print("unable to add like");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+  unLike(markavailId) {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    
+    api.unLike(Strings.SelectedChild,markavailId).then((response) {
+      if (response.status == true) {
+        print("Like deleted successfully");
+        _GetPastAct();
+      
+      } else {
+        print("unable to add dislike");
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -435,7 +471,16 @@ class _PastActivityState extends State<PastActivity> {
                                             });
                                           },
                                           onTap: () {
-                                            setState(() {});
+                                           if( PastActData![index].liked == 0)
+                                           {
+                                            addLike(PastActData![index].markavailId);
+
+                                           }
+                                           else
+                                           {
+                                            unLike(PastActData![index].markavailId);
+
+                                           }
                                           },
                                           child: Image.asset(
                                             "assets/imgs/Like2.png",
@@ -445,25 +490,32 @@ class _PastActivityState extends State<PastActivity> {
                                         ),
                                         GestureDetector(
                                           onTap: (() {}),
-                                          child: Text("5 likes",
+                                          child: Text("${PastActData![index].likeCount} likes",
                                               style: TextStyle(
                                                   fontSize: 8,
                                                   color: Colors.black87)),
                                         ),
                                       ],
                                     ),
-                                    Column(
-                                      children: [
-                                        Image.asset(
-                                          "assets/imgs/Comments.png",
-                                          width: 60,
-                                          height: 60,
-                                        ),
-                                        Text("3 comments",
-                                            style: TextStyle(
-                                                fontSize: 8,
-                                                color: Colors.black87)),
-                                      ],
+                                    InkWell(
+                                      onTap: (){
+                                        print(PastActData![index].markavailId);
+                                        Navigator.of(context).push(
+                        MaterialPageRoute(builder: (context) => Comments(markAvailId: PastActData![index].markavailId,profile: PastActData![index].profile!,childName: PastActData![index].childName,categoryName: PastActData![index].categoryName,activityName: PastActData![index].activitiesName,)));
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Image.asset(
+                                            "assets/imgs/Comments.png",
+                                            width: 60,
+                                            height: 60,
+                                          ),
+                                          Text("${PastActData![index].commentCount} comments",
+                                              style: TextStyle(
+                                                  fontSize: 8,
+                                                  color: Colors.black87)),
+                                        ],
+                                      ),
                                     ),
                                     Column(
                                       children: [
@@ -472,10 +524,10 @@ class _PastActivityState extends State<PastActivity> {
                                           width: 60,
                                           height: 60,
                                         ),
-                                        Text("3 share",
-                                            style: TextStyle(
-                                                fontSize: 8,
-                                                color: Colors.black87)),
+                                        // Text("3 share",
+                                        //     style: TextStyle(
+                                        //         fontSize: 8,
+                                        //         color: Colors.black87)),
                                       ],
                                     ),
                                     Expanded(

@@ -2,8 +2,9 @@ class GetNotificationListRes {
   bool? status;
   String? message;
   List<Data>? data;
+  int? unreadNotification;
 
-  GetNotificationListRes({this.status, this.message, this.data});
+  GetNotificationListRes({this.status, this.message, this.data, this.unreadNotification});
 
   GetNotificationListRes.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -14,12 +15,14 @@ class GetNotificationListRes {
         data!.add(new Data.fromJson(v));
       });
     }
+    unreadNotification = json['total_unread'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['status'] = this.status;
     data['message'] = this.message;
+    data['total_unread'] = this.unreadNotification;
     if (this.data != null) {
       data['data'] = this.data!.map((v) => v.toJson()).toList();
     }

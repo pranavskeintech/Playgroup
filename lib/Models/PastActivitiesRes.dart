@@ -38,6 +38,9 @@ class Data {
   String? location;
   int? activitiesId;
   int? sportId;
+  int? likeCount;
+  int? commentCount;
+  int? liked;
   String? activityStatus;
   String? status;
   String? createdDate;
@@ -54,6 +57,9 @@ class Data {
   Data(
       {this.markavailId,
       this.parentId,
+      this.likeCount,
+      this.commentCount,
+      this.liked,
       this.childId,
       this.dateon,
       this.fromTime,
@@ -78,6 +84,9 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     markavailId = json['markavail_id'];
     parentId = json['parent_id'];
+    likeCount = json['like_count'];
+    commentCount = json['comment_count'];
+    liked = json['liked'];
     childId = json['child_id'];
     dateon = json['dateon'];
     fromTime = json['from_time'];
@@ -109,6 +118,9 @@ class Data {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['markavail_id'] = this.markavailId;
     data['parent_id'] = this.parentId;
+    data['like_count'] = this.likeCount;
+    data['comment_count'] = this.commentCount;
+    data['liked'] = this.liked;
     data['child_id'] = this.childId;
     data['dateon'] = this.dateon;
     data['from_time'] = this.fromTime;
