@@ -108,6 +108,12 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
       confirmText: "CONFIRM",
       // cancelText: "NOT NOW",
       helpText: "SELECT TIME",
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
 
     if (ChoosenTime1 != null) {
@@ -125,7 +131,13 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
         initialEntryMode: TimePickerEntryMode.dial,
         confirmText: "CONFIRM",
         // cancelText: "NOT NOW",
-        helpText: "SELECT TIME");
+        helpText: "SELECT TIME",
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },);
 
     if (ChoosenTime2 != null) {
       setState(() {

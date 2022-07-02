@@ -85,10 +85,16 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
       confirmText: "CONFIRM",
       // cancelText: "NOT NOW",
       helpText: "SELECT TIME",
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
 
     if (ChoosenTime1 != null) {
-     // if(ChoosenTime1.difference(TimeOfDay.now()).isNegative)
+      // if(ChoosenTime1.difference(TimeOfDay.now()).isNegative)
       setState(() {
         // String time1 = "${ChoosenTime1.hour}:${ChoosenTime1.minute}";
         _FromTimeController.text = ChoosenTime1.format(context);
@@ -129,12 +135,19 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
 
   _selectTOTime() async {
     final ChoosenTime2 = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay.now(),
-        initialEntryMode: TimePickerEntryMode.dial,
-        confirmText: "CONFIRM",
-        // cancelText: "NOT NOW",
-        helpText: "SELECT TIME");
+      context: context,
+      initialTime: TimeOfDay.now(),
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      // cancelText: "NOT NOW",
+      helpText: "SELECT TIME",
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
+    );
 
     if (ChoosenTime2 != null) {
       setState(() {

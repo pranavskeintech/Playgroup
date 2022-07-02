@@ -561,7 +561,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                                       as ImageProvider),
                                         ),
                                       );
-                                    } else {
+                                    } else if (index == 5) {
                                       return Container(
                                         padding: EdgeInsets.all(2),
                                         height: 32,
@@ -584,6 +584,8 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                           ),
                                         ),
                                       );
+                                    } else {
+                                      return SizedBox();
                                     }
                                   })),
                         ),

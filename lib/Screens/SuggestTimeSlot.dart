@@ -64,6 +64,12 @@ class _SuggestTimeState extends State<SuggestTime> {
       confirmText: "CONFIRM",
       // cancelText: "NOT NOW",
       helpText: "SELECT TIME",
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },
     );
 
     if (ChoosenTime1 != null) {
@@ -81,7 +87,13 @@ class _SuggestTimeState extends State<SuggestTime> {
         initialEntryMode: TimePickerEntryMode.dial,
         confirmText: "CONFIRM",
         // cancelText: "NOT NOW",
-        helpText: "SELECT TIME");
+        helpText: "SELECT TIME",
+      builder: (BuildContext context, Widget? child) {
+        return MediaQuery(
+          data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+          child: child!,
+        );
+      },);
 
     if (ChoosenTime2 != null) {
       setState(() {
