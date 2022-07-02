@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:playgroup/Models/CommonReq.dart';
 import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
@@ -41,6 +42,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       print(response.status);
       if (response.status == true) {
         setState(() {
+          updateNotificationStatus();
           _isLoading = false;
           NotificationList = response.data!;
           for (int index = 0;
@@ -59,6 +61,26 @@ class _NotificationScreenState extends State<NotificationScreen> {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
         AppUtils.showError(context, "Unable to fetch deatils", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+  updateNotificationStatus() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    CommonReq req = CommonReq();
+    req.childId = Strings.SelectedChild;
+    api.updateNotificationstatus(req).then((response) async {
+      print(response.status);
+      if (response.status == true) {
+
+        print("notification read status updated successfully");
+        
+       
+
+      } else {
+        print("notification read status not updated.");
+        //functions.createSnackBar(context, response.message.toString());
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -167,13 +189,16 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                   // Strings.FriendNotification = true;
 
 
-                                  if(NotificationList![mainIndex].title!.contains("Mark"))
+                                  if(NotificationList![mainIndex].title!.contains("availability") || NotificationList![mainIndex].title!.contains("time"))
                                   {
-
-                                    print(NotificationList![mainIndex].markavailId);
+                                    if(!NotificationList![mainIndex].title!.contains("delete"))
+                                    {
+                                         print(NotificationList![mainIndex].markavailId);
                                     Navigator.of(context).push(MaterialPageRoute(
                                       builder: (BuildContext context) =>
                                           Own_Availability(markavailId: NotificationList![mainIndex].markavailId,fromAct: false,)));
+                                    }
+                                   
                                   }
                                   else
                                   {

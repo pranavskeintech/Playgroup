@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Models/CommentsRes.dart';
 
 mixin Strings {
   static bool availConfirm = false;
@@ -22,6 +23,9 @@ mixin Strings {
   static String appName = 'Play Group';
 
   static String imageUrl = "https://demo.emeetify.com:5890/";
+
+  static String socketUrl = 'https://demo.emeetify.com:6253/';
+
 
   static String parentName = '';
   static String parentemail = '';
@@ -66,6 +70,8 @@ mixin Strings {
   static String markAvailabiltylocations = "";
 
   static int? markAvailabiltycategory;
+  static List<CommentRes> comments = [];
+
 
   static int? markAvailabiltyTopic;
 
@@ -82,5 +88,6 @@ mixin Strings {
   static int ChoosedChild = 0;
 
   static int notifictionCount = 0;
+
 
 }

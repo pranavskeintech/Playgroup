@@ -120,17 +120,13 @@ class _DashBoardState extends State<DashBoard> {
           allNotificationList = response.data!;
         });
 
-        final prefs = await SharedPreferences.getInstance();
-        final int? counter = prefs.getInt('notificationCount');
-
+        
         setState(() {
-          Strings.notifictionCount =
-              (counter ?? 0) - allNotificationList!.length;
+          Strings.notifictionCount = response.unreadNotification ?? 0;
+              
         });
 
-        await prefs.setInt('notificationCount', allNotificationList!.length);
 
-        print("notifictionCount--> $notifictionCount");
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
