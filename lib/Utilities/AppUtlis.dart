@@ -213,7 +213,7 @@ class AppUtils {
         });
   }
 
-  static void showParticipant(context, List<Friendsdata> friendsdata) {
+  static void showParticipant(context, List<Friendsdata>? friendsdata) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -238,7 +238,7 @@ class AppUtils {
                 height: MediaQuery.of(context).size.height * 0.55,
                 width: MediaQuery.of(context).size.width * 0.8,
                 child: ListView.builder(
-                  itemCount: friendsdata.length,
+                  itemCount: friendsdata!.length,
                   itemBuilder: (context, index) {
                     return Column(
                       children: [

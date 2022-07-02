@@ -154,6 +154,7 @@ class Frndsdata {
   String? requestStatus;
   String? createdDate;
   String? childName;
+  String? profile;
 
   Frndsdata(
       {this.friendsId,
@@ -161,15 +162,17 @@ class Frndsdata {
       this.childFriendId,
       this.requestStatus,
       this.createdDate,
-      this.childName});
+      this.childName,
+      this.profile});
 
   Frndsdata.fromJson(Map<String, dynamic> json) {
     friendsId = json['friends_id'];
     childId = json['child_id'];
     childFriendId = json['child_friend_id'];
-    requestStatus = json['request_status'];
+    requestStatus = json['request_status']; 
     createdDate = json['created_date'];
     childName = json['child_name'];
+    profile = json['profile'];
   }
 
   Map<String, dynamic> toJson() {
@@ -180,6 +183,7 @@ class Frndsdata {
     data['request_status'] = this.requestStatus;
     data['created_date'] = this.createdDate;
     data['child_name'] = this.childName;
+    data['profile'] = this.profile;
     return data;
   }
 }

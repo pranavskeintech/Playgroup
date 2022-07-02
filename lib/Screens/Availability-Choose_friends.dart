@@ -47,6 +47,8 @@ class _Availability_choose_friendsState
   bool _isLoading = true;
 
   var FriendsId = [];
+
+  bool noMatchFound = false;
   _GetFriends() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetAcceptedFriendReq(Strings.SelectedChild).then((response) {
@@ -81,6 +83,11 @@ class _Availability_choose_friendsState
           .where((user) =>
               user.childName!.toLowerCase().contains(search.toLowerCase()))
           .toList();
+      if (_foundedUsers.length == 0) {
+        noMatchFound = true;
+      } else {
+        noMatchFound = false;
+      }
       print(_foundedUsers.length);
     });
   }
@@ -203,21 +210,32 @@ class _Availability_choose_friendsState
                 SizedBox(
                   height: 20,
                 ),
-                FriendsDatum!.length > 0
+                noMatchFound
                     ? Expanded(
-                        child: ListView.builder(
-                        itemCount: _foundedUsers.length,
-                        itemBuilder: (context, index) {
-                          return Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(bottom: 10),
-                                child: ListTile(
-                                  leading: Transform.translate(
-                                    offset: Offset(-16, 0),
-                                    child: CircleAvatar(
-                                      backgroundImage:
-                                          _foundedUsers[index].profile != "null"
+                        child: Column(
+                          children: [
+                            Center(
+                              child: Text("No Match Found"),
+                            ),
+                          ],
+                        ),
+                      )
+                    : FriendsDatum!.length > 0
+                        ? Expanded(
+                            child: ListView.builder(
+                            itemCount: _foundedUsers.length,
+                            itemBuilder: (context, index) {
+                              return Column(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 10),
+                                    child: ListTile(
+                                      leading: Transform.translate(
+                                        offset: Offset(-16, 0),
+                                        child: CircleAvatar(
+                                          backgroundImage: _foundedUsers[index]
+                                                      .profile !=
+                                                  "null"
                                               ? NetworkImage(Strings.imageUrl +
                                                   (_foundedUsers[index]
                                                           .profile ??
@@ -225,59 +243,61 @@ class _Availability_choose_friendsState
                                               : AssetImage(
                                                       "assets/imgs/appicon.png")
                                                   as ImageProvider,
-                                    ),
-                                  ),
-                                  title: Transform.translate(
-                                    offset: Offset(-16, 0),
-                                    child:
-                                        Text(_foundedUsers[index].childName!),
-                                  ),
-                                  trailing: Container(
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                          color: Colors.grey, width: 1),
-                                      borderRadius: BorderRadius.circular(3.0),
-                                    ),
-                                    width: 20,
-                                    height: 20,
-                                    child: Theme(
-                                      data: ThemeData(
-                                          unselectedWidgetColor: Colors.white),
-                                      child: Checkbox(
-                                        checkColor: Colors.green,
-                                        activeColor: Colors.transparent,
-                                        value: _isChecked?[index],
-                                        onChanged: (val) {
-                                          setState(
-                                            () {
-                                              if (val!) {
-                                                _isChecked?[index] = val;
-                                                FriendsId.add(
-                                                    _foundedUsers[index]
-                                                        .childId!);
-                                              } else {
-                                                _isChecked?[index] = val;
-                                                FriendsId.remove(
-                                                    _foundedUsers[index]
-                                                        .childId!);
-                                              }
+                                        ),
+                                      ),
+                                      title: Transform.translate(
+                                        offset: Offset(-16, 0),
+                                        child: Text(
+                                            _foundedUsers[index].childName!),
+                                      ),
+                                      trailing: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.grey, width: 1),
+                                          borderRadius:
+                                              BorderRadius.circular(3.0),
+                                        ),
+                                        width: 20,
+                                        height: 20,
+                                        child: Theme(
+                                          data: ThemeData(
+                                              unselectedWidgetColor:
+                                                  Colors.white),
+                                          child: Checkbox(
+                                            checkColor: Colors.green,
+                                            activeColor: Colors.transparent,
+                                            value: _isChecked?[index],
+                                            onChanged: (val) {
+                                              setState(
+                                                () {
+                                                  if (val!) {
+                                                    _isChecked?[index] = val;
+                                                    FriendsId.add(
+                                                        _foundedUsers[index]
+                                                            .childId!);
+                                                  } else {
+                                                    _isChecked?[index] = val;
+                                                    FriendsId.remove(
+                                                        _foundedUsers[index]
+                                                            .childId!);
+                                                  }
+                                                },
+                                              );
                                             },
-                                          );
-                                        },
+                                          ),
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ),
-                              Divider(
-                                color: Colors.grey.withOpacity(0.4),
-                                height: 1,
-                              ),
-                            ],
-                          );
-                        },
-                      ))
-                    : Spacer(),
+                                  Divider(
+                                    color: Colors.grey.withOpacity(0.4),
+                                    height: 1,
+                                  ),
+                                ],
+                              );
+                            },
+                          ))
+                        : Spacer(),
                 Center(
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,

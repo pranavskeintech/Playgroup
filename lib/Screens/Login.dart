@@ -43,8 +43,15 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController forgotPassEmailID = TextEditingController();
 
   BuildContext? ctx;
- // FirebaseAuth _auth = FirebaseAuth.instance;
+  // FirebaseAuth _auth = FirebaseAuth.instance;
   //List<LoginData>? loginData;
+
+  bool _showPassword = false;
+  void _togglevisibility() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
 
   @override
   void initState() {
@@ -61,11 +68,8 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  
-
   googleSignIn(context) async {
     await _googleSignIn.signOut();
-
 
     try {
       GoogleSignInAccount googleSignInAccount =
@@ -73,11 +77,9 @@ class _LoginPageState extends State<LoginPage> {
       GoogleSignInAuthentication googleAuth =
           await googleSignInAccount.authentication;
 
-      
-
       print('access Token ${googleAuth.accessToken}');
       print('id Token ${googleAuth.idToken}');
-            
+
       print(googleSignInAccount.email);
       print('${googleSignInAccount.displayName}');
       print(googleSignInAccount.photoUrl);
@@ -150,7 +152,6 @@ class _LoginPageState extends State<LoginPage> {
   //   print(e);
   // }
 
-  
   Future signInWithFacebook() async {
     LoginResult loginResult = await FacebookAuth.instance
         .login(permissions: ["public_profile", "email"]);
@@ -303,13 +304,28 @@ class _LoginPageState extends State<LoginPage> {
                       child: Align(
                         alignment: Alignment.centerLeft,
                         child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 20, 0, 2),
-                          child: const Text(
-                            "Password",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600),
+                          margin: EdgeInsets.fromLTRB(0, 20, 10, 2),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              const Text(
+                                "Password",
+                                style: TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.w600),
+                              ),
+                              InkWell(
+                                  onTap: () {
+                                    _togglevisibility();
+                                  },
+                                  child: Text(
+                                    _showPassword
+                                        ? "Hide Password"
+                                        : "Show Password",
+                                    style: TextStyle(color: Colors.blue),
+                                  )),
+                            ],
                           ),
                         ),
                       ),
@@ -325,7 +341,23 @@ class _LoginPageState extends State<LoginPage> {
                               color: Colors.white, fontWeight: FontWeight.w600),
                           controller: _passwordController,
                           decoration: InputDecoration(
-                              suffixIcon: Image.asset(
+                              suffixIcon:
+                                  // Row(
+                                  //   mainAxisSize: MainAxisSize.min, // <-- important
+                                  //   children: [
+                                  //     TextButton(
+                                  //         onPressed: () {}, child: Text("Show")),
+                                  //     SizedBox(width: 8), // add a small gap
+                                  //     Image.asset(
+                                  //       "assets/imgs/pass.png",
+                                  //       // width: 10,
+                                  //       // height: 10,
+                                  //       color: Colors.grey,
+                                  //     ),
+                                  //     SizedBox(width: 15),
+                                  //   ],
+                                  // ),
+                                  Image.asset(
                                 "assets/imgs/pass.png",
                                 width: 10,
                                 height: 10,
@@ -338,7 +370,7 @@ class _LoginPageState extends State<LoginPage> {
                               // border: OutlineInputBorder(),
                               border: InputBorder.none),
                           keyboardType: TextInputType.visiblePassword,
-                          obscureText: true),
+                          obscureText: !_showPassword),
                       decoration: BoxDecoration(
                           color: Colors.grey.withOpacity(0.4),
                           //border: Border.all(color: const Color(0xFFf2f3f4)),
@@ -592,6 +624,7 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
   }
+
   updateDeviceId() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     deviceIdReq deviceReq = deviceIdReq();

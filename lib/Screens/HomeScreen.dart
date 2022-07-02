@@ -596,8 +596,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                   children: [
-                                                    Row(
+                                                    Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
                                                       children: [
+                                                        SizedBox(height: 5),
                                                         Text(
                                                           OtherMarkAvailabilityData![
                                                                   mainIndex]
@@ -605,18 +609,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           style: TextStyle(
                                                             fontSize: 11,
                                                           ),
+                                                          textAlign:
+                                                              TextAlign.start,
                                                           overflow: TextOverflow
                                                               .ellipsis,
                                                         ),
-                                                        SizedBox(width: 5),
-                                                        Container(
-                                                          width: 1,
-                                                          height: 10,
-                                                          color: Colors.red,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 5,
-                                                        ),
+                                                        SizedBox(height: 5),
+                                                        // Container(
+                                                        //   width: 1,
+                                                        //   height: 10,
+                                                        //   color: Colors.red,
+                                                        // ),
+                                                        // SizedBox(
+                                                        //   width: 5,
+                                                        // ),
                                                         Row(
                                                           children: [
                                                             Text(
@@ -782,7 +788,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                               : AssetImage("assets/imgs/appicon.png") as ImageProvider),
                                                                     ),
                                                                   );
-                                                                } else if (index == 5){
+                                                                } else if (index ==
+                                                                    5) {
                                                                   return Container(
                                                                     padding:
                                                                         EdgeInsets
@@ -812,12 +819,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       ),
                                                                     ),
                                                                   );
+                                                                } else {
+                                                                  return SizedBox();
                                                                 }
-                                                                else
-                                                                {
-                                                                 return SizedBox();
-                                                                }
-
                                                               })),
                                                     ),
                                                     SizedBox(

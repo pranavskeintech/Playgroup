@@ -583,10 +583,36 @@ class _ChildProfileState extends State<ChildProfile>
                         SizedBox(
                           height: 5,
                         ),
-                        Text(
-                          childInfo![0].school ?? "Add School Name",
-                          style: TextStyle(color: Colors.grey),
-                        ),
+                        (childInfo![0].school!.length == 0)
+                            ? TextButton(
+                                onPressed: () async {
+                                  await Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              EditChildDetails()));
+                                  setState(() {
+                                    _isLoading = true;
+                                    getProfile();
+                                  });
+                                },
+                                child: Row(
+                                  children: [
+                                    Text("Add School Name"),
+                                    SizedBox(
+                                      width: 5,
+                                    ),
+                                    Icon(
+                                      (childInfo![0].languages!.length == 0)
+                                          ? Icons.add_circle_outline_rounded
+                                          : Icons.edit_outlined,
+                                      size: 15,
+                                    )
+                                  ],
+                                ))
+                            : Text(
+                                childInfo![0].school!,
+                                style: TextStyle(color: Colors.grey),
+                              ),
                       ],
                     ),
                   ),
@@ -661,7 +687,12 @@ class _ChildProfileState extends State<ChildProfile>
               ),
             ),
             (childInfo![0].interests!.length == 0)
-                ? Text("Add Interests")
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("Add Interests")),
+                  )
                 : Container(
                     height: 80,
                     child: ListView.builder(
@@ -689,7 +720,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                     "null"
                                                 ? NetworkImage(
                                                     Strings.imageUrl +
-                                                        "sports/" +
+                                                        "interests/" +
                                                         (childInfo![0]
                                                             .interests![index]
                                                             .interestImage!))
@@ -770,18 +801,26 @@ class _ChildProfileState extends State<ChildProfile>
               ),
             ),
             (childInfo![0].languages!.length == 0)
-                ? Text("Add Languages")
-                : ChipsChoice<int>.multiple(
-                    spacing: 20,
-                    wrapped: true,
-                    verticalDirection: VerticalDirection.up,
-                    choiceStyle: C2ChoiceStyle(color: Colors.black),
-                    value: tag1,
-                    onChanged: (val) {},
-                    choiceItems: C2Choice.listFrom<int, String>(
-                      source: childInfo![0].languages!,
-                      value: (i, v) => i,
-                      label: (i, v) => v,
+                ? Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text("Add Languages")),
+                  )
+                : Align(
+                    alignment: Alignment.topLeft,
+                    child: ChipsChoice<int>.multiple(
+                      spacing: 20,
+                      wrapped: true,
+                      verticalDirection: VerticalDirection.up,
+                      choiceStyle: C2ChoiceStyle(color: Colors.black),
+                      value: tag1,
+                      onChanged: (val) {},
+                      choiceItems: C2Choice.listFrom<int, String>(
+                        source: childInfo![0].languages!,
+                        value: (i, v) => i,
+                        label: (i, v) => v,
+                      ),
                     ),
                   ),
           ],
@@ -971,7 +1010,7 @@ class _ChildProfileState extends State<ChildProfile>
                                               bottom: 25,
                                               child: CircleAvatar(
                                                 backgroundImage: AssetImage(
-                                                    "assets/imgs/add_friends.png"),
+                                                    "assets/imgs/group.png"),
                                                 radius: 10,
                                               ))
                                         ])
@@ -1060,7 +1099,7 @@ class _ChildProfileState extends State<ChildProfile>
                                       bottom: 25,
                                       child: CircleAvatar(
                                         backgroundImage: AssetImage(
-                                          "assets/imgs/add_friends.png",
+                                          "assets/imgs/group.png",
                                         ),
                                         radius: 10,
                                       ))
@@ -1285,113 +1324,124 @@ class _ChildProfileState extends State<ChildProfile>
     var width = MediaQuery.of(context).size.width;
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        //crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
-            child: Container(
-              height: 35,
-              child: TextField(
-                style: TextStyle(
-                  height: 2.5,
-                ),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3.0),
-                    borderSide: BorderSide.none,
-                  ),
-                  filled: true,
-                  fillColor: Colors.grey.withOpacity(0.3),
-                  hintText: "Search",
-                  prefixIcon: Icon(Icons.search),
-                ),
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: _FriendReqData!.length,
-              itemBuilder: (context, index) {
-                return ListTile(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (BuildContext context) => OtherChildProfile(
-                            otherChildID: _FriendReqData![index].childFriendId,
-                            chooseChildId: widget.chooseChildId)));
-                  },
-                  leading: CircleAvatar(
-                    backgroundImage: _FriendReqData![index].profile != "null"
-                        ? NetworkImage(Strings.imageUrl +
-                            (_FriendReqData![index].profile ?? ""))
-                        : AssetImage("assets/imgs/appicon.png")
-                            as ImageProvider,
-                    radius: 23,
-                  ),
-                  title: Text(
-                    _FriendReqData![index].childName!,
-                  ),
-                  trailing: Container(
-                    width: width * 0.5,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                          height: width * 0.06,
-                          width: width * 0.20,
-                          child: ElevatedButton(
-                              onPressed: () {
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (BuildContext context) => AddCoParent()));
-                                int FID = _FriendReqData![index].friendsId!;
-                                int CID = _FriendReqData![index].childId!;
-                                int CFID =
-                                    _FriendReqData![index].childFriendId!;
-                                _AcceptFriendReq(CID, CFID, FID);
-                              },
-                              child: Text("Accept",
-                                  style: TextStyle(fontSize: 11))),
+          (_FriendReqData!.length == 0)
+              ? Text("No Friend Request")
+              : Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 10, 20, 15),
+                  child: Container(
+                    height: 35,
+                    child: TextField(
+                      style: TextStyle(
+                        height: 2.5,
+                      ),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(3.0),
+                          borderSide: BorderSide.none,
                         ),
-                        Container(
-                          height: width * 0.06,
-                          width: width * 0.20,
-                          child: ElevatedButton(
-                              style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all<Color>(
-                                          Colors.white)),
-                              onPressed: () {
-                                int FID = _FriendReqData![index].friendsId!;
-                                int CID = _FriendReqData![index].childId!;
-                                int CFID =
-                                    _FriendReqData![index].childFriendId!;
-                                _CancelFriendReq(CID, CFID);
-                                // Navigator.of(context).push(MaterialPageRoute(
-                                //     builder: (BuildContext context) => AddCoParent()));
-                              },
-                              child: Text(
-                                "Reject",
-                                style: TextStyle(
-                                    color: Colors.black, fontSize: 11),
-                              )),
-                        ),
-                        Icon(
-                          Icons.more_vert,
-                          size: 18,
-                        )
-                      ],
+                        filled: true,
+                        fillColor: Colors.grey.withOpacity(0.3),
+                        hintText: "Search",
+                        prefixIcon: Icon(Icons.search),
+                      ),
                     ),
                   ),
-                );
-              },
-              separatorBuilder: (BuildContext context, int index) {
-                return Padding(
-                  padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                  child: Divider(
-                    thickness: 1,
+                ),
+          (_FriendReqData!.length == 0)
+              ? SizedBox()
+              : Expanded(
+                  child: ListView.separated(
+                    itemCount: _FriendReqData!.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (BuildContext context) =>
+                                  OtherChildProfile(
+                                      otherChildID:
+                                          _FriendReqData![index].childFriendId,
+                                      chooseChildId: widget.chooseChildId)));
+                        },
+                        leading: CircleAvatar(
+                          backgroundImage:
+                              _FriendReqData![index].profile != "null"
+                                  ? NetworkImage(Strings.imageUrl +
+                                      (_FriendReqData![index].profile ?? ""))
+                                  : AssetImage("assets/imgs/appicon.png")
+                                      as ImageProvider,
+                          radius: 23,
+                        ),
+                        title: Text(
+                          _FriendReqData![index].childName!,
+                        ),
+                        trailing: Container(
+                          width: width * 0.5,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                height: width * 0.06,
+                                width: width * 0.20,
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      // Navigator.of(context).push(MaterialPageRoute(
+                                      //     builder: (BuildContext context) => AddCoParent()));
+                                      int FID =
+                                          _FriendReqData![index].friendsId!;
+                                      int CID = _FriendReqData![index].childId!;
+                                      int CFID =
+                                          _FriendReqData![index].childFriendId!;
+                                      _AcceptFriendReq(CID, CFID, FID);
+                                    },
+                                    child: Text("Accept",
+                                        style: TextStyle(fontSize: 11))),
+                              ),
+                              Container(
+                                height: width * 0.06,
+                                width: width * 0.20,
+                                child: ElevatedButton(
+                                    style: ButtonStyle(
+                                        backgroundColor:
+                                            MaterialStateProperty.all<Color>(
+                                                Colors.white)),
+                                    onPressed: () {
+                                      int FID =
+                                          _FriendReqData![index].friendsId!;
+                                      int CID = _FriendReqData![index].childId!;
+                                      int CFID =
+                                          _FriendReqData![index].childFriendId!;
+                                      _CancelFriendReq(CID, CFID);
+                                      // Navigator.of(context).push(MaterialPageRoute(
+                                      //     builder: (BuildContext context) => AddCoParent()));
+                                    },
+                                    child: Text(
+                                      "Reject",
+                                      style: TextStyle(
+                                          color: Colors.black, fontSize: 11),
+                                    )),
+                              ),
+                              Icon(
+                                Icons.more_vert,
+                                size: 18,
+                              )
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    separatorBuilder: (BuildContext context, int index) {
+                      return Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                        child: Divider(
+                          thickness: 1,
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
-          ),
+                ),
         ],
       ),
     );
@@ -1448,80 +1498,85 @@ class _ChildProfileState extends State<ChildProfile>
     var width = MediaQuery.of(context).size.width;
     return Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: width * 0.9,
-            height: 35,
-            decoration: BoxDecoration(
-                color: Colors.grey.withOpacity(0.3),
-                borderRadius: BorderRadius.circular(5)),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    onChanged: (searchString) {
-                      onSearch3(searchString);
-                    },
-                    enabled: true,
-                    style: TextStyle(height: 1),
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: "Search",
-                      prefixIcon: Icon(Icons.search),
-                    ),
-                  ),
-                ),
-                Container(
-                  color: Colors.grey.withOpacity(0.3),
-                  width: 1,
-                  height: 20,
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade300,
-                    ),
-                    child: DropdownButton(
-                      underline: SizedBox(),
-                      // Initial Value
-                      value: dropdownvalue2,
-
-                      // Down Arrow Icon
-                      icon: const Icon(
-                        Icons.filter_alt_outlined,
-                        color: Colors.grey,
-                        size: 18,
-                      ),
-
-                      // Array list of items
-                      items: items2.map((String items2) {
-                        return DropdownMenuItem(
-                          value: items2,
-                          child: Text(
-                            items2,
-                            style: TextStyle(color: Colors.grey, fontSize: 12),
+          (_foundedActivity!.length == 0)
+              ? Text("No Activities")
+              : Container(
+                  width: width * 0.9,
+                  height: 35,
+                  decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(5)),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          onChanged: (searchString) {
+                            onSearch3(searchString);
+                          },
+                          enabled: true,
+                          style: TextStyle(height: 1),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: "Search",
+                            prefixIcon: Icon(Icons.search),
                           ),
-                        );
-                      }).toList(),
-                      // After selecting the desired option,it will
-                      // change button value to selected value
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          dropdownvalue2 = newValue!;
-                        });
-                      },
-                    ),
+                        ),
+                      ),
+                      Container(
+                        color: Colors.grey.withOpacity(0.3),
+                        width: 1,
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade300,
+                          ),
+                          child: DropdownButton(
+                            underline: SizedBox(),
+                            // Initial Value
+                            value: dropdownvalue2,
+
+                            // Down Arrow Icon
+                            icon: const Icon(
+                              Icons.filter_alt_outlined,
+                              color: Colors.grey,
+                              size: 18,
+                            ),
+
+                            // Array list of items
+                            items: items2.map((String items2) {
+                              return DropdownMenuItem(
+                                value: items2,
+                                child: Text(
+                                  items2,
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12),
+                                ),
+                              );
+                            }).toList(),
+                            // After selecting the desired option,it will
+                            // change button value to selected value
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                dropdownvalue2 = newValue!;
+                              });
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
-          ),
           SizedBox(
             height: 15,
           ),
-          (dropdownvalue2 == "FILTER")
-              ? _foundedActivity!.length > 0
+          (_foundedActivity!.length == 0)
+              ? SizedBox()
+              : (dropdownvalue2 == "FILTER")
                   ? Expanded(
                       child: ListView.builder(
                           itemCount: _foundedActivity!.length,
@@ -1648,9 +1703,14 @@ class _ChildProfileState extends State<ChildProfile>
                                           SizedBox(
                                             width: 3,
                                           ),
-                                          Text(
-                                            _foundedActivity![index].location!,
-                                            style: TextStyle(fontSize: 12),
+                                          Container(
+                                            width: 120,
+                                            child: Text(
+                                              _foundedActivity![index]
+                                                  .location!,
+                                              style: TextStyle(fontSize: 12),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -1661,8 +1721,7 @@ class _ChildProfileState extends State<ChildProfile>
                             );
                           })),
                     )
-                  : Spacer()
-              : SizedBox(),
+                  : SizedBox(),
 
 /////////////////  My Act //////////////
           (dropdownvalue2 == "MY ACTIVITIES")

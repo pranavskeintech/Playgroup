@@ -130,12 +130,12 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           body: Builder(builder: (BuildContext newContext) {
-            return OtherChildProfile(newContext);
+            return OtherChild(newContext);
           }),
         ));
   }
 
-  OtherChildProfile(BuildContext context) {
+  OtherChild(BuildContext context) {
     ctx = context;
 
     return _isLoading
@@ -281,563 +281,637 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                   SizedBox(
                     height: 15,
                   ),
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            "School",
-                            style: TextStyle(
-                                fontSize: 16, fontWeight: FontWeight.w600),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                          Text(
-                            childInfo![0].school ?? "School name not yet added",
-                            style: TextStyle(fontSize: 12),
-                          ),
-                          SizedBox(
-                            height: 15,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
-                    child: Divider(
-                      height: 2,
-                      color: Colors.grey.withOpacity(0.5),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(32, 0, 25, 0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Interests",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
+                  (childInfo![0].school! == "")
+                      ? SizedBox()
+                      : Align(
+                          alignment: Alignment.topLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                  "School",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Text(
+                                  childInfo![0].school ??
+                                      "School name not yet added",
+                                  style: TextStyle(fontSize: 12),
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                              ],
                             ),
-                            Container(
-                              margin: EdgeInsets.only(right: 10),
-                              child: TextButton(
-                                  onPressed: () {
-                                    (childInfo![0].interests!.length != 0)
-                                        ? _showInterests(ctx!)
-                                        : null;
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "View All",
-                                        style: TextStyle(
-                                            color: Colors.blue, fontSize: 12),
-                                      ),
-                                      Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        size: 15,
-                                        color: Colors.grey,
-                                      )
-                                    ],
-                                  )),
-                            )
-                          ],
+                          ),
                         ),
-                        SizedBox(
-                          height: 15,
+                  (childInfo![0].school! == "")
+                      ? SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
+                          child: Divider(
+                            height: 2,
+                            color: Colors.grey.withOpacity(0.5),
+                          ),
                         ),
-                        childInfo![0].interests!.length > 0
-                            ? SizedBox(
-                                height: 80,
-                                child: ListView.builder(
-                                    itemCount: childInfo![0].interests!.length,
-                                    scrollDirection: Axis.horizontal,
-                                    itemBuilder: ((context, index) {
-                                      if (index > 4) {
-                                        _limitImage = false;
-                                      }
-                                      return _limitImage
-                                          ? Column(
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.fromLTRB(
-                                                      4, 0, 4, 0),
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    // border: Border.all(
-                                                    //     width: 1.3,
-                                                    //     color: Color.fromARGB(255, 251, 132, 138)),
-                                                  ),
-                                                  padding: EdgeInsets.all(2),
-                                                  width: 41.5,
-                                                  height: 41.5,
-                                                  child: CircleAvatar(
-                                                      backgroundImage: childInfo![
-                                                                      0]
-                                                                  .interests![
-                                                                      index]
-                                                                  .interestImage! !=
-                                                              "null"
-                                                          ? NetworkImage(Strings
-                                                                  .imageUrl +
-                                                              "sports/" +
-                                                              (childInfo![0]
-                                                                  .interests![
-                                                                      index]
-                                                                  .interestImage!))
-                                                          : AssetImage(
-                                                                  "assets/imgs/appicon.png")
-                                                              as ImageProvider),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text(
-                                                    childInfo![0]
-                                                        .interests![index]
-                                                        .interestName!,
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        fontSize: 11.0))
-                                              ],
+                  (childInfo![0].interests!.length == 0)
+                      ? SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(32, 0, 25, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Interests",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(right: 10),
+                                    child: TextButton(
+                                        onPressed: () {
+                                          (childInfo![0].interests!.length != 0)
+                                              ? _showInterests(ctx!)
+                                              : null;
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "View All",
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 12),
+                                            ),
+                                            Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              size: 15,
+                                              color: Colors.grey,
                                             )
-                                          : Column(
-                                              children: [
-                                                Container(
-                                                  margin: EdgeInsets.fromLTRB(
-                                                      5, 0, 5, 0),
-                                                  decoration: BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    // border: Border.all(
-                                                    //     width: 1.3,
-                                                    //     color: Color.fromARGB(255, 251, 132, 138)),
-                                                  ),
-                                                  padding: EdgeInsets.all(2),
-                                                  width: 44,
-                                                  height: 44,
-                                                  child: CircleAvatar(
-                                                    backgroundColor: Colors.grey
-                                                        .withOpacity(0.3),
-                                                    child: Text(
-                                                      "+${childInfo![0].interests!.length - 3}",
-                                                      style: TextStyle(
-                                                          color: Colors.black,
-                                                          fontSize: 12),
-                                                    ), //Text
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text('',
-                                                    style: TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w300,
-                                                        fontSize: 11.0))
-                                              ],
-                                            );
-                                    })))
-                            : SizedBox(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text("Interests not yet added"),
-                                ),
-                              )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
-                    child: Divider(
-                      height: 2,
-                      color: Colors.grey.withOpacity(0.5),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 0, 5, 0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Friends",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
+                                          ],
+                                        )),
+                                  )
+                                ],
                               ),
-                              Container(
-                                margin: EdgeInsets.only(right: 10),
-                                child: TextButton(
-                                  onPressed: () {
-                                    (childInfo![0].frndsdata!.length != 0)
-                                        ? Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) => friendsList(
-                                                FID: childInfo![0].childId,
-                                              ),
-                                            ),
-                                          )
-                                        : null;
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "View All",
-                                        style: TextStyle(
-                                            color: Colors.blue, fontSize: 12),
-                                      ),
-                                      Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        size: 15,
-                                        color: Colors.grey,
-                                      )
-                                    ],
-                                  ),
-                                ),
+                              SizedBox(
+                                height: 15,
                               ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 15,
-                        ),
-                        childInfo![0].frndsdata!.length > 0
-                            ? SizedBox(
-                                child: GridView.builder(
-                                  itemCount:
-                                      (childInfo![0].frndsdata!.length < 4)
-                                          ? childInfo![0].frndsdata!.length
-                                          : 4,
-                                  scrollDirection: Axis.vertical,
-                                  physics: NeverScrollableScrollPhysics(),
-                                  gridDelegate:
-                                      SliverGridDelegateWithFixedCrossAxisCount(
-                                          crossAxisCount: 2,
-                                          crossAxisSpacing: 50.0,
-                                          childAspectRatio: 2.6),
-                                  shrinkWrap: true,
-                                  itemBuilder: ((context, index) {
-                                    return Padding(
-                                      padding:
-                                          EdgeInsets.only(top: 0, bottom: 14),
-                                      child: GestureDetector(
-                                        onTap: () {},
-                                        child: Container(
-                                          width: 150,
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Colors.grey
-                                                    .withOpacity(0.2),
-                                                width: 1.5,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(2)),
-                                          padding:
-                                              EdgeInsets.fromLTRB(12, 5, 0, 5),
-                                          child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                //margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  // border: Border.all(
-                                                  //     width: 1.3,
-                                                  //     color: Color.fromARGB(255, 251, 132, 138)),
-                                                ),
-                                                //padding: EdgeInsets.all(2),
-                                                width: 30,
-                                                height: 30,
-                                                child: CircleAvatar(
-                                                  backgroundImage: AssetImage(
-                                                    "assets/imgs/child2.jpg",
-                                                  ),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(
-                                                childInfo![0]
-                                                        .frndsdata![index]
-                                                        .childName ??
-                                                    "",
-                                                style: TextStyle(
-                                                    fontSize: 11.5,
-                                                    fontWeight:
-                                                        FontWeight.w500),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  }),
-                                ),
-                              )
-                            : SizedBox(
-                                child: Text("Fiends not yet added"),
-                              )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
-                    child: Divider(
-                      height: 2,
-                      color: Colors.grey.withOpacity(0.5),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          height: 15,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(12, 0, 5, 0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                "Availability",
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  (AllActivity!.length != 0)
-                                      ? Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                availabilityList(
-                                              FID: childInfo![0].childId,
-                                            ),
-                                          ),
-                                        )
-                                      : null;
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(right: 10),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        "View All",
-                                        style: TextStyle(
-                                            color: Colors.blue, fontSize: 12),
-                                      ),
-                                      Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        size: 15,
-                                        color: Colors.grey,
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        AllActivity!.length > 0
-                            ? SizedBox(
-                                height: 180,
-                                child: ListView.builder(
-                                    itemCount: AllActivity!.length,
-                                    physics: NeverScrollableScrollPhysics(),
-                                    itemBuilder: ((context, index) {
-                                      return index > 1
-                                          ? SizedBox()
-                                          : Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: 0, bottom: 14),
-                                              child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 18,
-                                                    horizontal: 20),
-                                                decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            3),
-                                                    color: Colors.grey
-                                                        .withOpacity(0.2)),
-                                                child: Column(
-                                                  children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              AllActivity![
-                                                                          index]
-                                                                      .categoryName! +
-                                                                  " - ",
-                                                              style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            Container(
-                                                              width: 70,
-                                                              child: Text(
-                                                                AllActivity![
-                                                                        index]
-                                                                    .activitiesName!,
-                                                                style: TextStyle(
-                                                                    fontSize:
-                                                                        12,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
-                                                                overflow:
-                                                                    TextOverflow
-                                                                        .ellipsis,
-                                                              ),
-                                                            ),
-                                                          ],
+                              childInfo![0].interests!.length > 0
+                                  ? SizedBox(
+                                      height: 80,
+                                      child: ListView.builder(
+                                          itemCount:
+                                              childInfo![0].interests!.length,
+                                          scrollDirection: Axis.horizontal,
+                                          itemBuilder: ((context, index) {
+                                            if (index > 4) {
+                                              _limitImage = false;
+                                            }
+                                            return _limitImage
+                                                ? Column(
+                                                    children: [
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                4, 0, 4, 0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          // border: Border.all(
+                                                          //     width: 1.3,
+                                                          //     color: Color.fromARGB(255, 251, 132, 138)),
                                                         ),
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              AllActivity![
-                                                                      index]
-                                                                  .dateon!,
-                                                              style: TextStyle(
-                                                                fontSize: 11,
-                                                              ),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            SizedBox(width: 5),
-                                                            Container(
-                                                              width: 1,
-                                                              height: 10,
-                                                              color: Colors.red,
-                                                            ),
-                                                            SizedBox(
-                                                              width: 5,
-                                                            ),
-                                                            Row(
-                                                              children: [
-                                                                Text(
-                                                                  AllActivity![
-                                                                              index]
-                                                                          .fromTime!
-                                                                          .replaceAll(
-                                                                              ' PM',
-                                                                              '')
-                                                                          .replaceAll(
-                                                                              ' AM',
-                                                                              '') +
-                                                                      " - ",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          11),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                                Text(
-                                                                  AllActivity![
-                                                                          index]
-                                                                      .toTime!,
-                                                                  style:
-                                                                      TextStyle(
-                                                                    fontSize:
-                                                                        11,
-                                                                  ),
-                                                                  overflow:
-                                                                      TextOverflow
-                                                                          .ellipsis,
-                                                                ),
-                                                              ],
-                                                            )
-                                                          ],
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    SizedBox(
-                                                      height: 12,
-                                                    ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_on,
-                                                          size: 14,
-                                                          color: Colors.red,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 4,
-                                                        ),
-                                                        Text(
-                                                          "Gandhipuram, Coimbatore",
+                                                        padding:
+                                                            EdgeInsets.all(2),
+                                                        width: 41.5,
+                                                        height: 41.5,
+                                                        child: CircleAvatar(
+                                                            backgroundImage: childInfo![
+                                                                            0]
+                                                                        .interests![
+                                                                            index]
+                                                                        .interestImage! !=
+                                                                    "null"
+                                                                ? NetworkImage(Strings
+                                                                        .imageUrl +
+                                                                    "interests/" +
+                                                                    (childInfo![
+                                                                            0]
+                                                                        .interests![
+                                                                            index]
+                                                                        .interestImage!))
+                                                                : AssetImage(
+                                                                        "assets/imgs/appicon.png")
+                                                                    as ImageProvider),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text(
+                                                          childInfo![0]
+                                                              .interests![index]
+                                                              .interestName!,
                                                           style: TextStyle(
-                                                              fontSize: 12,
                                                               fontWeight:
                                                                   FontWeight
-                                                                      .w300),
+                                                                      .w300,
+                                                              fontSize: 11.0))
+                                                    ],
+                                                  )
+                                                : Column(
+                                                    children: [
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.fromLTRB(
+                                                                5, 0, 5, 0),
+                                                        decoration:
+                                                            BoxDecoration(
+                                                          shape:
+                                                              BoxShape.circle,
+                                                          // border: Border.all(
+                                                          //     width: 1.3,
+                                                          //     color: Color.fromARGB(255, 251, 132, 138)),
                                                         ),
-                                                      ],
+                                                        padding:
+                                                            EdgeInsets.all(2),
+                                                        width: 44,
+                                                        height: 44,
+                                                        child: CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.grey
+                                                                  .withOpacity(
+                                                                      0.3),
+                                                          child: Text(
+                                                            "+${childInfo![0].interests!.length - 3}",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                                fontSize: 12),
+                                                          ), //Text
+                                                        ),
+                                                      ),
+                                                      SizedBox(
+                                                        height: 5,
+                                                      ),
+                                                      Text('',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w300,
+                                                              fontSize: 11.0))
+                                                    ],
+                                                  );
+                                          })))
+                                  : SizedBox(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Text("Interests not yet added"),
+                                      ),
+                                    )
+                            ],
+                          ),
+                        ),
+                  (childInfo![0].interests!.length == 0)
+                      ? SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.fromLTRB(15.0, 0, 15, 5),
+                          child: Divider(
+                            height: 2,
+                            color: Colors.grey.withOpacity(0.5),
+                          ),
+                        ),
+                  (childInfo![0].frndsdata!.length == 0)
+                      ? SizedBox()
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                height: 15,
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(12, 0, 5, 0),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "Friends",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          (childInfo![0].frndsdata!.length != 0)
+                                              ? Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        friendsList(
+                                                      FID:
+                                                          childInfo![0].childId,
+                                                    ),
+                                                  ),
+                                                )
+                                              : null;
+                                        },
+                                        child: Row(
+                                          children: [
+                                            Text(
+                                              "View All",
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 12),
+                                            ),
+                                            Icon(
+                                              Icons.keyboard_arrow_down_rounded,
+                                              size: 15,
+                                              color: Colors.grey,
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
+                              childInfo![0].frndsdata!.length > 0
+                                  ? SizedBox(
+                                      child: GridView.builder(
+                                        itemCount: (childInfo![0]
+                                                    .frndsdata!
+                                                    .length <
+                                                4)
+                                            ? childInfo![0].frndsdata!.length
+                                            : 4,
+                                        scrollDirection: Axis.vertical,
+                                        physics: NeverScrollableScrollPhysics(),
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                                crossAxisCount: 2,
+                                                crossAxisSpacing: 50.0,
+                                                childAspectRatio: 2.6),
+                                        shrinkWrap: true,
+                                        itemBuilder: ((context, index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                top: 0, bottom: 14),
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                Navigator.of(context).push(MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        OtherChildProfile(
+                                                            otherChildID:
+                                                                childInfo![0]
+                                                                    .frndsdata![
+                                                                        index]
+                                                                    .childFriendId!,
+                                                            chooseChildId: widget
+                                                                .chooseChildId)));
+                                              },
+                                              child: Container(
+                                                width: 150,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      color: Colors.grey
+                                                          .withOpacity(0.2),
+                                                      width: 1.5,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            2)),
+                                                padding: EdgeInsets.fromLTRB(
+                                                    12, 5, 0, 5),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      //margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                                      decoration: BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        // border: Border.all(
+                                                        //     width: 1.3,
+                                                        //     color: Color.fromARGB(255, 251, 132, 138)),
+                                                      ),
+                                                      //padding: EdgeInsets.all(2),
+                                                      width: 30,
+                                                      height: 30,
+                                                      child: CircleAvatar(
+                                                        backgroundImage: childInfo![
+                                                                        0]
+                                                                    .frndsdata![
+                                                                        index]
+                                                                    .profile !=
+                                                                "null"
+                                                            ? NetworkImage(Strings
+                                                                    .imageUrl +
+                                                                (childInfo![0]
+                                                                        .frndsdata![
+                                                                            index]
+                                                                        .profile ??
+                                                                    ""))
+                                                            : AssetImage(
+                                                                    "assets/imgs/appicon.png")
+                                                                as ImageProvider,
+                                                        radius: 23,
+                                                      ),
+                                                    ),
+                                                    SizedBox(
+                                                      width: 10,
+                                                    ),
+                                                    Text(
+                                                      childInfo![0]
+                                                              .frndsdata![index]
+                                                              .childName ??
+                                                          "",
+                                                      style: TextStyle(
+                                                          fontSize: 11.5,
+                                                          fontWeight:
+                                                              FontWeight.w500),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            );
-                                    })),
-                              )
-                            : SizedBox(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text("Not yet Joined in Activities"),
-                                ),
-                              )
-                      ],
-                    ),
-                  ),
+                                            ),
+                                          );
+                                        }),
+                                      ),
+                                    )
+                                  : SizedBox(
+                                      child: Text("Fiends not yet added"),
+                                    )
+                            ],
+                          ),
+                        ),
+                  (AllActivity!.length == 0)
+                      ? SizedBox()
+                      : (childInfo![0].status! == "Accepted")
+                          ? Padding(
+                              padding:
+                                  const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
+                              child: Divider(
+                                height: 2,
+                                color: Colors.grey.withOpacity(0.5),
+                              ),
+                            )
+                          : SizedBox(),
+                  (AllActivity!.length == 0)
+                      ? SizedBox()
+                      : (childInfo![0].status! != "Accepted")
+                          ? SizedBox()
+                          : Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 20),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.fromLTRB(12, 0, 5, 0),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Availability",
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w600),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            (AllActivity!.length != 0)
+                                                ? Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          availabilityList(
+                                                        FID: childInfo![0]
+                                                            .childId,
+                                                      ),
+                                                    ),
+                                                  )
+                                                : null;
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "View All",
+                                                  style: TextStyle(
+                                                      color: Colors.blue,
+                                                      fontSize: 12),
+                                                ),
+                                                Icon(
+                                                  Icons
+                                                      .keyboard_arrow_down_rounded,
+                                                  size: 15,
+                                                  color: Colors.grey,
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 20,
+                                  ),
+                                  AllActivity!.length > 0
+                                      ? SizedBox(
+                                          height: 180,
+                                          child: ListView.builder(
+                                              itemCount: AllActivity!.length,
+                                              physics:
+                                                  NeverScrollableScrollPhysics(),
+                                              itemBuilder: ((context, index) {
+                                                return index > 1
+                                                    ? SizedBox()
+                                                    : Padding(
+                                                        padding:
+                                                            EdgeInsets.only(
+                                                                top: 0,
+                                                                bottom: 14),
+                                                        child: Container(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 18,
+                                                                  horizontal:
+                                                                      20),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          3),
+                                                              color: Colors.grey
+                                                                  .withOpacity(
+                                                                      0.2)),
+                                                          child: Column(
+                                                            children: [
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceBetween,
+                                                                children: [
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        AllActivity![index].categoryName! +
+                                                                            " - ",
+                                                                        style: TextStyle(
+                                                                            fontSize:
+                                                                                12,
+                                                                            color:
+                                                                                Colors.black,
+                                                                            fontWeight: FontWeight.w600),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                      Container(
+                                                                        width:
+                                                                            70,
+                                                                        child:
+                                                                            Text(
+                                                                          AllActivity![index]
+                                                                              .activitiesName!,
+                                                                          style: TextStyle(
+                                                                              fontSize: 12,
+                                                                              color: Colors.black,
+                                                                              fontWeight: FontWeight.w600),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  Row(
+                                                                    children: [
+                                                                      Text(
+                                                                        AllActivity![index]
+                                                                            .dateon!,
+                                                                        style:
+                                                                            TextStyle(
+                                                                          fontSize:
+                                                                              11,
+                                                                        ),
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
+                                                                      ),
+                                                                      SizedBox(
+                                                                          width:
+                                                                              5),
+                                                                      Container(
+                                                                        width:
+                                                                            1,
+                                                                        height:
+                                                                            10,
+                                                                        color: Colors
+                                                                            .red,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Text(
+                                                                            AllActivity![index].fromTime!.replaceAll(' PM', '').replaceAll(' AM', '') +
+                                                                                " - ",
+                                                                            style:
+                                                                                TextStyle(fontSize: 11),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                          Text(
+                                                                            AllActivity![index].toTime!,
+                                                                            style:
+                                                                                TextStyle(
+                                                                              fontSize: 11,
+                                                                            ),
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                          ),
+                                                                        ],
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              SizedBox(
+                                                                height: 12,
+                                                              ),
+                                                              Row(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Icon(
+                                                                    Icons
+                                                                        .location_on,
+                                                                    size: 14,
+                                                                    color: Colors
+                                                                        .red,
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 4,
+                                                                  ),
+                                                                  Text(
+                                                                    "Gandhipuram, Coimbatore",
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            12,
+                                                                        fontWeight:
+                                                                            FontWeight.w300),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                              })),
+                                        )
+                                      : SizedBox(
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Text(
+                                                "Not yet Joined in Activities"),
+                                          ),
+                                        )
+                                ],
+                              ),
+                            ),
                   SizedBox(
                     height: 20,
                   )
