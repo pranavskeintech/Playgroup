@@ -441,31 +441,31 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                           ))
                       : Container()
                 ]),
-                InkWell(
-                  onTap: () async {
-                    await Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => MapsPage()));
-                    // setState(() {
-                    //   _getAddress();
-                    // });
-                  },
-                  child: Row(
-                    children: const [
-                      Text(
-                        "Direction",
-                        style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 13,
-                            fontWeight: FontWeight.w600),
-                      ),
-                      Icon(
-                        Icons.directions,
-                        color: Colors.blue,
-                        size: 17,
-                      )
-                    ],
-                  ),
-                )
+                // InkWell(
+                //   onTap: () async {
+                //     await Navigator.of(context).push(
+                //         MaterialPageRoute(builder: (context) => MapsPage()));
+                //     // setState(() {
+                //     //   _getAddress();
+                //     // });
+                //   },
+                //   child: Row(
+                //     children: const [
+                //       Text(
+                //         "Direction",
+                //         style: TextStyle(
+                //             color: Colors.blue,
+                //             fontSize: 13,
+                //             fontWeight: FontWeight.w600),
+                //       ),
+                //       Icon(
+                //         Icons.directions,
+                //         color: Colors.blue,
+                //         size: 17,
+                //       )
+                //     ],
+                //   ),
+                // )
               ],
             ),
           ),

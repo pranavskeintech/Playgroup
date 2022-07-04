@@ -126,18 +126,19 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
 
   _selectTOTime() async {
     final ChoosenTime2 = await showTimePicker(
-        context: context,
-        initialTime: TimeOfDay(hour: 12, minute: 00),
-        initialEntryMode: TimePickerEntryMode.dial,
-        confirmText: "CONFIRM",
-        // cancelText: "NOT NOW",
-        helpText: "SELECT TIME",
+      context: context,
+      initialTime: TimeOfDay(hour: 12, minute: 00),
+      initialEntryMode: TimePickerEntryMode.dial,
+      confirmText: "CONFIRM",
+      // cancelText: "NOT NOW",
+      helpText: "SELECT TIME",
       builder: (BuildContext context, Widget? child) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
           child: child!,
         );
-      },);
+      },
+    );
 
     if (ChoosenTime2 != null) {
       setState(() {
@@ -481,22 +482,24 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                                                     as ImageProvider,
                                           ),
                                         );
-                                      } else {
+                                      } else if (index == 5) {
                                         return Container(
-                                          padding: EdgeInsets.all(3),
+                                          padding: EdgeInsets.all(3), 
                                           height: 40,
                                           width: 40,
                                           child: CircleAvatar(
                                             backgroundColor:
                                                 Colors.grey.withOpacity(0.3),
                                             child: Text(
-                                              "3+",
+                                              "+${availabilityData[0].friendsdata!.length - 5}",
                                               style: TextStyle(
                                                   color: Colors.black,
                                                   fontSize: 12),
                                             ), //Text
                                           ),
                                         );
+                                      } else {
+                                        return SizedBox();
                                       }
                                     })),
                               ),

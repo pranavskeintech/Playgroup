@@ -130,9 +130,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   size: 20,
                 ),
                 onTap: () => {
-                  // Navigator.of(context).push(
-                  //     MaterialPageRoute(builder: (context) => AddCoParent()))
-                  Navigator.of(context).pop()
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => AddCoParent()))
+                 // Navigator.of(context).pop()
                 },
               ),
               ListTile(
@@ -149,9 +149,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 ),
                 onTap: () {
                   Strings.DashboardPage = true;
-                  // Navigator.of(context).push(MaterialPageRoute(
-                  //     builder: (BuildContext context) => ChildDetails()));
-                  Navigator.of(context).pop();
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (BuildContext context) => ChildDetails()));
+                  //Navigator.of(context).pop();
                 },
                 trailing: Icon(
                   Icons.add_circle,
@@ -171,9 +171,9 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                 ),
                 onTap: () => {
                   print("object"),
-                  // Navigator.of(context).push(
-                  //     MaterialPageRoute(builder: (context) => SettingsPage())),
-                  Navigator.of(context).pop()
+                  Navigator.of(context).push(
+                      MaterialPageRoute(builder: (context) => SettingsPage())),
+                 // Navigator.of(context).pop()
                 },
               ),
               ListTile(

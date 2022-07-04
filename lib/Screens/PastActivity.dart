@@ -19,6 +19,7 @@ import 'package:social_share/social_share.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:playgroup/Screens/PhotosView.dart';
 
 class PastActivity extends StatefulWidget {
   const PastActivity({Key? key}) : super(key: key);
@@ -95,6 +96,7 @@ class _PastActivityState extends State<PastActivity> {
       print(onError.toString());
     });
   }
+
   addLike(markavailId) {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     CommonReq req = CommonReq();
@@ -106,7 +108,6 @@ class _PastActivityState extends State<PastActivity> {
       if (response.status == true) {
         print("Like added successfully");
         _GetPastAct();
-      
       } else {
         print("unable to add like");
       }
@@ -114,14 +115,14 @@ class _PastActivityState extends State<PastActivity> {
       print(onError.toString());
     });
   }
+
   unLike(markavailId) {
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    
-    api.unLike(Strings.SelectedChild,markavailId).then((response) {
+
+    api.unLike(Strings.SelectedChild, markavailId).then((response) {
       if (response.status == true) {
         print("Like deleted successfully");
         _GetPastAct();
-      
       } else {
         print("unable to add dislike");
       }
@@ -279,6 +280,7 @@ class _PastActivityState extends State<PastActivity> {
                                 children: [
                                   ListTile(
                                     isThreeLine: true,
+                                    contentPadding: EdgeInsets.all(0),
                                     leading:
                                         //  CircleAvatar(
                                         //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
@@ -407,58 +409,20 @@ class _PastActivityState extends State<PastActivity> {
                                               growable: false),
                                           titleGallery: "Playgroup",
                                         )
-                                      : Padding(
-                                          padding: const EdgeInsets.only(
-                                              top: 10, bottom: 10),
-                                          child: Center(
-                                            child: GestureDetector(
-                                              onTap: () async {
+                                      : Container(
+                                          //  padding: EdgeInsets.all(0),
+                                          child: TextButton(
+                                              onPressed: () {
                                                 MID = PastActData![index]
                                                     .markavailId;
-                                                CID =
-                                                    PastActData![index].childId;
-                                                await _getFromGallery();
-                                                setState(() {
-                                                  _GetPastAct();
-                                                });
+                                                CID = Strings.ChoosedChild;
+                                                //PastActData![index].childId;
+                                                _getFromGallery(MID, CID);
                                               },
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                    shape: BoxShape.rectangle,
-                                                    border: Border.all(
-                                                      width: 5.3,
-                                                      color:
-                                                          Strings.appThemecolor,
-                                                    ),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10)),
-                                                padding: EdgeInsets.all(2),
-                                                width: 110,
-                                                height: 110,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Icon(
-                                                      Icons
-                                                          .add_photo_alternate_outlined,
-                                                      size: 50,
-                                                      color:
-                                                          Strings.appThemecolor,
-                                                    ),
-                                                    Text(
-                                                      "Add Photos",
-                                                      style: TextStyle(
-                                                          color: Strings
-                                                              .appThemecolor),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
+                                              child: Text(
+                                                  "Tap to Add photos for the activity",
+                                                  style: TextStyle(
+                                                      fontSize: 13)))),
                                   Row(children: [
                                     Column(
                                       children: [
@@ -471,16 +435,14 @@ class _PastActivityState extends State<PastActivity> {
                                             });
                                           },
                                           onTap: () {
-                                           if( PastActData![index].liked == 0)
-                                           {
-                                            addLike(PastActData![index].markavailId);
-
-                                           }
-                                           else
-                                           {
-                                            unLike(PastActData![index].markavailId);
-
-                                           }
+                                            if (PastActData![index].liked ==
+                                                0) {
+                                              addLike(PastActData![index]
+                                                  .markavailId);
+                                            } else {
+                                              unLike(PastActData![index]
+                                                  .markavailId);
+                                            }
                                           },
                                           child: Image.asset(
                                             "assets/imgs/Like2.png",
@@ -490,7 +452,8 @@ class _PastActivityState extends State<PastActivity> {
                                         ),
                                         GestureDetector(
                                           onTap: (() {}),
-                                          child: Text("${PastActData![index].likeCount} likes",
+                                          child: Text(
+                                              "${PastActData![index].likeCount} likes",
                                               style: TextStyle(
                                                   fontSize: 8,
                                                   color: Colors.black87)),
@@ -498,10 +461,36 @@ class _PastActivityState extends State<PastActivity> {
                                       ],
                                     ),
                                     InkWell(
-                                      onTap: (){
+                                      onTap: () async {
                                         print(PastActData![index].markavailId);
-                                        Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => Comments(markAvailId: PastActData![index].markavailId,profile: PastActData![index].profile!,childName: PastActData![index].childName,categoryName: PastActData![index].categoryName,activityName: PastActData![index].activitiesName,)));
+                                        await Navigator.of(context)
+                                            .push(MaterialPageRoute(
+                                                builder: (context) => Comments(
+                                                      markAvailId:
+                                                          PastActData![index]
+                                                              .markavailId,
+                                                      profile:
+                                                          PastActData![index]
+                                                              .profile!,
+                                                      childName: (Strings
+                                                                  .SelectedChild ==
+                                                              PastActData![
+                                                                      index]
+                                                                  .childId!)
+                                                          ? "You"
+                                                          : PastActData![index]
+                                                              .childName,
+                                                      categoryName:
+                                                          PastActData![index]
+                                                              .categoryName,
+                                                      activityName:
+                                                          PastActData![index]
+                                                              .activitiesName,
+                                                    )));
+                                        setState(() {
+                                          _isLoading = true;
+                                          _GetPastAct();
+                                        });
                                       },
                                       child: Column(
                                         children: [
@@ -510,7 +499,8 @@ class _PastActivityState extends State<PastActivity> {
                                             width: 60,
                                             height: 60,
                                           ),
-                                          Text("${PastActData![index].commentCount} comments",
+                                          Text(
+                                              "${PastActData![index].commentCount} comments",
                                               style: TextStyle(
                                                   fontSize: 8,
                                                   color: Colors.black87)),
@@ -558,16 +548,23 @@ class _PastActivityState extends State<PastActivity> {
     );
   }
 
-  _getFromGallery() async {
-    final pickedFile = await _picker.pickMultiImage();
+  _getFromGallery(MID, CID) async {
+    final pickedFile = await _picker.pickMultiImage(imageQuality: 50);
     if (pickedFile!.isNotEmpty) {
       imageFileList!.addAll(pickedFile);
-      for (var file in imageFileList!) {
-        List<int> imageBytes = File(file.path).readAsBytesSync();
-        String base64Image = base64Encode(imageBytes);
-        listBase64Images.add("data:image/jpeg;base64,${base64Image}");
-      }
-      showImages();
+      // for (var file in imageFileList!) {
+      //   List<int> imageBytes = File(file.path).readAsBytesSync();
+      //   String base64Image = base64Encode(imageBytes);
+      //   listBase64Images.add("data:image/jpeg;base64,${base64Image}");
+      // }
+      //showImages();
+      await Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) =>
+              photosView(imageFileList: imageFileList, MID: MID, CID: CID)));
+      setState(() {
+        imageFileList = [];
+        _GetPastAct();
+      });
     }
     print("Image List Length:" + listBase64Images.toString());
     setState(() {});

@@ -11,7 +11,6 @@ import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
 
-
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({Key? key}) : super(key: key);
 
@@ -32,7 +31,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    Strings.notifictionCount =0;
+    Strings.notifictionCount = 0;
     WidgetsBinding.instance!.addPostFrameCallback((_) => GetNotificationList());
   }
 
@@ -45,18 +44,12 @@ class _NotificationScreenState extends State<NotificationScreen> {
           updateNotificationStatus();
           _isLoading = false;
           NotificationList = response.data!;
-          for (int index = 0;
-                      index < NotificationList!.length;
-                      index++) {
-                    dateFormate.add(DateFormat("dd-MM-yyyy").format(
-                        DateTime.parse(NotificationList![index].createdDate!)));
-                  }
-                                          print(dateFormate);
-
+          for (int index = 0; index < NotificationList!.length; index++) {
+            dateFormate.add(DateFormat("dd-MM-yyyy")
+                .format(DateTime.parse(NotificationList![index].createdDate!)));
+          }
+          print(dateFormate);
         });
-        
-
-
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -66,6 +59,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
       print(onError.toString());
     });
   }
+
   updateNotificationStatus() {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     CommonReq req = CommonReq();
@@ -73,11 +67,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     api.updateNotificationstatus(req).then((response) async {
       print(response.status);
       if (response.status == true) {
-
         print("notification read status updated successfully");
-        
-       
-
       } else {
         print("notification read status not updated.");
         //functions.createSnackBar(context, response.message.toString());
@@ -93,7 +83,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
         create: (context) => ApiService.create(),
         child: Scaffold(
           resizeToAvoidBottomInset: false,
-           appBar: AppBar(
+          appBar: AppBar(
               //  systemOverlayStyle: SystemUiOverlayStyle(statusBarColor: Colors.white),
               backgroundColor: Strings.appThemecolor,
               title: Text(
@@ -102,15 +92,25 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
               leading: IconButton(
-                  onPressed: () {
-                   // _scaffoldKey.currentState?.openDrawer();
-                   Navigator.of(context).pop();
-                  },
-                  icon: Icon(Icons.arrow_back,color: Colors.white,),
-            )),
-          body: Builder(builder: (BuildContext newContext) {
-            return NotificationScreen(newContext);
-          }),
+                onPressed: () {
+                  // _scaffoldKey.currentState?.openDrawer();
+                  Navigator.of(context).pop();
+                },
+                icon: Icon(
+                  Icons.arrow_back,
+                  color: Colors.white,
+                ),
+              )),
+          body: WillPopScope(
+            onWillPop: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                  builder: (BuildContext context) => DashBoard()));
+              throw '';
+            },
+            child: Builder(builder: (BuildContext newContext) {
+              return NotificationScreen(newContext);
+            }),
+          ),
         ));
   }
 
@@ -141,9 +141,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           dateFormate[mainIndex],
                           style: TextStyle(fontSize: 15, color: Colors.grey),
                         ));
-                  }
-                  else if(mainIndex == 0)
-                  {
+                  } else if (mainIndex == 0) {
                     separator = Container(
                         height: 20,
                         decoration: BoxDecoration(
@@ -163,7 +161,9 @@ class _NotificationScreenState extends State<NotificationScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(height: 10,),
+                        SizedBox(
+                          height: 10,
+                        ),
                         separator,
                         SizedBox(
                           height: 90,
@@ -188,26 +188,39 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                 onTap: () {
                                   // Strings.FriendNotification = true;
 
-
-                                  if(NotificationList![mainIndex].title!.contains("availability") || NotificationList![mainIndex].title!.contains("time"))
-                                  {
-                                    if(!NotificationList![mainIndex].title!.contains("delete"))
-                                    {
-                                         print(NotificationList![mainIndex].markavailId);
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          Own_Availability(markavailId: NotificationList![mainIndex].markavailId,fromAct: false,)));
+                                  if (NotificationList![mainIndex]
+                                          .title!
+                                          .contains("availability") ||
+                                      NotificationList![mainIndex]
+                                          .title!
+                                          .contains("time")) {
+                                    if (!NotificationList![mainIndex]
+                                        .title!
+                                        .contains("delete")) {
+                                      print(NotificationList![mainIndex]
+                                          .markavailId);
+                                      Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (BuildContext context) =>
+                                                  Own_Availability(
+                                                    markavailId:
+                                                        NotificationList![
+                                                                mainIndex]
+                                                            .markavailId,
+                                                    fromAct: false,
+                                                  )));
                                     }
-                                   
+                                  } else {
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                ShowOtherChildProfile(
+                                                  otherChildID:
+                                                      NotificationList![
+                                                              mainIndex]
+                                                          .otherChildId,
+                                                )));
                                   }
-                                  else
-                                  {
-                                      Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          ShowOtherChildProfile(otherChildID: NotificationList![mainIndex].otherChildId,)));
-                                  }
-
-                                  
                                 },
                                 title: Text(
                                   NotificationList![mainIndex].title!,

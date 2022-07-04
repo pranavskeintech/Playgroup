@@ -120,13 +120,9 @@ class _DashBoardState extends State<DashBoard> {
           allNotificationList = response.data!;
         });
 
-        
         setState(() {
           Strings.notifictionCount = response.unreadNotification ?? 0;
-              
         });
-
-
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
@@ -225,14 +221,12 @@ class _DashBoardState extends State<DashBoard> {
                     width: 3,
                   ),
                   InkWell(
-                    onTap: () {
-                      Navigator.of(context)
+                    onTap: () async {
+                      await Navigator.of(context)
                           .push(MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  NotificationScreen()))
-                          .then((_) {
+                                  NotificationScreen()));
                         setState(() {});
-                      });
                       ;
                     },
                     child: Container(
