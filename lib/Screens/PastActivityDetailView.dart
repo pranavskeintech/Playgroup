@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:intl/intl.dart';
@@ -18,6 +20,11 @@ import 'package:provider/provider.dart';
 import '../Utilities/Strings.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+// import 'package:ext_storage/ext_storage.dart';
+// import 'package:flutter/foundation.dart';
+// import 'package:open_file/open_file.dart';
+// import 'package:path_provider/path_provider.dart';
+// import 'package:permission_handler/permission_handler.dart';
 
 import 'EditAvailability_Time.dart';
 import 'G-Map.dart';
@@ -96,6 +103,110 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   List<String> listBase64Images = [];
 
   bool _isLoading2 = false;
+  String? filepath;
+
+  File? file;
+  String filePath = '';
+
+  // void _downloadfile(serverURL, filename) async {
+  //   String? path;
+  //   if (Platform.isAndroid) {
+  //     path = await ExtStorage.getExternalStoragePublicDirectory(
+  //         ExtStorage.DIRECTORY_DOWNLOADS);
+  //   } else if (Platform.isIOS) {
+  //     print("ios");
+  //     var vpath = await getApplicationDocumentsDirectory();
+  //     String pathStr = vpath.toString();
+  //     if (pathStr != null && pathStr.length >= 5) {
+  //       path = pathStr.substring(12, pathStr.length);
+  //     }
+  //     if (path != null && path.length >= 1) {
+  //       path = path.substring(0, path.length - 1);
+  //     }
+  //   }
+  //   AppUtils.showprogress();
+  //   AppUtils.showToast('Downloading', ctx);
+
+  //   var filenames = serverURL.split("/");
+  //   print("serverURL--> $serverURL");
+  //   //var fileName = filename;//filenames[1];
+  //   var extn = getFileExtension(serverURL);
+  //   var nospace = filename.replaceAll(' ', '');
+  //   var fileName = nospace + extn;
+  //   print("url--> $fileName");
+  //   String fullPath = "$path/$fileName";
+  //   setState(() {
+  //     filepath = fullPath;
+  //   });
+  //   var downloadedFile = await downloadFile(serverURL, fileName, path!);
+  //   print("downloaded file $downloadedFile");
+  //   openFile(downloadedFile);
+  // }
+
+  // Future<void> openFile(filePath) async {
+  //   await OpenFile.open(filePath);
+  // }
+
+  // Future<String> downloadFile(String url, String fileName, String dir) async {
+  //   HttpClient httpClient = new HttpClient();
+  //   File file;
+  //   String filePath = '';
+  //   String myUrl = '';
+
+  //   try {
+  //     myUrl = Strings.imageUrl + url;
+  //     var request = await httpClient.getUrl(Uri.parse(myUrl));
+  //     var response = await request.close();
+  //     print("printing url ---> $myUrl");
+  //     if (response.statusCode == 200) {
+  //       var bytes = await consolidateHttpClientResponseBytes(response);
+  //       filePath = '$dir/$fileName';
+  //       file = File(filePath);
+  //       await file.writeAsBytes(bytes);
+  //     } else if (response.statusCode == 404) {
+  //       AppUtils.dismissprogress();
+  //       AppUtils.showToast("Sorry, File  not Found !", ctx);
+  //     } else {
+  //       AppUtils.dismissprogress();
+  //       filePath = 'Error code: ' + response.statusCode.toString();
+  //     }
+  //   } catch (ex) {
+  //     AppUtils.dismissprogress();
+  //     filePath = 'Can not fetch url';
+  //   }
+  //   AppUtils.dismissprogress();
+  //   return filePath;
+  // }
+
+  // String getFileExtension(String fileName) {
+  //   var file = fileName.split(".");
+  //   var fileExt = file[1];
+  //   if (fileExt == "png" || fileExt == "PNG") {
+  //     return ".png";
+  //   } else if (fileExt == "jpg" ||
+  //       fileExt == "jepg" ||
+  //       fileExt == "jpeg" ||
+  //       fileExt == "JPG" ||
+  //       fileExt == "JEPG" ||
+  //       fileExt == "JPEG") {
+  //     return ".jpg";
+  //   } else if (fileExt == "pdf" || fileExt == "PDF") {
+  //     return ".pdf";
+  //   } else if (fileExt == "txt" || fileExt == "TXT") {
+  //     return ".txt";
+  //   } else if (fileExt == "ppt" || fileExt == "PPT") {
+  //     return ".ppt";
+  //   } else if (fileExt == "xls" ||
+  //       fileExt == "xlsx" ||
+  //       fileExt == "xlsm" ||
+  //       fileExt == "xlsb" ||
+  //       fileExt == "xltx") {
+  //     return ".xls";
+  //   } else {
+  //     print("File extnsion--> $fileExt");
+  //     return ".$fileExt";
+  //   }
+  // }
 
   String _getRandomImage(int width, int height) {
     var rng = new Random();
@@ -877,6 +988,63 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                               ),
                             ),
                             Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Align(
+                                alignment: Alignment.topRight,
+                                child: (PastActPhotos![index].childId ==
+                                        Strings.SelectedChild)
+                                    ? PopupMenuButton<String>(
+                                        child: Icon(
+                                          Icons.more_vert,
+                                          size: 20,
+                                          color: Theme.of(context).hintColor,
+                                        ),
+                                        //child:Text('Sort By'),
+                                        onSelected: (Data) {
+                                          handleClick(
+                                              Data,
+                                              PastActPhotos![index]
+                                                  .pastActivitiesImagesId!,
+                                              PastActPhotos![index].imageName!);
+                                        },
+                                        itemBuilder: (BuildContext context) {
+                                          return {'Save Image', 'Delete Image'}
+                                              .map((String choice) {
+                                            return PopupMenuItem<String>(
+                                              value: choice,
+                                              child: Text(choice),
+                                            );
+                                          }).toList();
+                                        },
+                                      )
+                                    : PopupMenuButton<String>(
+                                        child: Icon(
+                                          Icons.more_vert,
+                                          size: 20,
+                                          color: Theme.of(context).hintColor,
+                                        ),
+                                        //child:Text('Sort By'),
+                                        onSelected: (Data) {
+                                          handleClick2(
+                                            Data,
+                                            PastActPhotos![index]
+                                                .pastActivitiesImagesId!,
+                                          );
+                                        },
+                                        itemBuilder: (BuildContext context) {
+                                          return {
+                                            'Save Image',
+                                          }.map((String choice) {
+                                            return PopupMenuItem<String>(
+                                              value: choice,
+                                              child: Text(choice),
+                                            );
+                                          }).toList();
+                                        },
+                                      ),
+                              ),
+                            ),
+                            Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -897,8 +1065,14 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                                 as ImageProvider,
                                         radius: 10,
                                       ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
                                       Text(
-                                        PastActPhotos![index].childName!,
+                                        (PastActPhotos![index].childId ==
+                                                Strings.SelectedChild)
+                                            ? "You"
+                                            : PastActPhotos![index].childName!,
                                         style: TextStyle(
                                           fontSize: 12,
                                           color: Colors.white,
@@ -956,6 +1130,31 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   //         );
   //       });
   // }
+
+  handleClick(String value, int ImgID, String url) {
+    switch (value) {
+      case 'Save Image':
+        setState(() {
+          //_downloadfile(url);
+        });
+        break;
+      case 'Delete Image':
+        setState(() {
+          print("id:${ImgID}");
+          deletePastImg(ImgID);
+        });
+        break;
+    }
+  }
+
+  handleClick2(String value, int Fid) {
+    switch (value) {
+      case 'Save Image':
+        setState(() {});
+        break;
+    }
+  }
+
   _getFromGallery() async {
     final pickedFile = await _picker.pickMultiImage(imageQuality: 50);
     if (pickedFile!.isNotEmpty) {
@@ -1027,6 +1226,25 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
       }
     }
     print("Image List Length:" + imageFileList!.length.toString());
+  }
+
+  deletePastImg(ImgID) {
+    AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.DeletePastImgs(ImgID).then((response) {
+      print(response.status);
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToastTheme("Photo Successfully Deleted", ctx);
+        _GetPastActPhotos();
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "Unable to delete the photo", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 }
 

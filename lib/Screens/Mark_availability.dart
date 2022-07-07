@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Models/MarkAvailabilityReq.dart';
@@ -77,8 +78,20 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
   int? _SelectedChildId;
   int? index1;
 
+  var checkFrom = false;
+
+  TimeOfDay? ChoosenTime1;
+
+  DateTime? picked;
+
+  String? date1;
+
+  String? date3;
+
+  String? date2;
+
   _selectFromTime(context) async {
-    final ChoosenTime1 = await showTimePicker(
+    ChoosenTime1 = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
       initialEntryMode: TimePickerEntryMode.dial,
@@ -94,44 +107,75 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
     );
 
     if (ChoosenTime1 != null) {
-      // if(ChoosenTime1.difference(TimeOfDay.now()).isNegative)
       setState(() {
-        // String time1 = "${ChoosenTime1.hour}:${ChoosenTime1.minute}";
-        _FromTimeController.text = ChoosenTime1.format(context);
-      });
+        checkFrom = true;
 
-      setState(() {
-        if (ChoosenTime1.format(context) == _TOTimeController.text) {
+        if (ChoosenTime1!.format(context) == _TOTimeController.text) {
           AppUtils.showWarning(
               context, "The from and to time should not be same", "");
           _FromTimeController.text = "";
         } else {
-          _FromTimeController.text = ChoosenTime1.format(context);
+          print("1");
+          var currDate = DateTime.now();
+          var currDateTime =
+              "${currDate.day}-${currDate.month}-${currDate.year}";
+          print("NOW----->${now}");
+          if (picked != null) {
+            final now1 = (todaySelected) ? now : picked;
+
+            var startShift = DateTime(now1!.year, now1.month, now1.day,
+                ChoosenTime1!.hour, ChoosenTime1!.minute);
+            final endShift =
+                DateTime(now.year, now.month, now.day, now.hour, now.minute);
+            if (date1 == currDateTime) {
+              // print("date3:$date3");
+              // print("tom:$tom");
+              print("date1----->${date1}");
+              print("2");
+              if (startShift.isAfter(endShift)) {
+                print("3");
+                _FromTimeController.text = ChoosenTime1!.format(context);
+              } else {
+                print("4");
+                AppUtils.showWarning(context,
+                    "Time should not be below current date and time", "");
+                _FromTimeController.text = "";
+              }
+            }
+          } else if (todaySelected) {
+            print("today DATE ++++++++++++++++");
+
+            final now1 = now;
+
+            var startShift = DateTime(now1.year, now1.month, now1.day,
+                ChoosenTime1!.hour, ChoosenTime1!.minute);
+            final endShift =
+                DateTime(now.year, now.month, now.day, now.hour, now.minute);
+            if (date2 == currDateTime) {
+              // print("date3:$date3");
+              // print("tom:$tom");
+              print("date1----->${date2}");
+              print("2");
+              if (startShift.isAfter(endShift)) {
+                print("3");
+                _FromTimeController.text = ChoosenTime1!.format(context);
+              } else {
+                print("4");
+                AppUtils.showWarning(context,
+                    "Time should not be below current date and time", "");
+                _FromTimeController.text = "";
+              }
+            }
+          } else if (TommorowSelected) {
+            _FromTimeController.text = ChoosenTime1!.format(context);
+          }
+          // else {
+          //   _FromTimeController.text = ChoosenTime1!.format(context);
+          // }
         }
       });
     }
   }
-
-  // TimeOfDay selectedTime = TimeOfDay.now();
-  // _selectFromTime(BuildContext context) async {
-  //   final TimeOfDay? picked_s = await showTimePicker(
-  //       context: context,
-  //       initialTime: selectedTime,
-  //       builder: (BuildContext context, child) {
-  //         return MediaQuery(
-  //           data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
-  //           child: Text("data"),
-  //         );
-  //       });
-
-  //   if (picked_s != null && picked_s != selectedTime)
-  //     setState(() {
-  //       String time1 = "${picked_s.hour}-${picked_s.minute}";
-  //       _FromTimeController.text = time1;
-  //       selectedTime = picked_s;
-  //       print("object:$selectedTime");
-  //     });
-  // }
 
   _selectTOTime() async {
     final ChoosenTime2 = await showTimePicker(
@@ -156,14 +200,26 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               context, "The from and to time should not be same", "");
           _TOTimeController.text = "";
         } else {
-          _TOTimeController.text = ChoosenTime2.format(context);
+          var t = ChoosenTime1;
+          var startShift = DateTime(
+              picked!.year, picked!.month, picked!.day, t!.hour, t.minute);
+          var t2 = ChoosenTime2;
+          final endShift = DateTime(
+              picked!.year, picked!.month, picked!.day, t2.hour, t2.minute);
+          if ((startShift.isBefore(endShift))) {
+            _TOTimeController.text = ChoosenTime2.format(context);
+          } else {
+            AppUtils.showWarning(
+                context, "The to time should be greater than from time", "");
+            _TOTimeController.text = "";
+          }
         }
       });
     }
   }
 
   _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+    picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
@@ -171,8 +227,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
     );
     if (picked != null) {
       setState(() {
-        String date1 = "${picked.day}-${picked.month}-${picked.year}";
-        _dobController.text = date1;
+        date1 = "${picked!.day}-${picked!.month}-${picked!.year}";
+        _dobController.text = date1!;
         print("date selected");
         todaySelected = false;
         TommorowSelected = false;
@@ -386,8 +442,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        String date2 = "${now.day}-${now.month}-${now.year}";
-                        _dobController.text = date2;
+                        date2 = "${now.day}-${now.month}-${now.year}";
+                        _dobController.text = date2!;
                         print("date selected");
                         todaySelected = true;
                         TommorowSelected = false;
@@ -456,8 +512,8 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                   InkWell(
                     onTap: () {
                       setState(() {
-                        String date3 = "${tom.day}-${tom.month}-${tom.year}";
-                        _dobController.text = date3;
+                        date3 = "${tom.day}-${tom.month}-${tom.year}";
+                        _dobController.text = date3!;
                         print("date selected");
                         todaySelected = false;
                         TommorowSelected = true;
@@ -576,7 +632,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ),
               ),
               const SizedBox(
-                height: 15,
+                height: 10,
               ),
               const Text(
                 "Timing",
@@ -777,7 +833,14 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
 
                     child: GestureDetector(
                       onTap: () {
-                        _selectTOTime();
+                        setState(() {
+                          checkFrom ? _selectTOTime() : null;
+
+                          !checkFrom
+                              ? AppUtils.showWarning(context,
+                                  "Please check the From time first", "")
+                              : null;
+                        });
                       },
                       child: Container(
                         decoration: BoxDecoration(
@@ -816,7 +879,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ],
               ),
               SizedBox(
-                height: 15,
+                height: 10,
               ),
               Container(
                 child: const Text(
@@ -831,8 +894,9 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 height: 5,
               ),
               Container(
-                height: MediaQuery.of(context).size.height * 0.04,
+                height: MediaQuery.of(context).size.height * 0.07,
                 child: TextField(
+                  maxLength: 150,
                   //style: TextStyle(color: Colors.black),
                   controller: _DescriptionController,
                   decoration: InputDecoration(
@@ -850,7 +914,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ),
               ),
               SizedBox(
-                height: 15,
+                height: 10,
               ),
               Container(
                 child: const Text(
@@ -862,7 +926,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ),
               ),
               SizedBox(
-                height: 10,
+                height: 7,
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -899,7 +963,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                     ),
                   ),
                   SizedBox(
-                    width: 10,
+                    width: 7,
                   ),
                   Text(
                     "Open to anything",
@@ -908,7 +972,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ],
               ),
               SizedBox(
-                height: 15,
+                height: 10,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -937,14 +1001,14 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                 ],
               ),
               SizedBox(
-                height: 10,
+                height: 7,
               ),
               Text(
                 "Choose your location",
                 style: TextStyle(color: Colors.grey),
               ),
               SizedBox(
-                height: 10,
+                height: 7,
               ),
               Container(
                 //height: MediaQuery.of(context).size.height * 0.045,

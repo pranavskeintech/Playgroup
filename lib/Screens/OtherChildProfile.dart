@@ -763,140 +763,155 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                             EdgeInsets.only(
                                                                 top: 0,
                                                                 bottom: 14),
-                                                        child: Container(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 18,
-                                                                  horizontal:
-                                                                      20),
-                                                          decoration: BoxDecoration(
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          3),
-                                                              color: Colors.grey
-                                                                  .withOpacity(
-                                                                      0.2)),
-                                                          child: Column(
-                                                            children: [
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .spaceBetween,
-                                                                children: [
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        AllActivity![index].categoryName! +
-                                                                            " - ",
-                                                                        style: TextStyle(
-                                                                            fontSize:
-                                                                                12,
-                                                                            color:
-                                                                                Colors.black,
-                                                                            fontWeight: FontWeight.w600),
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                      Container(
-                                                                        width:
-                                                                            70,
-                                                                        child:
-                                                                            Text(
-                                                                          AllActivity![index]
-                                                                              .activitiesName!,
+                                                        child: GestureDetector(
+                                                         // onTap: (){
+                                        // Strings.activityConfirmed = false;
+                                        //  Navigator.of(context).push(
+                                        //     MaterialPageRoute(
+                                        //         builder:
+                                        //             (BuildContext context) =>
+                                        //                 Own_Availability(
+                                        //                   markavailId:
+                                        //                       OtherMarkAvailabilityData![
+                                        //                               mainIndex]
+                                        //                           .markavailId,
+                                        //                   fromAct: false,
+                                        //                 )));},
+                                                          child: Container(
+                                                            padding: EdgeInsets
+                                                                .symmetric(
+                                                                    vertical: 18,
+                                                                    horizontal:
+                                                                        20),
+                                                            decoration: BoxDecoration(
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            3),
+                                                                color: Colors.grey
+                                                                    .withOpacity(
+                                                                        0.2)),
+                                                            child: Column(
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .spaceBetween,
+                                                                  children: [
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          AllActivity![index].categoryName! +
+                                                                              " - ",
                                                                           style: TextStyle(
-                                                                              fontSize: 12,
-                                                                              color: Colors.black,
+                                                                              fontSize:
+                                                                                  12,
+                                                                              color:
+                                                                                  Colors.black,
                                                                               fontWeight: FontWeight.w600),
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
                                                                         ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                  Row(
-                                                                    children: [
-                                                                      Text(
-                                                                        AllActivity![index]
-                                                                            .dateon!,
-                                                                        style:
-                                                                            TextStyle(
-                                                                          fontSize:
-                                                                              11,
-                                                                        ),
-                                                                        overflow:
-                                                                            TextOverflow.ellipsis,
-                                                                      ),
-                                                                      SizedBox(
+                                                                        Container(
                                                                           width:
-                                                                              5),
-                                                                      Container(
-                                                                        width:
-                                                                            1,
-                                                                        height:
-                                                                            10,
-                                                                        color: Colors
-                                                                            .red,
-                                                                      ),
-                                                                      SizedBox(
-                                                                        width:
-                                                                            5,
-                                                                      ),
-                                                                      Row(
-                                                                        children: [
-                                                                          Text(
-                                                                            AllActivity![index].fromTime!.replaceAll(' PM', '').replaceAll(' AM', '') +
-                                                                                " - ",
-                                                                            style:
-                                                                                TextStyle(fontSize: 11),
+                                                                              70,
+                                                                          child:
+                                                                              Text(
+                                                                            AllActivity![index]
+                                                                                .activitiesName!,
+                                                                            style: TextStyle(
+                                                                                fontSize: 12,
+                                                                                color: Colors.black,
+                                                                                fontWeight: FontWeight.w600),
                                                                             overflow:
                                                                                 TextOverflow.ellipsis,
                                                                           ),
-                                                                          Text(
-                                                                            AllActivity![index].toTime!,
-                                                                            style:
-                                                                                TextStyle(
-                                                                              fontSize: 11,
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                    Row(
+                                                                      children: [
+                                                                        Text(
+                                                                          AllActivity![index]
+                                                                              .dateon!,
+                                                                          style:
+                                                                              TextStyle(
+                                                                            fontSize:
+                                                                                11,
+                                                                          ),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                        ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                5),
+                                                                        Container(
+                                                                          width:
+                                                                              1,
+                                                                          height:
+                                                                              10,
+                                                                          color: Colors
+                                                                              .red,
+                                                                        ),
+                                                                        SizedBox(
+                                                                          width:
+                                                                              5,
+                                                                        ),
+                                                                        Row(
+                                                                          children: [
+                                                                            Text(
+                                                                              AllActivity![index].fromTime!.replaceAll(' PM', '').replaceAll(' AM', '') +
+                                                                                  " - ",
+                                                                              style:
+                                                                                  TextStyle(fontSize: 11),
+                                                                              overflow:
+                                                                                  TextOverflow.ellipsis,
                                                                             ),
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                          ),
-                                                                        ],
-                                                                      )
-                                                                    ],
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                              SizedBox(
-                                                                height: 12,
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment:
-                                                                    MainAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons
-                                                                        .location_on,
-                                                                    size: 14,
-                                                                    color: Colors
-                                                                        .red,
-                                                                  ),
-                                                                  SizedBox(
-                                                                    width: 4,
-                                                                  ),
-                                                                  Text(
-                                                                    "Gandhipuram, Coimbatore",
-                                                                    style: TextStyle(
-                                                                        fontSize:
-                                                                            12,
-                                                                        fontWeight:
-                                                                            FontWeight.w300),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
+                                                                            Text(
+                                                                              AllActivity![index].toTime!,
+                                                                              style:
+                                                                                  TextStyle(
+                                                                                fontSize: 11,
+                                                                              ),
+                                                                              overflow:
+                                                                                  TextOverflow.ellipsis,
+                                                                            ),
+                                                                          ],
+                                                                        )
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(
+                                                                  height: 12,
+                                                                ),
+                                                                Row(
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .start,
+                                                                  children: [
+                                                                    Icon(
+                                                                      Icons
+                                                                          .location_on,
+                                                                      size: 14,
+                                                                      color: Colors
+                                                                          .red,
+                                                                    ),
+                                                                    SizedBox(
+                                                                      width: 4,
+                                                                    ),
+                                                                    Text(
+                                                                      "Gandhipuram, Coimbatore",
+                                                                      style: TextStyle(
+                                                                          fontSize:
+                                                                              12,
+                                                                          fontWeight:
+                                                                              FontWeight.w300),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ],
+                                                            ),
                                                           ),
                                                         ),
                                                       );

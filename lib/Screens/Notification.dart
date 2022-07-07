@@ -6,6 +6,7 @@ import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
+import 'package:playgroup/Screens/PastActivityDetailView.dart';
 import 'package:playgroup/Screens/ShowOtherChild.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -199,16 +200,36 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         .contains("delete")) {
                                       print(NotificationList![mainIndex]
                                           .markavailId);
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Own_Availability(
-                                                    markavailId:
-                                                        NotificationList![
-                                                                mainIndex]
-                                                            .markavailId,
-                                                    fromAct: false,
-                                                  )));
+                                      (NotificationList![mainIndex]
+                                                  .markavailStatus !=
+                                              "past")
+                                          ? {
+                                              Strings.activityConfirmed = false,
+                                              Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          Own_Availability(
+                                                            markavailId:
+                                                                NotificationList![
+                                                                        mainIndex]
+                                                                    .markavailId,
+                                                            fromAct: false,
+                                                          )))
+                                            }
+                                          : Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      Past_Activity_Details(
+                                                          markavailId:
+                                                              NotificationList![
+                                                                      mainIndex]
+                                                                  .markavailId,
+                                                          childId:
+                                                              NotificationList![
+                                                                      mainIndex]
+                                                                  .childId!)));
                                     }
                                   } else {
                                     Navigator.of(context).push(

@@ -140,7 +140,7 @@ class _DashBoardState extends State<DashBoard> {
     iconList.add(Icons.home_outlined);
     iconList.add(Icons.schedule);
     iconList.add(Icons.search);
-    iconList.add(Icons.account_circle_outlined);
+    iconList.add(Icons.perm_identity_rounded);
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => GetProfile());
   }
@@ -222,11 +222,10 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                   InkWell(
                     onTap: () async {
-                      await Navigator.of(context)
-                          .push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  NotificationScreen()));
-                        setState(() {});
+                      await Navigator.of(context).push(MaterialPageRoute(
+                          builder: (BuildContext context) =>
+                              NotificationScreen()));
+                      setState(() {});
                       ;
                     },
                     child: Container(
@@ -246,7 +245,7 @@ class _DashBoardState extends State<DashBoard> {
                         ),
                         child: Image.asset(
                           "assets/imgs/notification.png",
-                          color: Colors.black.withOpacity(0.8),
+                          // color: Colors.black.withOpacity(0.8),
                           width: 30,
                           height: 30,
                         ),

@@ -4,7 +4,8 @@ class GetNotificationListRes {
   List<Data>? data;
   int? unreadNotification;
 
-  GetNotificationListRes({this.status, this.message, this.data, this.unreadNotification});
+  GetNotificationListRes(
+      {this.status, this.message, this.data, this.unreadNotification});
 
   GetNotificationListRes.fromJson(Map<String, dynamic> json) {
     status = json['status'];
@@ -37,8 +38,9 @@ class Data {
   int? markavailId;
   String? title;
   String? body;
+  String? status;
+  String? markavailStatus;
   String? createdDate;
-  int? markAvailId;
 
   Data(
       {this.notificationId,
@@ -47,8 +49,9 @@ class Data {
       this.markavailId,
       this.title,
       this.body,
-      this.createdDate,
-      this.markAvailId});
+      this.status,
+      this.markavailStatus,
+      this.createdDate});
 
   Data.fromJson(Map<String, dynamic> json) {
     notificationId = json['notification_id'];
@@ -57,8 +60,9 @@ class Data {
     markavailId = json['markavail_id'];
     title = json['title'];
     body = json['body'];
+    status = json['status'];
+    markavailStatus = json['markavail_status'];
     createdDate = json['created_date'];
-    markAvailId = json['mark_avail_id'];
   }
 
   Map<String, dynamic> toJson() {
@@ -69,8 +73,9 @@ class Data {
     data['markavail_id'] = this.markavailId;
     data['title'] = this.title;
     data['body'] = this.body;
+    data['status'] = this.status;
+    data['markavail_status'] = this.markavailStatus;
     data['created_date'] = this.createdDate;
-    data['mark_avail_id'] = this.markAvailId;
     return data;
   }
 }

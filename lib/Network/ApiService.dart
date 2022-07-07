@@ -284,6 +284,9 @@ abstract class ApiService {
 
   @POST("comment/addlike")
   Future<CommonRes> addLike(@Body() CommonReq body);
+  
+  @DELETE("mark/delete_past_images/{pastActivitiesImagesId}")
+  Future<CommonRes> DeletePastImgs(@Path("pastActivitiesImagesId") int pastActivitiesImagesId);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
