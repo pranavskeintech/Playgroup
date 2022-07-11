@@ -178,7 +178,6 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
                         if (_tick[i] == true) {
                           // print(activities[i]);
                           // _selectedvalues.add(Languages[i]);
-                          _EditChild();
                           print(_selectedvalues);
                           // _selectedvalues[i] = Languages[i];
                         } else {
@@ -186,6 +185,7 @@ class _EditLangKnwnState extends State<EditLangKnwn> {
                           continue;
                         }
                       }
+                      _EditChild();
                     },
                     child: Text(
                       "Save",

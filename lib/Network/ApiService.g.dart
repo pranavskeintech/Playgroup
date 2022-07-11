@@ -727,18 +727,18 @@ class _ApiService implements ApiService {
   }
 
   @override
-  Future<ownAvailabilityListRes> GetMarkAvailability(ChildID) async {
+  Future<GetAllActivities> GetMarkAvailability(ChildID) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     final _result = await _dio.fetch<Map<String, dynamic>>(
-        _setStreamType<ownAvailabilityListRes>(
+        _setStreamType<GetAllActivities>(
             Options(method: 'GET', headers: _headers, extra: _extra)
                 .compose(_dio.options, 'mark/getmark/${ChildID}',
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
-    final value = ownAvailabilityListRes.fromJson(_result.data!);
+    final value = GetAllActivities.fromJson(_result.data!);
     return value;
   }
 
@@ -1072,6 +1072,22 @@ class _ApiService implements ApiService {
                     queryParameters: queryParameters, data: _data)
                 .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
     final value = CommonRes.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetChatsList> GetChatList(ChildID) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetChatsList>(
+            Options(method: 'GET', headers: _headers, extra: _extra)
+                .compose(_dio.options, 'chat/getchat_list/${ChildID}',
+                    queryParameters: queryParameters, data: _data)
+                .copyWith(baseUrl: baseUrl ?? _dio.options.baseUrl)));
+    final value = GetChatsList.fromJson(_result.data!);
     return value;
   }
 

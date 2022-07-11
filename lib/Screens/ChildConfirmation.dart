@@ -129,9 +129,9 @@ class _ChildConfirmationState extends State<ChildConfirmation> {
                                                 (_ChildData![index].profile ??
                                                     ""))
                                             : AssetImage(
-                                                    "assets/imgs/appicon.png")
+                                                    "assets/imgs/profile-user.png")
                                                 as ImageProvider,
-                                        backgroundColor: Colors.grey
+                                        backgroundColor: Colors.white
 
                                         // child: Image.network(Strings.imageUrl + (_ChildData![index].profile ?? ""),
                                         //     fit: BoxFit.fill),

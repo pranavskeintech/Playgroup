@@ -208,14 +208,17 @@ class _DashBoardState extends State<DashBoard> {
                       });
                     },
                     child: CircleAvatar(
-                      backgroundImage: (HeaderData?.profile != "null")
-                          ? NetworkImage(
-                              Strings.imageUrl + (HeaderData?.profile ?? ""),
-                            )
-                          : AssetImage("assets/imgs/appicon.png")
-                              as ImageProvider,
-                      radius: 16,
-                    ),
+                        radius: (16),
+                        backgroundColor: Colors.white,
+                        child: ClipRRect(
+                            borderRadius: BorderRadius.circular(50),
+                            child: (HeaderData?.profile == "null")
+                                ? Image.asset(
+                                    "assets/imgs/profile-user.png")
+                                : Image.network(
+                                    Strings.imageUrl +
+                                        (HeaderData?.profile ?? ""),
+                                  ))),
                   ),
                   SizedBox(
                     width: 3,

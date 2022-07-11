@@ -233,6 +233,7 @@ class _Availability_choose_friendsState
                                       leading: Transform.translate(
                                         offset: Offset(-16, 0),
                                         child: CircleAvatar(
+                                          backgroundColor: Colors.white,
                                           backgroundImage: _foundedUsers[index]
                                                       .profile !=
                                                   "null"
@@ -241,7 +242,7 @@ class _Availability_choose_friendsState
                                                           .profile ??
                                                       ""))
                                               : AssetImage(
-                                                      "assets/imgs/appicon.png")
+                                                      "assets/imgs/profile-user.png")
                                                   as ImageProvider,
                                         ),
                                       ),

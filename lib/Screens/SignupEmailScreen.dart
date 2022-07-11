@@ -57,6 +57,18 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
     ctx = context;
     var media = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: (widget.fromProfile == true)
+          ? AppBar(
+              backgroundColor: Strings.appThemecolor,
+              title: Text("Edit Parent Details"),
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(Icons.arrow_back_sharp),
+              ),
+            )
+          : null,
       body: SingleChildScrollView(
         child: Container(
           color: Colors.white,
@@ -72,10 +84,10 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 ),
                 (widget.fromProfile == true)
                     ? Container(
-                        height: 80,
+                        height: 30,
                       )
                     : Image.asset(
-                        "assets/imgs/appicon.png",
+                        "assets/imgs/profile-user.png",
                         width: 80,
                         height: 80,
                       ),

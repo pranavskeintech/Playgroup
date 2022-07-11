@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/GroupsChat.dart';
 import 'package:playgroup/Screens/IndividualsChat.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Strings.dart';
 
 class ConversationList extends StatefulWidget {
+  int id;
   String name;
   String messageText;
   String imageUrl;
   String time;
+  String type;
   bool isMessageRead;
+
   ConversationList(
-      {required this.name,
+      {required this.id,
+      required this.name,
       required this.messageText,
       required this.imageUrl,
       required this.time,
-      required this.isMessageRead});
+      required this.isMessageRead,
+      required this.type});
   @override
   _ConversationListState createState() => _ConversationListState();
 }
@@ -20,6 +28,7 @@ class ConversationList extends StatefulWidget {
 class _ConversationListState extends State<ConversationList> {
   @override
   Widget build(BuildContext context) {
+    print("200");
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -29,20 +38,60 @@ class _ConversationListState extends State<ConversationList> {
             Expanded(
               child: Row(
                 children: <Widget>[
-                  CircleAvatar(
-                    backgroundImage: NetworkImage(widget.imageUrl),
-                    maxRadius: 20,
-                  ),
+                  (widget.type == "Group-chats")
+                      ? Stack(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                maxRadius: 20,
+                                backgroundImage: (widget.imageUrl != "null")
+                                    ? NetworkImage(
+                                        Strings.imageUrl + widget.imageUrl)
+                                    : AssetImage("assets/imgs/profile-user.png")
+                                        as ImageProvider,
+                              ),
+                            ),
+                            Positioned(
+                                right: 27,
+                                bottom: 23,
+                                child: CircleAvatar(
+                                  backgroundImage:
+                                      AssetImage("assets/imgs/group.png"),
+                                  radius: 8,
+                                ))
+                          ],
+                        )
+                      : CircleAvatar(
+                          maxRadius: 20,
+                                          backgroundColor: Colors.white,
+                          backgroundImage: (widget.imageUrl != "null")
+                              ? NetworkImage(Strings.imageUrl + widget.imageUrl)
+                              : AssetImage("assets/imgs/profile-user.png")
+                                  as ImageProvider,
+                        ),
                   SizedBox(
                     width: 16,
                   ),
                   Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) {
-                          return Individuals_Chat();
-                        }));
+                        (widget.type != "Group-chats")
+                            ? Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                                return Individuals_Chat(
+                                    otherChildId: widget.id,
+                                    name: widget.name,
+                                    profile: widget.imageUrl);
+                              }))
+                            : Navigator.push(context,
+                                MaterialPageRoute(builder: (context) {
+                                return Groups_Chat(
+                                    groupId: widget.id,
+                                    name: widget.name,
+                                    profile: widget.imageUrl);
+                              }));
                       },
                       child: Container(
                         color: Colors.transparent,
@@ -74,7 +123,7 @@ class _ConversationListState extends State<ConversationList> {
               ),
             ),
             Text(
-              widget.time,
+              TimeAgo.calculateTimeDifferenceOfSeconds(widget.time),
               style: TextStyle(
                   fontSize: 12,
                   fontWeight: widget.isMessageRead

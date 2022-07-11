@@ -377,11 +377,12 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                   child: Row(
                     children: [
                       CircleAvatar(
+                        backgroundColor: Colors.white,
                         radius: 18,
                         backgroundImage: (PastActData![0].profile! != "null")
                             ? NetworkImage(
                                 Strings.imageUrl + PastActData![0].profile!)
-                            : AssetImage("assets/imgs/appicon.png")
+                            : AssetImage("assets/imgs/profile-user.png")
                                 as ImageProvider,
                       ),
                       SizedBox(
@@ -397,62 +398,64 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
           SizedBox(
             height: 10,
           ),
-          Container(
-            height: 140,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              //borderRadius: BorderRadius.circular(30),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.1),
-                  blurRadius: 8.0, // soften the shadow
-                  spreadRadius: 5.0, //extend the shadow
-                  offset: Offset(
-                    2.0, // Move to right 10  horizontally
-                    2.0, // Move to bottom 10 Vertically
-                  ),
-                )
-              ],
-            ),
-            child: SizedBox(
-              // height: 120,
-              child: ListTile(
-                title: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 16, horizontal: 10),
-                    child: Row(
-                      children: [
-                        Text(
-                          PastActData![0].categoryName! + " - ",
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
+          Flexible(
+            child: Container(
+              // height: 140,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+                //borderRadius: BorderRadius.circular(30),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    blurRadius: 8.0, // soften the shadow
+                    spreadRadius: 5.0, //extend the shadow
+                    offset: Offset(
+                      2.0, // Move to right 10  horizontally
+                      2.0, // Move to bottom 10 Vertically
+                    ),
+                  )
+                ],
+              ),
+              child: SizedBox(
+                // height: 120,
+                child: ListTile(
+                  title: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 16, horizontal: 10),
+                      child: Row(
+                        children: [
+                          Text(
+                            PastActData![0].categoryName! + " - ",
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        Text(
-                          PastActData![0].activitiesName!,
-                          style: TextStyle(
-                            color: Colors.black87,
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
+                          Text(
+                            PastActData![0].activitiesName!,
+                            style: TextStyle(
+                              color: Colors.black87,
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14,
+                            ),
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    )),
-                subtitle: Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                  child: Text(
-                    PastActData![0].description!,
-                    textAlign: TextAlign.justify,
-                    style: TextStyle(
-                        height: 1.4,
-                        fontSize: 11.5,
-                        fontWeight: FontWeight.w400,
-                        color: Color.fromARGB(255, 150, 149, 149)),
+                        ],
+                      )),
+                  subtitle: Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: Text(
+                      PastActData![0].description!,
+                      textAlign: TextAlign.justify,
+                      style: TextStyle(
+                          height: 1.4,
+                          fontSize: 11.5,
+                          fontWeight: FontWeight.w400,
+                          color: Color.fromARGB(255, 150, 149, 149)),
+                    ),
                   ),
                 ),
               ),
@@ -653,9 +656,11 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                                                     index]
                                                                 .childFriendId!,
                                                         chooseChildId: Strings
-                                                            .ChoosedChild)));
+                                                            .ChoosedChild,
+                                      fromSearch: false)));
                                           },
                                           child: CircleAvatar(
+                                              backgroundColor: Colors.white,
                                               backgroundImage: PastActData![0]
                                                           .friendsdata![index]
                                                           .profile !=
@@ -668,7 +673,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                                                   .profile ??
                                                               ""))
                                                   : AssetImage(
-                                                          "assets/imgs/appicon.png")
+                                                          "assets/imgs/profile-user.png")
                                                       as ImageProvider),
                                         ),
                                       );
@@ -829,76 +834,76 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
               );
             },
           ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(50))),
-                padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 50,
-                width: double.infinity,
-                // color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        height: 23,
-                        width: 23,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade400,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Icon(
-                          Icons.mic_none_outlined,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: TextField(
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(
-                                bottom: 15.0,
-                              ),
-                              hintText: "Type Message...",
-                              hintStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontStyle: FontStyle.italic),
-                              border: InputBorder.none),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    FloatingActionButton(
-                      onPressed: () {},
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.grey,
-                        size: 25,
-                      ),
-                      backgroundColor: Colors.white,
-                      elevation: 0,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          // Align(
+          //   alignment: Alignment.bottomLeft,
+          //   child: Padding(
+          //     padding: const EdgeInsets.all(8.0),
+          //     child: Container(
+          //       decoration: BoxDecoration(
+          //           color: Colors.white,
+          //           border: Border.all(
+          //             color: Colors.grey,
+          //           ),
+          //           borderRadius: BorderRadius.all(Radius.circular(50))),
+          //       padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+          //       height: 50,
+          //       width: double.infinity,
+          //       // color: Colors.white,
+          //       child: Row(
+          //         children: <Widget>[
+          //           GestureDetector(
+          //             onTap: () {},
+          //             child: Container(
+          //               height: 23,
+          //               width: 23,
+          //               decoration: BoxDecoration(
+          //                 color: Colors.blue.shade400,
+          //                 borderRadius: BorderRadius.circular(30),
+          //               ),
+          //               child: Icon(
+          //                 Icons.mic_none_outlined,
+          //                 color: Colors.white,
+          //                 size: 20,
+          //               ),
+          //             ),
+          //           ),
+          //           SizedBox(
+          //             width: 15,
+          //           ),
+          //           Expanded(
+          //             child: Padding(
+          //               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+          //               child: TextField(
+          //                 decoration: InputDecoration(
+          //                     contentPadding: const EdgeInsets.only(
+          //                       bottom: 15.0,
+          //                     ),
+          //                     hintText: "Type Message...",
+          //                     hintStyle: TextStyle(
+          //                         color: Colors.black54,
+          //                         fontStyle: FontStyle.italic),
+          //                     border: InputBorder.none),
+          //               ),
+          //             ),
+          //           ),
+          //           SizedBox(
+          //             width: 15,
+          //           ),
+          //           FloatingActionButton(
+          //             onPressed: () {},
+          //             child: Icon(
+          //               Icons.send,
+          //               color: Colors.grey,
+          //               size: 25,
+          //             ),
+          //             backgroundColor: Colors.white,
+          //             elevation: 0,
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -990,59 +995,61 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Align(
-                                alignment: Alignment.topRight,
-                                child: (PastActPhotos![index].childId ==
-                                        Strings.SelectedChild)
-                                    ? PopupMenuButton<String>(
-                                        child: Icon(
-                                          Icons.more_vert,
-                                          size: 20,
-                                          color: Theme.of(context).hintColor,
-                                        ),
-                                        //child:Text('Sort By'),
-                                        onSelected: (Data) {
-                                          handleClick(
-                                              Data,
-                                              PastActPhotos![index]
-                                                  .pastActivitiesImagesId!,
-                                              PastActPhotos![index].imageName!);
-                                        },
-                                        itemBuilder: (BuildContext context) {
-                                          return {'Save Image', 'Delete Image'}
-                                              .map((String choice) {
-                                            return PopupMenuItem<String>(
-                                              value: choice,
-                                              child: Text(choice),
-                                            );
-                                          }).toList();
-                                        },
-                                      )
-                                    : PopupMenuButton<String>(
-                                        child: Icon(
-                                          Icons.more_vert,
-                                          size: 20,
-                                          color: Theme.of(context).hintColor,
-                                        ),
-                                        //child:Text('Sort By'),
-                                        onSelected: (Data) {
-                                          handleClick2(
-                                            Data,
-                                            PastActPhotos![index]
-                                                .pastActivitiesImagesId!,
-                                          );
-                                        },
-                                        itemBuilder: (BuildContext context) {
-                                          return {
-                                            'Save Image',
-                                          }.map((String choice) {
-                                            return PopupMenuItem<String>(
-                                              value: choice,
-                                              child: Text(choice),
-                                            );
-                                          }).toList();
-                                        },
-                                      ),
-                              ),
+                                  alignment: Alignment.topRight,
+                                  child:
+                                      // (PastActPhotos![index].childId ==
+                                      //         Strings.SelectedChild)
+                                      //     ?
+                                      PopupMenuButton<String>(
+                                    child: Icon(
+                                      Icons.more_vert,
+                                      size: 20,
+                                      color: Theme.of(context).hintColor,
+                                    ),
+                                    //child:Text('Sort By'),
+                                    onSelected: (Data) {
+                                      handleClick(
+                                          Data,
+                                          PastActPhotos![index]
+                                              .pastActivitiesImagesId!,
+                                          PastActPhotos![index].imageName!);
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return {'Delete Image'}
+                                          .map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice,
+                                          child: Text(choice),
+                                        );
+                                      }).toList();
+                                    },
+                                  )
+                                  // : PopupMenuButton<String>(
+                                  //     child: Icon(
+                                  //       Icons.more_vert,
+                                  //       size: 20,
+                                  //       color: Theme.of(context).hintColor,
+                                  //     ),
+                                  //     //child:Text('Sort By'),
+                                  //     onSelected: (Data) {
+                                  //       handleClick2(
+                                  //         Data,
+                                  //         PastActPhotos![index]
+                                  //             .pastActivitiesImagesId!,
+                                  //       );
+                                  //     },
+                                  //     itemBuilder: (BuildContext context) {
+                                  //       return {
+                                  //         'Save Image',
+                                  //       }.map((String choice) {
+                                  //         return PopupMenuItem<String>(
+                                  //           value: choice,
+                                  //           child: Text(choice),
+                                  //         );
+                                  //       }).toList();
+                                  //     },
+                                  //   ),
+                                  ),
                             ),
                             Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
@@ -1053,6 +1060,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                   Row(
                                     children: [
                                       CircleAvatar(
+                                        backgroundColor: Colors.white,
                                         backgroundImage: PastActPhotos![index]
                                                     .profile !=
                                                 "null"
@@ -1061,7 +1069,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                                         .profile ??
                                                     ""))
                                             : AssetImage(
-                                                    "assets/imgs/appicon.png")
+                                                    "assets/imgs/profile-user.png")
                                                 as ImageProvider,
                                         radius: 10,
                                       ),
@@ -1133,11 +1141,6 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
 
   handleClick(String value, int ImgID, String url) {
     switch (value) {
-      case 'Save Image':
-        setState(() {
-          //_downloadfile(url);
-        });
-        break;
       case 'Delete Image':
         setState(() {
           print("id:${ImgID}");
@@ -1147,13 +1150,13 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     }
   }
 
-  handleClick2(String value, int Fid) {
-    switch (value) {
-      case 'Save Image':
-        setState(() {});
-        break;
-    }
-  }
+  // handleClick2(String value, int Fid) {
+  //   switch (value) {
+  //     case 'Save Image':
+  //       setState(() {});
+  //       break;
+  //   }
+  // }
 
   _getFromGallery() async {
     final pickedFile = await _picker.pickMultiImage(imageQuality: 50);

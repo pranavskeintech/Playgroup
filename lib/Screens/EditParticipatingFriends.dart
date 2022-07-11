@@ -245,11 +245,12 @@ class EditParticipatingFriendsState extends State<EditParticipatingFriends> {
                             leading: Transform.translate(
                               offset: Offset(-16, 0),
                               child: CircleAvatar(
+                                          backgroundColor: Colors.white,
                                 backgroundImage: _foundedUsers[index].profile !=
                                         "null"
                                     ? NetworkImage(Strings.imageUrl +
                                         (_foundedUsers[index].profile ?? ""))
-                                    : AssetImage("assets/imgs/appicon.png")
+                                    : AssetImage("assets/imgs/profile-user.png")
                                         as ImageProvider,
                               ),
                             ),

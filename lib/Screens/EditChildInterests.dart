@@ -17,9 +17,11 @@ import 'package:provider/provider.dart';
 
 class EditChildInterests extends StatefulWidget {
   int? chooseChildId;
+  List? InterestsList;
   EditChildInterests({
     Key? key,
     this.chooseChildId,
+    this.InterestsList,
   }) : super(key: key);
 
   @override
@@ -93,6 +95,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
 
         setState(() {
           _InterestData = response.data;
+          updateSelectedChilds();
           _GetChildData();
         });
       } else {
@@ -121,6 +124,23 @@ class _EditChildInterestsState extends State<EditChildInterests> {
     }).catchError((onError) {
       print(onError.toString());
     });
+  }
+
+  updateSelectedChilds() {
+    for (var i = 0; i < widget.InterestsList!.length; i++) {
+      for (var j = 0; j < _InterestData!.length; j++) {
+        print("avail data ${widget.InterestsList!}");
+        print(" found ${_InterestData![j].interestsId}");
+
+        if (widget.InterestsList![i] == _InterestData![j].interestsId) {
+          setState(() {
+            print("hiii");
+            _tick[j] = true;
+          });
+        }
+      }
+    }
+    // updateFriendsID();
   }
 
   @override
@@ -264,15 +284,16 @@ class _EditChildInterestsState extends State<EditChildInterests> {
                               if (_tick[i] == true) {
                                 _selectedvalues
                                     .add(_InterestData![i].interestsId!);
-                                _EditChild();
                                 print(_selectedvalues);
-                                _selectedvalues[i] =
-                                    _InterestData![i].interestsId!;
+                                // _selectedvalues[i] =
+                                //     _InterestData![i].interestsId!;
+                                // updateFriendsID();
                               } else {
                                 // _selectedvalues[i] = "null";
                                 continue;
                               }
                             }
+                            _EditChild();
                           },
                           child: Text(
                             "Save",
@@ -289,7 +310,18 @@ class _EditChildInterestsState extends State<EditChildInterests> {
           );
   }
 
+  // updateFriendsID() {
+  //   for (var i = 0; i < _tick.length; i++) {
+  //     if (_tick[i] == true) {
+  //       _selectedvalues.add(widget.InterestsList![i].childId!);
+  //     }
+  //   }
+
+  //   print("frnds:$_selectedvalues");
+  // }
+
   _EditChild() {
+    print("hiiiiiiii:$_selectedvalues");
     editChildInt ChildEdit = editChildInt();
     ChildEdit.childId = _ChildData![Strings.editIndex].childId;
     ChildEdit.childInterest = _selectedvalues;
@@ -298,6 +330,7 @@ class _EditChildInterestsState extends State<EditChildInterests> {
     api.EditChildInterest(ChildEdit).then((response) {
       print('response ${response.status}');
       if (response.status == true) {
+        _selectedvalues = [];
         AppUtils.dismissprogress();
         Navigator.pop(context);
         print("result2:$response");

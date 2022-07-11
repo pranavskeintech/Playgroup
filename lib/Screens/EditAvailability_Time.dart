@@ -466,7 +466,7 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                                           width: 40,
                                           height: 40,
                                           child: CircleAvatar(
-                                            backgroundColor: Colors.blue,
+                                            backgroundColor: Colors.white,
                                             backgroundImage: availabilityData[0]
                                                         .friendsdata![index]
                                                         .profile !=
@@ -478,13 +478,13 @@ class _EditAvailabilityTimeState extends State<EditAvailabilityTime> {
                                                             .profile ??
                                                         ""))
                                                 : AssetImage(
-                                                        "assets/imgs/appicon.png")
+                                                        "assets/imgs/profile-user.png")
                                                     as ImageProvider,
                                           ),
                                         );
                                       } else if (index == 5) {
                                         return Container(
-                                          padding: EdgeInsets.all(3), 
+                                          padding: EdgeInsets.all(3),
                                           height: 40,
                                           width: 40,
                                           child: CircleAvatar(

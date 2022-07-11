@@ -1,38 +1,117 @@
+import 'dart:developer';
 import 'dart:ui';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:typed_data';
+import 'dart:io' as Io;
 
+import 'package:dart_emoji/dart_emoji.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:playgroup/Models/IndividualChatRes.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 class Individuals_Chat extends StatefulWidget {
-  const Individuals_Chat({Key? key}) : super(key: key);
+  int? otherChildId;
+  String? name;
+  String? profile;
+  Individuals_Chat({Key? key, this.otherChildId, this.name, this.profile})
+      : super(key: key);
 
   @override
   State<Individuals_Chat> createState() => _Individuals_ChatState();
 }
 
-class _Individuals_ChatState extends State<Individuals_Chat> {
-  List<ChatMessage> messages = [
-    ChatMessage(
-        messageContent: "Hello, Will",
-        messageType: "receiver",
-        createdAt: "22-05-2022"),
-    ChatMessage(
-        messageContent: "How have you been?",
-        messageType: "receiver",
-        createdAt: "22-05-2022"),
-    ChatMessage(
-        messageContent: "Hey Kriss, I am doing fine dude. wbu?",
-        messageType: "sender",
-        createdAt: "22-05-2022"),
-    ChatMessage(
-        messageContent: "ehhhh, doing OK.",
-        messageType: "receiver",
-        createdAt: "24-05-2022"),
-    ChatMessage(
-        messageContent: "Is there any thing wrong?",
-        messageType: "sender",
-        createdAt: "25-05-2022"),
-  ];
+class _Individuals_ChatState extends State<Individuals_Chat>
+    with SingleTickerProviderStateMixin {
+  // List<ChatMessage> messages = [
+  //   ChatMessage(
+  //       messageContent: "Hello, Will",
+  //       messageType: "receiver",
+  //       createdAt: "22-05-2022"),
+  //   ChatMessage(
+  //       messageContent: "How have you been?",
+  //       messageType: "receiver",
+  //       createdAt: "22-05-2022"),
+  //   ChatMessage(
+  //       messageContent: "Hey Kriss, I am doing fine dude. wbu?",
+  //       messageType: "sender",
+  //       createdAt: "22-05-2022"),
+  //   ChatMessage(
+  //       messageContent: "ehhhh, doing OK.",
+  //       messageType: "receiver",
+  //       createdAt: "24-05-2022"),
+  //   ChatMessage(
+  //       messageContent: "Is there any thing wrong?",
+  //       messageType: "sender",
+  //       createdAt: "25-05-2022"),
+  // ];
+
+  var initialCommentCheck = true;
+  AnimationController? _animationController;
+  IO.Socket? _socket;
+
+  FocusNode msgField = new FocusNode();
+
+  List<IndiData>? ChatData = [];
+
+  TextEditingController _msgcontroller = TextEditingController();
+
+  var parser = EmojiParser();
+
+  List<String> dateFormate = [];
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    print("initial value check-->> $initialCommentCheck");
+    initialCommentCheck = true;
+    print("id1:${Strings.SelectedChild}");
+    print("id2:${widget.otherChildId}");
+
+    print("init state variable assigned--> $initialCommentCheck");
+    _animationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 500));
+    _animationController?.repeat(reverse: true);
+    _socket = IO.io(Strings.socketUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+      'query': {
+        'token': Strings.authToken,
+        'child_id': Strings.SelectedChild,
+        'other_child_id': widget.otherChildId,
+        'forceNew': false,
+      }
+    });
+    _socket?.connect();
+    _socket?.onConnect((_) {
+      print('connect');
+    });
+    print("connection established");
+    _socket?.on("connect", (_) {
+      print('Connected');
+      print("Calling function");
+      getComments();
+    });
+  }
+
+  @override
+  void dispose() {
+    _animationController?.dispose();
+
+    _socket?.disconnect();
+    _socket?.dispose();
+    super.dispose();
+
+    print("dispose variable assigned--> $initialCommentCheck");
+    // Strings.comments = [];
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,9 +137,12 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
                   width: 2,
                 ),
                 CircleAvatar(
-                  backgroundImage: NetworkImage(
-                      "https://randomuser.me/api/portraits/men/5.jpg"),
                   maxRadius: 20,
+                                          backgroundColor: Colors.white,
+                  backgroundImage: (widget.profile! != "null")
+                      ? NetworkImage(Strings.imageUrl + widget.profile!)
+                      : AssetImage("assets/imgs/profile-user.png")
+                          as ImageProvider,
                 ),
                 SizedBox(
                   width: 12,
@@ -71,18 +153,18 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Text(
-                        "Kriss Benwat",
+                        widget.name!,
                         style: TextStyle(
                             fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      SizedBox(
-                        height: 6,
-                      ),
-                      Text(
-                        "Online",
-                        style: TextStyle(
-                            color: Colors.grey.shade600, fontSize: 13),
-                      ),
+                      // SizedBox(
+                      //   height: 6,
+                      // ),
+                      // Text(
+                      //   "Online",
+                      //   style: TextStyle(
+                      //       color: Colors.grey.shade600, fontSize: 13),
+                      // ),
                     ],
                   ),
                 ),
@@ -94,8 +176,11 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
                     handleClick(Data);
                   },
                   itemBuilder: (BuildContext context) {
-                    return {'Mute Notifications', 'Delete Conversation'}
-                        .map((String choice) {
+                    return {
+                      'View Profile',
+                      'Mute Notifications',
+                      'Delete Conversation'
+                    }.map((String choice) {
                       return PopupMenuItem<String>(
                         value: choice,
                         child: Text(choice),
@@ -108,8 +193,98 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
           ),
         ),
       ),
-      body: Stack(
+      body: Column(
         children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: ChatData!.length,
+              shrinkWrap: true,
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                Widget separator = SizedBox();
+                if (index != 0 &&
+                    dateFormate[index] != dateFormate[index - 1]) {
+                  separator = Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        //color: Strings.chipsbg
+                      ),
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        dateFormate[index],
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ));
+                } else if (index == 0) {
+                  separator = Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        //color: Strings.chipsbg
+                      ),
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        dateFormate[index],
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ));
+                }
+                return Column(
+                  children: [
+                    separator,
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 14, right: 14, top: 10, bottom: 10),
+                      child: Align(
+                        alignment:
+                            (ChatData![index].childId != Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Colors.grey.shade300
+                                : Colors.blue.shade400),
+                          ),
+                          padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                          child: Text(
+                            ChatData![index].message!,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: (ChatData![index].childId !=
+                                      Strings.SelectedChild
+                                  ? Colors.black54
+                                  : Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment:
+                          (ChatData![index].childId != Strings.SelectedChild
+                              ? Alignment.topLeft
+                              : Alignment.topRight),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Text(
+                          DateFormat.jm().format(
+                            DateTime.parse(ChatData![index].createdDate!),
+                          ),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+          ),
           Align(
             alignment: Alignment.bottomLeft,
             child: Padding(
@@ -149,6 +324,7 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
                       child: Padding(
                         padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
                         child: TextField(
+                          controller: _msgcontroller,
                           decoration: InputDecoration(
                               contentPadding: const EdgeInsets.only(
                                 bottom: 15.0,
@@ -165,7 +341,9 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
                       width: 15,
                     ),
                     FloatingActionButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        postComments();
+                      },
                       child: Icon(
                         Icons.send,
                         color: Colors.grey,
@@ -179,61 +357,6 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
               ),
             ),
           ),
-          ListView.builder(
-            itemCount: messages.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.only(top: 10, bottom: 10),
-            physics: NeverScrollableScrollPhysics(),
-            itemBuilder: (context, index) {
-              Widget separator = SizedBox();
-              if (index != 0 &&
-                  messages[index].createdAt != messages[index - 1].createdAt) {
-                separator = Container(
-                    height: 20,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      //color: Strings.chipsbg
-                    ),
-                    padding: EdgeInsets.only(right: 5, left: 5),
-                    child: Text(
-                      messages[index].createdAt,
-                      style: TextStyle(fontSize: 15, color: Colors.grey),
-                    ));
-              }
-              return Column(
-                children: [
-                  separator,
-                  Container(
-                    padding: EdgeInsets.only(
-                        left: 14, right: 14, top: 10, bottom: 10),
-                    child: Align(
-                      alignment: (messages[index].messageType == "receiver"
-                          ? Alignment.topLeft
-                          : Alignment.topRight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: (messages[index].messageType == "receiver"
-                              ? Colors.grey.shade300
-                              : Colors.blue.shade400),
-                        ),
-                        padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
-                        child: Text(
-                          messages[index].messageContent,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: (messages[index].messageType == "receiver"
-                                ? Colors.black54
-                                : Colors.white),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              );
-            },
-          ),
         ],
       ),
     );
@@ -241,6 +364,9 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
 
   handleClick(String value) {
     switch (value) {
+      case 'View Profile':
+        setState(() {});
+        break;
       case 'Mute Notifications':
         setState(() {
           showDialog(
@@ -419,6 +545,65 @@ class _Individuals_ChatState extends State<Individuals_Chat> {
           );
         });
         break;
+    }
+  }
+
+  getComments() async {
+    print("Getting comments");
+    _socket?.on("get-individual-chats", (_data) {
+      print('fromServer');
+
+      log('fromServer comments $_data');
+      setState(() {
+        print("Dta chacek--> $initialCommentCheck");
+        print("getting inside");
+        msgField.unfocus();
+        ChatData = [];
+        for (var item in _data) {
+          ChatData!.add(IndiData.fromJson(item));
+          print("set state");
+          for (int index = 0; index < ChatData!.length; index++) {
+            dateFormate.add(DateFormat("dd-MM-yyyy")
+                .format(DateTime.parse(ChatData![index].createdDate!)));
+          }
+        }
+        initialCommentCheck = false;
+        print("Comments fetched changing to false");
+
+        // itemScrollController.jumpTo(index:0);
+
+        msgField.unfocus();
+
+        //  });
+      });
+    });
+  }
+
+  postComments() async {
+    print("1:${parser.unemojify(_msgcontroller.text)}");
+    // print(json.encode(tagedUsersId.toString()));
+    if (_msgcontroller.text.trim() == "") {
+      AppUtils.showError(context, "Kindly add some text!", '');
+    } else {
+      _socket?.emitWithAck(
+          'add-individual-chat',
+          json.encode({
+            "child_id": Strings.SelectedChild,
+            "other_child_id": widget.otherChildId,
+            "message": parser.unemojify(_msgcontroller.text),
+            "files": ""
+          }), ack: (data) {
+        print('ack $data');
+        if (data != null) {
+          print('from server $data');
+        } else {
+          print("Null");
+        }
+      });
+
+      _msgcontroller.text = '';
+
+      msgField.unfocus();
     }
   }
 }

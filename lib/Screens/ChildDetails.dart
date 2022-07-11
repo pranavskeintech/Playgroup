@@ -185,9 +185,9 @@ class _ChildDetailsState extends State<ChildDetails> {
                       radius: 40.0,
                       backgroundImage:
                           _imageFile != null ? FileImage(_imageFile!) : null,
-                      backgroundColor: Colors.transparent,
+                      backgroundColor: Colors.white,
                       child: _imageFile == null
-                          ? Image.asset("assets/imgs/appicon.png")
+                          ? Image.asset("assets/imgs/profile-user.png")
                           : SizedBox(),
                     ),
                     Positioned(
@@ -500,6 +500,8 @@ class _ChildDetailsState extends State<ChildDetails> {
     ChildReg.dob = _dobController.text;
     ChildReg.gender = selectedValue;
     ChildReg.school = _schoolController.text;
+    ChildReg.childInterest = [];
+    ChildReg.language = [];
 
     if (img64 != "") {
       ChildReg.profile = "data:image/jpeg;base64,$img64";

@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:playgroup/Models/GetAllActivities.dart';
 import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/GetOtherMarkAvailabilityRes.dart';
 import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Network/ApiService.dart';
+import 'package:playgroup/Screens/AvailabilityList.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/InitialHome.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +84,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool _isLoading = true;
 
-  List<AvailabilityListData>? GetMarkAvailabilityData;
+  List<ActData>? GetMarkAvailabilityData;
 
   BuildContext? ctx;
 
@@ -192,6 +195,35 @@ class _HomeScreenState extends State<HomeScreen> {
                             "Your Play dates",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           )),
+                      (GetMarkAvailabilityData != null &&
+                              GetMarkAvailabilityData!.length > 3)
+                          ? InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => availabilityList(
+                                      FID: Strings.SelectedChild,
+                                      fromOwnAvail: true,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "View All",
+                                    style: TextStyle(
+                                        color: Colors.blue, fontSize: 12),
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    size: 15,
+                                    color: Colors.grey,
+                                  )
+                                ],
+                              ))
+                          : SizedBox()
                     ],
                   ),
                   SizedBox(
@@ -245,7 +277,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         width: 50,
                                         height: 50,
                                         child: CircleAvatar(
-                                          backgroundColor: Colors.blue,
+                                          backgroundColor: Colors.white,
                                           backgroundImage:
                                               (GetMarkAvailabilityData![index]
                                                               .categoryImg !=
@@ -261,7 +293,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               index]
                                                           .categoryImg!))
                                                   : AssetImage(
-                                                          "assets/imgs/appicon.png")
+                                                          "assets/imgs/profile-user.png")
                                                       as ImageProvider,
                                         ),
                                       ),
@@ -393,6 +425,35 @@ class _HomeScreenState extends State<HomeScreen> {
                             "Your Play dates",
                             style: TextStyle(fontWeight: FontWeight.w500),
                           )),
+                      (GetMarkAvailabilityData != null &&
+                              GetMarkAvailabilityData!.length > 3)
+                          ? InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => availabilityList(
+                                      FID: Strings.SelectedChild,
+                                      fromOwnAvail: true,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "View All",
+                                    style: TextStyle(
+                                        color: Colors.blue, fontSize: 12),
+                                  ),
+                                  Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    size: 15,
+                                    color: Colors.grey,
+                                  )
+                                ],
+                              ))
+                          : SizedBox()
                     ],
                   ),
                   SizedBox(
@@ -450,7 +511,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         width: 50,
                                         height: 50,
                                         child: CircleAvatar(
-                                          backgroundColor: Colors.blue,
+                                          backgroundColor: Colors.white,
                                           backgroundImage:
                                               (GetMarkAvailabilityData![index]
                                                               .categoryImg !=
@@ -467,7 +528,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               .categoryImg ??
                                                           ""))
                                                   : AssetImage(
-                                                          "assets/imgs/appicon.png")
+                                                          "assets/imgs/profile-user.png")
                                                       as ImageProvider,
                                         ),
                                       ),
@@ -568,6 +629,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 contentPadding:
                                                     EdgeInsets.all(0),
                                                 leading: CircleAvatar(
+                                          backgroundColor: Colors.white,
                                                   backgroundImage:
                                                       (OtherMarkAvailabilityData![
                                                                       mainIndex]
@@ -579,7 +641,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                       mainIndex]
                                                                   .profile!)
                                                           : AssetImage(
-                                                                  "assets/imgs/appicon.png")
+                                                                  "assets/imgs/profile-user.png")
                                                               as ImageProvider,
                                                 ),
                                                 title: Text(
@@ -778,14 +840,18 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                         InkWell(
                                                                       onTap:
                                                                           () {
-                                                                        AppUtils.showParticipant(
-                                                                            context,
-                                                                            OtherMarkAvailabilityData![mainIndex].friendsdata!);
+                                                                        Navigator.of(context).push(MaterialPageRoute(
+                                                                            builder: (BuildContext context) => OtherChildProfile(
+                                                                                  otherChildID: OtherMarkAvailabilityData![mainIndex].friendsdata![index].childFriendId,
+                                                                                  chooseChildId: Strings.SelectedChild,
+                                      fromSearch: false
+                                                                                )));
                                                                       },
                                                                       child: CircleAvatar(
+                                          backgroundColor: Colors.white,
                                                                           backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile != "null"
                                                                               ? NetworkImage(Strings.imageUrl + (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
-                                                                              : AssetImage("assets/imgs/appicon.png") as ImageProvider),
+                                                                              : AssetImage("assets/imgs/profile-user.png") as ImageProvider),
                                                                     ),
                                                                   );
                                                                 } else if (index ==

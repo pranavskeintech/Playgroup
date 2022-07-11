@@ -15,7 +15,9 @@ import 'package:provider/provider.dart';
 class Groupinfo extends StatefulWidget {
   final int? groupId;
   final int? choosedChildId;
-  Groupinfo({Key? key, this.groupId, this.choosedChildId}) : super(key: key);
+  bool? fromChat;
+  Groupinfo({Key? key, this.groupId, this.choosedChildId, this.fromChat})
+      : super(key: key);
 
   @override
   State<Groupinfo> createState() => _GroupinfoState();
@@ -128,6 +130,45 @@ class _GroupinfoState extends State<Groupinfo> {
                     AssetImage("assets/imgs/back arrow.png"),
                     color: Colors.white,
                   )),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: PopupMenuButton<String>(
+                    child: Icon(
+                      Icons.more_vert,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                    //child:Text('Sort By'),
+                    onSelected: (Data) {
+                      handleClick(
+                        Data,
+                        // PastActPhotos![index]
+                        //     .pastActivitiesImagesId!,
+                        // PastActPhotos![index].imageName!);
+                      );
+                    },
+                    itemBuilder: widget.fromChat!
+                        ? (BuildContext context) {
+                            return {'Exit Group'}.map((String choice) {
+                              return PopupMenuItem<String>(
+                                value: choice,
+                                child: Text(choice),
+                              );
+                            }).toList();
+                          }
+                        : (BuildContext context) {
+                            return {'Group Chat', 'Exit Group'}
+                                .map((String choice) {
+                              return PopupMenuItem<String>(
+                                value: choice,
+                                child: Text(choice),
+                              );
+                            }).toList();
+                          },
+                  ),
+                )
+              ],
             ),
             bottomSheet: _showBottomSheet(),
             body: Column(
@@ -138,12 +179,13 @@ class _GroupinfoState extends State<Groupinfo> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CircleAvatar(
+                                          backgroundColor: Colors.white,
                         backgroundImage:
                             _GroupData!.groupDetails![0].groupImage != "null"
                                 ? NetworkImage(Strings.imageUrl +
                                     (_GroupData!.groupDetails![0].groupImage ??
                                         ""))
-                                : AssetImage("assets/imgs/appicon.png")
+                                : AssetImage("assets/imgs/profile-user.png")
                                     as ImageProvider,
                       ),
                       SizedBox(
@@ -339,11 +381,20 @@ class _GroupinfoState extends State<Groupinfo> {
                                               MaterialPageRoute(
                                                   builder:
                                                       (BuildContext context) =>
-                                                          OtherChildProfile()));
+                                                          OtherChildProfile(
+                                                            otherChildID:
+                                                                _foundedGroupMembers![
+                                                                        index]
+                                                                    .childId,
+                                                            chooseChildId: widget
+                                                                .choosedChildId,
+                                                          
+                                      fromSearch: false)));
                                     },
                                     leading: Transform.translate(
                                       offset: Offset(-16, 0),
                                       child: CircleAvatar(
+                                          backgroundColor: Colors.white,
                                         backgroundImage: _foundedGroupMembers![
                                                         index]
                                                     .profile !=
@@ -353,7 +404,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                                         .profile ??
                                                     ""))
                                             : AssetImage(
-                                                    "assets/imgs/appicon.png")
+                                                    "assets/imgs/profile-user.png")
                                                 as ImageProvider,
                                       ),
                                     ),
@@ -571,5 +622,41 @@ class _GroupinfoState extends State<Groupinfo> {
         print("error");
       }
     });
+  }
+
+  exitGroup() {
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api
+        .exitGroup(
+            _GroupData!.groupDetails![0].groupId!, widget.choosedChildId!)
+        .then((response) {
+      if (response.status == true) {
+        setState(() {
+          _isPressed = false;
+          _isLoading = false;
+          Navigator.pop(context);
+          functions.createSnackBarGreen(context, response.message.toString());
+        });
+      } else {
+        _isLoading = false;
+        functions.createSnackBar(context, response.message.toString());
+        print("error");
+      }
+    });
+  }
+
+  handleClick(String value) {
+    switch (value) {
+      case 'Group Chat':
+        setState(() {
+          //_downloadfile(url);
+        });
+        break;
+      case 'Exit Group':
+        setState(() {
+          exitGroup();
+        });
+        break;
+    }
   }
 }

@@ -5,6 +5,7 @@ import 'package:playgroup/Models/GetNotificationList.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Mark_availability.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/PastActivityDetailView.dart';
 import 'package:playgroup/Screens/ShowOtherChild.dart';
@@ -235,11 +236,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                     Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
-                                                ShowOtherChildProfile(
+                                                OtherChildProfile(
                                                   otherChildID:
                                                       NotificationList![
                                                               mainIndex]
                                                           .otherChildId,
+                                      fromSearch: false
+                                                          
                                                 )));
                                   }
                                 },

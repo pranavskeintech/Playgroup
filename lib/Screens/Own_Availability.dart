@@ -234,11 +234,12 @@ class _Own_AvailabilityState extends State<Own_Availability>
                 child: Row(
                   children: [
                     CircleAvatar(
+                                          backgroundColor: Colors.white,
                       radius: 18,
                       backgroundImage: (availabilityData[0].profile! != "null")
                           ? NetworkImage(
                               Strings.imageUrl + availabilityData[0].profile!)
-                          : AssetImage("assets/imgs/appicon.png")
+                          : AssetImage("assets/imgs/profile-user.png")
                               as ImageProvider,
                     ),
                     SizedBox(
@@ -336,6 +337,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                 fontWeight: FontWeight.w700,
                                 fontSize: 14,
                               ),
+                              overflow: TextOverflow.ellipsis,
                             )
                           : Text(
                               "Open to Anything",
@@ -527,13 +529,28 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                       if (index < 5) {
                                         return InkWell(
                                           onTap: () {
-                                            showParticipant(context);
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        OtherChildProfile(
+                                                          otherChildID:
+                                                              availabilityData[
+                                                                      0]
+                                                                  .friendsdata![
+                                                                      index]
+                                                                  .childFriendId!,
+                                                          chooseChildId: Strings
+                                                              .SelectedChild,
+                                      fromSearch: false
+                                                        )));
                                           },
                                           child: Container(
                                             padding: EdgeInsets.all(3),
                                             width: 35,
                                             height: 35,
                                             child: CircleAvatar(
+                                          backgroundColor: Colors.white,
                                               backgroundImage: availabilityData[
                                                               0]
                                                           .friendsdata![index]
@@ -545,7 +562,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                                           .friendsdata![index]
                                                           .profile!)
                                                   : AssetImage(
-                                                          "assets/imgs/appicon.png")
+                                                          "assets/imgs/profile-user.png")
                                                       as ImageProvider,
                                             ),
                                           ),
@@ -1046,9 +1063,16 @@ class _Own_AvailabilityState extends State<Own_Availability>
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) =>
-                                    OtherChildProfile()));
+                                    OtherChildProfile(
+                                      otherChildID: availabilityData[0]
+                                          .friendsdata![index]
+                                          .childFriendId!,
+                                      chooseChildId: Strings.SelectedChild,
+                                      fromSearch: false
+                                    )));
                           },
                           leading: CircleAvatar(
+                                          backgroundColor: Colors.white,
                             backgroundImage: availabilityData[0]
                                         .friendsdata![index]
                                         .profile !=
@@ -1058,7 +1082,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                             .friendsdata![index]
                                             .profile ??
                                         ""))
-                                : AssetImage("assets/imgs/appicon.png")
+                                : AssetImage("assets/imgs/profile-user.png")
                                     as ImageProvider,
                             radius: 17,
                           ),

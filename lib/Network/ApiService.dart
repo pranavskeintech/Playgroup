@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
@@ -21,6 +20,7 @@ import 'package:playgroup/Models/FriendsAndGroups.dart';
 import 'package:playgroup/Models/GetActivitiesRes.dart';
 import 'package:playgroup/Models/GetAllActivities.dart';
 import 'package:playgroup/Models/GetAllGroupDetails.dart';
+import 'package:playgroup/Models/GetChatsList.dart';
 import 'package:playgroup/Models/GetChildProfile.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Models/GetGroupDetailsByIdRes.dart';
@@ -210,8 +210,7 @@ abstract class ApiService {
   Future<AcceptedFriendsRes> GetAcceptedFriendReq(@Path("ChildID") int ChildID);
 
   @GET("mark/getmark/{ChildID}")
-  Future<ownAvailabilityListRes> GetMarkAvailability(
-      @Path("ChildID") int ChildID);
+  Future<GetAllActivities> GetMarkAvailability(@Path("ChildID") int ChildID);
 
   @GET("mark/join_markavail_list/{ChildID}")
   Future<OtherMarkAvailabilityRes> GetOtherMarkAvailability(
@@ -231,8 +230,7 @@ abstract class ApiService {
       @Path("ChildID") int ChildID);
 
   @PUT("user/update_notification_status")
-  Future<CommonRes> updateNotificationstatus(
-      @Body() CommonReq body);
+  Future<CommonRes> updateNotificationstatus(@Body() CommonReq body);
 
 ///////////  Groups /////////////////
   @POST("groups/create/{ChildID}")
@@ -284,9 +282,15 @@ abstract class ApiService {
 
   @POST("comment/addlike")
   Future<CommonRes> addLike(@Body() CommonReq body);
-  
+
   @DELETE("mark/delete_past_images/{pastActivitiesImagesId}")
-  Future<CommonRes> DeletePastImgs(@Path("pastActivitiesImagesId") int pastActivitiesImagesId);
+  Future<CommonRes> DeletePastImgs(
+      @Path("pastActivitiesImagesId") int pastActivitiesImagesId);
+
+//////////////  Chats List /////////////////
+
+  @GET("chat/getchat_list/{ChildID}")
+  Future<GetChatsList> GetChatList(@Path("ChildID") int ChildID);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////

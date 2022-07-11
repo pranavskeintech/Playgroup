@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/GetAllActivities.dart';
+import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -9,7 +10,8 @@ import 'package:provider/provider.dart';
 
 class availabilityList extends StatefulWidget {
   int? FID;
-  availabilityList({Key? key, this.FID}) : super(key: key);
+  bool? fromOwnAvail;
+  availabilityList({Key? key, this.FID, this.fromOwnAvail}) : super(key: key);
 
   @override
   State<availabilityList> createState() => _availabilityListState();
@@ -26,7 +28,11 @@ class _availabilityListState extends State<availabilityList> {
 
   var width;
 
+  //List<AvailabilityListData>? GetMarkAvailabilityData;
+  List<ActData>? GetMarkAvailabilityData;
+
   GetAllActivity() {
+    print("2");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.GetAllActivity(widget.FID!).then((response) {
       print(response.status);
@@ -49,20 +55,58 @@ class _availabilityListState extends State<availabilityList> {
     });
   }
 
+  GetMarkAvailability() {
+    print("object");
+    //AppUtils.showprogress();
+    int CID = Strings.SelectedChild;
+    print("cID:$CID");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.GetMarkAvailability(CID).then((response) {
+      print("sts1:${response.status}");
+      print("res1:${response.data}");
+      if (response.status == true) {
+        setState(() {
+          // AppUtils.dismissprogress();
+          GetMarkAvailabilityData = response.data;
+          setState(() {
+            _foundedActivity = GetMarkAvailabilityData!;
+          });
+
+          _isLoading = false;
+        });
+      } else {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
+  }
+
   onSearch3(String search) {
     print("Searching for $search");
     setState(() {
-      _foundedActivity = AllActivity!
-          .where((user) =>
-              user.categoryName!.toLowerCase().contains(search.toLowerCase()))
-          .toList();
+      widget.fromOwnAvail!
+          ? _foundedActivity = GetMarkAvailabilityData!
+              .where((user) => user.categoryName!
+                  .toLowerCase()
+                  .contains(search.toLowerCase()))
+              .toList()
+          : _foundedActivity = AllActivity!
+              .where((user) => user.categoryName!
+                  .toLowerCase()
+                  .contains(search.toLowerCase()))
+              .toList();
     });
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance!.addPostFrameCallback((_) => GetAllActivity());
+    print("hii:${widget.fromOwnAvail}");
+    WidgetsBinding.instance!.addPostFrameCallback(
+        (_) => widget.fromOwnAvail! ? GetMarkAvailability() : GetAllActivity());
   }
 
   @override
@@ -138,16 +182,19 @@ class _availabilityListState extends State<availabilityList> {
                               return Padding(
                                 padding: const EdgeInsets.fromLTRB(0, 5, 0, 10),
                                 child: InkWell(
-                                  onTap: () {
-                                    Navigator.of(context).push(
+                                  onTap: () async {
+                                    await Navigator.of(context).push(
                                         MaterialPageRoute(
-                                            builder: (context) =>
+                                            builder: (BuildContext context) =>
                                                 Own_Availability(
                                                   markavailId:
                                                       _foundedActivity![index]
                                                           .markavailId,
-                                                  fromAct: true,
+                                                  fromAct: false,
                                                 )));
+                                    setState(() {
+                                      GetAllActivity();
+                                    });
                                   },
                                   child: Container(
                                     decoration: BoxDecoration(
@@ -262,10 +309,14 @@ class _availabilityListState extends State<availabilityList> {
                                             SizedBox(
                                               width: 3,
                                             ),
-                                            Text(
-                                              _foundedActivity![index]
-                                                  .location!,
-                                              style: TextStyle(fontSize: 12),
+                                            Container(
+                                              width: 100,
+                                              child: Text(
+                                                _foundedActivity![index]
+                                                    .location!,
+                                                style: TextStyle(fontSize: 12),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
                                             ),
                                           ],
                                         ),

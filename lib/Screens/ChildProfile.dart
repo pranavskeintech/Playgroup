@@ -102,9 +102,10 @@ class _ChildProfileState extends State<ChildProfile>
   // List of items in our dropdown menu
   var items2 = [
     'FILTER',
-    'MY ACTIVITIES',
-    'JOINED ACTIVITIES',
+    'OWN',
+    'JOINED',
   ];
+  var Interests = [];
 
   bool value = false;
   final List<String> _texts = [
@@ -363,12 +364,12 @@ class _ChildProfileState extends State<ChildProfile>
             .where((user) =>
                 user.categoryName!.toLowerCase().contains(search.toLowerCase()))
             .toList();
-      } else if (dropdownvalue2 == "MY ACTIVITIES") {
+      } else if (dropdownvalue2 == "OWN") {
         _foundedMyActivity = MyAct!
             .where((user) =>
                 user.categoryName!.toLowerCase().contains(search.toLowerCase()))
             .toList();
-      } else if (dropdownvalue2 == "JOINED ACTIVITIES") {
+      } else if (dropdownvalue2 == "JOINED") {
         _foundedJoinedActivity = JoinedAct!
             .where((user) =>
                 user.categoryName!.toLowerCase().contains(search.toLowerCase()))
@@ -448,8 +449,8 @@ class _ChildProfileState extends State<ChildProfile>
                               color: const Color(0xFF9e9e9e))),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.20,
-                      child: Text('Activities',
+                      width: MediaQuery.of(context).size.width * 0.21,
+                      child: Text('Availabilities',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
@@ -532,10 +533,11 @@ class _ChildProfileState extends State<ChildProfile>
                   ),
                   CircleAvatar(
                       radius: 45,
+                      backgroundColor: Colors.white,
                       backgroundImage: childInfo![0].profile! != "null"
                           ? NetworkImage(
                               Strings.imageUrl + (childInfo![0].profile!))
-                          : AssetImage("assets/imgs/appicon.png")
+                          : AssetImage("assets/imgs/profile-user.png")
                               as ImageProvider),
                   SizedBox(
                     height: 10,
@@ -659,9 +661,16 @@ class _ChildProfileState extends State<ChildProfile>
                       style: TextStyle(fontWeight: FontWeight.bold)),
                   TextButton(
                       onPressed: () async {
+                        for (var i = 0;
+                            i < childInfo![0].interests!.length;
+                            i++) {
+                          Interests.add(
+                              childInfo![0].interests![i].interestsId!);
+                        }
                         await Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => EditChildInterests(
-                                chooseChildId: widget.chooseChildId)));
+                                chooseChildId: widget.chooseChildId,
+                                InterestsList: Interests)));
                         setState(() {
                           _isLoading = true;
                           getProfile();
@@ -714,6 +723,7 @@ class _ChildProfileState extends State<ChildProfile>
                                         width: 45,
                                         height: 45,
                                         child: CircleAvatar(
+                                            backgroundColor: Colors.white,
                                             backgroundImage: childInfo![0]
                                                         .interests![index]
                                                         .interestImage! !=
@@ -725,7 +735,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                             .interests![index]
                                                             .interestImage!))
                                                 : AssetImage(
-                                                        "assets/imgs/appicon.png")
+                                                        "assets/imgs/profile-user.png")
                                                     as ImageProvider),
                                       ),
                                       SizedBox(
@@ -958,28 +968,37 @@ class _ChildProfileState extends State<ChildProfile>
                               padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                               child: ListTile(
                                 onTap: () async {
-                                  (_foundedAllData[index].type == "GROUP")
-                                      ? await Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Groupinfo(
-                                                      groupId:
-                                                          _foundedAllData[index]
-                                                              .id,
-                                                      choosedChildId: widget
-                                                          .chooseChildId)))
-                                      : Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  OtherChildProfile(
-                                                      otherChildID:
-                                                          _foundedAllData[index]
-                                                              .id,
-                                                      chooseChildId:
-                                                          widget.chooseChildId)));
-                                  setState(() {
-                                    GroupData();
-                                  });
+                                  if (_foundedAllData[index].type == "GROUP") {
+                                    await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Groupinfo(
+                                                  groupId:
+                                                      _foundedAllData[index].id,
+                                                  choosedChildId:
+                                                      widget.chooseChildId,
+                                                  fromChat: false,
+                                                )));
+
+                                    setState(() {
+                                      _GetFriends();
+                                    });
+                                  } else {
+                                    await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                OtherChildProfile(
+                                                    otherChildID:
+                                                        _foundedAllData[index]
+                                                            .id,
+                                                    chooseChildId:
+                                                        widget.chooseChildId,
+                                                    fromSearch: false)));
+
+                                    setState(() {
+                                      _GetFriends();
+                                    });
+                                  }
                                 },
                                 leading: Transform.translate(
                                   offset: Offset(-16, 0),
@@ -990,6 +1009,7 @@ class _ChildProfileState extends State<ChildProfile>
                                             padding:
                                                 const EdgeInsets.only(left: 5),
                                             child: CircleAvatar(
+                                              backgroundColor: Colors.white,
                                               backgroundImage: _foundedAllData[
                                                               index]
                                                           .image !=
@@ -1000,7 +1020,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                               .image ??
                                                           ""))
                                                   : AssetImage(
-                                                          "assets/imgs/appicon.png")
+                                                          "assets/imgs/profile-user.png")
                                                       as ImageProvider,
                                               radius: 23,
                                             ),
@@ -1018,6 +1038,7 @@ class _ChildProfileState extends State<ChildProfile>
                                           padding:
                                               const EdgeInsets.only(left: 5),
                                           child: CircleAvatar(
+                                            backgroundColor: Colors.white,
                                             backgroundImage: _foundedAllData[
                                                             index]
                                                         .image !=
@@ -1028,7 +1049,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                                 .image ??
                                                             ""))
                                                 : AssetImage(
-                                                        "assets/imgs/appicon.png")
+                                                        "assets/imgs/profile-user.png")
                                                     as ImageProvider,
                                             radius: 23,
                                           ),
@@ -1071,7 +1092,8 @@ class _ChildProfileState extends State<ChildProfile>
                                                 groupId: _foundedGroups[index]
                                                     .groupId,
                                                 choosedChildId:
-                                                    widget.chooseChildId)));
+                                                    widget.chooseChildId,
+                                                fromChat: false)));
                                 setState(() {
                                   GroupData();
                                 });
@@ -1082,15 +1104,16 @@ class _ChildProfileState extends State<ChildProfile>
                                   Padding(
                                     padding: const EdgeInsets.only(left: 5),
                                     child: CircleAvatar(
-                                      backgroundImage:
-                                          _foundedAllData[index].image != "null"
-                                              ? NetworkImage(Strings.imageUrl +
-                                                  (_foundedAllData[index]
-                                                          .image ??
-                                                      ""))
-                                              : AssetImage(
-                                                      "assets/imgs/appicon.png")
-                                                  as ImageProvider,
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: _foundedAllData[index]
+                                                  .image !=
+                                              "null"
+                                          ? NetworkImage(Strings.imageUrl +
+                                              (_foundedAllData[index].image ??
+                                                  ""))
+                                          : AssetImage(
+                                                  "assets/imgs/profile-user.png")
+                                              as ImageProvider,
                                       radius: 23,
                                     ),
                                   ),
@@ -1148,20 +1171,23 @@ class _ChildProfileState extends State<ChildProfile>
                                                         _foundedUsers[index]
                                                             .childFriendId,
                                                     chooseChildId:
-                                                        widget.chooseChildId)));
+                                                        widget.chooseChildId,
+                                                    fromSearch: false)));
                               },
                               leading: Transform.translate(
                                 offset: Offset(-16, 0),
                                 child: Padding(
                                   padding: const EdgeInsets.only(left: 5),
                                   child: CircleAvatar(
+                                    backgroundColor: Colors.white,
                                     backgroundImage: _foundedUsers[index]
                                                 .profile !=
                                             "null"
                                         ? NetworkImage(Strings.imageUrl +
                                             (_foundedUsers[index].profile ??
                                                 ""))
-                                        : AssetImage("assets/imgs/appicon.png")
+                                        : AssetImage(
+                                                "assets/imgs/profile-user.png")
                                             as ImageProvider,
                                     radius: 23,
                                   ),
@@ -1358,19 +1384,23 @@ class _ChildProfileState extends State<ChildProfile>
                     itemBuilder: (context, index) {
                       return ListTile(
                         onTap: () {
+                          print("object:${_FriendReqData![index].childId}");
                           Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   OtherChildProfile(
-                                      otherChildID:
+                                      chooseChildId:
                                           _FriendReqData![index].childFriendId,
-                                      chooseChildId: widget.chooseChildId)));
+                                      otherChildID:
+                                          _FriendReqData![index].childId,
+                                      fromSearch: false)));
                         },
                         leading: CircleAvatar(
+                          backgroundColor: Colors.white,
                           backgroundImage:
                               _FriendReqData![index].profile != "null"
                                   ? NetworkImage(Strings.imageUrl +
                                       (_FriendReqData![index].profile ?? ""))
-                                  : AssetImage("assets/imgs/appicon.png")
+                                  : AssetImage("assets/imgs/profile-user.png")
                                       as ImageProvider,
                           radius: 23,
                         ),
@@ -1724,7 +1754,7 @@ class _ChildProfileState extends State<ChildProfile>
                   : SizedBox(),
 
 /////////////////  My Act //////////////
-          (dropdownvalue2 == "MY ACTIVITIES")
+          (dropdownvalue2 == "OWN")
               ? _foundedMyActivity!.length > 0
                   ? Expanded(
                       child: ListView.builder(
@@ -1870,7 +1900,7 @@ class _ChildProfileState extends State<ChildProfile>
                   : Spacer()
               : SizedBox(),
 /////////////////  Joined Act //////////////
-          (dropdownvalue2 == "JOINED ACTIVITIES")
+          (dropdownvalue2 == "JOINED")
               ? _foundedJoinedActivity!.length > 0
                   ? Expanded(
                       child: ListView.builder(

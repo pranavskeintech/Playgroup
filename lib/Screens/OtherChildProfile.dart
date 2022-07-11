@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
+import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetAllActivities.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/AvailabilityList.dart';
+import 'package:playgroup/Screens/Own_Availability.dart';
 import 'package:playgroup/Screens/friendsList.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:provider/provider.dart';
@@ -19,11 +21,10 @@ import '../Utilities/AppUtlis.dart';
 class OtherChildProfile extends StatefulWidget {
   int? otherChildID;
   int? chooseChildId;
-  OtherChildProfile({
-    Key? key,
-    this.otherChildID,
-    this.chooseChildId,
-  }) : super(key: key);
+  bool? fromSearch;
+  OtherChildProfile(
+      {Key? key, this.otherChildID, this.chooseChildId, this.fromSearch})
+      : super(key: key);
 
   @override
   State<OtherChildProfile> createState() => _OtherChildProfileState();
@@ -59,9 +60,12 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
   List<ActData>? AllActivity = [];
 
   CheckFriends() {
+    print("fromsearch:${widget.fromSearch!}");
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api
-        .getOtherchildDetails(widget.chooseChildId!, widget.otherChildID!)
+        .getOtherchildDetails(
+            widget.fromSearch! ? Strings.SelectedChild : widget.chooseChildId!,
+            widget.otherChildID!)
         .then((response) {
       print(response.status);
       if (response.status == true) {
@@ -182,10 +186,11 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                       ),
                       CircleAvatar(
                           radius: 50,
+                          backgroundColor: Colors.white,
                           backgroundImage: childInfo![0].profile! != "null"
                               ? NetworkImage(
                                   Strings.imageUrl + (childInfo![0].profile!))
-                              : AssetImage("assets/imgs/appicon.png")
+                              : AssetImage("assets/imgs/profile-user.png")
                                   as ImageProvider),
                       SizedBox(
                         height: 20,
@@ -217,46 +222,120 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                       SizedBox(
                         height: 10,
                       ),
-                      (childInfo![0].status! != "Accepted")
-                          ? ElevatedButton(
-                              onPressed: () {
-                                Addfriend();
-                              },
-                              child: Container(
-                                width: 140,
-                                child: Center(
-                                  child: Text(
-                                    "Add Friend",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700),
+                      (childInfo![0].status! == "unfriend")
+                          ? childInfo![0].childId == Strings.SelectedChild
+                              ? SizedBox()
+                              : ElevatedButton(
+                                  onPressed: () {
+                                    Addfriend();
+                                  },
+                                  child: Container(
+                                    width: 140,
+                                    child: Center(
+                                      child: Text(
+                                        "Add Friend",
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700),
+                                      ),
+                                    ),
+                                  ))
+                          : (childInfo![0].status == "cancel request")
+                              ? Padding(
+                                  padding:
+                                      const EdgeInsets.fromLTRB(20, 0, 30, 0),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      SizedBox(
+                                        height: 30,
+                                        width: 120,
+                                        child: ElevatedButton(
+                                            onPressed: () {
+                                              int FID =
+                                                  childInfo![0].friendsId!;
+                                              int CID = Strings.SelectedChild;
+                                              int CFID = childInfo![0].childId!;
+                                              _AcceptFriendReq(CID, CFID, FID);
+                                            },
+                                            child: Container(
+                                              width: 140,
+                                              child: Center(
+                                                child: Text(
+                                                  "Accept",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                      SizedBox(
+                                        height: 30,
+                                        width: 120,
+                                        child: ElevatedButton(
+                                            style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all<
+                                                      Color>(Colors.white),
+                                            ),
+                                            onPressed: () {
+                                              int FID =
+                                                  childInfo![0].friendsId!;
+                                              int CID = Strings.SelectedChild;
+                                              int CFID = childInfo![0].childId!;
+                                              _CancelFriendReq(CID, CFID);
+                                            },
+                                            child: Container(
+                                              width: 140,
+                                              child: Center(
+                                                child: Text(
+                                                  "Reject",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Colors.black),
+                                                ),
+                                              ),
+                                            )),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ))
-                          : SizedBox(
-                              width: 140,
-                              child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Remove Friend",
-                                  style: TextStyle(
-                                    color: Colors.grey.shade700,
-                                  ),
-                                ),
-                                style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(Colors.white),
-                                    shape: MaterialStateProperty.all<
-                                            RoundedRectangleBorder>(
-                                        RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(4.0),
-                                            side: BorderSide(
-                                                width: 2,
-                                                color: Colors.grey
-                                                    .withOpacity(0.2))))),
-                              ),
-                            )
+                                )
+                              : (childInfo![0].status == "Accepted")
+                                  ? SizedBox(
+                                      width: 140,
+                                      child: ElevatedButton(
+                                        onPressed: () {
+                                          deleteRequest();
+                                        },
+                                        child: Text(
+                                          "Remove Friend",
+                                          style: TextStyle(
+                                            color: Colors.grey.shade700,
+                                          ),
+                                        ),
+                                        style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                                    Colors.white),
+                                            shape: MaterialStateProperty.all<
+                                                    RoundedRectangleBorder>(
+                                                RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4.0),
+                                                    side: BorderSide(
+                                                        width: 2,
+                                                        color: Colors.grey
+                                                            .withOpacity(
+                                                                0.2))))),
+                                      ),
+                                    )
+                                  : SizedBox()
                     ]),
                     margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
                     //padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -403,6 +482,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                         width: 41.5,
                                                         height: 41.5,
                                                         child: CircleAvatar(
+                                                            backgroundColor:
+                                                                Colors.white,
                                                             backgroundImage: childInfo![
                                                                             0]
                                                                         .interests![
@@ -418,7 +499,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                             index]
                                                                         .interestImage!))
                                                                 : AssetImage(
-                                                                        "assets/imgs/appicon.png")
+                                                                        "assets/imgs/profile-user.png")
                                                                     as ImageProvider),
                                                       ),
                                                       SizedBox(
@@ -582,17 +663,20 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                 top: 0, bottom: 14),
                                             child: GestureDetector(
                                               onTap: () {
-                                                Navigator.of(context).push(MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        OtherChildProfile(
-                                                            otherChildID:
-                                                                childInfo![0]
-                                                                    .frndsdata![
-                                                                        index]
-                                                                    .childFriendId!,
-                                                            chooseChildId: widget
-                                                                .chooseChildId)));
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            OtherChildProfile(
+                                                              otherChildID:
+                                                                  childInfo![0]
+                                                                      .frndsdata![
+                                                                          index]
+                                                                      .childFriendId!,
+                                                              chooseChildId: widget
+                                                                  .chooseChildId,
+                                                              fromSearch: false,
+                                                            )));
                                               },
                                               child: Container(
                                                 width: 150,
@@ -623,6 +707,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                       width: 30,
                                                       height: 30,
                                                       child: CircleAvatar(
+                                                        backgroundColor:
+                                                            Colors.white,
                                                         backgroundImage: childInfo![
                                                                         0]
                                                                     .frndsdata![
@@ -637,7 +723,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                         .profile ??
                                                                     ""))
                                                             : AssetImage(
-                                                                    "assets/imgs/appicon.png")
+                                                                    "assets/imgs/profile-user.png")
                                                                 as ImageProvider,
                                                         radius: 23,
                                                       ),
@@ -717,6 +803,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                           availabilityList(
                                                         FID: childInfo![0]
                                                             .childId,
+                                                        fromOwnAvail: false,
                                                       ),
                                                     ),
                                                   )
@@ -764,23 +851,29 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                 top: 0,
                                                                 bottom: 14),
                                                         child: GestureDetector(
-                                                         // onTap: (){
-                                        // Strings.activityConfirmed = false;
-                                        //  Navigator.of(context).push(
-                                        //     MaterialPageRoute(
-                                        //         builder:
-                                        //             (BuildContext context) =>
-                                        //                 Own_Availability(
-                                        //                   markavailId:
-                                        //                       OtherMarkAvailabilityData![
-                                        //                               mainIndex]
-                                        //                           .markavailId,
-                                        //                   fromAct: false,
-                                        //                 )));},
+                                                          onTap: () async {
+                                                            Strings.activityConfirmed =
+                                                                false;
+
+                                                            await Navigator.of(context).push(
+                                                                MaterialPageRoute(
+                                                                    builder: (BuildContext
+                                                                            context) =>
+                                                                        Own_Availability(
+                                                                          markavailId:
+                                                                              AllActivity![index].markavailId,
+                                                                          fromAct:
+                                                                              false,
+                                                                        )));
+                                                            setState(() {
+                                                              GetAllActivity();
+                                                            });
+                                                          },
                                                           child: Container(
                                                             padding: EdgeInsets
                                                                 .symmetric(
-                                                                    vertical: 18,
+                                                                    vertical:
+                                                                        18,
                                                                     horizontal:
                                                                         20),
                                                             decoration: BoxDecoration(
@@ -788,7 +881,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                     BorderRadius
                                                                         .circular(
                                                                             3),
-                                                                color: Colors.grey
+                                                                color: Colors
+                                                                    .grey
                                                                     .withOpacity(
                                                                         0.2)),
                                                             child: Column(
@@ -804,10 +898,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                           AllActivity![index].categoryName! +
                                                                               " - ",
                                                                           style: TextStyle(
-                                                                              fontSize:
-                                                                                  12,
-                                                                              color:
-                                                                                  Colors.black,
+                                                                              fontSize: 12,
+                                                                              color: Colors.black,
                                                                               fontWeight: FontWeight.w600),
                                                                           overflow:
                                                                               TextOverflow.ellipsis,
@@ -817,8 +909,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                               70,
                                                                           child:
                                                                               Text(
-                                                                            AllActivity![index]
-                                                                                .activitiesName!,
+                                                                            AllActivity![index].activitiesName!,
                                                                             style: TextStyle(
                                                                                 fontSize: 12,
                                                                                 color: Colors.black,
@@ -850,8 +941,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                               1,
                                                                           height:
                                                                               10,
-                                                                          color: Colors
-                                                                              .red,
+                                                                          color:
+                                                                              Colors.red,
                                                                         ),
                                                                         SizedBox(
                                                                           width:
@@ -860,21 +951,16 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                         Row(
                                                                           children: [
                                                                             Text(
-                                                                              AllActivity![index].fromTime!.replaceAll(' PM', '').replaceAll(' AM', '') +
-                                                                                  " - ",
-                                                                              style:
-                                                                                  TextStyle(fontSize: 11),
-                                                                              overflow:
-                                                                                  TextOverflow.ellipsis,
+                                                                              AllActivity![index].fromTime!.replaceAll(' PM', '').replaceAll(' AM', '') + " - ",
+                                                                              style: TextStyle(fontSize: 11),
+                                                                              overflow: TextOverflow.ellipsis,
                                                                             ),
                                                                             Text(
                                                                               AllActivity![index].toTime!,
-                                                                              style:
-                                                                                  TextStyle(
+                                                                              style: TextStyle(
                                                                                 fontSize: 11,
                                                                               ),
-                                                                              overflow:
-                                                                                  TextOverflow.ellipsis,
+                                                                              overflow: TextOverflow.ellipsis,
                                                                             ),
                                                                           ],
                                                                         )
@@ -957,6 +1043,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                               ListTile(
                                 onTap: () {},
                                 leading: CircleAvatar(
+                                  backgroundColor: Colors.white,
                                   backgroundImage: childInfo![0]
                                               .interests![index]
                                               .interestImage! !=
@@ -967,7 +1054,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                   .interests![index]
                                                   .interestImage ??
                                               ""))
-                                      : AssetImage("assets/imgs/appicon.png")
+                                      : AssetImage(
+                                              "assets/imgs/profile-user.png")
                                           as ImageProvider,
                                   radius: 17,
                                 ),
@@ -1003,6 +1091,77 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
             ]),
           );
         });
+  }
+
+  _AcceptFriendReq(CID, CFID, FID) {
+    print("CID:$CID");
+    print("CFID:$CFID");
+    print("FID:$FID");
+    AcceptFriendReq friendReq = AcceptFriendReq();
+    friendReq.childId = CID;
+    friendReq.childFriendId = CFID;
+    friendReq.friendsId = FID;
+    ;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.AcceptFriendRequest(friendReq).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        CheckFriends();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
+    });
+  }
+
+  _CancelFriendReq(CID, CFID) {
+    print("CID:$CID");
+    print("CFID:$CFID");
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.CancelFriendReq(CFID, CID).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        CheckFriends();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
+    });
+  }
+
+  deleteRequest() {
+    AppUtils.showprogress();
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api
+        .deleteFriendRequest(
+      widget.chooseChildId!,
+      widget.otherChildID!,
+    )
+        .then((response) {
+      print(response.status);
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast("Request Cancelled", ctx);
+        CheckFriends();
+      } else {
+        //functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, "Unable to fetch details for child", "");
+      }
+    }).catchError((onError) {
+      print(onError.toString());
+    });
   }
 
   Addfriend() {

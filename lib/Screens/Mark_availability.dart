@@ -115,52 +115,37 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
               context, "The from and to time should not be same", "");
           _FromTimeController.text = "";
         } else {
-          print("1");
           var currDate = DateTime.now();
           var currDateTime =
               "${currDate.day}-${currDate.month}-${currDate.year}";
-          print("NOW----->${now}");
           if (picked != null) {
-            final now1 = (todaySelected) ? now : picked;
+            final now1 = picked;
 
             var startShift = DateTime(now1!.year, now1.month, now1.day,
                 ChoosenTime1!.hour, ChoosenTime1!.minute);
             final endShift =
                 DateTime(now.year, now.month, now.day, now.hour, now.minute);
             if (date1 == currDateTime) {
-              // print("date3:$date3");
-              // print("tom:$tom");
-              print("date1----->${date1}");
-              print("2");
               if (startShift.isAfter(endShift)) {
-                print("3");
                 _FromTimeController.text = ChoosenTime1!.format(context);
               } else {
-                print("4");
                 AppUtils.showWarning(context,
                     "Time should not be below current date and time", "");
                 _FromTimeController.text = "";
               }
+            } else {
+              _FromTimeController.text = ChoosenTime1!.format(context);
             }
           } else if (todaySelected) {
-            print("today DATE ++++++++++++++++");
-
             final now1 = now;
-
             var startShift = DateTime(now1.year, now1.month, now1.day,
                 ChoosenTime1!.hour, ChoosenTime1!.minute);
             final endShift =
                 DateTime(now.year, now.month, now.day, now.hour, now.minute);
             if (date2 == currDateTime) {
-              // print("date3:$date3");
-              // print("tom:$tom");
-              print("date1----->${date2}");
-              print("2");
               if (startShift.isAfter(endShift)) {
-                print("3");
                 _FromTimeController.text = ChoosenTime1!.format(context);
               } else {
-                print("4");
                 AppUtils.showWarning(context,
                     "Time should not be below current date and time", "");
                 _FromTimeController.text = "";
@@ -192,29 +177,28 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
         );
       },
     );
-
     if (ChoosenTime2 != null) {
-      setState(() {
-        if (ChoosenTime2.format(context) == _FromTimeController.text) {
-          AppUtils.showWarning(
-              context, "The from and to time should not be same", "");
-          _TOTimeController.text = "";
-        } else {
-          var t = ChoosenTime1;
-          var startShift = DateTime(
-              picked!.year, picked!.month, picked!.day, t!.hour, t.minute);
-          var t2 = ChoosenTime2;
-          final endShift = DateTime(
-              picked!.year, picked!.month, picked!.day, t2.hour, t2.minute);
-          if ((startShift.isBefore(endShift))) {
-            _TOTimeController.text = ChoosenTime2.format(context);
-          } else {
-            AppUtils.showWarning(
-                context, "The to time should be greater than from time", "");
-            _TOTimeController.text = "";
-          }
-        }
-      });
+      var time = todaySelected
+          ? now
+          : TommorowSelected
+              ? tom
+              : picked != null
+                  ? picked
+                  : null;
+      var startShift = DateTime(time!.year, time.month, time.day,
+          ChoosenTime2.hour, ChoosenTime2.minute);
+      var t2 = ChoosenTime1;
+      final endShift =
+          DateTime(time.year, time.month, time.day, t2!.hour, t2.minute);
+      print("t3:$startShift");
+      print("t4:$endShift");
+      if (startShift.isAfter(endShift)) {
+        _TOTimeController.text = ChoosenTime2.format(context);
+      } else {
+        AppUtils.showWarning(
+            context, "Time should not be below current date and time", "");
+        _TOTimeController.text = "";
+      }
     }
   }
 
@@ -330,7 +314,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
       //       mainAxisAlignment: MainAxisAlignment.start,
       //       children: [
       //         Image.asset(
-      //           "assets/imgs/appicon.png",
+      //           "assets/imgs/profile-user.png",
       //           width: 28,
       //           height: 28,
       //         ),
@@ -362,7 +346,7 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
       //             ? NetworkImage(
       //                 Strings.imageUrl + (HeaderData!.profile!),
       //               )
-      //             : AssetImage("assets/imgs/appicon.png")
+      //             : AssetImage("assets/imgs/profile-user.png")
       //                 as ImageProvider,
       //         radius: 16,
       //       ),

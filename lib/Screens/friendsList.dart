@@ -144,20 +144,22 @@ class _friendsListState extends State<friendsList> {
                                                         _foundedUsers[index]
                                                             .childId,
                                                     chooseChildId:
-                                                        Strings.ChoosedChild)));
+                                                        Strings.ChoosedChild,
+                                      fromSearch: false)));
                                   },
                                   leading: Transform.translate(
                                     offset: Offset(-16, 0),
                                     child: CircleAvatar(
-                                      backgroundImage:
-                                          _foundedUsers[index].profile != "null"
-                                              ? NetworkImage(Strings.imageUrl +
-                                                  (_foundedUsers[index]
-                                                          .profile ??
-                                                      ""))
-                                              : AssetImage(
-                                                      "assets/imgs/appicon.png")
-                                                  as ImageProvider,
+                                          backgroundColor: Colors.white,
+                                      backgroundImage: _foundedUsers[index]
+                                                  .profile !=
+                                              "null"
+                                          ? NetworkImage(Strings.imageUrl +
+                                              (_foundedUsers[index].profile ??
+                                                  ""))
+                                          : AssetImage(
+                                                  "assets/imgs/profile-user.png")
+                                              as ImageProvider,
                                     ),
                                   ),
                                   title: Transform.translate(

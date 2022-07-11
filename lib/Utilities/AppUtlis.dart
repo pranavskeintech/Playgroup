@@ -6,6 +6,7 @@ import 'package:playgroup/Models/ChooseChildReq.dart';
 import 'package:playgroup/Models/GetProfileRes.dart';
 import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:provider/provider.dart';
 import '../Models/GetOtherMarkAvailabilityRes.dart';
@@ -243,12 +244,22 @@ class AppUtils {
                     return Column(
                       children: [
                         ListTile(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    OtherChildProfile(
+                                        otherChildID:
+                                            friendsdata[index].childId,
+                                        chooseChildId: Strings.SelectedChild,
+                                        fromSearch: false)));
+                          },
                           leading: CircleAvatar(
+                            backgroundColor: Colors.white,
                             backgroundImage:
                                 friendsdata[index].profile != "null"
                                     ? NetworkImage(Strings.imageUrl +
                                         (friendsdata[index].profile ?? ""))
-                                    : AssetImage("assets/imgs/appicon.png")
+                                    : AssetImage("assets/imgs/profile-user.png")
                                         as ImageProvider,
                             radius: 17,
                           ),
@@ -371,10 +382,11 @@ class SwitchChild {
                       //     radius: 32),
 
                       CircleAvatar(
+                        backgroundColor: Colors.white,
                         backgroundImage: HeaderData!.profile! != "null"
                             ? NetworkImage(
                                 Strings.imageUrl + (HeaderData!.profile ?? ""))
-                            : AssetImage("assets/imgs/appicon.png")
+                            : AssetImage("assets/imgs/profile-user.png")
                                 as ImageProvider,
                       ),
                       SizedBox(

@@ -21,7 +21,7 @@ packages:
       name: animated_bottom_navigation_bar
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.2"
+    version: "1.0.1"
   archive:
     dependency: transitive
     description:
@@ -274,6 +274,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.4"
+  dart_emoji:
+    dependency: "direct main"
+    description:
+      name: dart_emoji
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.2.0+2"
   dart_style:
     dependency: transitive
     description:

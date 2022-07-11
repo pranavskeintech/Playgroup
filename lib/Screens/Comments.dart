@@ -200,9 +200,10 @@ class _CommentsContentState extends State<CommentsContent>
                     //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
                     // ),
                     CircleAvatar(
+                                          backgroundColor: Colors.white,
                   backgroundImage: (Profile != "null")
                       ? NetworkImage(Strings.imageUrl + Profile!)
-                      : AssetImage("assets/imgs/appicon.png") as ImageProvider,
+                      : AssetImage("assets/imgs/profile-user.png") as ImageProvider,
                 ),
                 title: Text(ChildName ?? ""),
                 subtitle: Row(

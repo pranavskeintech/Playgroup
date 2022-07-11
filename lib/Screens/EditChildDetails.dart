@@ -184,6 +184,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                       Stack(children: [
                         CircleAvatar(
                           radius: 40.0,
+                                          backgroundColor: Colors.white,
                           backgroundImage: (_imageFile == null &&
                                   _ChildData![Strings.editIndex].profile !=
                                       "null")
@@ -192,9 +193,8 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                                       ""))
                               : _imageFile != null
                                   ? FileImage(_imageFile!)
-                                  : AssetImage("assets/imgs/appicon.png")
+                                  : AssetImage("assets/imgs/profile-user.png")
                                       as ImageProvider,
-                          backgroundColor: Colors.transparent,
                         ),
                         Positioned(
                             bottom: 0,

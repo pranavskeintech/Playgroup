@@ -4,7 +4,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:playgroup/Models/CommonReq.dart';
-import 'package:playgroup/Models/GetMarkAvailabilityListRes.dart';
 import 'package:playgroup/Models/PastActivitiesRes.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Network/ApiService.dart';
@@ -286,14 +285,15 @@ class _PastActivityState extends State<PastActivity> {
                                         //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
                                         // ),
                                         CircleAvatar(
-                                      backgroundImage:
-                                          (PastActData![index].profile! !=
-                                                  "null")
-                                              ? NetworkImage(Strings.imageUrl +
-                                                  PastActData![index].profile!)
-                                              : AssetImage(
-                                                      "assets/imgs/appicon.png")
-                                                  as ImageProvider,
+                                          backgroundColor: Colors.white,
+                                      backgroundImage: (PastActData![index]
+                                                  .profile! !=
+                                              "null")
+                                          ? NetworkImage(Strings.imageUrl +
+                                              PastActData![index].profile!)
+                                          : AssetImage(
+                                                  "assets/imgs/profile-user.png")
+                                              as ImageProvider,
                                     ),
                                     title: Text(PastActData![index].childName!),
                                     subtitle: Row(
@@ -342,8 +342,8 @@ class _PastActivityState extends State<PastActivity> {
                                           ],
                                         ),
                                         GestureDetector(
-                                          onTap: (() {
-                                            Navigator.of(context).push(
+                                          onTap: (() async {
+                                            await Navigator.of(context).push(
                                                 MaterialPageRoute(
                                                     builder: (BuildContext
                                                             context) =>
@@ -356,6 +356,9 @@ class _PastActivityState extends State<PastActivity> {
                                                                 PastActData![
                                                                         index]
                                                                     .childId!)));
+                                            setState(() {
+                                              _GetPastAct();
+                                            });
                                           }),
                                           child: Text(
                                             "See More",

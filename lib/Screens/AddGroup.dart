@@ -295,7 +295,7 @@ class _AddGroupState extends State<AddGroup> {
         int GroupId = response.groupDetails!.insertId!.toInt();
         Navigator.of(context).pushReplacement(MaterialPageRoute(
             builder: (BuildContext context) => Groupinfo(
-                groupId: GroupId, choosedChildId: widget.ChoosedChildId)));
+                groupId: GroupId, choosedChildId: widget.ChoosedChildId,fromChat: false,)));
         print("result2:$response");
       } else {
         functions.createSnackBar(context, response.message.toString());

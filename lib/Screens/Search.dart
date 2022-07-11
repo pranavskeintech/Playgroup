@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:playgroup/Screens/OtherChildProfile.dart';
 import 'package:playgroup/Screens/SearchResults.dart';
 import 'package:playgroup/Screens/ShowOtherChild.dart';
 import 'package:provider/provider.dart';
@@ -100,18 +101,23 @@ class _SearchScreenState extends State<SearchScreen> {
                               Strings.FriendNotification = false;
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
-                                      ShowOtherChildProfile(otherChildID: searchData[index].childId,childName: searchData[index].childName,ChildLocation: searchData[index].location,)));
+                                      OtherChildProfile(
+                                          otherChildID:
+                                              searchData[index].childId,
+                                          fromSearch: true)));
                             },
                             child: Container(
                                 padding: EdgeInsets.all(10),
                                 child: Row(children: [
                                   CircleAvatar(
+                                    backgroundColor: Colors.white,
                                     backgroundImage: searchData[index]
                                                 .profile !=
                                             "null"
                                         ? NetworkImage(Strings.imageUrl +
                                             (searchData[index].profile ?? ""))
-                                        : AssetImage("assets/imgs/appicon.png")
+                                        : AssetImage(
+                                                "assets/imgs/profile-user.png")
                                             as ImageProvider,
                                   ),
                                   SizedBox(width: 14),
@@ -232,7 +238,7 @@ class _SearchScreenState extends State<SearchScreen> {
   searchResults(searchText) {
     var PId = Strings.Parent_Id.toInt();
     final api = Provider.of<ApiService>(ctx!, listen: false);
-    api.SearchChild(searchText,Strings.SelectedChild).then((response) {
+    api.SearchChild(searchText, Strings.SelectedChild).then((response) {
       print(response.status);
       if (response.status == true) {
         noMatchFound = false;

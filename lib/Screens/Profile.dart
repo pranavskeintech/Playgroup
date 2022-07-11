@@ -456,6 +456,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                             chooseChildName: chooseChildName)));
                               }),
                               leading: CircleAvatar(
+                                  backgroundColor: Colors.white,
                                   backgroundImage: _ProfileData!
                                               .children![index].profile !=
                                           "null"
@@ -463,7 +464,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           (_ProfileData!
                                                   .children![index].profile ??
                                               ""))
-                                      : AssetImage("assets/imgs/appicon.png")
+                                      : AssetImage(
+                                              "assets/imgs/profile-user.png")
                                           as ImageProvider),
                               title: Text(
                                   _ProfileData!.children![index].childName!),
