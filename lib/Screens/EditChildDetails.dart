@@ -16,7 +16,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 
 class EditChildDetails extends StatefulWidget {
-  const EditChildDetails({Key? key}) : super(key: key);
+  EditChildDetails({Key? key}) : super(key: key);
 
   @override
   State<EditChildDetails> createState() => _EditChildDetailsState();
@@ -53,23 +53,33 @@ class _EditChildDetailsState extends State<EditChildDetails> {
   String img64 = "";
 
   bool _isLoading = true;
+  DateTime now = DateTime.now();
 
+  DateTime? picked;
   _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+     picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // Refer step 1
-      firstDate: DateTime(2000),
+      initialDate: (picked! != null)?DateTime(now.year - 4, now.month, now.day):
+      DateTime(now.year - 4, now.month, now.day), // Refer step 1
+      firstDate: DateTime(now.year - 18, now.month, now.day),
 
-      lastDate: DateTime.now(),
+      lastDate: DateTime(now.year - 4, now.month, now.day),
     );
     if (picked != null) {
       setState(() {
-        String date1 = "${picked.day}-${picked.month}-${picked.year}";
+        String date1 = "${picked!.day}-${picked!.month}-${picked!
+        
+        .year}";
         _dobController.text = date1;
         print("date selected");
       });
     }
   }
+
+//   if (DateTime.now().difference(date) < Duration(days: 6570)) {
+// EasyLoading.showError('You should be 18 years old to register');}
+// else {
+// store.changeBirthday(date);}
 
   openGallery() async {
     final pickedFile = await _picker.getImage(
@@ -184,7 +194,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                       Stack(children: [
                         CircleAvatar(
                           radius: 40.0,
-                                          backgroundColor: Colors.white,
+                          backgroundColor: Colors.white,
                           backgroundImage: (_imageFile == null &&
                                   _ChildData![Strings.editIndex].profile !=
                                       "null")

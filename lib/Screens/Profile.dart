@@ -97,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             body: SingleChildScrollView(
               child: Container(
                 // color: Colors.white,
-                padding: EdgeInsets.fromLTRB(28, 10, 20, 20),
+                padding: EdgeInsets.fromLTRB(25, 25, 25, 20),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -106,9 +106,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       children: [
                         Text(
                           "Your Profile",
-                          style: TextStyle(color: Colors.grey),
+                          style: TextStyle(
+                              color: Colors.black, fontWeight: FontWeight.w600),
                         ),
                         TextButton(
+                            style: TextButton.styleFrom(
+                                padding: EdgeInsets.zero,
+                                tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                minimumSize: Size.zero),
                             onPressed: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                   builder: (BuildContext context) =>
@@ -136,7 +141,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     Divider(
-                      color: Colors.grey,
+                      color: Colors.grey.shade300,
+                      thickness: 0.5,
                     ),
                     Container(
                       height: 10,
@@ -158,7 +164,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Text(
                                 _ProfileData!.parentName!,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 13),
                               )
                             ],
                           ),
@@ -182,7 +188,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Text(
                                 _ProfileData!.emailId!,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 13),
                               )
                             ],
                           ),
@@ -209,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Text(
                                 _ProfileData!.phone!,
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                                style: TextStyle(fontSize: 13),
                               )
                             ],
                           ),
@@ -260,7 +266,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               children: [
                                 Text(
                                   "Co-Parent",
-                                  style: TextStyle(color: Colors.grey),
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600),
                                 ),
                                 ElevatedButton(
                                     onPressed: () async {
@@ -287,7 +295,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     _ProfileData!.role == "PARENT"
                                         ? "Co-Parent"
                                         : "Owner",
-                                    style: TextStyle(color: Colors.grey),
+                                    style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.w600),
                                   ),
                                   TextButton(
                                       onPressed: () async {
@@ -341,7 +351,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                               Container(
                                   width:
-                                      MediaQuery.of(context).size.width * 0.95,
+                                      MediaQuery.of(context).size.width * 0.97,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5),
                                     color: Colors.grey.shade200,
@@ -386,16 +396,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                         .coParent?[0].emailId ??
                                                     "",
                                                 overflow: TextOverflow.ellipsis,
+                                                style: TextStyle(fontSize: 13),
                                               ),
                                             ),
                                             Row(
                                               children: [
-                                                Text("Access: "),
+                                                Text(
+                                                  "Access: ",
+                                                  style: TextStyle(
+                                                      fontSize: 12.5,
+                                                      fontWeight:
+                                                          FontWeight.w600),
+                                                ),
                                                 Text(
                                                     _ProfileData!.coParent?[0]
                                                             .access ??
                                                         "",
                                                     style: TextStyle(
+                                                        fontSize: 12.5,
+                                                        fontWeight:
+                                                            FontWeight.w600,
                                                         color: _ProfileData!
                                                                     .coParent?[
                                                                         0]
@@ -415,10 +435,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     SizedBox(
                       height: 20,
                     ),
-                    Text("Children",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                        )),
+                    Text(
+                      "Children",
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                    ),
                     SizedBox(
                       height: 10,
                     ),
@@ -428,11 +449,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       itemCount: _ProfileData!.children!.length,
                       itemBuilder: (context, index) {
                         return Padding(
-                          padding: const EdgeInsets.fromLTRB(5, 5, 5, 7),
+                          padding: const EdgeInsets.fromLTRB(0, 5, 0, 7),
                           child: Container(
-                            width: MediaQuery.of(context).size.width * 0.95,
+                            width: MediaQuery.of(context).size.width * 0.97,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(5),
                               color: Colors.white,
                               boxShadow: [
                                 BoxShadow(
@@ -443,6 +464,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             ),
                             child: ListTile(
                               onTap: (() {
+                                Strings.editIndex = index;
                                 var chooseChildId =
                                     _ProfileData!.children![index].childId;
                                 var chooseChildName =
@@ -468,10 +490,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                               "assets/imgs/profile-user.png")
                                           as ImageProvider),
                               title: Text(
-                                  _ProfileData!.children![index].childName!),
+                                _ProfileData!.children![index].childName!,
+                                style: TextStyle(fontSize: 14),
+                              ),
                               subtitle: Text(
                                 TimeAgo.calculateTimeDifferenceOfSeconds(
-                                    _ProfileData!.children![index].dob),
+                                  _ProfileData!.children![index].dob,
+                                ),
+                                style: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 12.5),
                               ),
                               trailing: GestureDetector(
                                 onTap: () {
@@ -486,11 +514,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       Text(
                                         "Remove",
-                                        style: TextStyle(color: Colors.red),
+                                        style: TextStyle(
+                                            color: Colors.red, fontSize: 13),
                                       ),
                                       Icon(
                                         Icons.clear,
-                                        size: 15,
+                                        size: 13,
                                         color: Colors.red,
                                       )
                                     ],
@@ -506,10 +535,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       padding: const EdgeInsets.only(top: 20),
                       child: Align(
                           alignment: Alignment.bottomCenter,
-                          child: SizedBox(
+                          child: Container(
                             width: MediaQuery.of(context).size.width * 0.9,
                             height: 50,
-                            child: ElevatedButton(
+                            decoration: BoxDecoration(boxShadow: [
+                              BoxShadow(
+                                  color: Colors.grey.withOpacity(0.2),
+                                  blurRadius: 8.0,
+                                  spreadRadius: 5.0,
+                                  offset: Offset(2.0, 9.0))
+                            ]),
+                            child: TextButton(
                               onPressed: () {
                                 Strings.profilepage = true;
                                 Navigator.of(context).push(MaterialPageRoute(
@@ -519,23 +555,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                         )));
                               },
                               child: Text(
-                                "Add Child",
+                                "Add Another Child",
                                 style: TextStyle(
-                                  color: Colors.grey.shade700,
-                                ),
+                                    color: Colors.black54,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500),
                               ),
                               style: ButtonStyle(
-                                  backgroundColor:
-                                      MaterialStateProperty.all(Colors.white),
-                                  shape: MaterialStateProperty.all<
-                                          RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(4.0),
-                                          side: BorderSide(
-                                              width: 2,
-                                              color: Colors.grey
-                                                  .withOpacity(0.2))))),
+                                backgroundColor:
+                                    MaterialStateProperty.all(Colors.white),
+                              ),
                             ),
                           )),
                     ),

@@ -465,8 +465,9 @@ class _EditCoParentState extends State<EditCoParent> {
           if (response.status!) {
             AppUtils.dismissprogress();
             AppUtils.showToast("Co-Parent updated successfully", ctx);
-            Navigator.of(context).pushReplacement(MaterialPageRoute(
-                builder: (BuildContext context) => ProfileScreen()));
+            // Navigator.of(context).pushReplacement(MaterialPageRoute(
+            //     builder: (BuildContext context) => ProfileScreen()));
+            Navigator.pop(context);
           }
           {
             print("Unable to update access");
@@ -477,13 +478,14 @@ class _EditCoParentState extends State<EditCoParent> {
           AppUtils.showToast("Something went wrong", ctx);
         });
 
-        Navigator.pop(context);
+        //Navigator.pop(context);
 
         // Navigator.of(context).pushReplacement(MaterialPageRoute(
         //     builder: (BuildContext context) => ProfileScreen()));
       } else {
         AppUtils.dismissprogress();
         AppUtils.showError(context, response.message, "");
+        Navigator.pop(context);
         print("error");
       }
     }).onError((error, stackTrace) {

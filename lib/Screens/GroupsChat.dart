@@ -98,7 +98,7 @@ class _Groups_ChatState extends State<Groups_Chat>
     _socket?.on("connect", (_) {
       print('Connected');
       print("Calling function");
-      getComments();
+      getGroupChat();
     });
   }
 
@@ -139,7 +139,7 @@ class _Groups_ChatState extends State<Groups_Chat>
                   width: 2,
                 ),
                 CircleAvatar(
-                                          backgroundColor: Colors.white,
+                  backgroundColor: Colors.white,
                   maxRadius: 20,
                   backgroundImage: (widget.profile! != "null")
                       ? NetworkImage(Strings.imageUrl + widget.profile!)
@@ -254,7 +254,7 @@ class _Groups_ChatState extends State<Groups_Chat>
                                           // mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                              backgroundColor: Colors.white,
                                               radius: 16,
                                               backgroundImage: (ChatData![index]
                                                           .profile! !=
@@ -281,7 +281,7 @@ class _Groups_ChatState extends State<Groups_Chat>
                                               width: 10,
                                             ),
                                             CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                              backgroundColor: Colors.white,
                                               radius: 16,
                                               backgroundImage: (ChatData![index]
                                                           .profile! !=
@@ -627,7 +627,7 @@ class _Groups_ChatState extends State<Groups_Chat>
     }
   }
 
-  getComments() async {
+  getGroupChat() async {
     print("Getting comments");
     _socket?.on("get-group-chats", (_data) {
       print('fromServer');
@@ -637,16 +637,18 @@ class _Groups_ChatState extends State<Groups_Chat>
         print("Dta chacek--> $initialCommentCheck");
         print("getting inside");
         msgField.unfocus();
-        ChatData = [];
-        for (var item in _data) {
-          ChatData!.add(Data.fromJson(item));
-          print("set state");
+        if (_data[0]['group_id'] == widget.groupId) {
+          ChatData = [];
+          for (var item in _data) {
+            ChatData!.add(Data.fromJson(item));
+            print("set state");
 
-          for (int index = 0; index < ChatData!.length; index++) {
-            dateFormate.add(DateFormat("dd-MM-yyyy")
-                .format(DateTime.parse(ChatData![index].createdDate!)));
+            for (int index = 0; index < ChatData!.length; index++) {
+              dateFormate.add(DateFormat("dd-MM-yyyy")
+                  .format(DateTime.parse(ChatData![index].createdDate!)));
+            }
+            print(dateFormate);
           }
-          print(dateFormate);
         }
         initialCommentCheck = false;
         print("Comments fetched changing to false");

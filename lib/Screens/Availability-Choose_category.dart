@@ -110,7 +110,8 @@ class _Choose_CategoryState extends State<Choose_Category> {
                               padding: const EdgeInsets.fromLTRB(10, 50, 0, 0),
                               child: Text(
                                 "What do you want to do?",
-                                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 18),
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 18),
                               ),
                             ))),
                     Container(
@@ -120,8 +121,8 @@ class _Choose_CategoryState extends State<Choose_Category> {
                           itemCount: Categories!.length,
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: 30 / 10,
-                                  crossAxisCount: 3,
+                                  childAspectRatio: 45 / 10,
+                                  crossAxisCount: 2,
                                   crossAxisSpacing: 20.0,
                                   mainAxisSpacing: 20.0),
                           itemBuilder: (BuildContext context, int index) {
@@ -187,10 +188,10 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     if (SelectedCategory != null) {
-
                                       print(SelectedCategory!);
-                                      Strings.markAvailabiltycategory = SelectedCategory!;
-                                          
+                                      Strings.markAvailabiltycategory =
+                                          SelectedCategory!;
+
                                       Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (BuildContext context) =>
@@ -220,9 +221,9 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (BuildContext context) =>
-                                                  Availability_choose_friends()));
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                Availability_choose_friends()));
                                   },
                                   child: Text(
                                     "Skip",
@@ -231,7 +232,8 @@ class _Choose_CategoryState extends State<Choose_Category> {
                                         fontSize: 18),
                                   ),
                                   style: ButtonStyle(
-                                    shadowColor: MaterialStateProperty.all<Color>(
+                                      shadowColor:
+                                          MaterialStateProperty.all<Color>(
                                               Colors.grey.withOpacity(0.9)),
                                       backgroundColor:
                                           MaterialStateProperty.all<Color>(

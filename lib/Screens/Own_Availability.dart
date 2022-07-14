@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:geocoding/geocoding.dart';
+import 'package:intl/intl.dart';
 import 'package:playgroup/Models/AvailPauseReq.dart';
 import 'package:playgroup/Models/AvailabityRes.dart';
+import 'package:playgroup/Models/GetAvailabilityChat.dart';
 import 'package:playgroup/Models/JoinfriendsReq.dart';
 import 'package:playgroup/Models/OwnAvailabilityDetailsRes.dart';
 import 'package:playgroup/Screens/Dashboard.dart';
@@ -17,6 +20,8 @@ import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:provider/provider.dart';
 import '../Network/ApiService.dart';
 import '../Utilities/Strings.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:dart_emoji/dart_emoji.dart';
 
 class Own_Availability extends StatefulWidget {
   int? markavailId;
@@ -63,7 +68,19 @@ class _Own_AvailabilityState extends State<Own_Availability>
   bool _isLoading = true;
 
   BuildContext? ctx;
+  var initialCommentCheck = true;
+  AnimationController? _animationController;
+  IO.Socket? _socket;
 
+  FocusNode msgField = new FocusNode();
+
+  List<AvailChatData>? ChatData = [];
+
+  TextEditingController _msgcontroller = TextEditingController();
+
+  var parser = EmojiParser();
+
+  List<String> dateFormate = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -74,6 +91,33 @@ class _Own_AvailabilityState extends State<Own_Availability>
 
     Strings.selectedAvailability = widget.markavailId;
     super.initState();
+  }
+
+  void initialize() {
+    _animationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 500));
+    _animationController?.repeat(reverse: true);
+    _socket = IO.io(Strings.socketUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+      'query': {
+        'token': Strings.authToken,
+        'markavail_id': widget.markavailId,
+        'child_id': Strings.SelectedChild,
+        'mark_type': "markavail-chat",
+        'forceNew': false,
+      }
+    });
+    _socket?.connect();
+    _socket?.onConnect((_) {
+      print('connect');
+    });
+    print("connection established");
+    _socket?.on("connect", (_) {
+      print('Connected');
+      print("Calling function");
+      getComments();
+    });
   }
 
   _JoinFriendsMarkAvailability() {
@@ -115,6 +159,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
           (availabilityData[0].requestStatus == "joined")
               ? joined = true
               : joined = false;
+          initialize();
           _isLoading = false;
         });
       }
@@ -209,7 +254,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
           Expanded(
               child: TabBarView(controller: _tabController, children: <Widget>[
             availabilityDetails(),
-            Container(color: Colors.blue)
+            availabilityChat()
           ])),
         ]));
   }
@@ -234,7 +279,7 @@ class _Own_AvailabilityState extends State<Own_Availability>
                 child: Row(
                   children: [
                     CircleAvatar(
-                                          backgroundColor: Colors.white,
+                      backgroundColor: Colors.white,
                       radius: 18,
                       backgroundImage: (availabilityData[0].profile! != "null")
                           ? NetworkImage(
@@ -529,28 +574,25 @@ class _Own_AvailabilityState extends State<Own_Availability>
                                       if (index < 5) {
                                         return InkWell(
                                           onTap: () {
-                                            Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        OtherChildProfile(
-                                                          otherChildID:
-                                                              availabilityData[
-                                                                      0]
-                                                                  .friendsdata![
-                                                                      index]
-                                                                  .childFriendId!,
-                                                          chooseChildId: Strings
-                                                              .SelectedChild,
-                                      fromSearch: false
-                                                        )));
+                                            Navigator.of(context).push(MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
+                                                    OtherChildProfile(
+                                                        otherChildID:
+                                                            availabilityData[0]
+                                                                .friendsdata![
+                                                                    index]
+                                                                .childFriendId!,
+                                                        chooseChildId: Strings
+                                                            .SelectedChild,
+                                                        fromSearch: false)));
                                           },
                                           child: Container(
                                             padding: EdgeInsets.all(3),
                                             width: 35,
                                             height: 35,
                                             child: CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                              backgroundColor: Colors.white,
                                               backgroundImage: availabilityData[
                                                               0]
                                                           .friendsdata![index]
@@ -1030,6 +1072,254 @@ class _Own_AvailabilityState extends State<Own_Availability>
     );
   }
 
+  Widget availabilityChat() {
+    return _isLoading
+        ? Center(child: CircularProgressIndicator())
+        : Column(
+            children: <Widget>[
+              Expanded(
+                child: ListView.builder(
+                  itemCount: ChatData!.length,
+                  // shrinkWrap: true,
+                  // reverse: true,
+                  padding: EdgeInsets.only(top: 10, bottom: 10),
+                  physics: BouncingScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    Widget separator = SizedBox();
+                    if (index != 0 &&
+                        dateFormate[index] != dateFormate[index - 1]) {
+                      separator = Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            //color: Strings.chipsbg
+                          ),
+                          padding: EdgeInsets.only(right: 5, left: 5),
+                          child: Text(
+                            dateFormate[index],
+                            style: TextStyle(fontSize: 15, color: Colors.grey),
+                          ));
+                    } else if (index == 0) {
+                      separator = Container(
+                          height: 20,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            //color: Strings.chipsbg
+                          ),
+                          padding: EdgeInsets.only(right: 5, left: 5),
+                          child: Text(
+                            dateFormate[index],
+                            style: TextStyle(fontSize: 15, color: Colors.grey),
+                          ));
+                    }
+                    return Column(
+                      children: [
+                        separator,
+                        Container(
+                          padding: EdgeInsets.only(
+                              left: 14, right: 14, top: 10, bottom: 10),
+                          child: Column(
+                            children: [
+                              (index != 0 &&
+                                      ChatData![index].childId !=
+                                          ChatData![index - 1].childId)
+                                  ? Align(
+                                      alignment: (ChatData![index].childId !=
+                                              Strings.SelectedChild
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight),
+                                      child: ChatData![index].childId !=
+                                              Strings.SelectedChild
+                                          ? Row(
+                                              // mainAxisAlignment: MainAxisAlignment.center,
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  radius: 16,
+                                                  backgroundImage: (ChatData![
+                                                                  index]
+                                                              .profile! !=
+                                                          "null")
+                                                      ? NetworkImage(
+                                                          Strings.imageUrl +
+                                                              ChatData![index]
+                                                                  .profile!)
+                                                      : AssetImage(
+                                                              "assets/imgs/profile-user.png")
+                                                          as ImageProvider,
+                                                ),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(
+                                                    ChatData![index].childName!)
+                                              ],
+                                            )
+                                          : Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.end,
+                                              children: [
+                                                Text(ChatData![index]
+                                                    .childName!),
+                                                SizedBox(
+                                                  width: 10,
+                                                ),
+                                                CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  radius: 16,
+                                                  backgroundImage: (ChatData![
+                                                                  index]
+                                                              .profile! !=
+                                                          "null")
+                                                      ? NetworkImage(
+                                                          Strings.imageUrl +
+                                                              ChatData![index]
+                                                                  .profile!)
+                                                      : AssetImage(
+                                                              "assets/imgs/profile-user.png")
+                                                          as ImageProvider,
+                                                ),
+                                              ],
+                                            ),
+                                    )
+                                  : SizedBox(),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Align(
+                                alignment: (ChatData![index].childId !=
+                                        Strings.SelectedChild
+                                    ? Alignment.topLeft
+                                    : Alignment.topRight),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(20),
+                                    color: (ChatData![index].childId !=
+                                            Strings.SelectedChild
+                                        ? Colors.grey.shade300
+                                        : Colors.blue.shade400),
+                                  ),
+                                  padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                                  child: Text(
+                                    ChatData![index].message!,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: (ChatData![index].childId !=
+                                              Strings.SelectedChild
+                                          ? Colors.black54
+                                          : Colors.white),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              (index != 0 &&
+                                      ChatData![index].childId !=
+                                          ChatData![index - 1].childId)
+                                  ? Align(
+                                      alignment: (ChatData![index].childId !=
+                                              Strings.SelectedChild
+                                          ? Alignment.topLeft
+                                          : Alignment.topRight),
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            8, 5, 8, 0),
+                                        child: Text(
+                                          DateFormat.jm().format(
+                                            DateTime.parse(
+                                                ChatData![index].createdDate!),
+                                          ),
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: Colors.black54,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox()
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(50))),
+                    padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                    height: 50,
+                    width: double.infinity,
+                    // color: Colors.white,
+                    child: Row(
+                      children: <Widget>[
+                        GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            height: 23,
+                            width: 23,
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade400,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            child: Icon(
+                              Icons.mic_none_outlined,
+                              color: Colors.white,
+                              size: 20,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                            child: TextField(
+                              controller: _msgcontroller,
+                              decoration: InputDecoration(
+                                  contentPadding: const EdgeInsets.only(
+                                    bottom: 15.0,
+                                  ),
+                                  hintText: "Type Message...",
+                                  hintStyle: TextStyle(
+                                      color: Colors.black54,
+                                      fontStyle: FontStyle.italic),
+                                  border: InputBorder.none),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 15,
+                        ),
+                        FloatingActionButton(
+                          onPressed: () {
+                            postMessage();
+                          },
+                          child: Icon(
+                            Icons.send,
+                            color: Colors.grey,
+                            size: 25,
+                          ),
+                          backgroundColor: Colors.white,
+                          elevation: 0,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+  }
+
   showParticipant(context) {
     showDialog(
         context: context,
@@ -1064,15 +1354,14 @@ class _Own_AvailabilityState extends State<Own_Availability>
                             Navigator.of(context).push(MaterialPageRoute(
                                 builder: (BuildContext context) =>
                                     OtherChildProfile(
-                                      otherChildID: availabilityData[0]
-                                          .friendsdata![index]
-                                          .childFriendId!,
-                                      chooseChildId: Strings.SelectedChild,
-                                      fromSearch: false
-                                    )));
+                                        otherChildID: availabilityData[0]
+                                            .friendsdata![index]
+                                            .childFriendId!,
+                                        chooseChildId: Strings.SelectedChild,
+                                        fromSearch: false)));
                           },
                           leading: CircleAvatar(
-                                          backgroundColor: Colors.white,
+                            backgroundColor: Colors.white,
                             backgroundImage: availabilityData[0]
                                         .friendsdata![index]
                                         .profile !=
@@ -1145,5 +1434,59 @@ class _Own_AvailabilityState extends State<Own_Availability>
     }).catchError((onError) {
       print(onError.toString());
     });
+  }
+
+  getComments() async {
+    print("Getting comments");
+    _socket?.on("get-mark-avail-chats", (_data) {
+      print('fromServer');
+
+      log('fromServer comments $_data');
+      setState(() {
+        print("Dta chacek--> $initialCommentCheck");
+        print("getting inside");
+        msgField.unfocus();
+        ChatData = [];
+        for (var item in _data) {
+          ChatData!.add(AvailChatData.fromJson(item));
+          print("set state");
+
+          for (int index = 0; index < ChatData!.length; index++) {
+            dateFormate.add(DateFormat("dd-MM-yyyy")
+                .format(DateTime.parse(ChatData![index].createdDate!)));
+          }
+          print(dateFormate);
+        }
+        msgField.unfocus();
+      });
+    });
+  }
+
+  postMessage() async {
+    print("1:${parser.unemojify(_msgcontroller.text)}");
+    // print(json.encode(tagedUsersId.toString()));
+    if (_msgcontroller.text.trim() == "") {
+      AppUtils.showError(context, "Kindly add some text!", '');
+    } else {
+      _socket?.emitWithAck(
+          'add-mark-avail-chat',
+          json.encode({
+            "markavail_id": widget.markavailId,
+            "child_id": Strings.SelectedChild,
+            "message": parser.unemojify(_msgcontroller.text),
+            "files": ""
+          }), ack: (data) {
+        print('ack $data');
+        if (data != null) {
+          print('from server $data');
+        } else {
+          print("Null");
+        }
+      });
+
+      _msgcontroller.text = '';
+
+      msgField.unfocus();
+    }
   }
 }

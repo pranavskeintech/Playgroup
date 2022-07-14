@@ -646,18 +646,21 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                         height: 32,
                                         child: InkWell(
                                           onTap: () {
-                                            Navigator.of(context).push(MaterialPageRoute(
-                                                builder: (BuildContext
-                                                        context) =>
-                                                    OtherChildProfile(
-                                                        otherChildID:
-                                                            PastActData![0]
-                                                                .friendsdata![
-                                                                    index]
-                                                                .childFriendId!,
-                                                        chooseChildId: Strings
-                                                            .ChoosedChild,
-                                      fromSearch: false)));
+                                            Navigator.of(context).push(
+                                                MaterialPageRoute(
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        OtherChildProfile(
+                                                            otherChildID:
+                                                                PastActData![0]
+                                                                    .friendsdata![
+                                                                        index]
+                                                                    .childFriendId!,
+                                                            chooseChildId:
+                                                                Strings
+                                                                    .ChoosedChild,
+                                                            fromSearch:
+                                                                false)));
                                           },
                                           child: CircleAvatar(
                                               backgroundColor: Colors.white,
@@ -735,7 +738,10 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                   child: ChipsChoice<int>.multiple(
                     wrapped: true,
                     verticalDirection: VerticalDirection.up,
-                    choiceStyle: C2ChoiceStyle(color: Colors.black),
+                    choiceStyle: C2ChoiceStyle(
+                        color: Colors.grey.shade600,
+                        labelStyle: TextStyle(
+                            fontWeight: FontWeight.w400, fontSize: 14)),
                     value: tag1,
                     onChanged: (val) {},
                     choiceItems: C2Choice.listFrom<int, String>(
@@ -993,65 +999,6 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                               ),
                             ),
                             Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Align(
-                                  alignment: Alignment.topRight,
-                                  child:
-                                      // (PastActPhotos![index].childId ==
-                                      //         Strings.SelectedChild)
-                                      //     ?
-                                      PopupMenuButton<String>(
-                                    child: Icon(
-                                      Icons.more_vert,
-                                      size: 20,
-                                      color: Theme.of(context).hintColor,
-                                    ),
-                                    //child:Text('Sort By'),
-                                    onSelected: (Data) {
-                                      handleClick(
-                                          Data,
-                                          PastActPhotos![index]
-                                              .pastActivitiesImagesId!,
-                                          PastActPhotos![index].imageName!);
-                                    },
-                                    itemBuilder: (BuildContext context) {
-                                      return {'Delete Image'}
-                                          .map((String choice) {
-                                        return PopupMenuItem<String>(
-                                          value: choice,
-                                          child: Text(choice),
-                                        );
-                                      }).toList();
-                                    },
-                                  )
-                                  // : PopupMenuButton<String>(
-                                  //     child: Icon(
-                                  //       Icons.more_vert,
-                                  //       size: 20,
-                                  //       color: Theme.of(context).hintColor,
-                                  //     ),
-                                  //     //child:Text('Sort By'),
-                                  //     onSelected: (Data) {
-                                  //       handleClick2(
-                                  //         Data,
-                                  //         PastActPhotos![index]
-                                  //             .pastActivitiesImagesId!,
-                                  //       );
-                                  //     },
-                                  //     itemBuilder: (BuildContext context) {
-                                  //       return {
-                                  //         'Save Image',
-                                  //       }.map((String choice) {
-                                  //         return PopupMenuItem<String>(
-                                  //           value: choice,
-                                  //           child: Text(choice),
-                                  //         );
-                                  //       }).toList();
-                                  //     },
-                                  //   ),
-                                  ),
-                            ),
-                            Padding(
                               padding: const EdgeInsets.fromLTRB(10, 0, 0, 10),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.end,
@@ -1088,12 +1035,79 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                       ),
                                     ],
                                   ),
-                                  Text(
-                                    (DateFormat("dd/MM/yyyy").format(
-                                        DateTime.parse(PastActPhotos![index]
-                                            .createdDate!))),
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.white),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        (DateFormat("dd/MM/yyyy").format(
+                                            DateTime.parse(PastActPhotos![index]
+                                                .createdDate!))),
+                                        style: TextStyle(
+                                            fontSize: 12, color: Colors.white),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Align(
+                                            alignment: Alignment.topRight,
+                                            child:
+                                                // (PastActPhotos![index].childId ==
+                                                //         Strings.SelectedChild)
+                                                //     ?
+                                                PopupMenuButton<String>(
+                                              child: Icon(
+                                                Icons.more_vert,
+                                                size: 20,
+                                                color: Colors.white,
+                                              ),
+                                              //child:Text('Sort By'),
+                                              onSelected: (Data) {
+                                                handleClick(
+                                                    Data,
+                                                    PastActPhotos![index]
+                                                        .pastActivitiesImagesId!,
+                                                    PastActPhotos![index]
+                                                        .imageName!);
+                                              },
+                                              itemBuilder:
+                                                  (BuildContext context) {
+                                                return {'Delete Image'}
+                                                    .map((String choice) {
+                                                  return PopupMenuItem<String>(
+                                                    value: choice,
+                                                    child: Text(choice),
+                                                  );
+                                                }).toList();
+                                              },
+                                            )
+                                            // : PopupMenuButton<String>(
+                                            //     child: Icon(
+                                            //       Icons.more_vert,
+                                            //       size: 20,
+                                            //       color: Theme.of(context).hintColor,
+                                            //     ),
+                                            //     //child:Text('Sort By'),
+                                            //     onSelected: (Data) {
+                                            //       handleClick2(
+                                            //         Data,
+                                            //         PastActPhotos![index]
+                                            //             .pastActivitiesImagesId!,
+                                            //       );
+                                            //     },
+                                            //     itemBuilder: (BuildContext context) {
+                                            //       return {
+                                            //         'Save Image',
+                                            //       }.map((String choice) {
+                                            //         return PopupMenuItem<String>(
+                                            //           value: choice,
+                                            //           child: Text(choice),
+                                            //         );
+                                            //       }).toList();
+                                            //     },
+                                            //   ),
+                                            ),
+                                      ),
+                                    ],
                                   )
                                 ],
                               ),
@@ -1170,7 +1184,7 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
       //showImages();
 
       int? MID = widget.markavailId;
-      int? CID = Strings.ChoosedChild;
+      int? CID = Strings.SelectedChild;
       //widget.childId;
       await Navigator.of(context).push(MaterialPageRoute(
           builder: (BuildContext context) =>

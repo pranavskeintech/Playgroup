@@ -210,317 +210,326 @@ class _LoginPageState extends State<LoginPage> {
     return WillPopScope(
       onWillPop: () => showExitPopup(context),
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Stack(
-              clipBehavior: Clip.none,
-              alignment: Alignment.center,
-              textDirection: TextDirection.rtl,
-              fit: StackFit.loose,
-              children: <Widget>[
-                SizedBox(
-                  height: MediaQuery.of(context).size.height,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.asset(
-                    'assets/imgs/loginbg.jpeg',
-                    fit: BoxFit.fill,
+        body: Listener(
+        onPointerUp: (_) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            currentFocus.focusedChild!.unfocus();
+          }
+        },
+          child: SingleChildScrollView(
+            child: Stack(
+                clipBehavior: Clip.none,
+                alignment: Alignment.center,
+                textDirection: TextDirection.rtl,
+                fit: StackFit.loose,
+                children: <Widget>[
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height,
+                    width: MediaQuery.of(context).size.width,
+                    child: Image.asset(
+                      'assets/imgs/loginbg.jpeg',
+                      fit: BoxFit.fill,
+                    ),
                   ),
-                ),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // SizedBox(
-                    //   height: 80,
-                    // ),
-                    Image.asset(
-                      'assets/imgs/appicon.png',
-                      height: 80,
-                      width: 80,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(
-                      "Play Group",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 35,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 10, 20, 2),
-                          child: Text(
-                            "Email Id",
-                            style: TextStyle(
-                                fontSize: 15,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // SizedBox(
+                      //   height: 80,
+                      // ),
+                      Image.asset(
+                        'assets/imgs/appicon.png',
+                        height: 80,
+                        width: 80,
                       ),
-                    ),
-                    SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 40,
-                      child: TextField(
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        "Play Group",
                         style: TextStyle(
-                            color: Colors.white, fontWeight: FontWeight.w600),
-                        controller: _emailIdController,
-                        decoration: InputDecoration(
-                            suffixIcon: Image.asset(
-                              "assets/imgs/mail.png",
-                              width: 10,
-                              height: 10,
-                              color: Colors.grey,
-                            ),
-                            hintText: "Enter email Id",
-                            hintStyle:
-                                TextStyle(fontSize: 15, color: Colors.grey),
-                            contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
-                            // hintStyle:
-                            //     TextStyle(fontSize: 14.0, color: Colors.white),
-                            // border: OutlineInputBorder(),
-                            border: InputBorder.none),
-                        keyboardType: TextInputType.emailAddress,
+                            color: Colors.white,
+                            fontSize: 35,
+                            fontWeight: FontWeight.bold),
                       ),
-                      decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.3),
-                          // border: Border.all(color: const Color(0xFFf2f3f4)),
-                          borderRadius: BorderRadius.circular(5)),
-                    ),
-                    const SizedBox(height: 5.0),
-                    SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 20, 10, 2),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              const Text(
-                                "Password",
-                                style: TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              InkWell(
-                                  onTap: () {
-                                    _togglevisibility();
-                                  },
-                                  child: Text(
-                                    _showPassword
-                                        ? "Hide Password"
-                                        : "Show Password",
-                                    style: TextStyle(color: Colors.blue),
-                                  )),
-                            ],
+                      SizedBox(
+                        height: 20,
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(0, 10, 20, 2),
+                            child: Text(
+                              "Email Id",
+                              style: TextStyle(
+                                  fontSize: 15,
+                                  color: Colors.grey,
+                                  fontWeight: FontWeight.w600),
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      height: 40,
-                      child: TextField(
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: 40,
+                        child: TextField(
                           style: TextStyle(
                               color: Colors.white, fontWeight: FontWeight.w600),
-                          controller: _passwordController,
+                          controller: _emailIdController,
                           decoration: InputDecoration(
-                              suffixIcon:
-                                  // Row(
-                                  //   mainAxisSize: MainAxisSize.min, // <-- important
-                                  //   children: [
-                                  //     TextButton(
-                                  //         onPressed: () {}, child: Text("Show")),
-                                  //     SizedBox(width: 8), // add a small gap
-                                  //     Image.asset(
-                                  //       "assets/imgs/pass.png",
-                                  //       // width: 10,
-                                  //       // height: 10,
-                                  //       color: Colors.grey,
-                                  //     ),
-                                  //     SizedBox(width: 15),
-                                  //   ],
-                                  // ),
-                                  Image.asset(
-                                "assets/imgs/pass.png",
+                              suffixIcon: Image.asset(
+                                "assets/imgs/mail.png",
                                 width: 10,
                                 height: 10,
                                 color: Colors.grey,
                               ),
-                              hintText: "Password",
+                              hintText: "Enter email Id",
                               hintStyle:
                                   TextStyle(fontSize: 15, color: Colors.grey),
                               contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+                              // hintStyle:
+                              //     TextStyle(fontSize: 14.0, color: Colors.white),
                               // border: OutlineInputBorder(),
                               border: InputBorder.none),
-                          keyboardType: TextInputType.visiblePassword,
-                          obscureText: !_showPassword),
-                      decoration: BoxDecoration(
-                          color: Colors.grey.withOpacity(0.4),
-                          //border: Border.all(color: const Color(0xFFf2f3f4)),
-                          borderRadius: BorderRadius.circular(5)),
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Forgotpassword()));
-                      },
-                      child: Container(
-                        alignment: Alignment.centerRight,
-                        child: const Text(
-                          "Forgot Password?",
-                          style: TextStyle(fontSize: 15, color: Colors.grey),
-                          textAlign: TextAlign.center,
+                          keyboardType: TextInputType.emailAddress,
                         ),
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        margin: const EdgeInsets.fromLTRB(10, 0, 20, 2),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.3),
+                            // border: Border.all(color: const Color(0xFFf2f3f4)),
+                            borderRadius: BorderRadius.circular(5)),
                       ),
-                    ),
-
-                    Container(
-                      margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
-                      width: MediaQuery.of(context).size.width * 0.9,
-                      child: RoundedLoadingButton(
-                        animateOnTap: false,
-                        resetDuration: Duration(seconds: 10),
-                        resetAfterDuration: true,
-                        successColor: Color.fromRGBO(94, 37, 108, 1),
-                        width: 500,
-                        borderRadius: 5,
-                        color: Color.fromRGBO(94, 37, 108, 1),
-                        child: const Text('LOGIN',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)),
-                        controller: _btnController,
-                        onPressed: () {
-                          if (_passwordController.text.isNotEmpty &&
-                              _emailIdController.text.isNotEmpty) {
-                            if (AppUtils.validateEmail(
-                                _emailIdController.text.replaceAll(' ', ''))) {
-                              AppUtils.showprogress();
-                              print("object");
-                              _Login();
-                            } else {
-                              AppUtils.showWarning(
-                                  context, "Invalid email", "");
-                              _btnController.stop();
-                            }
-                          } else {
-                            AppUtils.showWarning(
-                                context, "Please fill all the feilds", "");
-                            _btnController.stop();
-                          }
-                        },
-                      ),
-                    ),
-
-                    Container(
-                        margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: Text(
-                          "Or login using",
-                          style: TextStyle(color: Colors.grey),
-                        )),
-                    Container(
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        height: 42,
-                        margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    border: Border.all(
-                                        color:
-                                            Color.fromARGB(255, 124, 125, 126)),
-                                    borderRadius: BorderRadius.circular(5)),
-                                margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                                child: FlatButton(
-                                  child: ImageIcon(
-                                    AssetImage("assets/imgs/google.png"),
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () {
-                                    googleSignIn(context);
-                                  },
-                                  color: Colors.transparent,
-                                )),
-                            Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
-                                decoration: BoxDecoration(
-                                    color: Colors.grey.withOpacity(0.1),
-                                    border: Border.all(
-                                        color:
-                                            Color.fromARGB(255, 124, 125, 126)),
-                                    borderRadius: BorderRadius.circular(5)),
-                                margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                                child: FlatButton(
-                                  color: Colors.black.withOpacity(0.05),
-                                  child: ImageIcon(
-                                    AssetImage("assets/imgs/facebook.png"),
-                                    color: Colors.white,
-                                  ),
-                                  onPressed: () async {
-                                    //signInWithFacebook();
-                                    final userCredential =
-                                        await signInWithFacebook();
-                                  },
-                                )),
-                          ],
-                        ))
-                  ],
-                ),
-                Positioned(
-                  child: Row(
-                    children: [
-                      Text(
-                        "Do not have an account?",
-                        style: TextStyle(
-                            color: Colors.grey, fontWeight: FontWeight.w600),
-                      ),
+                      const SizedBox(height: 5.0),
                       SizedBox(
-                        width: 5,
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(0, 20, 10, 2),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  "Password",
+                                  style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                InkWell(
+                                    onTap: () {
+                                      _togglevisibility();
+                                    },
+                                    child: Text(
+                                      _showPassword
+                                          ? "Hide Password"
+                                          : "Show Password",
+                                      style: TextStyle(color: Colors.blue),
+                                    )),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        height: 40,
+                        child: TextField(
+                            style: TextStyle(
+                                color: Colors.white, fontWeight: FontWeight.w600),
+                            controller: _passwordController,
+                            decoration: InputDecoration(
+                                suffixIcon:
+                                    // Row(
+                                    //   mainAxisSize: MainAxisSize.min, // <-- important
+                                    //   children: [
+                                    //     TextButton(
+                                    //         onPressed: () {}, child: Text("Show")),
+                                    //     SizedBox(width: 8), // add a small gap
+                                    //     Image.asset(
+                                    //       "assets/imgs/pass.png",
+                                    //       // width: 10,
+                                    //       // height: 10,
+                                    //       color: Colors.grey,
+                                    //     ),
+                                    //     SizedBox(width: 15),
+                                    //   ],
+                                    // ),
+                                    Image.asset(
+                                  "assets/imgs/pass.png",
+                                  width: 10,
+                                  height: 10,
+                                  color: Colors.grey,
+                                ),
+                                hintText: "Password",
+                                hintStyle:
+                                    TextStyle(fontSize: 15, color: Colors.grey),
+                                contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+                                // border: OutlineInputBorder(),
+                                border: InputBorder.none),
+                            keyboardType: TextInputType.visiblePassword,
+                            obscureText: !_showPassword),
+                        decoration: BoxDecoration(
+                            color: Colors.grey.withOpacity(0.4),
+                            //border: Border.all(color: const Color(0xFFf2f3f4)),
+                            borderRadius: BorderRadius.circular(5)),
+                      ),
+                      const SizedBox(
+                        height: 10,
                       ),
                       InkWell(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (BuildContext context) =>
-                                  SignupEmailScreen()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Forgotpassword()));
                         },
-                        child: Text(
-                          "Register",
-                          style: TextStyle(
-                              color: Color.fromRGBO(248, 103, 171, 1),
-                              fontWeight: FontWeight.w600),
+                        child: Container(
+                          alignment: Alignment.centerRight,
+                          child: const Text(
+                            "Forgot Password?",
+                            style: TextStyle(fontSize: 15, color: Colors.grey),
+                            textAlign: TextAlign.center,
+                          ),
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          margin: const EdgeInsets.fromLTRB(10, 0, 20, 2),
                         ),
-                      )
+                      ),
+
+                      Container(
+                        margin: EdgeInsets.fromLTRB(0, 20, 0, 0),
+                        width: MediaQuery.of(context).size.width * 0.9,
+                        child: RoundedLoadingButton(
+                          animateOnTap: false,
+                          resetDuration: Duration(seconds: 10),
+                          resetAfterDuration: true,
+                          successColor: Color.fromRGBO(94, 37, 108, 1),
+                          width: 500,
+                          borderRadius: 5,
+                          color: Color.fromRGBO(94, 37, 108, 1),
+                          child: const Text('LOGIN',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18)),
+                          controller: _btnController,
+                          onPressed: () {
+                            if (_passwordController.text.isNotEmpty &&
+                                _emailIdController.text.isNotEmpty) {
+                              if (AppUtils.validateEmail(
+                                  _emailIdController.text.replaceAll(' ', ''))) {
+                                AppUtils.showprogress();
+                                print("object");
+                                _Login();
+                              } else {
+                                AppUtils.showWarning(
+                                    context, "Invalid email", "");
+                                _btnController.stop();
+                              }
+                            } else {
+                              AppUtils.showWarning(
+                                  context, "Please fill all the feilds", "");
+                              _btnController.stop();
+                            }
+                          },
+                        ),
+                      ),
+
+                      Container(
+                          margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                          child: Text(
+                            "Or login using",
+                            style: TextStyle(color: Colors.grey),
+                          )),
+                      Container(
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          height: 42,
+                          margin: EdgeInsets.fromLTRB(0, 40, 0, 0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.1),
+                                      border: Border.all(
+                                          color:
+                                              Color.fromARGB(255, 124, 125, 126)),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                                  child: FlatButton(
+                                    child: ImageIcon(
+                                      AssetImage("assets/imgs/google.png"),
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () {
+                                      googleSignIn(context);
+                                    },
+                                    color: Colors.transparent,
+                                  )),
+                              Container(
+                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  decoration: BoxDecoration(
+                                      color: Colors.grey.withOpacity(0.1),
+                                      border: Border.all(
+                                          color:
+                                              Color.fromARGB(255, 124, 125, 126)),
+                                      borderRadius: BorderRadius.circular(5)),
+                                  margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                                  child: FlatButton(
+                                    color: Colors.black.withOpacity(0.05),
+                                    child: ImageIcon(
+                                      AssetImage("assets/imgs/facebook.png"),
+                                      color: Colors.white,
+                                    ),
+                                    onPressed: () async {
+                                      //signInWithFacebook();
+                                      final userCredential =
+                                          await signInWithFacebook();
+                                    },
+                                  )),
+                            ],
+                          ))
                     ],
                   ),
-                  bottom: 30,
-                )
-              ]),
+                  Positioned(
+                    child: Row(
+                      children: [
+                        Text(
+                          "Do not have an account?",
+                          style: TextStyle(
+                              color: Colors.grey, fontWeight: FontWeight.w600),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (BuildContext context) =>
+                                    SignupEmailScreen()));
+                          },
+                          child: Text(
+                            "Register",
+                            style: TextStyle(
+                                color: Color.fromRGBO(248, 103, 171, 1),
+                                fontWeight: FontWeight.w600),
+                          ),
+                        )
+                      ],
+                    ),
+                    bottom: 30,
+                  )
+                ]),
+          ),
         ),
       ),
     );

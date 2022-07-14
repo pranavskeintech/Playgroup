@@ -32,9 +32,13 @@ class SearchData {
   int? parentId;
   String? childName;
   String? dob;
+  int? age;
   String? gender;
   String? profile;
+  String? school;
+  String? languages;
   String? createdDate;
+  String? parentName;
   String? location;
 
   SearchData(
@@ -42,9 +46,13 @@ class SearchData {
       this.parentId,
       this.childName,
       this.dob,
+      this.age,
       this.gender,
       this.profile,
+      this.school,
+      this.languages,
       this.createdDate,
+      this.parentName,
       this.location});
 
   SearchData.fromJson(Map<String, dynamic> json) {
@@ -52,9 +60,13 @@ class SearchData {
     parentId = json['parent_id'];
     childName = json['child_name'];
     dob = json['dob'];
+    age = json['age'];
     gender = json['gender'];
     profile = json['profile'];
+    school = json['school'];
+    languages = json['languages'];
     createdDate = json['created_date'];
+    parentName = json['parent_name'];
     location = json['location'];
   }
 
@@ -64,9 +76,13 @@ class SearchData {
     data['parent_id'] = this.parentId;
     data['child_name'] = this.childName;
     data['dob'] = this.dob;
+    data['age'] = this.age;
     data['gender'] = this.gender;
     data['profile'] = this.profile;
+    data['school'] = this.school;
+    data['languages'] = this.languages;
     data['created_date'] = this.createdDate;
+    data['parent_name'] = this.parentName;
     data['location'] = this.location;
     return data;
   }

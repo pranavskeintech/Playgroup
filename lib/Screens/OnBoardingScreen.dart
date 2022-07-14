@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:playgroup/Screens/Login.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 
 class OnBoardingScreen extends StatefulWidget {
@@ -62,6 +63,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: () {
+                  AppUtils.setStringPreferences('isFirstTime', "true");
                   Navigator.of(context).push(MaterialPageRoute(
                       builder: (BuildContext context) => LoginPage()));
                 },
@@ -122,7 +124,9 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                     ],
                   );
                 },
-                onPageChanged: (value) => setState(() => _currentPage = value),
+                onPageChanged: (value) => setState(
+                  () => _currentPage = value,
+                ),
               ),
             ),
             Expanded(
@@ -151,10 +155,18 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                         ),
                         ElevatedButton(
                           onPressed: () {
-                            _controller.nextPage(
-                              duration: const Duration(milliseconds: 200),
-                              curve: Curves.easeIn,
-                            );
+                            if (_currentPage != 2) {
+                              _controller.nextPage(
+                                duration: const Duration(milliseconds: 200),
+                                curve: Curves.easeIn,
+                              );
+                            } else {
+                              AppUtils.setStringPreferences(
+                                  'isFirstTime', "true");
+                              Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (BuildContext context) =>
+                                      LoginPage()));
+                            }
                           },
                           child: ImageIcon(
                             AssetImage("assets/imgs/right arrow.png"),

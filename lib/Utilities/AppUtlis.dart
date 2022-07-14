@@ -16,6 +16,7 @@ import 'package:playgroup/Utilities/Strings.dart';
 //import 'package:toast/toast.dart';
 import 'package:flutter_awesome_alert_box/flutter_awesome_alert_box.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 List<String> ChildName = [
   "Kingston Jackey",
@@ -154,6 +155,20 @@ class AppUtils {
       messageText: msg,
       title: "ALERT",
     );
+  }
+
+  
+  static Future<String> getStringPreferences(String key) async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    String pref = sharedPrefs.getString(key) ?? "null";
+    return pref;
+  }
+
+  static setStringPreferences(String key, String value) async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    sharedPrefs.setString(key, value);
+
+    return "pref";
   }
 
   static void showSucess(context, msg, onTap) {

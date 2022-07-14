@@ -69,196 +69,205 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
               ),
             )
           : null,
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
+      body: Listener(
+        onPointerUp: (_) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            currentFocus.focusedChild!.unfocus();
+          }
+        },
+        child: SingleChildScrollView(
           child: Container(
-            height: MediaQuery.of(context).size.height * 1,
-            margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.20,
-                ),
-                (widget.fromProfile == true)
-                    ? Container(
-                        height: 30,
-                      )
-                    : Image.asset(
-                        "assets/imgs/profile-user.png",
-                        width: 80,
-                        height: 80,
-                      ),
-                SizedBox(height: 20),
-                Text(
-                  "Parents Details",
-                  style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                      fontSize: 20,
-                      decoration: TextDecoration.none),
-                ),
-                Container(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 50, 0, 2),
-                      child: Text(
-                        "Parent Name",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Strings.textFeildHeading,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
+            color: Colors.white,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 1,
+              margin: EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.20,
                   ),
-                ),
-                const SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  height: 40,
-                  child: TextField(
+                  (widget.fromProfile == true)
+                      ? Container(
+                          height: 30,
+                        )
+                      : Image.asset(
+                          "assets/imgs/profile-user.png",
+                          width: 80,
+                          height: 80,
+                        ),
+                  SizedBox(height: 20),
+                  Text(
+                    "Parents Details",
                     style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w600),
-                    controller: _parentController,
-                    decoration: InputDecoration(
-                        hintText: "Enter Parent Name",
-                        contentPadding: EdgeInsets.fromLTRB(20, 0, 0, 10),
-                        hintStyle:
-                            TextStyle(fontSize: 14.0, color: Colors.grey),
-                        // border: OutlineInputBorder(),
-                        border: InputBorder.none),
-                    keyboardType: TextInputType.text,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 20,
+                        decoration: TextDecoration.none),
                   ),
-                  decoration: BoxDecoration(
-                      color: Strings.textFeildBg,
-                      border: Border.all(color: const Color(0xFFf2f3f4)),
-                      borderRadius: BorderRadius.circular(5)),
-                ),
-                const SizedBox(height: 5.0),
-                Container(
-                  child: Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
-                      child: Text(
-                        "Email Id",
-                        style: TextStyle(
-                            fontSize: 15,
-                            color: Strings.textFeildHeading,
-                            fontWeight: FontWeight.w600),
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Container(
-                  height: 40,
-                  child: TextField(
-                    style: const TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w600),
-                    controller: _emailIdController,
-                    decoration: const InputDecoration(
-                        hintText: "Enter Email ID",
-                        contentPadding: EdgeInsets.fromLTRB(20, 0, 0, 10),
-                        hintStyle:
-                            TextStyle(fontSize: 14.0, color: Colors.grey),
-                        // border: OutlineInputBorder(),
-                        border: InputBorder.none),
-                    keyboardType: TextInputType.emailAddress,
-                  ),
-                  decoration: BoxDecoration(
-                      color: Strings.textFeildBg,
-                      border: Border.all(color: const Color(0xFFf2f3f4)),
-                      borderRadius: BorderRadius.circular(5)),
-                ),
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  child: RoundedLoadingButton(
-                    resetDuration: Duration(seconds: 10),
-                    resetAfterDuration: true,
-                    successColor: Color.fromRGBO(94, 37, 108, 1),
-                    width: 500,
-                    borderRadius: 5,
-                    color: Strings.appThemecolor,
-                    child: (widget.fromProfile == true)
-                        ? Text('Save',
-                            style: TextStyle(color: Colors.white, fontSize: 18))
-                        : Text('Continue',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 18)),
-                    controller: _btnController,
-                    onPressed: () {
-                      if (_parentController.text.isNotEmpty &&
-                          _parentController.text.length > 2) {
-                        if (AppUtils.validateEmail(
-                            _emailIdController.text.replaceAll(' ', ''))) {
-                          var email = _emailIdController.text;
-                          var name = _parentController.text;
-
-                          if (email == widget.email) {
-                            updateUser();
-                          } else {
-                            _CheckUser(email, name);
-                          }
-                          Strings.UserName = _parentController.text;
-                          Strings.EmailId = _emailIdController.text;
-                          print("entered");
-                        } else {
-                          AppUtils.showWarning(context, "Invalid email", "");
-                          _btnController.stop();
-                        }
-                      } else {
-                        AppUtils.showWarning(context,
-                            "Parents name should be minimum 3 letters", "");
-                        _btnController.stop();
-                      }
-                    },
-                  ),
-                ),
-                Spacer(),
-                (widget.fromProfile == true)
-                    ? Container()
-                    : Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Container(
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Already have an account?",
-                                style: TextStyle(
-                                    color: Colors.grey,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.of(context).push(MaterialPageRoute(
-                                      builder: (BuildContext context) =>
-                                          LoginPage()));
-                                },
-                                child: Text(
-                                  "Login",
-                                  style: TextStyle(
-                                      color: Strings.appThemecolor,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ),
-                            ],
-                          ),
+                  Container(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0, 50, 0, 2),
+                        child: Text(
+                          "Parent Name",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Strings.textFeildHeading,
+                              fontWeight: FontWeight.w600),
                         ),
                       ),
-              ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    height: 40,
+                    child: TextField(
+                      style: TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                      controller: _parentController,
+                      decoration: InputDecoration(
+                          hintText: "Enter Parent Name",
+                          contentPadding: EdgeInsets.fromLTRB(20, 0, 0, 10),
+                          hintStyle:
+                              TextStyle(fontSize: 14.0, color: Colors.grey),
+                          // border: OutlineInputBorder(),
+                          border: InputBorder.none),
+                      keyboardType: TextInputType.text,
+                    ),
+                    decoration: BoxDecoration(
+                        color: Strings.textFeildBg,
+                        border: Border.all(color: const Color(0xFFf2f3f4)),
+                        borderRadius: BorderRadius.circular(5)),
+                  ),
+                  const SizedBox(height: 5.0),
+                  Container(
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Container(
+                        margin: EdgeInsets.fromLTRB(0, 10, 0, 2),
+                        child: Text(
+                          "Email Id",
+                          style: TextStyle(
+                              fontSize: 15,
+                              color: Strings.textFeildHeading,
+                              fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Container(
+                    height: 40,
+                    child: TextField(
+                      style: const TextStyle(
+                          color: Colors.black, fontWeight: FontWeight.w600),
+                      controller: _emailIdController,
+                      decoration: const InputDecoration(
+                          hintText: "Enter Email ID",
+                          contentPadding: EdgeInsets.fromLTRB(20, 0, 0, 10),
+                          hintStyle:
+                              TextStyle(fontSize: 14.0, color: Colors.grey),
+                          // border: OutlineInputBorder(),
+                          border: InputBorder.none),
+                      keyboardType: TextInputType.emailAddress,
+                    ),
+                    decoration: BoxDecoration(
+                        color: Strings.textFeildBg,
+                        border: Border.all(color: const Color(0xFFf2f3f4)),
+                        borderRadius: BorderRadius.circular(5)),
+                  ),
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: RoundedLoadingButton(
+                      resetDuration: Duration(seconds: 10),
+                      resetAfterDuration: true,
+                      successColor: Color.fromRGBO(94, 37, 108, 1),
+                      width: 500,
+                      borderRadius: 5,
+                      color: Strings.appThemecolor,
+                      child: (widget.fromProfile == true)
+                          ? Text('Save',
+                              style: TextStyle(color: Colors.white, fontSize: 18))
+                          : Text('Continue',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18)),
+                      controller: _btnController,
+                      onPressed: () {
+                        if (_parentController.text.isNotEmpty &&
+                            _parentController.text.length > 2) {
+                          if (AppUtils.validateEmail(
+                              _emailIdController.text.replaceAll(' ', ''))) {
+                            var email = _emailIdController.text;
+                            var name = _parentController.text;
+
+                            if (email == widget.email) {
+                              updateUser();
+                            } else {
+                              _CheckUser(email, name);
+                            }
+                            Strings.UserName = _parentController.text;
+                            Strings.EmailId = _emailIdController.text;
+                            print("entered");
+                          } else {
+                            AppUtils.showWarning(context, "Invalid email", "");
+                            _btnController.stop();
+                          }
+                        } else {
+                          AppUtils.showWarning(context,
+                              "Parents name should be minimum 3 letters", "");
+                          _btnController.stop();
+                        }
+                      },
+                    ),
+                  ),
+                  Spacer(),
+                  (widget.fromProfile == true)
+                      ? Container()
+                      : Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Container(
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 30),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "Already have an account?",
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (BuildContext context) =>
+                                            LoginPage()));
+                                  },
+                                  child: Text(
+                                    "Login",
+                                    style: TextStyle(
+                                        color: Strings.appThemecolor,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                ],
+              ),
             ),
           ),
         ),

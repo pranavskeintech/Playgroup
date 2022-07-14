@@ -97,17 +97,18 @@ class _ChildProfileState extends State<ChildProfile>
     'FRIENDS',
   ];
   // Initial Selected Value
-  String dropdownvalue2 = 'FILTER';
+  String dropdownvalue2 = 'ALL';
 
   // List of items in our dropdown menu
   var items2 = [
-    'FILTER',
+    'ALL',
     'OWN',
     'JOINED',
   ];
   var Interests = [];
 
   bool value = false;
+  bool val2 = false;
   final List<String> _texts = [
     "InduceSmile.com",
     "Flutter.io",
@@ -359,7 +360,7 @@ class _ChildProfileState extends State<ChildProfile>
   onSearch3(String search) {
     print("Searching for $search");
     setState(() {
-      if (dropdownvalue2 == "FILTER") {
+      if (dropdownvalue2 == "ALL") {
         _foundedActivity = AllActivity!
             .where((user) =>
                 user.categoryName!.toLowerCase().contains(search.toLowerCase()))
@@ -426,38 +427,38 @@ class _ChildProfileState extends State<ChildProfile>
                   tabs: [
                     Container(
                       width: MediaQuery.of(context).size.width * 0.20,
-                      child: Text('Profile Info',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF9e9e9e))),
+                      child: Text(
+                        'Profile Info',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.20,
-                      child: Text('Friends',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF9e9e9e))),
+                      child: Text(
+                        'Friends',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.25,
-                      child: Text('Friend Request',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF9e9e9e))),
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: Text(
+                        'Friend Request',
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.21,
-                      child: Text('Availabilities',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF9e9e9e))),
+                      child: Text(
+                        'Availabilities',
+                        textAlign: TextAlign.center,
+                      ),
                     )
                   ],
                   unselectedLabelColor: const Color(0xffacb3bf),
+                  unselectedLabelStyle: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w400),
                   indicatorColor: Color.fromRGBO(62, 244, 216, 0.8),
                   labelColor: Colors.black,
                   indicatorSize: TabBarIndicatorSize.tab,
@@ -480,360 +481,391 @@ class _ChildProfileState extends State<ChildProfile>
 
   Widget ProfileInfo() {
     return Container(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(25, 10, 25, 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Container(
-              height: MediaQuery.of(context).size.height * 0.25,
-              width: MediaQuery.of(context).size.width * 1,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.all(Radius.circular(15)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey,
-                    blurRadius: 4,
-                    offset: Offset(1, 1), // Shadow position
-                  ),
-                ],
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      right: 20,
+      height: MediaQuery.of(context).size.height,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(25, 10, 25, 20),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              Container(
+                // height: MediaQuery.of(context).size.height * 0.25,
+                width: MediaQuery.of(context).size.width * 1,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.1),
+                      blurRadius: 8.0, // soften the shadow
+                      spreadRadius: 5.0, //extend the shadow
+                      offset: Offset(
+                        2.0, // Move to right 10  horizontally
+                        2.0, // Move to bottom 10 Vertically
+                      ),
+                    )
+                  ],
+                ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        right: 10,
+                      ),
+                      child: TextButton(
+                          onPressed: () async {
+                            await Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => EditChildDetails()));
+                            setState(() {
+                              _isLoading = true;
+                              getProfile();
+                            });
+                          },
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text("Edit"),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Icon(
+                                  Icons.edit_outlined,
+                                  size: 15,
+                                )
+                              ],
+                            ),
+                          )),
                     ),
-                    child: TextButton(
+                    CircleAvatar(
+                        radius: 45,
+                        backgroundColor: Colors.white,
+                        backgroundImage: childInfo![0].profile! != "null"
+                            ? NetworkImage(
+                                Strings.imageUrl + (childInfo![0].profile!))
+                            : AssetImage("assets/imgs/profile-user.png")
+                                as ImageProvider),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      childInfo![0].childName!,
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.location_pin,
+                          color: Colors.red,
+                          size: 20,
+                        ),
+                        SizedBox(
+                          width: 3,
+                        ),
+                        Text(
+                          childInfo![0].location!,
+                          overflow: TextOverflow.fade,
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 35,
+                    )
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "School",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          (childInfo![0].school!.length == 0)
+                              ? TextButton(
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero,
+                                      tapTargetSize:
+                                          MaterialTapTargetSize.shrinkWrap,
+                                      minimumSize: Size.zero),
+                                  onPressed: () async {
+                                    await Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                EditChildDetails()));
+                                    setState(() {
+                                      _isLoading = true;
+                                      getProfile();
+                                    });
+                                  },
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        "Add School Name",
+                                        style: TextStyle(fontSize: 12.5),
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Icon(
+                                        (childInfo![0].languages!.length == 0)
+                                            ? Icons.add_circle_outline_rounded
+                                            : Icons.edit_outlined,
+                                        size: 12.5,
+                                      )
+                                    ],
+                                  ))
+                              : Text(
+                                  childInfo![0].school!,
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12.5),
+                                ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      color: Colors.grey.withOpacity(0.3),
+                      width: 1.25,
+                      height: 40,
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.2,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "DOB",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            childInfo![0].dob!,
+                            style:
+                                TextStyle(color: Colors.grey, fontSize: 12.5),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 18,
+              ),
+              Divider(
+                color: Colors.grey.shade300,
+                thickness: 0.5,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Interests",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    TextButton(
                         onPressed: () async {
+                          for (var i = 0;
+                              i < childInfo![0].interests!.length;
+                              i++) {
+                            Interests.add(
+                                childInfo![0].interests![i].interestsId!);
+                          }
                           await Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => EditChildDetails()));
+                              builder: (context) => EditChildInterests(
+                                  chooseChildId: widget.chooseChildId,
+                                  InterestsList: Interests)));
                           setState(() {
                             _isLoading = true;
                             getProfile();
                           });
                         },
-                        child: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text("Edit"),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Icon(
-                                Icons.edit_outlined,
-                                size: 15,
-                              )
-                            ],
-                          ),
-                        )),
-                  ),
-                  CircleAvatar(
-                      radius: 45,
-                      backgroundColor: Colors.white,
-                      backgroundImage: childInfo![0].profile! != "null"
-                          ? NetworkImage(
-                              Strings.imageUrl + (childInfo![0].profile!))
-                          : AssetImage("assets/imgs/profile-user.png")
-                              as ImageProvider),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Text(
-                    childInfo![0].childName!,
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.location_pin,
-                        color: Colors.red,
-                      ),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      Text(
-                        childInfo![0].location!,
-                        overflow: TextOverflow.fade,
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.5,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "School",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        (childInfo![0].school!.length == 0)
-                            ? TextButton(
-                                onPressed: () async {
-                                  await Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditChildDetails()));
-                                  setState(() {
-                                    _isLoading = true;
-                                    getProfile();
-                                  });
-                                },
-                                child: Row(
-                                  children: [
-                                    Text("Add School Name"),
-                                    SizedBox(
-                                      width: 5,
-                                    ),
-                                    Icon(
-                                      (childInfo![0].languages!.length == 0)
-                                          ? Icons.add_circle_outline_rounded
-                                          : Icons.edit_outlined,
-                                      size: 15,
-                                    )
-                                  ],
-                                ))
-                            : Text(
-                                childInfo![0].school!,
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    color: Colors.grey.withOpacity(0.3),
-                    width: 1.5,
-                    height: 40,
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.2,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "DOB",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          childInfo![0].dob!,
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            Divider(
-              color: Colors.grey.shade300,
-              thickness: 1.5,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Interests",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextButton(
-                      onPressed: () async {
-                        for (var i = 0;
-                            i < childInfo![0].interests!.length;
-                            i++) {
-                          Interests.add(
-                              childInfo![0].interests![i].interestsId!);
-                        }
-                        await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditChildInterests(
-                                chooseChildId: widget.chooseChildId,
-                                InterestsList: Interests)));
-                        setState(() {
-                          _isLoading = true;
-                          getProfile();
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          (childInfo![0].interests!.length == 0)
-                              ? Text("Add")
-                              : Text("Edit"),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
+                        child: Row(
+                          children: [
                             (childInfo![0].interests!.length == 0)
-                                ? Icons.add_circle_outline_rounded
-                                : Icons.edit_outlined,
-                            size: 15,
-                          )
-                        ],
-                      )),
-                ],
-              ),
-            ),
-            (childInfo![0].interests!.length == 0)
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Add Interests")),
-                  )
-                : Container(
-                    height: 80,
-                    child: ListView.builder(
-                        itemCount: childInfo![0].interests!.length,
-                        scrollDirection: Axis.horizontal,
-                        itemBuilder: ((context, index) {
-                          return Container(
-                            child: Column(
-                              children: [
-                                if (index < 5)
-                                  Column(
-                                    children: [
-                                      Container(
-                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
-                                        decoration: new BoxDecoration(
-                                          shape: BoxShape.circle,
-                                        ),
-                                        padding: EdgeInsets.all(2),
-                                        width: 45,
-                                        height: 45,
-                                        child: CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: childInfo![0]
-                                                        .interests![index]
-                                                        .interestImage! !=
-                                                    "null"
-                                                ? NetworkImage(
-                                                    Strings.imageUrl +
-                                                        "interests/" +
-                                                        (childInfo![0]
-                                                            .interests![index]
-                                                            .interestImage!))
-                                                : AssetImage(
-                                                        "assets/imgs/profile-user.png")
-                                                    as ImageProvider),
-                                      ),
-                                      SizedBox(
-                                        height: 5,
-                                      ),
-                                      Text(
-                                        childInfo![0]
-                                            .interests![index]
-                                            .interestName!,
-                                        style: TextStyle(fontSize: 12),
-                                      )
-                                    ],
-                                  )
-                                else
-                                  Container(
-                                    padding: EdgeInsets.all(3),
-                                    height: 40,
-                                    width: 40,
-                                    child: CircleAvatar(
-                                      backgroundColor:
-                                          Colors.grey.withOpacity(0.3),
-                                      child: Text(
-                                        "3+",
-                                        style: TextStyle(
-                                            color: Colors.black, fontSize: 12),
-                                      ), //Text
-                                    ),
-                                  ),
-                              ],
+                                ? Text("Add")
+                                : Text("Edit"),
+                            SizedBox(
+                              width: 5,
                             ),
-                          );
-                        })),
-                  ),
-            SizedBox(
-              height: 0,
-            ),
-            Divider(
-              color: Colors.grey.shade300,
-              thickness: 1.5,
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Languages Known",
-                      style: TextStyle(fontWeight: FontWeight.bold)),
-                  TextButton(
-                      onPressed: () async {
-                        await Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => EditLangKnwn()));
-                        setState(() {
-                          getProfile();
-                        });
-                      },
-                      child: Row(
-                        children: [
-                          (childInfo![0].languages!.length == 0)
-                              ? Text("Add")
-                              : Text("Edit"),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Icon(
-                            (childInfo![0].languages!.length == 0)
-                                ? Icons.add_circle_outline_rounded
-                                : Icons.edit_outlined,
-                            size: 15,
-                          )
-                        ],
-                      )),
-                ],
+                            Icon(
+                              (childInfo![0].interests!.length == 0)
+                                  ? Icons.add_circle_outline_rounded
+                                  : Icons.edit_outlined,
+                              size: 15,
+                            )
+                          ],
+                        )),
+                  ],
+                ),
               ),
-            ),
-            (childInfo![0].languages!.length == 0)
-                ? Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text("Add Languages")),
-                  )
-                : Align(
-                    alignment: Alignment.topLeft,
-                    child: ChipsChoice<int>.multiple(
-                      spacing: 20,
-                      wrapped: true,
-                      verticalDirection: VerticalDirection.up,
-                      choiceStyle: C2ChoiceStyle(color: Colors.black),
-                      value: tag1,
-                      onChanged: (val) {},
-                      choiceItems: C2Choice.listFrom<int, String>(
-                        source: childInfo![0].languages!,
-                        value: (i, v) => i,
-                        label: (i, v) => v,
+              (childInfo![0].interests!.length == 0)
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 20, bottom: 15),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text("Add Interests")),
+                    )
+                  : Container(
+                      height: 80,
+                      padding: EdgeInsets.only(left: 20),
+                      child: ListView.builder(
+                          itemCount: childInfo![0].interests!.length,
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: ((context, index) {
+                            return Container(
+                              child: Column(
+                                children: [
+                                  if (index < 5)
+                                    Column(
+                                      children: [
+                                        Container(
+                                          margin:
+                                              EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                          decoration: new BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          padding: EdgeInsets.all(2),
+                                          width: 45,
+                                          height: 45,
+                                          child: CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: childInfo![0]
+                                                          .interests![index]
+                                                          .interestImage! !=
+                                                      "null"
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          "interests/" +
+                                                          (childInfo![0]
+                                                              .interests![index]
+                                                              .interestImage!))
+                                                  : AssetImage(
+                                                          "assets/imgs/profile-user.png")
+                                                      as ImageProvider),
+                                        ),
+                                        SizedBox(
+                                          height: 5,
+                                        ),
+                                        Text(
+                                          childInfo![0]
+                                              .interests![index]
+                                              .interestName!,
+                                          style: TextStyle(fontSize: 12),
+                                        )
+                                      ],
+                                    )
+                                  else
+                                    Container(
+                                      padding: EdgeInsets.all(3),
+                                      height: 40,
+                                      width: 40,
+                                      child: CircleAvatar(
+                                        backgroundColor:
+                                            Colors.grey.withOpacity(0.3),
+                                        child: Text(
+                                          "3+",
+                                          style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 12),
+                                        ), //Text
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            );
+                          })),
+                    ),
+              SizedBox(
+                height: 0,
+              ),
+              Divider(
+                color: Colors.grey.shade300,
+                thickness: 0.5,
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Languages Known",
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                    TextButton(
+                        onPressed: () async {
+                          await Navigator.of(context).push(MaterialPageRoute(
+                              builder: (context) => EditLangKnwn()));
+                          setState(() {
+                            getProfile();
+                          });
+                        },
+                        child: Row(
+                          children: [
+                            (childInfo![0].languages!.length == 0)
+                                ? Text("Add")
+                                : Text("Edit"),
+                            SizedBox(
+                              width: 5,
+                            ),
+                            Icon(
+                              (childInfo![0].languages!.length == 0)
+                                  ? Icons.add_circle_outline_rounded
+                                  : Icons.edit_outlined,
+                              size: 15,
+                            )
+                          ],
+                        )),
+                  ],
+                ),
+              ),
+              (childInfo![0].languages!.length == 0)
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: Align(
+                          alignment: Alignment.topLeft,
+                          child: Text("Add Languages")),
+                    )
+                  : Align(
+                      alignment: Alignment.topLeft,
+                      child: ChipsChoice<int>.multiple(
+                        spacing: 20,
+                        wrapped: true,
+                        verticalDirection: VerticalDirection.up,
+                        choiceStyle: C2ChoiceStyle(
+                            color: Colors.black,
+                            labelStyle: TextStyle(
+                                fontWeight: FontWeight.w400, fontSize: 12.5)),
+                        value: tag1,
+                        onChanged: (val) {},
+                        choiceItems: C2Choice.listFrom<int, String>(
+                          source: childInfo![0].languages!,
+                          value: (i, v) => i,
+                          label: (i, v) => v,
+                        ),
                       ),
                     ),
-                  ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -849,12 +881,13 @@ class _ChildProfileState extends State<ChildProfile>
           Padding(
             padding: const EdgeInsets.fromLTRB(10, 15, 5, 10),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
                   width: width * 0.6,
-                  height: 35,
+                  height: width * 0.1,
                   decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(5)),
                   child: Row(
                     children: [
@@ -864,14 +897,23 @@ class _ChildProfileState extends State<ChildProfile>
                             onSearch(searchString);
                           },
                           enabled: true,
-                          style: TextStyle(height: 1.5),
+                          style: TextStyle(height: 1.0),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(5),
                             border: InputBorder.none,
                             hintText: "Search",
-                            hintStyle: TextStyle(fontSize: 14),
+                            hintStyle: TextStyle(
+                              fontSize: 12.5,
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Strings.textFeildBg, width: 0),
+                                borderRadius: BorderRadius.circular(6)),
+                            filled: true,
+                            fillColor: Strings.textFeildBg,
                             prefixIcon: Icon(
                               Icons.search,
-                              size: 18,
+                              size: 14,
                             ),
                           ),
                         ),
@@ -896,7 +938,7 @@ class _ChildProfileState extends State<ChildProfile>
                             icon: const Icon(
                               Icons.filter_alt_outlined,
                               color: Colors.grey,
-                              size: 18,
+                              size: 14,
                             ),
 
                             // Array list of items
@@ -906,7 +948,7 @@ class _ChildProfileState extends State<ChildProfile>
                                 child: Text(
                                   items,
                                   style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
+                                      color: Colors.grey, fontSize: 11),
                                 ),
                               );
                             }).toList(),
@@ -923,12 +965,9 @@ class _ChildProfileState extends State<ChildProfile>
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 15,
-                ),
                 Container(
-                  height: width * 0.07,
-                  width: width * 0.24,
+                  height: width * 0.1,
+                  width: width * 0.26,
                   child: _AddGroup
                       ? ElevatedButton(
                           onPressed: () {
@@ -943,8 +982,10 @@ class _ChildProfileState extends State<ChildProfile>
                       : ElevatedButton(
                           onPressed: () {
                             setState(() {
-                              _AddGroup = true;
-                              dropdownvalue = "FRIENDS";
+                              if (_foundedAllData.length != 0) {
+                                _AddGroup = true;
+                                dropdownvalue = "FRIENDS";
+                              }
                             });
                           },
                           child: Text(
@@ -1022,16 +1063,16 @@ class _ChildProfileState extends State<ChildProfile>
                                                   : AssetImage(
                                                           "assets/imgs/profile-user.png")
                                                       as ImageProvider,
-                                              radius: 23,
+                                              radius: 20,
                                             ),
                                           ),
                                           Positioned(
-                                              right: 30,
+                                              right: 28,
                                               bottom: 25,
                                               child: CircleAvatar(
                                                 backgroundImage: AssetImage(
                                                     "assets/imgs/group.png"),
-                                                radius: 10,
+                                                radius: 7.5,
                                               ))
                                         ])
                                       : Padding(
@@ -1051,20 +1092,23 @@ class _ChildProfileState extends State<ChildProfile>
                                                 : AssetImage(
                                                         "assets/imgs/profile-user.png")
                                                     as ImageProvider,
-                                            radius: 23,
+                                            radius: 20,
                                           ),
                                         ),
                                 ),
                                 title: Transform.translate(
                                     offset: Offset(-16, 0),
-                                    child: Text(_foundedAllData[index].name!)),
+                                    child: Text(
+                                      _foundedAllData[index].name!,
+                                      style: TextStyle(fontSize: 14),
+                                    )),
                               ));
                         },
                         separatorBuilder: (BuildContext context, int index) {
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Divider(
-                              thickness: 1,
+                              thickness: 0.5,
                             ),
                           );
                         },
@@ -1160,10 +1204,25 @@ class _ChildProfileState extends State<ChildProfile>
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(15, 0, 15, 0),
                             child: ListTile(
-                              onTap: () {
+                              onTap: () async {
                                 _AddGroup
-                                    ? null
-                                    : Navigator.of(context).push(
+                                    ? setState(() {
+                                        if (!val2) {
+                                          _isChecked![index] = true;
+
+                                          FriendsId!.add(
+                                              _foundedUsers[index].childId!);
+                                          print(FriendsId);
+                                        } else {
+                                          _isChecked![index] = false;
+
+                                          FriendsId!.remove(
+                                              _foundedUsers[index].childId!);
+                                          print(FriendsId);
+                                        }
+                                        val2 = !val2;
+                                      })
+                                    : await Navigator.of(context).push(
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 OtherChildProfile(
@@ -1173,6 +1232,10 @@ class _ChildProfileState extends State<ChildProfile>
                                                     chooseChildId:
                                                         widget.chooseChildId,
                                                     fromSearch: false)));
+
+                                setState(() {
+                                  _GetFriends();
+                                });
                               },
                               leading: Transform.translate(
                                 offset: Offset(-16, 0),
@@ -1361,17 +1424,22 @@ class _ChildProfileState extends State<ChildProfile>
                     height: 35,
                     child: TextField(
                       style: TextStyle(
-                        height: 2.5,
+                        height: 1,
                       ),
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(5),
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(3.0),
+                          borderRadius: BorderRadius.circular(6.0),
                           borderSide: BorderSide.none,
                         ),
                         filled: true,
-                        fillColor: Colors.grey.withOpacity(0.3),
+                        fillColor: Strings.textFeildBg,
+                        hintStyle: TextStyle(fontSize: 12.5),
                         hintText: "Search",
-                        prefixIcon: Icon(Icons.search),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -1383,9 +1451,9 @@ class _ChildProfileState extends State<ChildProfile>
                     itemCount: _FriendReqData!.length,
                     itemBuilder: (context, index) {
                       return ListTile(
-                        onTap: () {
+                        onTap: () async {
                           print("object:${_FriendReqData![index].childId}");
-                          Navigator.of(context).push(MaterialPageRoute(
+                          await Navigator.of(context).push(MaterialPageRoute(
                               builder: (BuildContext context) =>
                                   OtherChildProfile(
                                       chooseChildId:
@@ -1393,6 +1461,9 @@ class _ChildProfileState extends State<ChildProfile>
                                       otherChildID:
                                           _FriendReqData![index].childId,
                                       fromSearch: false)));
+                          setState(() {
+                            fetchData();
+                          });
                         },
                         leading: CircleAvatar(
                           backgroundColor: Colors.white,
@@ -1402,10 +1473,11 @@ class _ChildProfileState extends State<ChildProfile>
                                       (_FriendReqData![index].profile ?? ""))
                                   : AssetImage("assets/imgs/profile-user.png")
                                       as ImageProvider,
-                          radius: 23,
+                          radius: 20,
                         ),
                         title: Text(
                           _FriendReqData![index].childName!,
+                          style: TextStyle(fontSize: 14),
                         ),
                         trailing: Container(
                           width: width * 0.5,
@@ -1413,7 +1485,7 @@ class _ChildProfileState extends State<ChildProfile>
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Container(
-                                height: width * 0.06,
+                                height: width * 0.08,
                                 width: width * 0.20,
                                 child: ElevatedButton(
                                     onPressed: () {
@@ -1430,13 +1502,11 @@ class _ChildProfileState extends State<ChildProfile>
                                         style: TextStyle(fontSize: 11))),
                               ),
                               Container(
-                                height: width * 0.06,
+                                height: width * 0.08,
                                 width: width * 0.20,
                                 child: ElevatedButton(
-                                    style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all<Color>(
-                                                Colors.white)),
+                                    style: ElevatedButton.styleFrom(
+                                        elevation: 1.0, primary: Colors.white),
                                     onPressed: () {
                                       int FID =
                                           _FriendReqData![index].friendsId!;
@@ -1533,10 +1603,10 @@ class _ChildProfileState extends State<ChildProfile>
           (_foundedActivity!.length == 0)
               ? Text("No Activities")
               : Container(
-                  width: width * 0.9,
-                  height: 35,
+                  width: width * 0.85,
+                  height: width * 0.1,
                   decoration: BoxDecoration(
-                      color: Colors.grey.withOpacity(0.3),
+                      color: Colors.grey.shade300,
                       borderRadius: BorderRadius.circular(5)),
                   child: Row(
                     children: [
@@ -1548,9 +1618,20 @@ class _ChildProfileState extends State<ChildProfile>
                           enabled: true,
                           style: TextStyle(height: 1),
                           decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(5),
                             border: InputBorder.none,
                             hintText: "Search",
-                            prefixIcon: Icon(Icons.search),
+                            hintStyle: TextStyle(fontSize: 14),
+                            enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                    color: Strings.textFeildBg, width: 0),
+                                borderRadius: BorderRadius.circular(6)),
+                            fillColor: Strings.textFeildBg,
+                            filled: true,
+                            prefixIcon: Icon(
+                              Icons.search,
+                              size: 14,
+                            ),
                           ),
                         ),
                       ),
@@ -1561,41 +1642,36 @@ class _ChildProfileState extends State<ChildProfile>
                       ),
                       Padding(
                         padding: const EdgeInsets.fromLTRB(6, 0, 6, 0),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
-                          ),
-                          child: DropdownButton(
-                            underline: SizedBox(),
-                            // Initial Value
-                            value: dropdownvalue2,
+                        child: DropdownButton(
+                          underline: SizedBox(),
+                          // Initial Value
+                          value: dropdownvalue2,
 
-                            // Down Arrow Icon
-                            icon: const Icon(
-                              Icons.filter_alt_outlined,
-                              color: Colors.grey,
-                              size: 18,
-                            ),
-
-                            // Array list of items
-                            items: items2.map((String items2) {
-                              return DropdownMenuItem(
-                                value: items2,
-                                child: Text(
-                                  items2,
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12),
-                                ),
-                              );
-                            }).toList(),
-                            // After selecting the desired option,it will
-                            // change button value to selected value
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                dropdownvalue2 = newValue!;
-                              });
-                            },
+                          // Down Arrow Icon
+                          icon: const Icon(
+                            Icons.filter_alt_outlined,
+                            color: Colors.grey,
+                            size: 16,
                           ),
+
+                          // Array list of items
+                          items: items2.map((String items2) {
+                            return DropdownMenuItem(
+                              value: items2,
+                              child: Text(
+                                items2,
+                                style:
+                                    TextStyle(color: Colors.grey, fontSize: 12),
+                              ),
+                            );
+                          }).toList(),
+                          // After selecting the desired option,it will
+                          // change button value to selected value
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              dropdownvalue2 = newValue!;
+                            });
+                          },
                         ),
                       ),
                     ],
@@ -1606,7 +1682,7 @@ class _ChildProfileState extends State<ChildProfile>
           ),
           (_foundedActivity!.length == 0)
               ? SizedBox()
-              : (dropdownvalue2 == "FILTER")
+              : (dropdownvalue2 == "ALL")
                   ? Expanded(
                       child: ListView.builder(
                           itemCount: _foundedActivity!.length,
@@ -1642,10 +1718,11 @@ class _ChildProfileState extends State<ChildProfile>
                                           BorderRadius.all(Radius.circular(3)),
                                       boxShadow: [
                                         BoxShadow(
-                                          color: Colors.grey,
-                                          blurRadius: 4,
+                                          color: Colors.grey.withOpacity(0.15),
+                                          blurRadius: 10,
+                                          spreadRadius: 3,
                                           offset:
-                                              Offset(1, 1), // Shadow position
+                                              Offset(2, 5), // Shadow position
                                         ),
                                       ],
                                     ),
@@ -1678,20 +1755,22 @@ class _ChildProfileState extends State<ChildProfile>
                                       ),
                                       trailing: Container(
                                         width: width * 0.4,
+                                        padding:
+                                            EdgeInsets.fromLTRB(15, 0, 0, 0),
                                         child: Row(
                                           children: [
                                             Text(
                                               _foundedActivity![index].dateon!,
-                                              style: TextStyle(fontSize: 11),
+                                              style: TextStyle(fontSize: 9.5),
                                             ),
-                                            SizedBox(width: 5),
+                                            SizedBox(width: 4),
                                             Container(
                                               width: 1,
                                               height: 10,
                                               color: Colors.grey,
                                             ),
                                             SizedBox(
-                                              width: 5,
+                                              width: 4,
                                             ),
                                             Row(
                                               children: [
@@ -1703,7 +1782,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                               ' AM', '') +
                                                       " - ",
                                                   style:
-                                                      TextStyle(fontSize: 11),
+                                                      TextStyle(fontSize: 9.5),
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                 ),
@@ -1711,7 +1790,7 @@ class _ChildProfileState extends State<ChildProfile>
                                                   _foundedActivity![index]
                                                       .toTime!,
                                                   style: TextStyle(
-                                                    fontSize: 11,
+                                                    fontSize: 9.5,
                                                   ),
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -1729,6 +1808,7 @@ class _ChildProfileState extends State<ChildProfile>
                                           Icon(
                                             Icons.location_pin,
                                             color: Colors.red,
+                                            size: 10,
                                           ),
                                           SizedBox(
                                             width: 3,
@@ -1738,7 +1818,7 @@ class _ChildProfileState extends State<ChildProfile>
                                             child: Text(
                                               _foundedActivity![index]
                                                   .location!,
-                                              style: TextStyle(fontSize: 12),
+                                              style: TextStyle(fontSize: 9.5),
                                               overflow: TextOverflow.ellipsis,
                                             ),
                                           ),

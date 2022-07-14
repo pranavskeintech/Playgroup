@@ -285,7 +285,7 @@ class _PastActivityState extends State<PastActivity> {
                                         //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
                                         // ),
                                         CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                      backgroundColor: Colors.white,
                                       backgroundImage: (PastActData![index]
                                                   .profile! !=
                                               "null")
@@ -295,80 +295,88 @@ class _PastActivityState extends State<PastActivity> {
                                                   "assets/imgs/profile-user.png")
                                               as ImageProvider,
                                     ),
-                                    title: Text(PastActData![index].childName!),
-                                    subtitle: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              PastActData![index].dateon!,
-                                              style: TextStyle(
-                                                fontSize: 11,
+                                    title: Transform.translate(
+                                        offset: Offset(-5, 4),
+                                        child: Text(
+                                            PastActData![index].childName!)),
+                                    subtitle: Transform.translate(
+                                      offset: Offset(-5, 4),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                PastActData![index].dateon!,
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                ),
                                               ),
-                                            ),
-                                            SizedBox(width: 5),
-                                            Container(
-                                              width: 1,
-                                              height: 10,
-                                              color: Colors.red,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Row(
-                                              children: [
-                                                Text(
-                                                  PastActData![index]
-                                                          .fromTime! +
-                                                      " - ",
-                                                  style: TextStyle(
-                                                    fontSize: 11,
+                                              SizedBox(width: 5),
+                                              Container(
+                                                width: 1,
+                                                height: 10,
+                                                color: Colors.red,
+                                              ),
+                                              SizedBox(
+                                                width: 5,
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Text(
+                                                    PastActData![index]
+                                                            .fromTime! +
+                                                        " - ",
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                Text(
-                                                  PastActData![index].toTime!,
-                                                  style: TextStyle(
-                                                    fontSize: 11,
+                                                  Text(
+                                                    PastActData![index].toTime!,
+                                                    style: TextStyle(
+                                                      fontSize: 11,
+                                                    ),
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                              ],
-                                            )
-                                          ],
-                                        ),
-                                        GestureDetector(
-                                          onTap: (() async {
-                                            await Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        Past_Activity_Details(
-                                                            markavailId:
-                                                                PastActData![
-                                                                        index]
-                                                                    .markavailId!,
-                                                            childId:
-                                                                PastActData![
-                                                                        index]
-                                                                    .childId!)));
-                                            setState(() {
-                                              _GetPastAct();
-                                            });
-                                          }),
-                                          child: Text(
-                                            "See More",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontWeight: FontWeight.w600),
-                                            //overflow: TextOverflow.fade,
+                                                ],
+                                              )
+                                            ],
                                           ),
-                                        )
-                                      ],
+                                          Spacer(),
+                                          GestureDetector(
+                                            onTap: (() async {
+                                              await Navigator.of(context).push(
+                                                  MaterialPageRoute(
+                                                      builder: (BuildContext
+                                                              context) =>
+                                                          Past_Activity_Details(
+                                                              markavailId:
+                                                                  PastActData![
+                                                                          index]
+                                                                      .markavailId!,
+                                                              childId:
+                                                                  PastActData![
+                                                                          index]
+                                                                      .childId!)));
+                                              setState(() {
+                                                _GetPastAct();
+                                              });
+                                            }),
+                                            child: Text(
+                                              "See More",
+                                              style: TextStyle(
+                                                  color: Colors.blue,
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.w600),
+                                              //overflow: TextOverflow.fade,
+                                            ),
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   SizedBox(
@@ -418,7 +426,7 @@ class _PastActivityState extends State<PastActivity> {
                                               onPressed: () {
                                                 MID = PastActData![index]
                                                     .markavailId;
-                                                CID = Strings.ChoosedChild;
+                                                CID = Strings.SelectedChild;
                                                 //PastActData![index].childId;
                                                 _getFromGallery(MID, CID);
                                               },

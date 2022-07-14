@@ -131,8 +131,12 @@ class _HomeScreenState extends State<HomeScreen> {
       try {
         if (response.status == true) {
           setState(() {
-            // AppUtils.dismissprogress();
-            OtherMarkAvailabilityData = response.data;
+            // AppUtils.dismissprogress()
+            if (response.data!.length != 0) {
+              OtherMarkAvailabilityData = response.data;
+            } else {
+              OtherMarkAvailabilityData = [];
+            }
             _ShowNoFriends = false;
             _isLoading = false;
           });
@@ -386,7 +390,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           elevation: 8,
                           shadowColor: Colors.grey.withOpacity(0.1),
                           child: Container(
-                            height: 140,
+                            //height: 200,
                             padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
                             child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,6 +406,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                       "Add your friends and share with your availabilities",
                                       style: TextStyle(
                                           color: Strings.textFeildHeading)),
+                                  TextButton(
+                                      onPressed: () {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                DashBoard(screenindex: 2),
+                                          ),
+                                        );
+                                      },
+                                      child: Text("Search and add Friends"))
                                 ]),
                           ),
                         )
@@ -629,7 +644,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 contentPadding:
                                                     EdgeInsets.all(0),
                                                 leading: CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                                  backgroundColor: Colors.white,
                                                   backgroundImage:
                                                       (OtherMarkAvailabilityData![
                                                                       mainIndex]
@@ -842,13 +857,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                           () {
                                                                         Navigator.of(context).push(MaterialPageRoute(
                                                                             builder: (BuildContext context) => OtherChildProfile(
-                                                                                  otherChildID: OtherMarkAvailabilityData![mainIndex].friendsdata![index].childFriendId,
-                                                                                  chooseChildId: Strings.SelectedChild,
-                                      fromSearch: false
-                                                                                )));
+                                                                                otherChildID: OtherMarkAvailabilityData![mainIndex].friendsdata![index].childFriendId,
+                                                                                chooseChildId: Strings.SelectedChild,
+                                                                                fromSearch: false)));
                                                                       },
                                                                       child: CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                                                          backgroundColor: Colors
+                                                                              .white,
                                                                           backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile != "null"
                                                                               ? NetworkImage(Strings.imageUrl + (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
                                                                               : AssetImage("assets/imgs/profile-user.png") as ImageProvider),
@@ -877,7 +892,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                             .withOpacity(0.3),
                                                                         child:
                                                                             Text(
-                                                                          "+${OtherMarkAvailabilityData![mainIndex].friendsdata!.length - 5}",
+                                                                          "+${OtherMarkAvailabilityData![mainIndex].friendsdata!.length - 4}",
                                                                           style: TextStyle(
                                                                               color: Colors.black,
                                                                               fontSize: 12),

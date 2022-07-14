@@ -31,6 +31,7 @@ class childData {
   int? friendsId;
   int? childId;
   int? parentId;
+  String? parentName;
   String? childName;
   String? dob;
   String? gender;
@@ -47,6 +48,7 @@ class childData {
       {this.friendsId,
       this.childId,
       this.parentId,
+      this.parentName,
       this.childName,
       this.dob,
       this.gender,
@@ -63,6 +65,7 @@ class childData {
     friendsId = json['friends_id'];
     childId = json['child_id'];
     parentId = json['parent_id'];
+    parentName = json['parent_name'];
     childName = json['child_name'];
     dob = json['dob'];
     gender = json['gender'];
@@ -169,7 +172,7 @@ class Frndsdata {
     friendsId = json['friends_id'];
     childId = json['child_id'];
     childFriendId = json['child_friend_id'];
-    requestStatus = json['request_status']; 
+    requestStatus = json['request_status'];
     createdDate = json['created_date'];
     childName = json['child_name'];
     profile = json['profile'];

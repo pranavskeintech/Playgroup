@@ -1,7 +1,7 @@
 class GetChatsList {
   bool? status;
   String? message;
-  List<Data>? data;
+  List<ChatListData>? data;
 
   GetChatsList({this.status, this.message, this.data});
 
@@ -9,9 +9,9 @@ class GetChatsList {
     status = json['status'];
     message = json['message'];
     if (json['data'] != null) {
-      data = <Data>[];
+      data = <ChatListData>[];
       json['data'].forEach((v) {
-        data!.add(new Data.fromJson(v));
+        data!.add(new ChatListData.fromJson(v));
       });
     }
   }
@@ -27,55 +27,55 @@ class GetChatsList {
   }
 }
 
-class Data {
+class ChatListData {
   int? id;
   int? childId;
-  String? message;
-  String? files;
-  String? createdDate;
   String? groupName;
   String? groupImage;
+  String? message;
+  String? senderName;
+  String? createdDate;
+  String? type;
   String? childName;
   String? profile;
-  String? type;
 
-  Data(
+  ChatListData(
       {this.id,
       this.childId,
-      this.message,
-      this.files,
-      this.createdDate,
       this.groupName,
       this.groupImage,
+      this.message,
+      this.senderName,
+      this.createdDate,
+      this.type,
       this.childName,
-      this.profile,
-      this.type});
+      this.profile});
 
-  Data.fromJson(Map<String, dynamic> json) {
+  ChatListData.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     childId = json['child_id'];
-    message = json['message'];
-    files = json['files'];
-    createdDate = json['created_date'];
     groupName = json['group_name'];
     groupImage = json['group_image'];
+    message = json['message'];
+    senderName = json['sender_name'];
+    createdDate = json['created_date'];
+    type = json['type'];
     childName = json['child_name'];
     profile = json['profile'];
-    type = json['type'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['id'] = this.id;
     data['child_id'] = this.childId;
-    data['message'] = this.message;
-    data['files'] = this.files;
-    data['created_date'] = this.createdDate;
     data['group_name'] = this.groupName;
     data['group_image'] = this.groupImage;
+    data['message'] = this.message;
+    data['sender_name'] = this.senderName;
+    data['created_date'] = this.createdDate;
+    data['type'] = this.type;
     data['child_name'] = this.childName;
     data['profile'] = this.profile;
-    data['type'] = this.type;
     return data;
   }
 }

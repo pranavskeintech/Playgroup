@@ -64,7 +64,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api
         .getOtherchildDetails(
-            widget.fromSearch! ? Strings.SelectedChild : widget.chooseChildId!,
+            widget.fromSearch! ? Strings.SelectedChild : Strings.ChoosedChild,
             widget.otherChildID!)
         .then((response) {
       print(response.status);
@@ -129,6 +129,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
 
   @override
   Widget build(BuildContext context) {
+    print("search:${widget.fromSearch}");
+    print("choosechild:${widget.chooseChildId}");
     return Provider<ApiService>(
         create: (context) => ApiService.create(),
         child: Scaffold(
@@ -240,7 +242,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                       ),
                                     ),
                                   ))
-                          : (childInfo![0].status == "cancel request")
+                          : (childInfo![0].status == "Pending")
                               ? Padding(
                                   padding:
                                       const EdgeInsets.fromLTRB(20, 0, 30, 0),
@@ -335,7 +337,34 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                 0.2))))),
                                       ),
                                     )
-                                  : SizedBox()
+                                  : (childInfo![0].status! == "cancel request")
+                                      ? ElevatedButton(
+                                          onPressed: () {
+                                            deleteRequest();
+                                          },
+                                          child: Text(
+                                            "Cancel Request",
+                                            style: TextStyle(
+                                              color: Colors.grey.shade700,
+                                            ),
+                                          ),
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.white),
+                                              shape: MaterialStateProperty.all<
+                                                      RoundedRectangleBorder>(
+                                                  RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              4.0),
+                                                      side: BorderSide(
+                                                          width: 2,
+                                                          color: Colors.grey
+                                                              .withOpacity(
+                                                                  0.2))))),
+                                        )
+                                      : SizedBox()
                     ]),
                     margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
                     //padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
@@ -356,6 +385,46 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                             spreadRadius: 0.0,
                           ), //BoxShadow
                         ]),
+                  ),
+                  SizedBox(
+                    height: 15,
+                  ),
+                  Align(
+                    alignment: Alignment.topLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(32, 0, 32, 0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            "Parent Name",
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w600),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          Text(
+                            childInfo![0].parentName ??
+                                "Parent name not yet added",
+                            style: TextStyle(fontSize: 12),
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(15.0, 5, 15, 5),
+                    child: Divider(
+                      height: 2,
+                      color: Colors.grey.withOpacity(0.5),
+                    ),
                   ),
                   SizedBox(
                     height: 15,
@@ -426,7 +495,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                     margin: EdgeInsets.only(right: 10),
                                     child: TextButton(
                                         onPressed: () {
-                                          (childInfo![0].interests!.length != 0)
+                                          (childInfo![0].interests!.length > 4)
                                               ? _showInterests(ctx!)
                                               : null;
                                         },
@@ -673,8 +742,8 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                                                       .frndsdata![
                                                                           index]
                                                                       .childFriendId!,
-                                                              chooseChildId: widget
-                                                                  .chooseChildId,
+                                                              chooseChildId: Strings
+                                                                  .SelectedChild,
                                                               fromSearch: false,
                                                             )));
                                               },
@@ -1114,6 +1183,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
       } else {
         // functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
+        CheckFriends();
         AppUtils.showError(context, response.message, "");
         print("error");
       }
@@ -1157,7 +1227,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
       } else {
         //functions.createSnackBar(context, response.message.toString());
         AppUtils.dismissprogress();
-        AppUtils.showError(context, "Unable to fetch details for child", "");
+        AppUtils.showError(context, response.message, "");
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -1180,10 +1250,14 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
         //     builder: (context) => OTPScreen(),
         //   ),
         // );
+        AppUtils.dismissprogress();
+        AppUtils.showToast("Request Cancelled", ctx);
+        CheckFriends();
       } else {
         //functions.createSnackBar(context, response.message.toString());
+        CheckFriends();
         AppUtils.dismissprogress();
-        AppUtils.showError(context, "User not registered", "");
+        AppUtils.showError(context, response.message, "");
       }
     }).catchError((onError) {
       print(onError.toString());

@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:playgroup/Screens/OnBoardingScreen.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -20,6 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
   final Connectivity _connectivity = Connectivity();
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  Timer? timer;
 
   Future<void> initConnectivity() async {
     late ConnectivityResult result;
@@ -40,7 +44,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
     return _updateConnectionStatus(result);
   }
-  
 
   showAlertDialog(BuildContext context) {
     Strings.internetDialog = true;
@@ -97,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getFCMToken();
+    getToken();
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -114,44 +117,56 @@ class _SplashScreenState extends State<SplashScreen> {
     super.dispose();
   }
 
-   getFCMToken() async 
-  {
+  void getToken() {
+    DefaultCacheManager().emptyCache();
+
+    getFCMToken();
+    timer = new Timer(const Duration(milliseconds: 3000), () {
+      // pageselector
+      AppUtils.getStringPreferences('isFirstTime').then((res) {
+        print(res);
+        if (res != "null") {
+          // Navigator.popAndPushNamed(context, "/login");
+          // _checkRememberMobile();
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => LoginPage()));
+        } else {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (BuildContext context) => OnBoardingScreen()));
+        }
+      }).catchError((onError) {
+        print(onError.toString());
+        Navigator.of(context).push(MaterialPageRoute(
+            builder: (BuildContext context) => OnBoardingScreen()));
+      });
+    });
+  }
+
+  getFCMToken() async {
     _firebaseMessaging.getToken().then((String? token) {
       assert(token != null);
       setState(() {
         print("token: $token");
         Strings.fcmToken = token!;
-       
       });
-      
     });
 
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) 
-    {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       setState(() {
         print("message recieved inside get");
         print("data received ---  ${message.notification!.body}");
         //  _showMyDialog("", message.notification!.title ?? "", message.notification!.body ?? "", "doc");
         print(message.data);
-       
-        
       });
     });
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) {
-
-          print("trying to open app");
-      
+      print("trying to open app");
     });
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-
       print("on openening message: " + message.notification!.body!);
-     
     });
-
-    
 
     NotificationSettings settings = await _firebaseMessaging.requestPermission(
       alert: true,

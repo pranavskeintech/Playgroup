@@ -125,8 +125,8 @@ class _DashBoardState extends State<DashBoard> {
         });
       } else {
         //functions.createSnackBar(context, response.message.toString());
+        allNotificationList = [];
         AppUtils.dismissprogress();
-        AppUtils.showError(context, "Unable to fetch details for child", "");
       }
     }).catchError((onError) {
       print(onError.toString());
@@ -213,8 +213,7 @@ class _DashBoardState extends State<DashBoard> {
                         child: ClipRRect(
                             borderRadius: BorderRadius.circular(50),
                             child: (HeaderData?.profile == "null")
-                                ? Image.asset(
-                                    "assets/imgs/profile-user.png")
+                                ? Image.asset("assets/imgs/profile-user.png")
                                 : Image.network(
                                     Strings.imageUrl +
                                         (HeaderData?.profile ?? ""),

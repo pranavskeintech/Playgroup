@@ -22,7 +22,6 @@ import 'package:dart_emoji/dart_emoji.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-AnimationController? _animationController;
 int? MarkAvailabilityId;
 String? Profile;
 String? CategoryName;
@@ -30,9 +29,9 @@ String? ActivityName;
 String? ChildName;
 
 var initialCommentCheck = true;
-List<String> docImg = [];
-
+AnimationController? _animationController;
 IO.Socket? _socket;
+List<String> docImg = [];
 
 class Comments extends StatefulWidget {
   static const String routeName = "/comments";
@@ -113,6 +112,7 @@ class _CommentsContentState extends State<CommentsContent>
   final ItemPositionsListener itemPositionsListener =
       ItemPositionsListener.create();
   FocusNode msgField = new FocusNode();
+
   String? filepath;
   int? projectId;
 
@@ -149,6 +149,7 @@ class _CommentsContentState extends State<CommentsContent>
         'token': Strings.authToken,
         'markavail_id': MarkAvailabilityId,
         'child_id': Strings.SelectedChild,
+        'mark_type': "comments",
         'forceNew': false,
       }
     });
@@ -180,597 +181,620 @@ class _CommentsContentState extends State<CommentsContent>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.grey.withOpacity(0.1),
-                  borderRadius: BorderRadiusDirectional.circular(10)),
-              height: 80,
-              // width: MediaQuery.of(context).size.width * 0.9,
-              child: ListTile(
-                isThreeLine: true,
-                leading:
-                    //  CircleAvatar(
-                    //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
-                    // ),
-                    CircleAvatar(
-                                          backgroundColor: Colors.white,
-                  backgroundImage: (Profile != "null")
-                      ? NetworkImage(Strings.imageUrl + Profile!)
-                      : AssetImage("assets/imgs/profile-user.png") as ImageProvider,
-                ),
-                title: Text(ChildName ?? ""),
-                subtitle: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          CategoryName!,
-                          style: TextStyle(
-                            fontSize: 11,
-                          ),
-                        ),
-                        SizedBox(width: 5),
-                        Container(
-                          width: 1,
-                          height: 1,
-                          color: Colors.red,
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              ActivityName!,
-                              style: TextStyle(
-                                fontSize: 11,
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+      body: Listener(
+        onPointerUp: (_) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            currentFocus.focusedChild!.unfocus();
+          }
+        },
+        child: Column(
+          children: [
+            SizedBox(
+              height: 20,
             ),
-          ),
-          Divider(),
-          Strings.comments.length > 0
-              ? Expanded(
-                  child: ScrollablePositionedList.builder(
-                      shrinkWrap: true,
-                      reverse: true,
-                      itemScrollController: itemScrollController,
-                      itemPositionsListener: itemPositionsListener,
-                      itemCount: Strings.comments.length,
-                      padding: EdgeInsets.all(20),
-                      itemBuilder: (BuildContext ctx, int index) {
-                        return Strings.comments[index].childId ==
-                                Strings.SelectedChild
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            _showMyDialog(
-                                                context,
-                                                Strings.imageUrl +
-                                                    Strings.comments[index]
-                                                        .profile!);
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 12,
-                                            backgroundImage: Strings
-                                                        .comments[index]
-                                                        .profile !=
-                                                    null
-                                                ? NetworkImage(
-                                                    Strings.imageUrl +
-                                                        (Strings.comments[index]
-                                                            .profile!))
-                                                : AssetImage(
-                                                        "assets/icons/account.png")
-                                                    as ImageProvider,
-                                            backgroundColor:
-                                                Colors.grey.withOpacity(0.3),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                    (Strings.SelectedChild ==
-                                                            Strings
-                                                                .comments[index]
-                                                                .childId!)
-                                                        ? "You"
-                                                        : Strings
-                                                                .comments[index]
-                                                                .childName! +
-                                                            " . ",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                                Container(
-                                                  width: 18.0,
-                                                  height: 18.0,
-                                                  child: IconButton(
-                                                    padding:
-                                                        new EdgeInsets.all(0.0),
-                                                    color: Colors.grey,
-                                                    icon: new Icon(Icons.update,
-                                                        size: 18.0),
-                                                    onPressed: () {},
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 1,
-                                                ),
-                                                Text(
-                                                    calculateTimeDifferenceBetween(
-                                                        serverDate: Strings
-                                                            .comments[index]
-                                                            .createdAt),
-                                                    style: TextStyle(
-                                                        color: Colors.grey[600],
-                                                        fontWeight:
-                                                            FontWeight.w500)),
-                                                (Strings.SelectedChild ==
-                                                        Strings.comments[index]
-                                                            .childId!)
-                                                    ? Container(
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width *
-                                                            0.5,
-                                                        child: Row(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .end,
-                                                          mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            InkWell(
-                                                                onTap: () {
-                                                                  deleteComments(Strings
-                                                                      .comments[
-                                                                          index]
-                                                                      .commetId);
-                                                                },
-                                                                child:
-                                                                    ImageIcon(
-                                                                  AssetImage(
-                                                                      "assets/imgs/delete_1.png"),
-                                                                  color: Colors
-                                                                      .blue,
-                                                                  size: 18,
-                                                                )),
-                                                          ],
-                                                        ),
-                                                      )
-                                                    : SizedBox(),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            SizedBox(height: 10),
-                                            Container(
-                                              child: Padding(
-                                                  padding: EdgeInsets.all(10),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        parser.emojify(Strings
-                                                            .comments[index]
-                                                            .comment!),
-                                                      ),
-                                                    ],
-                                                  )),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.75,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.transparent,
-                                                  borderRadius:
-                                                      BorderRadiusDirectional
-                                                          .circular(5)),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    MySeparator(
-                                      color: Colors.grey[500]!,
-                                    )
-                                  ],
-                                ))
-                            // Slidable(
-                            //   key: UniqueKey(),
-                            //   endActionPane: ActionPane(
-                            //     // A motion is a widget used to control how the pane animates.
-                            //     motion: const ScrollMotion(),
-
-                            //     // A pane can dismiss the Slidable.
-                            //     dismissible:
-                            //         DismissiblePane(onDismissed: () {}),
-
-                            //     // All actions are defined in the children parameter.
-                            //     children: [
-                            //       // A SlidableAction can have an icon and/or a label.
-                            //       SlidableAction(
-                            //         onPressed: (dt) {
-                            //           print("delete");
-                            //           deleteComments(
-                            //               Strings.comments[index].commetId);
-                            //         },
-                            //         backgroundColor: Colors.transparent,
-                            //         foregroundColor: Colors.black,
-                            //         icon: Icons.delete,
-                            //         label: 'Delete',
-                            //       ),
-                            //     ],
-                            //   ),
-                            //   child: Padding(
-                            //       padding: EdgeInsets.symmetric(vertical: 10),
-                            //       child: Column(
-                            //         mainAxisAlignment:
-                            //             MainAxisAlignment.start,
-                            //         children: [
-                            //           Row(
-                            //             crossAxisAlignment:
-                            //                 CrossAxisAlignment.start,
-                            //             children: [
-                            //               GestureDetector(
-                            //                 onTap: () {
-                            //                   _showMyDialog(
-                            //                       context,
-                            //                       Strings.imageUrl +
-                            //                           Strings.comments[index]
-                            //                               .profile!);
-                            //                 },
-                            //                 child: CircleAvatar(
-                            //                   radius: 12,
-                            //                   backgroundImage: Strings
-                            //                               .comments[index]
-                            //                               .profile !=
-                            //                           null
-                            //                       ? NetworkImage(
-                            //                           Strings.imageUrl +
-                            //                               (Strings
-                            //                                   .comments[index]
-                            //                                   .profile!))
-                            //                       : AssetImage(
-                            //                               "assets/icons/account.png")
-                            //                           as ImageProvider,
-                            //                   backgroundColor: Colors.grey
-                            //                       .withOpacity(0.3),
-                            //                 ),
-                            //               ),
-                            //               SizedBox(
-                            //                 width: 10,
-                            //               ),
-                            //               Column(
-                            //                 crossAxisAlignment:
-                            //                     CrossAxisAlignment.start,
-                            //                 children: [
-                            //                   Row(
-                            //                     crossAxisAlignment:
-                            //                         CrossAxisAlignment.end,
-                            //                     children: [
-                            //                       Text(
-                            //                           (Strings.SelectedChild ==
-                            //                                   Strings
-                            //                                       .comments[
-                            //                                           index]
-                            //                                       .childId!)
-                            //                               ? "You"
-                            //                               : Strings
-                            //                                       .comments[
-                            //                                           index]
-                            //                                       .childName! +
-                            //                                   " . ",
-                            //                           style: TextStyle(
-                            //                               color: Colors.black,
-                            //                               fontWeight:
-                            //                                   FontWeight
-                            //                                       .w600)),
-                            //                       Container(
-                            //                         width: 18.0,
-                            //                         height: 18.0,
-                            //                         child: IconButton(
-                            //                           padding:
-                            //                               new EdgeInsets.all(
-                            //                                   0.0),
-                            //                           color: Colors.grey,
-                            //                           icon: new Icon(
-                            //                               Icons.update,
-                            //                               size: 18.0),
-                            //                           onPressed: () {},
-                            //                         ),
-                            //                       ),
-                            //                       SizedBox(
-                            //                         width: 1,
-                            //                       ),
-                            //                       Text(
-                            //                           calculateTimeDifferenceBetween(
-                            //                               serverDate: Strings
-                            //                                   .comments[index]
-                            //                                   .createdAt),
-                            //                           style: TextStyle(
-                            //                               color: Colors
-                            //                                   .grey[600],
-                            //                               fontWeight:
-                            //                                   FontWeight
-                            //                                       .w500)),
-                            //                     ],
-                            //                   ),
-                            //                   SizedBox(
-                            //                     height: 12,
-                            //                   ),
-                            //                   SizedBox(height: 10),
-                            //                   Container(
-                            //                     child: Padding(
-                            //                         padding:
-                            //                             EdgeInsets.all(10),
-                            //                         child: Column(
-                            //                           crossAxisAlignment:
-                            //                               CrossAxisAlignment
-                            //                                   .start,
-                            //                           children: [
-                            //                             Text(
-                            //                               Strings
-                            //                                   .comments[index]
-                            //                                   .comment
-                            //                                   .toString(),
-                            //                             ),
-                            //                           ],
-                            //                         )),
-                            //                     width: MediaQuery.of(context)
-                            //                             .size
-                            //                             .width *
-                            //                         0.75,
-                            //                     decoration: BoxDecoration(
-                            //                         color: Colors.transparent,
-                            //                         borderRadius:
-                            //                             BorderRadiusDirectional
-                            //                                 .circular(5)),
-                            //                   ),
-                            //                 ],
-                            //               ),
-                            //             ],
-                            //           ),
-                            //           SizedBox(
-                            //             height: 20,
-                            //           ),
-                            //           MySeparator(
-                            //             color: Colors.grey[500]!,
-                            //           )
-                            //         ],
-                            //       )),
-                            // )
-                            : Padding(
-                                padding: EdgeInsets.symmetric(vertical: 10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            _showMyDialog(
-                                                context,
-                                                Strings.imageUrl +
-                                                    Strings.comments[index]
-                                                        .profile!);
-                                          },
-                                          child: CircleAvatar(
-                                            radius: 12,
-                                            backgroundImage: Strings
-                                                        .comments[index]
-                                                        .profile !=
-                                                    null
-                                                ? NetworkImage(
-                                                    Strings.imageUrl +
-                                                        (Strings.comments[index]
-                                                            .profile!))
-                                                : AssetImage(
-                                                        "assets/icons/account.png")
-                                                    as ImageProvider,
-                                            backgroundColor:
-                                                Colors.grey.withOpacity(0.3),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: 10,
-                                        ),
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                    Strings.comments[index]
-                                                            .childName! +
-                                                        " . ",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.w600)),
-                                                Container(
-                                                  width: 18.0,
-                                                  height: 18.0,
-                                                  child: IconButton(
-                                                    padding:
-                                                        new EdgeInsets.all(0.0),
-                                                    color: Colors.grey,
-                                                    icon: new Icon(Icons.update,
-                                                        size: 18.0),
-                                                    onPressed: () {},
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width: 1,
-                                                ),
-                                                Text(
-                                                    calculateTimeDifferenceBetween(
-                                                        serverDate: Strings
-                                                            .comments[index]
-                                                            .createdAt),
-                                                    style: TextStyle(
-                                                        color: Colors.grey[600],
-                                                        fontWeight:
-                                                            FontWeight.w500)),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              height: 12,
-                                            ),
-                                            SizedBox(height: 10),
-                                            Container(
-                                              child: Padding(
-                                                  padding: EdgeInsets.all(10),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Text(
-                                                        parser.emojify(Strings
-                                                            .comments[index]
-                                                            .comment!),
-                                                      ),
-                                                    ],
-                                                  )),
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.75,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.transparent,
-                                                  borderRadius:
-                                                      BorderRadiusDirectional
-                                                          .circular(5)),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 20,
-                                    ),
-                                    MySeparator(
-                                      color: Colors.grey[500]!,
-                                    )
-                                  ],
-                                ));
-                      }),
-                )
-              : Center(
-                  child: Text("No comments found!"),
-                ),
-          Strings.comments.length == 0 ? Spacer() : SizedBox(),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 10),
               child: Container(
                 decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(10))),
-                padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 50,
-                width: double.infinity,
-                // color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: TextField(
-                          // inputFormatters: [
-                          //   FilteringTextInputFormatter.allow(
-                          //     RegExp(emojiRegexp+"[a-zA-Z]"),
-                          //   ),
-                          // ],
-                          controller: _msgcontroller,
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(
-                                bottom: 15.0,
+                    color: Colors.grey.withOpacity(0.1),
+                    borderRadius: BorderRadiusDirectional.circular(10)),
+                height: 80,
+                // width: MediaQuery.of(context).size.width * 0.9,
+                child: ListTile(
+                  isThreeLine: true,
+                  leading:
+                      //  CircleAvatar(
+                      //   backgroundImage: AssetImage("assets/imgs/child.jpg"),
+                      // ),
+                      CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: (Profile != "null")
+                        ? NetworkImage(Strings.imageUrl + Profile!)
+                        : AssetImage("assets/imgs/profile-user.png")
+                            as ImageProvider,
+                  ),
+                  title: Text(ChildName ?? ""),
+                  subtitle: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            CategoryName!,
+                            style: TextStyle(
+                              fontSize: 11,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Container(
+                            width: 1,
+                            height: 1,
+                            color: Colors.red,
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Row(
+                            children: [
+                              Text(
+                                ActivityName!,
+                                style: TextStyle(
+                                  fontSize: 11,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              hintText: "Type your Comment...",
-                              hintStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontStyle: FontStyle.italic),
-                              border: InputBorder.none),
-                        ),
+                            ],
+                          )
+                        ],
                       ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    FloatingActionButton(
-                      onPressed: () {
-                        postComments();
-                      },
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.white,
-                        size: 15,
-                      ),
-                      backgroundColor: Strings.appThemecolor,
-                      elevation: 50,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+            Divider(),
+            Strings.comments.length > 0
+                ? Expanded(
+                    child: ScrollablePositionedList.builder(
+                        shrinkWrap: true,
+                        reverse: true,
+                        itemScrollController: itemScrollController,
+                        itemPositionsListener: itemPositionsListener,
+                        itemCount: Strings.comments.length,
+                        padding: EdgeInsets.all(20),
+                        itemBuilder: (BuildContext ctx, int index) {
+                          return Strings.comments[index].childId ==
+                                  Strings.SelectedChild
+                              ? Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              _showMyDialog(
+                                                  context,
+                                                  Strings.imageUrl +
+                                                      Strings.comments[index]
+                                                          .profile!);
+                                            },
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundImage: Strings
+                                                          .comments[index]
+                                                          .profile !=
+                                                      null
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          (Strings
+                                                              .comments[index]
+                                                              .profile!))
+                                                  : AssetImage(
+                                                          "assets/icons/account.png")
+                                                      as ImageProvider,
+                                              backgroundColor:
+                                                  Colors.grey.withOpacity(0.3),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                      (Strings.SelectedChild ==
+                                                              Strings
+                                                                  .comments[
+                                                                      index]
+                                                                  .childId!)
+                                                          ? "You"
+                                                          : Strings
+                                                                  .comments[
+                                                                      index]
+                                                                  .childName! +
+                                                              " . ",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w600)),
+                                                  Container(
+                                                    width: 18.0,
+                                                    height: 18.0,
+                                                    child: IconButton(
+                                                      padding:
+                                                          new EdgeInsets.all(
+                                                              0.0),
+                                                      color: Colors.grey,
+                                                      icon: new Icon(
+                                                          Icons.update,
+                                                          size: 18.0),
+                                                      onPressed: () {},
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 1,
+                                                  ),
+                                                  Text(
+                                                      calculateTimeDifferenceBetween(
+                                                          serverDate: Strings
+                                                              .comments[index]
+                                                              .createdAt),
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[600],
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                  (Strings.SelectedChild ==
+                                                          Strings
+                                                              .comments[index]
+                                                              .childId!)
+                                                      ? Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.5,
+                                                          child: Row(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              InkWell(
+                                                                  onTap: () {
+                                                                    deleteComments(Strings
+                                                                        .comments[
+                                                                            index]
+                                                                        .commetId);
+                                                                  },
+                                                                  child:
+                                                                      ImageIcon(
+                                                                    AssetImage(
+                                                                        "assets/imgs/delete_1.png"),
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    size: 18,
+                                                                  )),
+                                                            ],
+                                                          ),
+                                                        )
+                                                      : SizedBox(),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 12,
+                                              ),
+                                              SizedBox(height: 10),
+                                              Container(
+                                                child: Padding(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          parser.emojify(Strings
+                                                              .comments[index]
+                                                              .comment!),
+                                                        ),
+                                                      ],
+                                                    )),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.75,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadiusDirectional
+                                                            .circular(5)),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      MySeparator(
+                                        color: Colors.grey[500]!,
+                                      )
+                                    ],
+                                  ))
+                              // Slidable(
+                              //   key: UniqueKey(),
+                              //   endActionPane: ActionPane(
+                              //     // A motion is a widget used to control how the pane animates.
+                              //     motion: const ScrollMotion(),
+
+                              //     // A pane can dismiss the Slidable.
+                              //     dismissible:
+                              //         DismissiblePane(onDismissed: () {}),
+
+                              //     // All actions are defined in the children parameter.
+                              //     children: [
+                              //       // A SlidableAction can have an icon and/or a label.
+                              //       SlidableAction(
+                              //         onPressed: (dt) {
+                              //           print("delete");
+                              //           deleteComments(
+                              //               Strings.comments[index].commetId);
+                              //         },
+                              //         backgroundColor: Colors.transparent,
+                              //         foregroundColor: Colors.black,
+                              //         icon: Icons.delete,
+                              //         label: 'Delete',
+                              //       ),
+                              //     ],
+                              //   ),
+                              //   child: Padding(
+                              //       padding: EdgeInsets.symmetric(vertical: 10),
+                              //       child: Column(
+                              //         mainAxisAlignment:
+                              //             MainAxisAlignment.start,
+                              //         children: [
+                              //           Row(
+                              //             crossAxisAlignment:
+                              //                 CrossAxisAlignment.start,
+                              //             children: [
+                              //               GestureDetector(
+                              //                 onTap: () {
+                              //                   _showMyDialog(
+                              //                       context,
+                              //                       Strings.imageUrl +
+                              //                           Strings.comments[index]
+                              //                               .profile!);
+                              //                 },
+                              //                 child: CircleAvatar(
+                              //                   radius: 12,
+                              //                   backgroundImage: Strings
+                              //                               .comments[index]
+                              //                               .profile !=
+                              //                           null
+                              //                       ? NetworkImage(
+                              //                           Strings.imageUrl +
+                              //                               (Strings
+                              //                                   .comments[index]
+                              //                                   .profile!))
+                              //                       : AssetImage(
+                              //                               "assets/icons/account.png")
+                              //                           as ImageProvider,
+                              //                   backgroundColor: Colors.grey
+                              //                       .withOpacity(0.3),
+                              //                 ),
+                              //               ),
+                              //               SizedBox(
+                              //                 width: 10,
+                              //               ),
+                              //               Column(
+                              //                 crossAxisAlignment:
+                              //                     CrossAxisAlignment.start,
+                              //                 children: [
+                              //                   Row(
+                              //                     crossAxisAlignment:
+                              //                         CrossAxisAlignment.end,
+                              //                     children: [
+                              //                       Text(
+                              //                           (Strings.SelectedChild ==
+                              //                                   Strings
+                              //                                       .comments[
+                              //                                           index]
+                              //                                       .childId!)
+                              //                               ? "You"
+                              //                               : Strings
+                              //                                       .comments[
+                              //                                           index]
+                              //                                       .childName! +
+                              //                                   " . ",
+                              //                           style: TextStyle(
+                              //                               color: Colors.black,
+                              //                               fontWeight:
+                              //                                   FontWeight
+                              //                                       .w600)),
+                              //                       Container(
+                              //                         width: 18.0,
+                              //                         height: 18.0,
+                              //                         child: IconButton(
+                              //                           padding:
+                              //                               new EdgeInsets.all(
+                              //                                   0.0),
+                              //                           color: Colors.grey,
+                              //                           icon: new Icon(
+                              //                               Icons.update,
+                              //                               size: 18.0),
+                              //                           onPressed: () {},
+                              //                         ),
+                              //                       ),
+                              //                       SizedBox(
+                              //                         width: 1,
+                              //                       ),
+                              //                       Text(
+                              //                           calculateTimeDifferenceBetween(
+                              //                               serverDate: Strings
+                              //                                   .comments[index]
+                              //                                   .createdAt),
+                              //                           style: TextStyle(
+                              //                               color: Colors
+                              //                                   .grey[600],
+                              //                               fontWeight:
+                              //                                   FontWeight
+                              //                                       .w500)),
+                              //                     ],
+                              //                   ),
+                              //                   SizedBox(
+                              //                     height: 12,
+                              //                   ),
+                              //                   SizedBox(height: 10),
+                              //                   Container(
+                              //                     child: Padding(
+                              //                         padding:
+                              //                             EdgeInsets.all(10),
+                              //                         child: Column(
+                              //                           crossAxisAlignment:
+                              //                               CrossAxisAlignment
+                              //                                   .start,
+                              //                           children: [
+                              //                             Text(
+                              //                               Strings
+                              //                                   .comments[index]
+                              //                                   .comment
+                              //                                   .toString(),
+                              //                             ),
+                              //                           ],
+                              //                         )),
+                              //                     width: MediaQuery.of(context)
+                              //                             .size
+                              //                             .width *
+                              //                         0.75,
+                              //                     decoration: BoxDecoration(
+                              //                         color: Colors.transparent,
+                              //                         borderRadius:
+                              //                             BorderRadiusDirectional
+                              //                                 .circular(5)),
+                              //                   ),
+                              //                 ],
+                              //               ),
+                              //             ],
+                              //           ),
+                              //           SizedBox(
+                              //             height: 20,
+                              //           ),
+                              //           MySeparator(
+                              //             color: Colors.grey[500]!,
+                              //           )
+                              //         ],
+                              //       )),
+                              // )
+                              : Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              _showMyDialog(
+                                                  context,
+                                                  Strings.imageUrl +
+                                                      Strings.comments[index]
+                                                          .profile!);
+                                            },
+                                            child: CircleAvatar(
+                                              radius: 12,
+                                              backgroundImage: Strings
+                                                          .comments[index]
+                                                          .profile !=
+                                                      null
+                                                  ? NetworkImage(
+                                                      Strings.imageUrl +
+                                                          (Strings
+                                                              .comments[index]
+                                                              .profile!))
+                                                  : AssetImage(
+                                                          "assets/icons/account.png")
+                                                      as ImageProvider,
+                                              backgroundColor:
+                                                  Colors.grey.withOpacity(0.3),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: 10,
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.end,
+                                                children: [
+                                                  Text(
+                                                      Strings.comments[index]
+                                                              .childName! +
+                                                          " . ",
+                                                      style: TextStyle(
+                                                          color: Colors.black,
+                                                          fontWeight:
+                                                              FontWeight.w600)),
+                                                  Container(
+                                                    width: 18.0,
+                                                    height: 18.0,
+                                                    child: IconButton(
+                                                      padding:
+                                                          new EdgeInsets.all(
+                                                              0.0),
+                                                      color: Colors.grey,
+                                                      icon: new Icon(
+                                                          Icons.update,
+                                                          size: 18.0),
+                                                      onPressed: () {},
+                                                    ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 1,
+                                                  ),
+                                                  Text(
+                                                      calculateTimeDifferenceBetween(
+                                                          serverDate: Strings
+                                                              .comments[index]
+                                                              .createdAt),
+                                                      style: TextStyle(
+                                                          color:
+                                                              Colors.grey[600],
+                                                          fontWeight:
+                                                              FontWeight.w500)),
+                                                ],
+                                              ),
+                                              SizedBox(
+                                                height: 12,
+                                              ),
+                                              SizedBox(height: 10),
+                                              Container(
+                                                child: Padding(
+                                                    padding: EdgeInsets.all(10),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Text(
+                                                          parser.emojify(Strings
+                                                              .comments[index]
+                                                              .comment!),
+                                                        ),
+                                                      ],
+                                                    )),
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.75,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.transparent,
+                                                    borderRadius:
+                                                        BorderRadiusDirectional
+                                                            .circular(5)),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 20,
+                                      ),
+                                      MySeparator(
+                                        color: Colors.grey[500]!,
+                                      )
+                                    ],
+                                  ));
+                        }),
+                  )
+                : Expanded(
+                    child: Center(
+                      child: Text("No comments found!"),
+                    ),
+                  ),
+            Strings.comments.length == 0 ? Spacer() : SizedBox(),
+            Align(
+              alignment: Alignment.bottomLeft,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(10))),
+                  padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                  height: 50,
+                  width: double.infinity,
+                  // color: Colors.white,
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                          child: TextField(
+                            // inputFormatters: [
+                            //   FilteringTextInputFormatter.allow(
+                            //     RegExp(emojiRegexp+"[a-zA-Z]"),
+                            //   ),
+                            // ],
+                            controller: _msgcontroller,
+                            decoration: InputDecoration(
+                                contentPadding: const EdgeInsets.only(
+                                  bottom: 15.0,
+                                ),
+                                hintText: "Type your Comment...",
+                                hintStyle: TextStyle(
+                                    color: Colors.black54,
+                                    fontStyle: FontStyle.italic),
+                                border: InputBorder.none),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 15,
+                      ),
+                      FloatingActionButton(
+                        onPressed: () {
+                          postComments();
+                        },
+                        child: Icon(
+                          Icons.send,
+                          color: Colors.white,
+                          size: 15,
+                        ),
+                        backgroundColor: Strings.appThemecolor,
+                        elevation: 50,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -785,10 +809,12 @@ class _CommentsContentState extends State<CommentsContent>
         print("Dta chacek--> $initialCommentCheck");
         print("getting inside");
         msgField.unfocus();
-        Strings.comments = [];
-        for (var item in _data) {
-          Strings.comments.add(CommentRes.fromJson(item));
-          print("set state");
+        if (_data[0]['markavail_id'] == MarkAvailabilityId) {
+          Strings.comments = [];
+          for (var item in _data) {
+            Strings.comments.add(CommentRes.fromJson(item));
+            print("set state");
+          }
         }
         initialCommentCheck = false;
         print("Comments fetched changing to false");

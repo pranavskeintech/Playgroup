@@ -1065,10 +1065,9 @@ class _Mark_AvailabiltyState extends State<Mark_Availabilty> {
                   keyboardType: TextInputType.emailAddress,
                 ),
               ),
-              // SizedBox(
-              //   height: MediaQuery.of(context).size.height * 0.04,
-              // ),
-              Spacer(),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.035,
+              ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: 70,

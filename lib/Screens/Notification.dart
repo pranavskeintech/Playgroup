@@ -156,8 +156,6 @@ class _NotificationScreenState extends State<NotificationScreen> {
                           style: TextStyle(fontSize: 15, color: Colors.grey),
                         ));
                   }
-
-                  print("date:${dateFormate[mainIndex]}");
                   return Container(
                     padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
                     child: Column(
@@ -237,13 +235,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
                                         MaterialPageRoute(
                                             builder: (BuildContext context) =>
                                                 OtherChildProfile(
-                                                  otherChildID:
-                                                      NotificationList![
-                                                              mainIndex]
-                                                          .otherChildId,
-                                      fromSearch: false
-                                                          
-                                                )));
+                                                    otherChildID:
+                                                        NotificationList![
+                                                                mainIndex]
+                                                            .otherChildId,
+                                                    chooseChildId:
+                                                        Strings.SelectedChild,
+                                                    fromSearch: false)));
                                   }
                                 },
                                 title: Text(

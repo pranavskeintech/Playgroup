@@ -109,25 +109,24 @@ class _SetPasswordState extends State<SetPassword> {
                   SizedBox(
                     height: 40,
                     child: TextField(
-                      
                       style: TextStyle(color: Colors.black),
                       controller: _passwordController,
                       decoration: InputDecoration(
                         suffixIcon: IconButton(
-            icon: Icon(
-              // Based on passwordVisible state choose the icon
-               showpassword
-               ? Icons.visibility
-               : Icons.visibility_off,
-               color: Colors.grey,
-               ),
-            onPressed: () {
-               // Update the state i.e. toogle the state of passwordVisible variable
-               setState(() {
-                   showpassword = !showpassword;
-               });
-             },
-            ),
+                          icon: Icon(
+                            // Based on passwordVisible state choose the icon
+                            showpassword
+                                ? Icons.visibility
+                                : Icons.visibility_off,
+                            color: Colors.grey,
+                          ),
+                          onPressed: () {
+                            // Update the state i.e. toogle the state of passwordVisible variable
+                            setState(() {
+                              showpassword = !showpassword;
+                            });
+                          },
+                        ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -151,7 +150,7 @@ class _SetPasswordState extends State<SetPassword> {
                         contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
                       ),
                       keyboardType: TextInputType.text,
-                      obscureText: showpassword,
+                      obscureText: !showpassword,
                     ),
                   ),
                   const SizedBox(height: 5.0),
@@ -190,20 +189,20 @@ class _SetPasswordState extends State<SetPassword> {
                         controller: _confirmPasswordController,
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
-            icon: Icon(
-              // Based on passwordVisible state choose the icon
-               showconfirmpassword
-               ? Icons.visibility
-               : Icons.visibility_off,
-               color: Colors.grey,
-               ),
-            onPressed: () {
-               // Update the state i.e. toogle the state of passwordVisible variable
-               setState(() {
-                   showconfirmpassword = !showconfirmpassword;
-               });
-             },
-            ),
+                            icon: Icon(
+                              // Based on passwordVisible state choose the icon
+                              showconfirmpassword
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              color: Colors.grey,
+                            ),
+                            onPressed: () {
+                              // Update the state i.e. toogle the state of passwordVisible variable
+                              setState(() {
+                                showconfirmpassword = !showconfirmpassword;
+                              });
+                            },
+                          ),
                           errorText: errorpassword,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(5),
@@ -227,7 +226,7 @@ class _SetPasswordState extends State<SetPassword> {
                               fontSize: 14.0, color: Colors.grey),
                         ),
                         keyboardType: TextInputType.visiblePassword,
-                        obscureText: showconfirmpassword),
+                        obscureText: !showconfirmpassword),
                   ),
                   Container(
                     margin: const EdgeInsets.fromLTRB(0, 60, 0, 0),

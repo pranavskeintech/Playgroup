@@ -91,217 +91,226 @@ class _LocationSelectionState extends State<LocationSelection> {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
         : Scaffold(
             resizeToAvoidBottomInset: false,
-            body: Container(
-              color: Colors.white,
-              child: Center(
-                child: Container(
-                  height: MediaQuery.of(context).size.height * 1,
-                  width: MediaQuery.of(context).size.width * 0.9,
-                  margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Align(
-                            alignment: Alignment.topLeft,
-                            child: Icon(Icons.arrow_back_sharp)),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.10,
-                      ),
-                      Image.asset(
-                        "assets/imgs/location.png",
-                        width: 100,
-                        height: 100,
-                      ),
-                      const SizedBox(height: 10),
-                      const Text(
-                        "Location",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 20,
-                            decoration: TextDecoration.none),
-                      ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.075,
-                      ),
-                      Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Enter your current location",
-                            style: TextStyle(color: Strings.textFeildHeading),
-                          )),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(top: 8.0),
-                          child: TextField(
-                            onTap: () {
-                              setState(() {
-                                _showList = true;
-                              });
-                            },
-                            style:
-                                TextStyle(fontSize: 18.0, color: Colors.black),
-                            // decoration: InputDecoration(
-                            //   // prefixIcon: Icon(Icons.search),
-                            //   // suffixIcon: IconButton(
-                            //   //   icon: Icon(Icons.close),
-                            //   //   onPressed: () {
-                            //   //     controller.clear();
-                            //   //     FocusScope.of(context)
-                            //   //         .requestFocus(FocusNode());
-                            //   //   },
-                            //   // ),
-
-                            //   hintText: "Search...",
-                            // ),
-
-                            decoration: InputDecoration(
-                                contentPadding: EdgeInsets.all(10),
-                                hintText: "Search",
-                                border: InputBorder.none,
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Colors.grey.shade300,
-                                        width: 0.0),
-                                    borderRadius: BorderRadius.circular(6)),
-                                filled: true,
-                                fillColor: Strings.textFeildBg,
-                                suffixIcon: IconButton(
-                                  color: Colors.grey,
-                                  icon: Icon(
-                                    _showList
-                                        ? Icons.clear
-                                        : Icons.arrow_forward_ios_outlined,
-                                  ),
-                                  onPressed: () {
-                                    controller.clear();
-                                    FocusScope.of(context)
-                                        .requestFocus(FocusNode());
-                                  },
-                                )),
-                            controller: controller,
-                          )),
-                      _showList
-                          ? Expanded(child: _buildListView())
-                          : SizedBox(),
-                      // DropdownButtonHideUnderline(
-                      //   child: DropdownButton2(
-                      //     isExpanded: true,
-                      //     hint: Row(
-                      //       children: const [
-                      //         Expanded(
-                      //           child: Text(
-                      //             'Select Location',
-                      //             style: TextStyle(
-                      //                 fontSize: 14,
-                      //                 fontWeight: FontWeight.bold,
-                      //                 color: Colors.black),
-                      //             overflow: TextOverflow.ellipsis,
-                      //           ),
-                      //         ),
-                      //       ],
-                      //     ),
-                      //     items: items
-                      //         .map((item) => DropdownMenuItem<String>(
-                      //               value: item.name,
-                      //               child: Text(
-                      //                 item.name!,
-                      //                 style: const TextStyle(
-                      //                   fontSize: 14,
-                      //                   fontWeight: FontWeight.bold,
-                      //                   color: Colors.black,
-                      //                 ),
-                      //                 overflow: TextOverflow.ellipsis,
-                      //               ),
-                      //             ))
-                      //         .toList(),
-                      //     value: selectedValue,
-                      //     onChanged: (value) {
-                      //       setState(() {
-                      //         selectedValue = value as String;
-                      //       });
-                      //     },
-                      //     icon: const Icon(
-                      //       Icons.arrow_forward_ios_outlined,
-                      //     ),
-                      //     iconSize: 14,
-                      //     iconEnabledColor: Colors.black,
-                      //     iconDisabledColor: Colors.grey,
-                      //     buttonHeight: 50,
-                      //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
-                      //     buttonPadding:
-                      //         const EdgeInsets.only(left: 14, right: 14),
-                      //     buttonDecoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(5),
-                      //       // border: Border.all(
-                      //       //   color: Colors.black26,
-                      //       // ),
-                      //       color: Strings.textFeildBg,
-                      //     ),
-                      //     buttonElevation: 0,
-                      //     itemHeight: 40,
-                      //     itemPadding:
-                      //         const EdgeInsets.only(left: 14, right: 14),
-                      //     dropdownMaxHeight: 200,
-                      //     // dropdownWidth: 300,
-                      //     dropdownPadding: null,
-                      //     dropdownDecoration: BoxDecoration(
-                      //       borderRadius: BorderRadius.circular(5),
-                      //       color: Colors.white,
-                      //     ),
-                      //     dropdownElevation: 8,
-                      //     scrollbarRadius: const Radius.circular(40),
-                      //     scrollbarThickness: 6,
-                      //     scrollbarAlwaysShow: true,
-                      //     offset: const Offset(0, 0),
-                      //   ),
-                      // ),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.05,
-                      ),
-                      Container(
-                        margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                        width: MediaQuery.of(context).size.width * 0.9,
-                        child: RoundedLoadingButton(
-                          resetDuration: const Duration(seconds: 10),
-                          resetAfterDuration: true,
-                          successColor: const Color.fromRGBO(94, 37, 108, 1),
-                          width: 500,
-                          borderRadius: 5,
-                          color: Strings.appThemecolor,
-                          child: const Text('Continue',
-                              style:
-                                  TextStyle(color: Colors.white, fontSize: 18)),
-                          controller: _btnController,
-                          onPressed: () {
-                            var email = Strings.EmailId;
-                            var name = Strings.UserName;
-                            var phonenum = Strings.PhoneNumber;
-                            var pass = Strings.Password;
-                            print("1");
-
-                            if (selectedValue != null) {
-                              _Signup(email, name, phonenum, pass);
-                            } else {
-                              _btnController.stop();
-                              AppUtils.showError(
-                                  context, "Please Select the Location", "");
-                            }
+            body: Listener(
+        onPointerUp: (_) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            currentFocus.focusedChild!.unfocus();
+          }
+        },
+              child: Container(
+                color: Colors.white,
+                child: Center(
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 1,
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
                           },
+                          child: const Align(
+                              alignment: Alignment.topLeft,
+                              child: Icon(Icons.arrow_back_sharp)),
                         ),
-                      ),
-                      SizedBox(
-                        height: 40,
-                      )
-                    ],
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.10,
+                        ),
+                        Image.asset(
+                          "assets/imgs/location.png",
+                          width: 100,
+                          height: 100,
+                        ),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "Location",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontSize: 20,
+                              decoration: TextDecoration.none),
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.075,
+                        ),
+                        Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Enter your current location",
+                              style: TextStyle(color: Strings.textFeildHeading),
+                            )),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Padding(
+                            padding: EdgeInsets.only(top: 8.0),
+                            child: TextField(
+                              onTap: () {
+                                setState(() {
+                                  _showList = true;
+                                });
+                              },
+                              style:
+                                  TextStyle(fontSize: 18.0, color: Colors.black),
+                              // decoration: InputDecoration(
+                              //   // prefixIcon: Icon(Icons.search),
+                              //   // suffixIcon: IconButton(
+                              //   //   icon: Icon(Icons.close),
+                              //   //   onPressed: () {
+                              //   //     controller.clear();
+                              //   //     FocusScope.of(context)
+                              //   //         .requestFocus(FocusNode());
+                              //   //   },
+                              //   // ),
+
+                              //   hintText: "Search...",
+                              // ),
+
+                              decoration: InputDecoration(
+                                  contentPadding: EdgeInsets.all(10),
+                                  hintText: "Search",
+                                  border: InputBorder.none,
+                                  enabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                          width: 0.0),
+                                      borderRadius: BorderRadius.circular(6)),
+                                  filled: true,
+                                  fillColor: Strings.textFeildBg,
+                                  suffixIcon: IconButton(
+                                    color: Colors.grey,
+                                    icon: Icon(
+                                      _showList
+                                          ? Icons.clear
+                                          : Icons.arrow_forward_ios_outlined,
+                                    ),
+                                    onPressed: () {
+                                      controller.clear();
+                                      FocusScope.of(context)
+                                          .requestFocus(FocusNode());
+                                    },
+                                  )),
+                              controller: controller,
+                            )),
+                        _showList
+                            ? Expanded(child: _buildListView())
+                            : SizedBox(),
+                        // DropdownButtonHideUnderline(
+                        //   child: DropdownButton2(
+                        //     isExpanded: true,
+                        //     hint: Row(
+                        //       children: const [
+                        //         Expanded(
+                        //           child: Text(
+                        //             'Select Location',
+                        //             style: TextStyle(
+                        //                 fontSize: 14,
+                        //                 fontWeight: FontWeight.bold,
+                        //                 color: Colors.black),
+                        //             overflow: TextOverflow.ellipsis,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //     items: items
+                        //         .map((item) => DropdownMenuItem<String>(
+                        //               value: item.name,
+                        //               child: Text(
+                        //                 item.name!,
+                        //                 style: const TextStyle(
+                        //                   fontSize: 14,
+                        //                   fontWeight: FontWeight.bold,
+                        //                   color: Colors.black,
+                        //                 ),
+                        //                 overflow: TextOverflow.ellipsis,
+                        //               ),
+                        //             ))
+                        //         .toList(),
+                        //     value: selectedValue,
+                        //     onChanged: (value) {
+                        //       setState(() {
+                        //         selectedValue = value as String;
+                        //       });
+                        //     },
+                        //     icon: const Icon(
+                        //       Icons.arrow_forward_ios_outlined,
+                        //     ),
+                        //     iconSize: 14,
+                        //     iconEnabledColor: Colors.black,
+                        //     iconDisabledColor: Colors.grey,
+                        //     buttonHeight: 50,
+                        //     buttonWidth: MediaQuery.of(context).size.width * 0.9,
+                        //     buttonPadding:
+                        //         const EdgeInsets.only(left: 14, right: 14),
+                        //     buttonDecoration: BoxDecoration(
+                        //       borderRadius: BorderRadius.circular(5),
+                        //       // border: Border.all(
+                        //       //   color: Colors.black26,
+                        //       // ),
+                        //       color: Strings.textFeildBg,
+                        //     ),
+                        //     buttonElevation: 0,
+                        //     itemHeight: 40,
+                        //     itemPadding:
+                        //         const EdgeInsets.only(left: 14, right: 14),
+                        //     dropdownMaxHeight: 200,
+                        //     // dropdownWidth: 300,
+                        //     dropdownPadding: null,
+                        //     dropdownDecoration: BoxDecoration(
+                        //       borderRadius: BorderRadius.circular(5),
+                        //       color: Colors.white,
+                        //     ),
+                        //     dropdownElevation: 8,
+                        //     scrollbarRadius: const Radius.circular(40),
+                        //     scrollbarThickness: 6,
+                        //     scrollbarAlwaysShow: true,
+                        //     offset: const Offset(0, 0),
+                        //   ),
+                        // ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.05,
+                        ),
+                        Container(
+                          margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                          width: MediaQuery.of(context).size.width * 0.9,
+                          child: RoundedLoadingButton(
+                            resetDuration: const Duration(seconds: 10),
+                            resetAfterDuration: true,
+                            successColor: const Color.fromRGBO(94, 37, 108, 1),
+                            width: 500,
+                            borderRadius: 5,
+                            color: Strings.appThemecolor,
+                            child: const Text('Continue',
+                                style:
+                                    TextStyle(color: Colors.white, fontSize: 18)),
+                            controller: _btnController,
+                            onPressed: () {
+                              var email = Strings.EmailId;
+                              var name = Strings.UserName;
+                              var phonenum = Strings.PhoneNumber;
+                              var pass = Strings.Password;
+                              print("1");
+
+                              if (selectedValue != null) {
+                                _Signup(email, name, phonenum, pass);
+                              } else {
+                                _btnController.stop();
+                                AppUtils.showError(
+                                    context, "Please Select the Location", "");
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          height: 40,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -65,145 +65,154 @@ class _PhoneNumberState extends State<PhoneNumber> {
     ctx = context;
     var media = MediaQuery.of(context).size;
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          color: Colors.white,
-          child: Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height * 1,
-              width: MediaQuery.of(context).size.width * 0.9,
-              margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 50),
-                      child: const Align(
-                          alignment: Alignment.topLeft,
-                          child: Icon(Icons.arrow_back_sharp)),
+      body: Listener(
+        onPointerUp: (_) {
+          FocusScopeNode currentFocus = FocusScope.of(context);
+          if (!currentFocus.hasPrimaryFocus &&
+              currentFocus.focusedChild != null) {
+            currentFocus.focusedChild!.unfocus();
+          }
+        },
+        child: SingleChildScrollView(
+          child: Container(
+            color: Colors.white,
+            child: Center(
+              child: Container(
+                height: MediaQuery.of(context).size.height * 1,
+                width: MediaQuery.of(context).size.width * 0.9,
+                margin: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 50),
+                        child: const Align(
+                            alignment: Alignment.topLeft,
+                            child: Icon(Icons.arrow_back_sharp)),
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.10,
-                  ),
-                  Image.asset(
-                    "assets/imgs/phone.png",
-                    width: 70,
-                    height: 70,
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    "Phone Number Verification",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                        fontSize: 20,
-                        decoration: TextDecoration.none),
-                  ),
-                  SizedBox(height: 50),
-                  Container(
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        child: Text(
-                          "Enter Phone Number",
-                          style: TextStyle(
-                              fontSize: 15,
-                              color: Strings.textFeildHeading,
-                              fontWeight: FontWeight.w600),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.10,
+                    ),
+                    Image.asset(
+                      "assets/imgs/phone.png",
+                      width: 70,
+                      height: 70,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      "Phone Number Verification",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                          fontSize: 20,
+                          decoration: TextDecoration.none),
+                    ),
+                    SizedBox(height: 50),
+                    Container(
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Container(
+                          child: Text(
+                            "Enter Phone Number",
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: Strings.textFeildHeading,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Strings.textFeildBg,
-                        border: Border.all(color: const Color(0xFFf2f3f4)),
-                        borderRadius: BorderRadius.circular(5)),
-                    child: Row(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
-                          child: GestureDetector(
-                              onTap: () {
-                                _showCountryPicker();
-                              },
-                              child: Text(
-                                _selectedCountry?.callingCode ?? "+91",
-                                style: TextStyle(color: Colors.blue),
-                              )),
-                        ),
-                        Icon(Icons.arrow_drop_down),
-                        Container(
-                          height: 40,
-                          margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                          width: MediaQuery.of(context).size.width * 0.70,
-                          child: TextField(
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w600),
-                            controller: _numberController,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Strings.textFeildBg, width: 0.0),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    color: Strings.textFeildBg, width: 0.0),
-                              ),
-                              fillColor: Strings.textFeildBg,
-                              filled: true,
-                              hintText: "Enter Phone number",
-                              contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
-                            ),
-                            keyboardType: TextInputType.phone,
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          color: Strings.textFeildBg,
+                          border: Border.all(color: const Color(0xFFf2f3f4)),
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Row(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
+                            child: GestureDetector(
+                                onTap: () {
+                                  _showCountryPicker();
+                                },
+                                child: Text(
+                                  _selectedCountry?.callingCode ?? "+91",
+                                  style: TextStyle(color: Colors.blue),
+                                )),
                           ),
-                        ),
-                      ],
+                          Icon(Icons.arrow_drop_down),
+                          Container(
+                            height: 40,
+                            margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            width: MediaQuery.of(context).size.width * 0.70,
+                            child: TextField(
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600),
+                              controller: _numberController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Strings.textFeildBg, width: 0.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      color: Strings.textFeildBg, width: 0.0),
+                                ),
+                                fillColor: Strings.textFeildBg,
+                                filled: true,
+                                hintText: "Enter Phone number",
+                                contentPadding: EdgeInsets.fromLTRB(10, 5, 0, 0),
+                              ),
+                              keyboardType: TextInputType.phone,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.05,
-                  ),
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    child: RoundedLoadingButton(
-                      animateOnTap: false,
-                      resetDuration: const Duration(seconds: 10),
-                      resetAfterDuration: true,
-                      successColor: const Color.fromRGBO(94, 37, 108, 1),
-                      width: 500,
-                      borderRadius: 5,
-                      color: Strings.appThemecolor,
-                      child: const Text('Continue',
-                          style: TextStyle(color: Colors.white, fontSize: 18)),
-                      controller: _btnController,
-                      onPressed: () {
-                        if (_numberController.text.length != 10) {
-                          AppUtils.showWarning(context, "Invalid Number", "");
-                          _btnController.stop();
-                        } else {
-                          AppUtils.showprogress();
-                          Strings.PhoneNumber = _numberController.text;
-                          _CheckUser(_numberController.text);
-                        }
-                      },
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.05,
                     ),
-                  ),
-                ],
+                    Container(
+                      margin: const EdgeInsets.fromLTRB(0, 40, 0, 0),
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      child: RoundedLoadingButton(
+                        animateOnTap: false,
+                        resetDuration: const Duration(seconds: 10),
+                        resetAfterDuration: true,
+                        successColor: const Color.fromRGBO(94, 37, 108, 1),
+                        width: 500,
+                        borderRadius: 5,
+                        color: Strings.appThemecolor,
+                        child: const Text('Continue',
+                            style: TextStyle(color: Colors.white, fontSize: 18)),
+                        controller: _btnController,
+                        onPressed: () {
+                          if (_numberController.text.length != 10) {
+                            AppUtils.showWarning(context, "Invalid Number", "");
+                            _btnController.stop();
+                          } else {
+                            AppUtils.showprogress();
+                            Strings.PhoneNumber = _numberController.text;
+                            _CheckUser(_numberController.text);
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

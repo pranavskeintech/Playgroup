@@ -13,6 +13,11 @@ import 'package:playgroup/Models/IndividualChatRes.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:path/path.dart' as path;
+import 'package:file_picker/file_picker.dart';
 
 class Individuals_Chat extends StatefulWidget {
   int? otherChildId;
@@ -55,6 +60,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
   IO.Socket? _socket;
 
   FocusNode msgField = new FocusNode();
+  bool _isLoading = true;
 
   List<IndiData>? ChatData = [];
 
@@ -96,7 +102,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
     _socket?.on("connect", (_) {
       print('Connected');
       print("Calling function");
-      getComments();
+      getIndividualsChat();
     });
   }
 
@@ -114,252 +120,261 @@ class _Individuals_ChatState extends State<Individuals_Chat>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
-        flexibleSpace: SafeArea(
-          child: Container(
-            padding: EdgeInsets.only(right: 16),
-            child: Row(
-              children: <Widget>[
-                IconButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  icon: Icon(
-                    Icons.arrow_back,
-                    color: Colors.black,
-                  ),
-                ),
-                SizedBox(
-                  width: 2,
-                ),
-                CircleAvatar(
-                  maxRadius: 20,
-                                          backgroundColor: Colors.white,
-                  backgroundImage: (widget.profile! != "null")
-                      ? NetworkImage(Strings.imageUrl + widget.profile!)
-                      : AssetImage("assets/imgs/profile-user.png")
-                          as ImageProvider,
-                ),
-                SizedBox(
-                  width: 12,
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
+    return _isLoading
+        ? const Center(
+            child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        : Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.white,
+              flexibleSpace: SafeArea(
+                child: Container(
+                  padding: EdgeInsets.only(right: 16),
+                  child: Row(
                     children: <Widget>[
-                      Text(
-                        widget.name!,
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w600),
+                      IconButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        icon: Icon(
+                          Icons.arrow_back,
+                          color: Colors.black,
+                        ),
                       ),
-                      // SizedBox(
-                      //   height: 6,
-                      // ),
-                      // Text(
-                      //   "Online",
-                      //   style: TextStyle(
-                      //       color: Colors.grey.shade600, fontSize: 13),
-                      // ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      CircleAvatar(
+                        maxRadius: 20,
+                        backgroundColor: Colors.white,
+                        backgroundImage: (widget.profile! != "null")
+                            ? NetworkImage(Strings.imageUrl + widget.profile!)
+                            : AssetImage("assets/imgs/profile-user.png")
+                                as ImageProvider,
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              widget.name!,
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.w600),
+                            ),
+                            // SizedBox(
+                            //   height: 6,
+                            // ),
+                            // Text(
+                            //   "Online",
+                            //   style: TextStyle(
+                            //       color: Colors.grey.shade600, fontSize: 13),
+                            // ),
+                          ],
+                        ),
+                      ),
+                      PopupMenuButton<String>(
+                        child: Icon(
+                          Icons.more_vert,
+                        ),
+                        onSelected: (Data) {
+                          handleClick(Data);
+                        },
+                        itemBuilder: (BuildContext context) {
+                          return {
+                            'View Profile',
+                            'Mute Notifications',
+                            'Delete Conversation'
+                          }.map((String choice) {
+                            return PopupMenuItem<String>(
+                              value: choice,
+                              child: Text(choice),
+                            );
+                          }).toList();
+                        },
+                      )
                     ],
                   ),
                 ),
-                PopupMenuButton<String>(
-                  child: Icon(
-                    Icons.more_vert,
-                  ),
-                  onSelected: (Data) {
-                    handleClick(Data);
-                  },
-                  itemBuilder: (BuildContext context) {
-                    return {
-                      'View Profile',
-                      'Mute Notifications',
-                      'Delete Conversation'
-                    }.map((String choice) {
-                      return PopupMenuItem<String>(
-                        value: choice,
-                        child: Text(choice),
-                      );
-                    }).toList();
-                  },
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: ListView.builder(
-              itemCount: ChatData!.length,
-              shrinkWrap: true,
-              padding: EdgeInsets.only(top: 10, bottom: 10),
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, index) {
-                Widget separator = SizedBox();
-                if (index != 0 &&
-                    dateFormate[index] != dateFormate[index - 1]) {
-                  separator = Container(
-                      height: 20,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        //color: Strings.chipsbg
-                      ),
-                      padding: EdgeInsets.only(right: 5, left: 5),
-                      child: Text(
-                        dateFormate[index],
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                      ));
-                } else if (index == 0) {
-                  separator = Container(
-                      height: 20,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        //color: Strings.chipsbg
-                      ),
-                      padding: EdgeInsets.only(right: 5, left: 5),
-                      child: Text(
-                        dateFormate[index],
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                      ));
-                }
-                return Column(
-                  children: [
-                    separator,
-                    Container(
-                      padding: EdgeInsets.only(
-                          left: 14, right: 14, top: 10, bottom: 10),
-                      child: Align(
-                        alignment:
-                            (ChatData![index].childId != Strings.SelectedChild
-                                ? Alignment.topLeft
-                                : Alignment.topRight),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: (ChatData![index].childId !=
-                                    Strings.SelectedChild
-                                ? Colors.grey.shade300
-                                : Colors.blue.shade400),
-                          ),
-                          padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
-                          child: Text(
-                            ChatData![index].message!,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: (ChatData![index].childId !=
-                                      Strings.SelectedChild
-                                  ? Colors.black54
-                                  : Colors.white),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    Align(
-                      alignment:
-                          (ChatData![index].childId != Strings.SelectedChild
-                              ? Alignment.topLeft
-                              : Alignment.topRight),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 20, right: 20),
-                        child: Text(
-                          DateFormat.jm().format(
-                            DateTime.parse(ChatData![index].createdDate!),
-                          ),
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                );
-              },
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomLeft,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                decoration: BoxDecoration(
-                    border: Border.all(
-                      color: Colors.grey,
-                    ),
-                    borderRadius: BorderRadius.all(Radius.circular(50))),
-                padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                height: 50,
-                width: double.infinity,
-                // color: Colors.white,
-                child: Row(
-                  children: <Widget>[
-                    GestureDetector(
-                      onTap: () {},
-                      child: Container(
-                        height: 23,
-                        width: 23,
-                        decoration: BoxDecoration(
-                          color: Colors.blue.shade400,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Icon(
-                          Icons.mic_none_outlined,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                        child: TextField(
-                          controller: _msgcontroller,
-                          decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(
-                                bottom: 15.0,
-                              ),
-                              hintText: "Type Message...",
-                              hintStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontStyle: FontStyle.italic),
-                              border: InputBorder.none),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 15,
-                    ),
-                    FloatingActionButton(
-                      onPressed: () {
-                        postComments();
-                      },
-                      child: Icon(
-                        Icons.send,
-                        color: Colors.grey,
-                        size: 25,
-                      ),
-                      backgroundColor: Colors.white,
-                      elevation: 0,
-                    ),
-                  ],
-                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+            body: Column(
+              children: <Widget>[
+                Expanded(
+                  child: ListView.builder(
+                    itemCount: ChatData!.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.only(top: 10, bottom: 10),
+                    physics: BouncingScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      Widget separator = SizedBox();
+                      if (index != 0 &&
+                          dateFormate[index] != dateFormate[index - 1]) {
+                        separator = Container(
+                            height: 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              //color: Strings.chipsbg
+                            ),
+                            padding: EdgeInsets.only(right: 5, left: 5),
+                            child: Text(
+                              dateFormate[index],
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.grey),
+                            ));
+                      } else if (index == 0) {
+                        separator = Container(
+                            height: 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              //color: Strings.chipsbg
+                            ),
+                            padding: EdgeInsets.only(right: 5, left: 5),
+                            child: Text(
+                              dateFormate[index],
+                              style:
+                                  TextStyle(fontSize: 15, color: Colors.grey),
+                            ));
+                      }
+                      return Column(
+                        children: [
+                          separator,
+                          Container(
+                            padding: EdgeInsets.only(
+                                left: 14, right: 14, top: 10, bottom: 10),
+                            child: Align(
+                              alignment: (ChatData![index].childId !=
+                                      Strings.SelectedChild
+                                  ? Alignment.topLeft
+                                  : Alignment.topRight),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: (ChatData![index].childId !=
+                                          Strings.SelectedChild
+                                      ? Colors.grey.shade300
+                                      : Colors.blue.shade400),
+                                ),
+                                padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                                child: Text(
+                                  ChatData![index].message!,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: (ChatData![index].childId !=
+                                            Strings.SelectedChild
+                                        ? Colors.black54
+                                        : Colors.white),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Align(
+                            alignment: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 20, right: 20),
+                              child: Text(
+                                DateFormat.jm().format(
+                                  DateTime.parse(ChatData![index].createdDate!),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(50))),
+                      padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                      height: 50,
+                      width: double.infinity,
+                      // color: Colors.white,
+                      child: Row(
+                        children: <Widget>[
+                          GestureDetector(
+                            onTap: () {
+                              //startRecording();
+                            },
+                            child: Container(
+                              height: 23,
+                              width: 23,
+                              decoration: BoxDecoration(
+                                color: Colors.blue.shade400,
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              child: Icon(
+                                Icons.mic_none_outlined,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                              child: TextField(
+                                controller: _msgcontroller,
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.only(
+                                      bottom: 15.0,
+                                    ),
+                                    hintText: "Type Message...",
+                                    hintStyle: TextStyle(
+                                        color: Colors.black54,
+                                        fontStyle: FontStyle.italic),
+                                    border: InputBorder.none),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 15,
+                          ),
+                          FloatingActionButton(
+                            onPressed: () {
+                              postComments();
+                            },
+                            child: Icon(
+                              Icons.send,
+                              color: Colors.grey,
+                              size: 25,
+                            ),
+                            backgroundColor: Colors.white,
+                            elevation: 0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 
   handleClick(String value) {
@@ -548,7 +563,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
     }
   }
 
-  getComments() async {
+  getIndividualsChat() async {
     print("Getting comments");
     _socket?.on("get-individual-chats", (_data) {
       print('fromServer');
@@ -558,14 +573,20 @@ class _Individuals_ChatState extends State<Individuals_Chat>
         print("Dta chacek--> $initialCommentCheck");
         print("getting inside");
         msgField.unfocus();
-        ChatData = [];
-        for (var item in _data) {
-          ChatData!.add(IndiData.fromJson(item));
-          print("set state");
-          for (int index = 0; index < ChatData!.length; index++) {
-            dateFormate.add(DateFormat("dd-MM-yyyy")
-                .format(DateTime.parse(ChatData![index].createdDate!)));
+        print("s:${Strings.SelectedChild}");
+        print("jn:${widget.otherChildId}");
+        if (_data[0]['child_id'] == Strings.SelectedChild &&
+            _data[0]['other_child_id'] == widget.otherChildId) {
+          ChatData = [];
+          for (var item in _data) {
+            ChatData!.add(IndiData.fromJson(item));
+            print("set state");
+            for (int index = 0; index < ChatData!.length; index++) {
+              dateFormate.add(DateFormat("dd-MM-yyyy")
+                  .format(DateTime.parse(ChatData![index].createdDate!)));
+            }
           }
+          _isLoading = false;
         }
         initialCommentCheck = false;
         print("Comments fetched changing to false");
