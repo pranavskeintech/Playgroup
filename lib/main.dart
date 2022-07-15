@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:playgroup/Screens/AccountSettings.dart';
+import 'package:playgroup/Screens/FAQ.dart';
 import 'package:playgroup/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'Utilities/Strings.dart';
@@ -11,7 +13,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: SplashScreen(),
+    home: FrequentlyAskedQuestions(),
     builder: EasyLoading.init(),
   ));
 }
