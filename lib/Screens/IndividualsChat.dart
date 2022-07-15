@@ -12,12 +12,11 @@ import 'package:intl/intl.dart';
 import 'package:playgroup/Models/IndividualChatRes.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:record/record.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:audioplayers/audioplayers.dart';
-import 'package:flutter_sound/flutter_sound.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:path/path.dart' as path;
-import 'package:file_picker/file_picker.dart';
+import 'package:ext_storage/ext_storage.dart';
 
 class Individuals_Chat extends StatefulWidget {
   int? otherChildId;
@@ -60,7 +59,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
   IO.Socket? _socket;
 
   FocusNode msgField = new FocusNode();
-  bool _isLoading = true;
+  // bool _isLoading = true;
 
   List<IndiData>? ChatData = [];
 
@@ -69,6 +68,35 @@ class _Individuals_ChatState extends State<Individuals_Chat>
   var parser = EmojiParser();
 
   List<String> dateFormate = [];
+
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache = AudioCache();
+  var startRecording = false;
+  var isPlaying = false;
+  var playingIndex = null;
+  int audioLength = 0;
+  int audioCurrentlenth = 0;
+  Timer? _timer;
+  List<int> recordedData = [];
+  final _audioRecorder = Record();
+
+  String file64 = '';
+  String? fileExt;
+
+  Stopwatch watch = Stopwatch();
+  bool startStop = true;
+  String elapsedTime = '';
+
+  String? audio;
+
+  updateTime(Timer _timer) {
+    if (watch.isRunning) {
+      setState(() {
+        print("startstop Inside=$startStop");
+        elapsedTime = transformMilliSeconds(watch.elapsedMilliseconds);
+      });
+    }
+  }
 
   @override
   void initState() {
@@ -120,261 +148,271 @@ class _Individuals_ChatState extends State<Individuals_Chat>
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(
-            child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
-        : Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.white,
-              flexibleSpace: SafeArea(
-                child: Container(
-                  padding: EdgeInsets.only(right: 16),
-                  child: Row(
+    return
+        // _isLoading
+        //     ? const Center(
+        //         child: CircularProgressIndicator(
+        //             valueColor: AlwaysStoppedAnimation<Color>(Colors.grey)))
+        //     :
+        Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.white,
+        flexibleSpace: SafeArea(
+          child: Container(
+            padding: EdgeInsets.only(right: 16),
+            child: Row(
+              children: <Widget>[
+                IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                ),
+                SizedBox(
+                  width: 2,
+                ),
+                CircleAvatar(
+                  maxRadius: 20,
+                  backgroundColor: Colors.white,
+                  backgroundImage: (widget.profile! != "null")
+                      ? NetworkImage(Strings.imageUrl + widget.profile!)
+                      : AssetImage("assets/imgs/profile-user.png")
+                          as ImageProvider,
+                ),
+                SizedBox(
+                  width: 12,
+                ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                      IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: Icon(
-                          Icons.arrow_back,
-                          color: Colors.black,
-                        ),
+                      Text(
+                        widget.name!,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w600),
                       ),
-                      SizedBox(
-                        width: 2,
-                      ),
-                      CircleAvatar(
-                        maxRadius: 20,
-                        backgroundColor: Colors.white,
-                        backgroundImage: (widget.profile! != "null")
-                            ? NetworkImage(Strings.imageUrl + widget.profile!)
-                            : AssetImage("assets/imgs/profile-user.png")
-                                as ImageProvider,
-                      ),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              widget.name!,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.w600),
-                            ),
-                            // SizedBox(
-                            //   height: 6,
-                            // ),
-                            // Text(
-                            //   "Online",
-                            //   style: TextStyle(
-                            //       color: Colors.grey.shade600, fontSize: 13),
-                            // ),
-                          ],
-                        ),
-                      ),
-                      PopupMenuButton<String>(
-                        child: Icon(
-                          Icons.more_vert,
-                        ),
-                        onSelected: (Data) {
-                          handleClick(Data);
-                        },
-                        itemBuilder: (BuildContext context) {
-                          return {
-                            'View Profile',
-                            'Mute Notifications',
-                            'Delete Conversation'
-                          }.map((String choice) {
-                            return PopupMenuItem<String>(
-                              value: choice,
-                              child: Text(choice),
-                            );
-                          }).toList();
-                        },
-                      )
+                      // SizedBox(
+                      //   height: 6,
+                      // ),
+                      // Text(
+                      //   "Online",
+                      //   style: TextStyle(
+                      //       color: Colors.grey.shade600, fontSize: 13),
+                      // ),
                     ],
                   ),
                 ),
-              ),
-            ),
-            body: Column(
-              children: <Widget>[
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: ChatData!.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.only(top: 10, bottom: 10),
-                    physics: BouncingScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      Widget separator = SizedBox();
-                      if (index != 0 &&
-                          dateFormate[index] != dateFormate[index - 1]) {
-                        separator = Container(
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              //color: Strings.chipsbg
-                            ),
-                            padding: EdgeInsets.only(right: 5, left: 5),
-                            child: Text(
-                              dateFormate[index],
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.grey),
-                            ));
-                      } else if (index == 0) {
-                        separator = Container(
-                            height: 20,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              //color: Strings.chipsbg
-                            ),
-                            padding: EdgeInsets.only(right: 5, left: 5),
-                            child: Text(
-                              dateFormate[index],
-                              style:
-                                  TextStyle(fontSize: 15, color: Colors.grey),
-                            ));
-                      }
-                      return Column(
-                        children: [
-                          separator,
-                          Container(
-                            padding: EdgeInsets.only(
-                                left: 14, right: 14, top: 10, bottom: 10),
-                            child: Align(
-                              alignment: (ChatData![index].childId !=
-                                      Strings.SelectedChild
-                                  ? Alignment.topLeft
-                                  : Alignment.topRight),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: (ChatData![index].childId !=
-                                          Strings.SelectedChild
-                                      ? Colors.grey.shade300
-                                      : Colors.blue.shade400),
-                                ),
-                                padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
-                                child: Text(
-                                  ChatData![index].message!,
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    color: (ChatData![index].childId !=
-                                            Strings.SelectedChild
-                                        ? Colors.black54
-                                        : Colors.white),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Align(
-                            alignment: (ChatData![index].childId !=
-                                    Strings.SelectedChild
-                                ? Alignment.topLeft
-                                : Alignment.topRight),
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 20, right: 20),
-                              child: Text(
-                                DateFormat.jm().format(
-                                  DateTime.parse(ChatData![index].createdDate!),
-                                ),
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Colors.black54,
-                                ),
-                              ),
-                            ),
-                          )
-                        ],
+                PopupMenuButton<String>(
+                  child: Icon(
+                    Icons.more_vert,
+                  ),
+                  onSelected: (Data) {
+                    handleClick(Data);
+                  },
+                  itemBuilder: (BuildContext context) {
+                    return {
+                      'View Profile',
+                      'Mute Notifications',
+                      'Delete Conversation'
+                    }.map((String choice) {
+                      return PopupMenuItem<String>(
+                        value: choice,
+                        child: Text(choice),
                       );
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                          ),
-                          borderRadius: BorderRadius.all(Radius.circular(50))),
-                      padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-                      height: 50,
-                      width: double.infinity,
-                      // color: Colors.white,
-                      child: Row(
-                        children: <Widget>[
-                          GestureDetector(
-                            onTap: () {
-                              //startRecording();
-                            },
-                            child: Container(
-                              height: 23,
-                              width: 23,
-                              decoration: BoxDecoration(
-                                color: Colors.blue.shade400,
-                                borderRadius: BorderRadius.circular(30),
-                              ),
-                              child: Icon(
-                                Icons.mic_none_outlined,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          Expanded(
-                            child: Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-                              child: TextField(
-                                controller: _msgcontroller,
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.only(
-                                      bottom: 15.0,
-                                    ),
-                                    hintText: "Type Message...",
-                                    hintStyle: TextStyle(
-                                        color: Colors.black54,
-                                        fontStyle: FontStyle.italic),
-                                    border: InputBorder.none),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            width: 15,
-                          ),
-                          FloatingActionButton(
-                            onPressed: () {
-                              postComments();
-                            },
-                            child: Icon(
-                              Icons.send,
-                              color: Colors.grey,
-                              size: 25,
-                            ),
-                            backgroundColor: Colors.white,
-                            elevation: 0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                    }).toList();
+                  },
+                )
               ],
             ),
-          );
+          ),
+        ),
+      ),
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: ListView.builder(
+              itemCount: ChatData!.length,
+              shrinkWrap: true,
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                Widget separator = SizedBox();
+                if (index != 0 &&
+                    dateFormate[index] != dateFormate[index - 1]) {
+                  separator = Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        //color: Strings.chipsbg
+                      ),
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        dateFormate[index],
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ));
+                } else if (index == 0) {
+                  separator = Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        //color: Strings.chipsbg
+                      ),
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        dateFormate[index],
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ));
+                }
+                return Column(
+                  children: [
+                    separator,
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 14, right: 14, top: 10, bottom: 10),
+                      child: Align(
+                        alignment:
+                            (ChatData![index].childId != Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Colors.grey.shade300
+                                : Colors.blue.shade400),
+                          ),
+                          padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                          child: Text(
+                            ChatData![index].message!,
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: (ChatData![index].childId !=
+                                      Strings.SelectedChild
+                                  ? Colors.black54
+                                  : Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Align(
+                      alignment:
+                          (ChatData![index].childId != Strings.SelectedChild
+                              ? Alignment.topLeft
+                              : Alignment.topRight),
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 20, right: 20),
+                        child: Text(
+                          DateFormat.jm().format(
+                            DateTime.parse(ChatData![index].createdDate!),
+                          ),
+                          style: TextStyle(
+                            fontSize: 11,
+                            color: Colors.black54,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomLeft,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Colors.grey,
+                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(50))),
+                padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
+                height: 50,
+                width: double.infinity,
+                // color: Colors.white,
+                child: Row(
+                  children: <Widget>[
+                    GestureDetector(
+                      onLongPress: () {
+                        startRecording = true;
+                        startOrStop();
+                        recordComments();
+                      },
+                      onLongPressEnd: (details) {
+                        // AppUtils.showToast(details.toString());
+                        setState(() {
+                          startRecording = false;
+                          startOrStop();
+                          stopRecord();
+                          sendAudio();
+                        });
+                      },
+                      child: Container(
+                        height: 23,
+                        width: 23,
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade400,
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Icon(
+                          Icons.mic_none_outlined,
+                          color: Colors.white,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
+                        child: TextField(
+                          controller: _msgcontroller,
+                          decoration: InputDecoration(
+                              contentPadding: const EdgeInsets.only(
+                                bottom: 15.0,
+                              ),
+                              hintText: "Type Message...",
+                              hintStyle: TextStyle(
+                                  color: Colors.black54,
+                                  fontStyle: FontStyle.italic),
+                              border: InputBorder.none),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15,
+                    ),
+                    FloatingActionButton(
+                      onPressed: () {
+                        postComments();
+                      },
+                      child: Icon(
+                        Icons.send,
+                        color: Colors.grey,
+                        size: 25,
+                      ),
+                      backgroundColor: Colors.white,
+                      elevation: 0,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   handleClick(String value) {
@@ -575,8 +613,10 @@ class _Individuals_ChatState extends State<Individuals_Chat>
         msgField.unfocus();
         print("s:${Strings.SelectedChild}");
         print("jn:${widget.otherChildId}");
-        if (_data[0]['child_id'] == Strings.SelectedChild &&
-            _data[0]['other_child_id'] == widget.otherChildId) {
+        if (_data[0]['child_id'] == widget.otherChildId &&
+                _data[0]['other_child_id'] == Strings.SelectedChild ||
+            _data[0]['child_id'] == Strings.SelectedChild &&
+                _data[0]['other_child_id'] == widget.otherChildId) {
           ChatData = [];
           for (var item in _data) {
             ChatData!.add(IndiData.fromJson(item));
@@ -586,7 +626,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
                   .format(DateTime.parse(ChatData![index].createdDate!)));
             }
           }
-          _isLoading = false;
+          // _isLoading = false;
         }
         initialCommentCheck = false;
         print("Comments fetched changing to false");
@@ -602,17 +642,21 @@ class _Individuals_ChatState extends State<Individuals_Chat>
 
   postComments() async {
     print("1:${parser.unemojify(_msgcontroller.text)}");
+    print("audio:$audio");
     // print(json.encode(tagedUsersId.toString()));
-    if (_msgcontroller.text.trim() == "") {
+    if (_msgcontroller.text.trim() == "" && audio == "") {
       AppUtils.showError(context, "Kindly add some text!", '');
     } else {
+      print("hii");
       _socket?.emitWithAck(
           'add-individual-chat',
           json.encode({
             "child_id": Strings.SelectedChild,
             "other_child_id": widget.otherChildId,
-            "message": parser.unemojify(_msgcontroller.text),
-            "files": ""
+            "message": (_msgcontroller.text != "")
+                ? parser.unemojify(_msgcontroller.text)
+                : "",
+            "files": "hiiuniu"
           }), ack: (data) {
         print('ack $data');
         if (data != null) {
@@ -621,11 +665,185 @@ class _Individuals_ChatState extends State<Individuals_Chat>
           print("Null");
         }
       });
-
       _msgcontroller.text = '';
 
       msgField.unfocus();
     }
+  }
+
+  recordComments() async {
+    var dir = await ExtStorage.getExternalStoragePublicDirectory(
+        ExtStorage.DIRECTORY_DOWNLOADS);
+    var status = await Permission.microphone.status;
+    if (!status.isGranted) {
+      getPermission();
+    } else {
+      await _audioRecorder.start(
+        path: dir! + "/MTARecordedAudio.wav",
+        encoder: AudioEncoder.AAC,
+      );
+    }
+    ;
+  }
+
+  Future<void> stopRecord() async {
+    _audioRecorder.stop();
+  }
+
+  // playAudio(url) async {
+  //   // var dir = await ExtStorage.getExternalStoragePublicDirectory(
+  //   //     ExtStorage.DIRECTORY_DOWNLOADS);
+  //   // String url = dir + "/MTARecordedAudio.wav";
+  //   print(Strings.baseImageUrl + url);
+  //   await audioPlayer.play(Strings.baseImageUrl + url,
+  //       volume: 5, stayAwake: false);
+  //   audioPlayer.onDurationChanged.listen((Duration d) {
+  //     int seconds = d.inSeconds;
+  //     print('Max duration: $d');
+  //     setState(() {
+  //       audioLength = seconds;
+  //     });
+  //   });
+  //   audioPlayer.onAudioPositionChanged.listen((Duration p) {
+  //     int seconds = p.inSeconds;
+  //     print('curr duration: $p');
+  //     setState(() {
+  //       audioCurrentlenth = seconds;
+  //     });
+  //   });
+  //   audioPlayer.onPlayerCompletion.listen((event) {
+  //     setState(() {
+  //       audioLength = 0;
+  //       audioCurrentlenth = 0;
+  //       playingIndex = null;
+  //       isPlaying = false;
+  //     });
+  //   });
+  //   audioPlayer.onPlayerError.listen((msg) {
+  //     print('audioPlayer error : $msg');
+  //   });
+  // }
+
+  stopAudio() async {
+    await audioPlayer.stop();
+    setState(() {
+      audioLength = 0;
+      audioCurrentlenth = 0;
+      playingIndex = null;
+      isPlaying = false;
+    });
+  }
+
+  sendAudio() async {
+    AppUtils.showprogress();
+    var dir = await ExtStorage.getExternalStoragePublicDirectory(
+        ExtStorage.DIRECTORY_DOWNLOADS);
+    print("direct $dir");
+    final bytesData =
+        await Io.File(dir! + "/MTARecordedAudio.wav").readAsBytes();
+    print("1");
+    String base64Encodes(List<int> bytes) => base64.encode(bytes);
+    print("2");
+    String base64Encode = base64Encodes(bytesData);
+    print("3");
+    audio = "data:audio/wav;base64," + base64Encode;
+    print("4");
+    postComments();
+    // var audioRequest = json.encode({
+    //           "audio": "data:audio/wav;base64," + base64Encode,
+    //           "category_id_list": json.encode(tagedCatsId),
+    //           "category_list": json.encode(tagedCats),
+    //           "document_id": Strings.category == true
+    //               ? Strings.selectedCatDocument[0].documentId
+    //               : Strings.selectedProDocument[0].documentId,
+    //           'recipient_id': json.encode(tagedUsersId),
+    //           'user_id': Strings.userID,
+
+    //         });
+    //         print(audioRequest);
+    // print("base64Encode--> $base64Encode");
+    // api.uploadAudio(req).then((response) {
+    //   AppUtils.dismissprogress();
+    //   if (response.status!) {
+    //    // AppUtils.showError("Audio sent successfully");
+    //     _socket?.disconnect();
+    //     _socket?.connect();
+    //     _socket?.on("connect", (_) {
+    //       print('Connected');
+    //       initialCommentCheck = true;
+    //       getIndividualsChat();
+    //       _msgcontroller.text = '';
+    //       typing = false;
+    //       msgField.unfocus();
+    //     });
+    //   } else {
+    //     AppUtils.showToast("Error",context);
+    //   }
+    // }).catchError((onError) {
+    //   AppUtils.dismissprogress();
+    //   print(onError.toString());
+    // });
+  }
+
+  startOrStop() {
+    if (startStop) {
+      startWatch();
+    } else {
+      stopWatch();
+    }
+  }
+
+  reset() {
+    watch.reset();
+  }
+
+  startWatch() {
+    setState(() {
+      startStop = false;
+      watch.start();
+      _timer = Timer.periodic(Duration(milliseconds: 100), updateTime);
+    });
+  }
+
+  stopWatch() {
+    setState(() {
+      startStop = true;
+      watch.stop();
+      setTime();
+      reset();
+    });
+  }
+
+  setTime() {
+    var timeSoFar = watch.elapsedMilliseconds;
+    setState(() {
+      elapsedTime = transformMilliSeconds(timeSoFar);
+    });
+  }
+
+  transformMilliSeconds(int milliseconds) {
+    int hundreds = (milliseconds / 10).truncate();
+    int seconds = (hundreds / 100).truncate();
+    int minutes = (seconds / 60).truncate();
+    int hours = (minutes / 60).truncate();
+
+    String hoursStr = (hours % 60).toString().padLeft(2, '0');
+    String minutesStr = (minutes % 60).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+}
+
+void getPermission() async {
+  var status = await Permission.microphone.status;
+  if (status.isDenied) {
+    await Permission.microphone.request();
+  } else if (status.isPermanentlyDenied) {
+    // AppUtils.showToast(
+    //     "Please enable Microphone from App permission Settings",context);
+  } else {
+    await Permission.microphone.request();
   }
 }
 

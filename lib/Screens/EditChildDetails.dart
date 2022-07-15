@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/EditChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
@@ -57,19 +58,18 @@ class _EditChildDetailsState extends State<EditChildDetails> {
 
   DateTime? picked;
   _selectDate() async {
-     picked = await showDatePicker(
+    picked = await showDatePicker(
       context: context,
-      initialDate: (picked! != null)?DateTime(now.year - 4, now.month, now.day):
-      DateTime(now.year - 4, now.month, now.day), // Refer step 1
+      initialDate: (picked! != null)
+          ? DateTime(now.year - 4, now.month, now.day)
+          : DateTime(now.year - 4, now.month, now.day), // Refer step 1
       firstDate: DateTime(now.year - 18, now.month, now.day),
 
       lastDate: DateTime(now.year - 4, now.month, now.day),
     );
     if (picked != null) {
       setState(() {
-        String date1 = "${picked!.day}-${picked!.month}-${picked!
-        
-        .year}";
+        String date1 = "${picked!.day}-${picked!.month}-${picked!.year}";
         _dobController.text = date1;
         print("date selected");
       });
@@ -248,6 +248,9 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                           children: [
                             Expanded(
                               child: TextField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(20),
+                                ],
                                 style: TextStyle(color: Colors.black),
                                 controller: _numberController,
                                 decoration: InputDecoration(
@@ -444,6 +447,9 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                           children: [
                             Expanded(
                               child: TextField(
+                                inputFormatters: [
+                                  LengthLimitingTextInputFormatter(30),
+                                ],
                                 style: TextStyle(color: Colors.black),
                                 controller: _schoolController,
                                 decoration: InputDecoration(
@@ -460,7 +466,7 @@ class _EditChildDetailsState extends State<EditChildDetails> {
                                   ),
                                   fillColor: Strings.textFeildBg,
                                   filled: true,
-                                  hintText: "Enter Child Name",
+                                  hintText: "Enter School Name",
                                   hintStyle: TextStyle(color: Colors.grey),
                                   contentPadding:
                                       EdgeInsets.fromLTRB(20, 5, 0, 0),

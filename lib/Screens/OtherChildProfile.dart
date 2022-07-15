@@ -673,7 +673,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                       margin: EdgeInsets.only(right: 10),
                                       child: TextButton(
                                         onPressed: () {
-                                          (childInfo![0].frndsdata!.length != 0)
+                                          (childInfo![0].frndsdata!.length > 4)
                                               ? Navigator.push(
                                                   context,
                                                   MaterialPageRoute(

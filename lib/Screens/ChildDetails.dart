@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:playgroup/Models/AddChildReq.dart';
 import 'package:playgroup/Models/GetChildRes.dart';
 import 'package:playgroup/Screens/ChildConfirmation.dart';
@@ -55,18 +56,22 @@ class _ChildDetailsState extends State<ChildDetails> {
   String img64 = "";
 
   var profilepage;
+  DateTime now = DateTime.now();
+
+  DateTime? picked;
 
   _selectDate() async {
-    final DateTime? picked = await showDatePicker(
+    picked = await showDatePicker(
       context: context,
-      initialDate: DateTime.now(), // Refer step 1
-      firstDate: DateTime(2000),
-
-      lastDate: DateTime.now(),
+      initialDate: (picked != null)
+          ? DateTime(now.year - 4, now.month, now.day)
+          : DateTime(now.year - 4, now.month, now.day),
+      firstDate: DateTime(now.year - 18, now.month, now.day),
+      lastDate: DateTime(now.year - 4, now.month, now.day),
     );
     if (picked != null) {
       setState(() {
-        String date1 = "${picked.day}-${picked.month}-${picked.year}";
+        String date1 = "${picked!.day}-${picked!.month}-${picked!.year}";
         _dobController.text = date1;
         print("date selected");
       });
@@ -232,6 +237,9 @@ class _ChildDetailsState extends State<ChildDetails> {
                       children: [
                         Expanded(
                           child: TextField(
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(20),
+                            ],
                             style: TextStyle(color: Colors.black),
                             controller: _nameController,
                             decoration: InputDecoration(
@@ -425,6 +433,9 @@ class _ChildDetailsState extends State<ChildDetails> {
                       children: [
                         Expanded(
                           child: TextField(
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(30),
+                            ],
                             style: TextStyle(color: Colors.black),
                             controller: _schoolController,
                             decoration: InputDecoration(

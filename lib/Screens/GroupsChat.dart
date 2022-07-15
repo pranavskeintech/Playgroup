@@ -655,6 +655,7 @@ class _Groups_ChatState extends State<Groups_Chat>
 
         // itemScrollController.jumpTo(index:0);
 
+        AppUtils.dismissprogress();
         msgField.unfocus();
 
         //  });

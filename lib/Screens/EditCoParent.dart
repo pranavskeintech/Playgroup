@@ -127,6 +127,9 @@ class _EditCoParentState extends State<EditCoParent> {
                 border: Border.all(color: Strings.textFeildBg),
                 borderRadius: BorderRadius.circular(10)),
             child: TextField(
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(20),
+              ],
               style: TextStyle(color: Colors.black),
               controller: _coParentNameController,
               decoration: InputDecoration(
@@ -375,6 +378,9 @@ class _EditCoParentState extends State<EditCoParent> {
                 border: Border.all(color: Strings.textFeildBg),
                 borderRadius: BorderRadius.circular(10)),
             child: TextField(
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(30),
+              ],
               obscureText: true,
               style: TextStyle(color: Colors.black),
               controller: _passwordController,
