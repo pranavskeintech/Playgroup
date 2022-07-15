@@ -150,7 +150,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                   alignment: Alignment.centerLeft,
                   child: FriendsDatum!.length > 0
                       ? Text(
-                          "Choose Friends to join you?",
+                          "Choose Friends to join the group",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 18),
                         )
@@ -247,7 +247,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                                   leading: Transform.translate(
                                     offset: Offset(-16, 0),
                                     child: CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                      backgroundColor: Colors.white,
                                       backgroundImage: _foundedUsers[index]
                                                   .profile !=
                                               "null"
@@ -312,6 +312,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                     : SizedBox(
                         height: 5,
                       ),
+                Spacer(),
                 Center(
                   child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.9,
@@ -334,10 +335,7 @@ class _groupParticipantsState extends State<groupParticipants> {
                       )),
                 ),
                 SizedBox(
-                  height: 8,
-                ),
-                SizedBox(
-                  height: 40,
+                  height: 20,
                 ),
               ],
             ),

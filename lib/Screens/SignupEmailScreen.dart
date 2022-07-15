@@ -88,7 +88,7 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.20,
+                    height: MediaQuery.of(context).size.height * 0.15,
                   ),
                   (widget.fromProfile == true)
                       ? Container(
@@ -197,7 +197,8 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                       color: Strings.appThemecolor,
                       child: (widget.fromProfile == true)
                           ? Text('Save',
-                              style: TextStyle(color: Colors.white, fontSize: 18))
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 18))
                           : Text('Continue',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18)),
@@ -251,9 +252,10 @@ class _SignupEmailScreenState extends State<SignupEmailScreen> {
                                 ),
                                 InkWell(
                                   onTap: () {
-                                    Navigator.of(context).push(MaterialPageRoute(
-                                        builder: (BuildContext context) =>
-                                            LoginPage()));
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                            builder: (BuildContext context) =>
+                                                LoginPage()));
                                   },
                                   child: Text(
                                     "Login",

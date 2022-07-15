@@ -179,7 +179,7 @@ class _GroupinfoState extends State<Groupinfo> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       CircleAvatar(
-                                          backgroundColor: Colors.white,
+                        backgroundColor: Colors.white,
                         backgroundImage:
                             _GroupData!.groupDetails![0].groupImage != "null"
                                 ? NetworkImage(Strings.imageUrl +
@@ -330,17 +330,28 @@ class _GroupinfoState extends State<Groupinfo> {
                         onSearch(searchString);
                       },
                       style: TextStyle(
-                        height: 2.5,
+                        height: 1,
                       ),
                       decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(5),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(3.0),
                           borderSide: BorderSide.none,
                         ),
+                        enabledBorder: OutlineInputBorder(
+                            borderSide: BorderSide(
+                                color: Strings.textFeildBg, width: 0),
+                            borderRadius: BorderRadius.circular(6)),
                         filled: true,
-                        fillColor: Colors.grey.withOpacity(0.3),
+                        fillColor: Strings.textFeildBg,
                         hintText: "Search",
-                        prefixIcon: Icon(Icons.search),
+                        hintStyle: TextStyle(
+                          fontSize: 12.5,
+                        ),
+                        prefixIcon: Icon(
+                          Icons.search,
+                          size: 14,
+                        ),
                       ),
                     ),
                   ),
@@ -379,22 +390,22 @@ class _GroupinfoState extends State<Groupinfo> {
                                           ? null
                                           : Navigator.of(context).push(
                                               MaterialPageRoute(
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          OtherChildProfile(
-                                                            otherChildID:
-                                                                _foundedGroupMembers![
-                                                                        index]
-                                                                    .childId,
-                                                            chooseChildId: widget
-                                                                .choosedChildId,
-                                                          
-                                      fromSearch: false)));
+                                                  builder: (BuildContext
+                                                          context) =>
+                                                      OtherChildProfile(
+                                                          otherChildID:
+                                                              _foundedGroupMembers![
+                                                                      index]
+                                                                  .childId,
+                                                          chooseChildId: widget
+                                                              .choosedChildId,
+                                                          fromSearch: false)));
                                     },
                                     leading: Transform.translate(
                                       offset: Offset(-16, 0),
                                       child: CircleAvatar(
-                                          backgroundColor: Colors.white,
+                                        backgroundColor: Colors.white,
+                                        radius: 20,
                                         backgroundImage: _foundedGroupMembers![
                                                         index]
                                                     .profile !=
@@ -417,7 +428,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                                 AssetImage(
                                                     "assets/imgs/Admin.png"),
                                                 //color: Colors.green,
-                                                size: 90,
+                                                size: 80,
                                               )
                                             : Container(
                                                 decoration: BoxDecoration(
@@ -472,7 +483,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                                 AssetImage(
                                                     "assets/imgs/Admin.png"),
                                                 //color: Colors.green,
-                                                size: 90,
+                                                size: 80,
                                               )
                                             : null,
                                     title: (widget.choosedChildId ==
@@ -482,6 +493,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                             offset: Offset(-16, 0),
                                             child: Text(
                                               "You",
+                                              style: TextStyle(fontSize: 14),
                                               //style: TextStyle(fontWeight: FontWeight.w500),
                                             ),
                                           )
@@ -490,6 +502,7 @@ class _GroupinfoState extends State<Groupinfo> {
                                             child: Text(
                                               _foundedGroupMembers![index]
                                                   .childName!,
+                                              style: TextStyle(fontSize: 14),
                                               // style: TextStyle(fontWeight: FontWeight.w500),
                                             ),
                                           ),
@@ -502,7 +515,7 @@ class _GroupinfoState extends State<Groupinfo> {
                             return Padding(
                               padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                               child: Divider(
-                                thickness: 1,
+                                thickness: 0.5,
                               ),
                             );
                           },
