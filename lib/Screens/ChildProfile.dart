@@ -447,7 +447,7 @@ class _ChildProfileState extends State<ChildProfile>
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.21,
+                      width: MediaQuery.of(context).size.width * 0.30,
                       child: Text(
                         'Availabilities',
                         textAlign: TextAlign.center,
@@ -1158,24 +1158,26 @@ class _ChildProfileState extends State<ChildProfile>
                                           : AssetImage(
                                                   "assets/imgs/profile-user.png")
                                               as ImageProvider,
-                                      radius: 23,
+                                      radius: 20,
                                     ),
                                   ),
                                   Positioned(
-                                      right: 30,
+                                      right: 28,
                                       bottom: 25,
                                       child: CircleAvatar(
                                         backgroundImage: AssetImage(
                                           "assets/imgs/group.png",
                                         ),
-                                        radius: 10,
+                                        radius: 7.5,
                                       ))
                                 ]),
                               ),
                               title: Transform.translate(
                                   offset: Offset(-16, 0),
-                                  child:
-                                      Text(_foundedGroups[index].groupName!)),
+                                  child: Text(
+                                    _foundedGroups[index].groupName!,
+                                    style: TextStyle(fontSize: 14),
+                                  )),
                             ),
                           );
                         },
@@ -1183,7 +1185,7 @@ class _ChildProfileState extends State<ChildProfile>
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Divider(
-                              thickness: 1,
+                              thickness: 0.5,
                             ),
                           );
                         },
@@ -1252,7 +1254,7 @@ class _ChildProfileState extends State<ChildProfile>
                                         : AssetImage(
                                                 "assets/imgs/profile-user.png")
                                             as ImageProvider,
-                                    radius: 23,
+                                    radius: 20,
                                   ),
                                 ),
                               ),
@@ -1300,7 +1302,10 @@ class _ChildProfileState extends State<ChildProfile>
                                   : SizedBox(),
                               title: Transform.translate(
                                   offset: Offset(-16, 0),
-                                  child: Text(_foundedUsers[index].childName!)),
+                                  child: Text(
+                                    _foundedUsers[index].childName!,
+                                    style: TextStyle(fontSize: 14),
+                                  )),
                             ),
                           );
                         },
@@ -1308,7 +1313,7 @@ class _ChildProfileState extends State<ChildProfile>
                           return Padding(
                             padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                             child: Divider(
-                              thickness: 1,
+                              thickness: 0.5,
                             ),
                           );
                         },
