@@ -828,6 +828,10 @@ class _CommentsContentState extends State<CommentsContent>
                                         contentPadding: const EdgeInsets.only(
                                           bottom: 15.0,
                                         ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Strings.textFeildBg, width: 0),
+                                    borderRadius: BorderRadius.circular(40)),
                                         hintText: "Type your Comment...",
                                         hintStyle: TextStyle(
                                             color: Colors.black54,

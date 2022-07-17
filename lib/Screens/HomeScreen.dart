@@ -610,7 +610,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       child: Container(
                                         margin:
                                             EdgeInsets.fromLTRB(10, 10, 10, 20),
-                                        height: 220,
+
+                                        //height: 200,
                                         color: Colors.white,
                                         child: Container(
                                           decoration: BoxDecoration(
@@ -632,8 +633,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               )
                                             ],
                                           ),
-                                          padding:
-                                              EdgeInsets.fromLTRB(13, 2, 12, 0),
+                                          padding: EdgeInsets.fromLTRB(
+                                              13, 10, 12, 10),
                                           child: Column(
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
@@ -659,104 +660,121 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   "assets/imgs/profile-user.png")
                                                               as ImageProvider,
                                                 ),
-                                                title: Text(
-                                                  OtherMarkAvailabilityData![
-                                                          mainIndex]
-                                                      .childName!,
-                                                  style: TextStyle(
-                                                      fontSize: 13.5,
-                                                      fontWeight:
-                                                          FontWeight.w500),
+                                                title: Transform.translate(
+                                                  offset: Offset(-5, 5),
+                                                  child: Text(
+                                                    OtherMarkAvailabilityData![
+                                                            mainIndex]
+                                                        .childName!,
+                                                    style: TextStyle(
+                                                        fontSize: 13.5,
+                                                        fontWeight:
+                                                            FontWeight.w500),
+                                                  ),
                                                 ),
-                                                subtitle: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        SizedBox(height: 5),
-                                                        Text(
-                                                          OtherMarkAvailabilityData![
-                                                                  mainIndex]
-                                                              .dateon!,
-                                                          style: TextStyle(
-                                                            fontSize: 11,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.start,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                        ),
-                                                        SizedBox(height: 5),
-                                                        // Container(
-                                                        //   width: 1,
-                                                        //   height: 10,
-                                                        //   color: Colors.red,
-                                                        // ),
-                                                        // SizedBox(
-                                                        //   width: 5,
-                                                        // ),
-                                                        Row(
-                                                          children: [
-                                                            Text(
-                                                              OtherMarkAvailabilityData![
-                                                                          mainIndex]
-                                                                      .fromTime! +
-                                                                  " - ",
-                                                              style: TextStyle(
-                                                                fontSize: 11,
-                                                              ),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                            Text(
-                                                              OtherMarkAvailabilityData![
-                                                                      mainIndex]
-                                                                  .toTime!,
-                                                              style: TextStyle(
-                                                                fontSize: 11,
-                                                              ),
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                            ),
-                                                          ],
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Icon(
-                                                          Icons.location_pin,
-                                                          color: Colors.red,
-                                                          size: 12.5,
-                                                        ),
-                                                        SizedBox(
-                                                          width: 3,
-                                                        ),
-                                                        Container(
-                                                          width: 90,
-                                                          child: Text(
+                                                subtitle: Transform.translate(
+                                                  offset: Offset(-5, 5),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          SizedBox(height: 5),
+                                                          Text(
                                                             OtherMarkAvailabilityData![
                                                                     mainIndex]
-                                                                .location!,
+                                                                .dateon!,
                                                             style: TextStyle(
-                                                              fontSize: 11,
+                                                              fontSize: 10,
                                                             ),
-                                                            maxLines: 2,
+                                                            textAlign:
+                                                                TextAlign.start,
                                                             overflow:
                                                                 TextOverflow
                                                                     .ellipsis,
                                                           ),
+                                                          SizedBox(height: 5),
+                                                          // Container(
+                                                          //   width: 1,
+                                                          //   height: 10,
+                                                          //   color: Colors.red,
+                                                          // ),
+                                                          // SizedBox(
+                                                          //   width: 5,
+                                                          // ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                OtherMarkAvailabilityData![
+                                                                            mainIndex]
+                                                                        .fromTime! +
+                                                                    " - ",
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 10,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                              Text(
+                                                                OtherMarkAvailabilityData![
+                                                                        mainIndex]
+                                                                    .toTime!,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 10,
+                                                                ),
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Transform.translate(
+                                                        offset: Offset(0, 4),
+                                                        child: Row(
+                                                          children: [
+                                                            Icon(
+                                                              Icons
+                                                                  .location_pin,
+                                                              color: Colors.red,
+                                                              size: 12.5,
+                                                            ),
+                                                            SizedBox(
+                                                              width: 3,
+                                                            ),
+                                                            Container(
+                                                              width: 90,
+                                                              child: Text(
+                                                                OtherMarkAvailabilityData![
+                                                                        mainIndex]
+                                                                    .location!,
+                                                                style:
+                                                                    TextStyle(
+                                                                  fontSize: 10,
+                                                                ),
+                                                                maxLines: 2,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
-                                                      ],
-                                                    )
-                                                  ],
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(
