@@ -44,15 +44,16 @@ dependencies:
   intl: ^0.17.0
   dart_emoji: ^0.2.0+2
   record: ^3.0.2
-  audioplayers: ^1.0.1
+  audioplayers: ^0.20.1
   file_picker: ^4.6.1
   flutter_sound: ^9.2.13
   # open_file: ^3.2.1
   permission_handler: ^8.3.0
   path: ^1.8.0
-  assets_audio_player: ^3.0.3+3
+  # assets_audio_player: ^3.0.3+3
   ext_storage:
    git: https://github.com/pranavskeintech/skein_ext_storage.git
+  tutorial_coach_mark: ^1.2.3
 
 dev_dependencies:
   flutter_test:

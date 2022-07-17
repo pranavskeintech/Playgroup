@@ -10,8 +10,11 @@ import 'package:dart_emoji/dart_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:playgroup/Models/IndividualChatRes.dart';
+import 'package:playgroup/Models/uploadAudio.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
 import 'package:record/record.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:audioplayers/audioplayers.dart';
@@ -89,6 +92,8 @@ class _Individuals_ChatState extends State<Individuals_Chat>
 
   String? audio;
 
+  BuildContext? ctx;
+
   updateTime(Timer _timer) {
     if (watch.isRunning) {
       setState(() {
@@ -148,6 +153,18 @@ class _Individuals_ChatState extends State<Individuals_Chat>
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return IndChat(newContext);
+          }),
+        ));
+  }
+
+  IndChat(BuildContext context) {
+    ctx = context;
     return
         // _isLoading
         //     ? const Center(
@@ -272,36 +289,125 @@ class _Individuals_ChatState extends State<Individuals_Chat>
                 return Column(
                   children: [
                     separator,
-                    Container(
-                      padding: EdgeInsets.only(
-                          left: 14, right: 14, top: 10, bottom: 10),
-                      child: Align(
-                        alignment:
-                            (ChatData![index].childId != Strings.SelectedChild
-                                ? Alignment.topLeft
-                                : Alignment.topRight),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: (ChatData![index].childId !=
-                                    Strings.SelectedChild
-                                ? Colors.grey.shade300
-                                : Colors.blue.shade400),
-                          ),
-                          padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
-                          child: Text(
-                            ChatData![index].message!,
-                            style: TextStyle(
-                              fontSize: 15,
-                              color: (ChatData![index].childId !=
+                    (ChatData![index].message != null)
+                        ? Container(
+                            padding: EdgeInsets.only(
+                                left: 14, right: 14, top: 10, bottom: 10),
+                            child: Align(
+                              alignment: (ChatData![index].childId !=
                                       Strings.SelectedChild
-                                  ? Colors.black54
-                                  : Colors.white),
+                                  ? Alignment.topLeft
+                                  : Alignment.topRight),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20),
+                                  color: (ChatData![index].childId !=
+                                          Strings.SelectedChild
+                                      ? Colors.grey.shade300
+                                      : Colors.blue.shade400),
+                                ),
+                                padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                                child: Text(
+                                  ChatData![index].message!,
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    color: (ChatData![index].childId !=
+                                            Strings.SelectedChild
+                                        ? Colors.black54
+                                        : Colors.white),
+                                  ),
+                                ),
+                              ),
                             ),
+                          )
+                        : Row(
+                            children: [
+                              isPlaying == false
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if (isPlaying == true) {
+                                            stopAudio();
+                                            _timer = new Timer(
+                                                const Duration(
+                                                    milliseconds: 500), () {
+                                              setState(() {
+                                                isPlaying = true;
+                                                playingIndex = index;
+                                                playAudio(
+                                                    ChatData![index].files!);
+                                              });
+                                            });
+                                          } else {
+                                            isPlaying = true;
+                                            playingIndex = index;
+                                            playAudio(ChatData![index].files!);
+                                          }
+                                        });
+                                      },
+                                      child: new Icon(Icons.play_arrow,
+                                          size: 28.0),
+                                    )
+                                  : playingIndex == index
+                                      ? GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              isPlaying = false;
+                                            });
+
+                                            stopAudio();
+                                          },
+                                          child:
+                                              new Icon(Icons.stop, size: 28.0),
+                                        )
+                                      : GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              if (isPlaying == true) {
+                                                stopAudio();
+                                                _timer = new Timer(
+                                                    const Duration(
+                                                        milliseconds: 500), () {
+                                                  setState(() {
+                                                    isPlaying = true;
+                                                    playingIndex = index;
+                                                    playAudio(ChatData![index]
+                                                        .files!);
+                                                  });
+                                                });
+                                              } else {
+                                                isPlaying = true;
+                                                playingIndex = index;
+                                                playAudio(
+                                                    ChatData![index].files!);
+                                              }
+                                            });
+                                          },
+                                          child: new Icon(Icons.play_arrow,
+                                              size: 28.0),
+                                        ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Slider(
+                                value: playingIndex == index
+                                    ? audioCurrentlenth.toDouble()
+                                    : 0,
+                                min: 0,
+                                max: playingIndex == index
+                                    ? audioLength.toDouble()
+                                    : 0,
+                                onChanged: (double value) {
+                                  setState(() {
+                                    playingIndex == index
+                                        ? audioCurrentlenth = value.toInt()
+                                        : 0;
+                                    // _currentSliderValue = value;
+                                  });
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                      ),
-                    ),
                     Align(
                       alignment:
                           (ChatData![index].childId != Strings.SelectedChild
@@ -627,6 +733,8 @@ class _Individuals_ChatState extends State<Individuals_Chat>
             }
           }
           // _isLoading = false;
+
+          AppUtils.dismissprogress();
         }
         initialCommentCheck = false;
         print("Comments fetched changing to false");
@@ -675,11 +783,12 @@ class _Individuals_ChatState extends State<Individuals_Chat>
     var dir = await ExtStorage.getExternalStoragePublicDirectory(
         ExtStorage.DIRECTORY_DOWNLOADS);
     var status = await Permission.microphone.status;
+    print("permission:${status.isGranted}");
     if (!status.isGranted) {
       getPermission();
     } else {
       await _audioRecorder.start(
-        path: dir! + "/MTARecordedAudio.wav",
+        path: dir! + "/MTARecordedAudio.mp3",
         encoder: AudioEncoder.AAC,
       );
     }
@@ -690,39 +799,47 @@ class _Individuals_ChatState extends State<Individuals_Chat>
     _audioRecorder.stop();
   }
 
-  // playAudio(url) async {
-  //   // var dir = await ExtStorage.getExternalStoragePublicDirectory(
-  //   //     ExtStorage.DIRECTORY_DOWNLOADS);
-  //   // String url = dir + "/MTARecordedAudio.wav";
-  //   print(Strings.baseImageUrl + url);
-  //   await audioPlayer.play(Strings.baseImageUrl + url,
-  //       volume: 5, stayAwake: false);
-  //   audioPlayer.onDurationChanged.listen((Duration d) {
-  //     int seconds = d.inSeconds;
-  //     print('Max duration: $d');
-  //     setState(() {
-  //       audioLength = seconds;
-  //     });
-  //   });
-  //   audioPlayer.onAudioPositionChanged.listen((Duration p) {
-  //     int seconds = p.inSeconds;
-  //     print('curr duration: $p');
-  //     setState(() {
-  //       audioCurrentlenth = seconds;
-  //     });
-  //   });
-  //   audioPlayer.onPlayerCompletion.listen((event) {
-  //     setState(() {
-  //       audioLength = 0;
-  //       audioCurrentlenth = 0;
-  //       playingIndex = null;
-  //       isPlaying = false;
-  //     });
-  //   });
-  //   audioPlayer.onPlayerError.listen((msg) {
-  //     print('audioPlayer error : $msg');
-  //   });
-  // }
+  playAudio(url) async {
+    // var dir = await ExtStorage.getExternalStoragePublicDirectory(
+    //     ExtStorage.DIRECTORY_DOWNLOADS);
+    // String url = dir + "/MTARecordedAudio.wav";
+    // dynamic audioUrl = Strings.IndChat + url;
+    print(Strings.IndChat + url);
+
+    // await audioPlayer.setSourceUrl(
+    //   Strings.IndChat + url,
+    // );
+    await audioPlayer.play(
+      Strings.IndChat + url,
+      volume: 5,
+    );
+    //await audioPlayer.play(, volume: 5, mode: playAudio(url));
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      int seconds = d.inSeconds;
+      print('Max duration: $d');
+      setState(() {
+        audioLength = seconds;
+      });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      int seconds = p.inSeconds;
+      print('curr duration: $p');
+      setState(() {
+        audioCurrentlenth = seconds;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        audioLength = 0;
+        audioCurrentlenth = 0;
+        playingIndex = null;
+        isPlaying = false;
+      });
+    });
+    audioPlayer.onPlayerError.listen((msg) {
+      print('audioPlayer error : $msg');
+    });
+  }
 
   stopAudio() async {
     await audioPlayer.stop();
@@ -740,49 +857,46 @@ class _Individuals_ChatState extends State<Individuals_Chat>
         ExtStorage.DIRECTORY_DOWNLOADS);
     print("direct $dir");
     final bytesData =
-        await Io.File(dir! + "/MTARecordedAudio.wav").readAsBytes();
+        await Io.File(dir! + "/MTARecordedAudio.mp3").readAsBytes();
     print("1");
     String base64Encodes(List<int> bytes) => base64.encode(bytes);
     print("2");
     String base64Encode = base64Encodes(bytesData);
     print("3");
-    audio = "data:audio/wav;base64," + base64Encode;
+    audio = "data:audio/mp3;base64," + base64Encode;
     print("4");
-    postComments();
-    // var audioRequest = json.encode({
-    //           "audio": "data:audio/wav;base64," + base64Encode,
-    //           "category_id_list": json.encode(tagedCatsId),
-    //           "category_list": json.encode(tagedCats),
-    //           "document_id": Strings.category == true
-    //               ? Strings.selectedCatDocument[0].documentId
-    //               : Strings.selectedProDocument[0].documentId,
-    //           'recipient_id': json.encode(tagedUsersId),
-    //           'user_id': Strings.userID,
 
-    //         });
-    //         print(audioRequest);
-    // print("base64Encode--> $base64Encode");
-    // api.uploadAudio(req).then((response) {
-    //   AppUtils.dismissprogress();
-    //   if (response.status!) {
-    //    // AppUtils.showError("Audio sent successfully");
-    //     _socket?.disconnect();
-    //     _socket?.connect();
-    //     _socket?.on("connect", (_) {
-    //       print('Connected');
-    //       initialCommentCheck = true;
-    //       getIndividualsChat();
-    //       _msgcontroller.text = '';
-    //       typing = false;
-    //       msgField.unfocus();
-    //     });
-    //   } else {
-    //     AppUtils.showToast("Error",context);
-    //   }
-    // }).catchError((onError) {
-    //   AppUtils.dismissprogress();
-    //   print(onError.toString());
-    // });
+    uploadAudio req = uploadAudio();
+
+    req.files = "data:audio/mp3;base64," + base64Encode;
+    req.childId = Strings.SelectedChild;
+    req.otherChildId = widget.otherChildId;
+    req.type = "chat";
+    var dat = jsonEncode(req);
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+
+    print("Printing data -- > $dat");
+    api.uploadVoice(req).then((response) {
+      AppUtils.dismissprogress();
+      if (response.status!) {
+        AppUtils.showToast("Audio sent successfully", context);
+        _socket?.disconnect();
+        _socket?.connect();
+        _socket?.on("connect", (_) {
+          print('Connected');
+          initialCommentCheck = true;
+          getIndividualsChat();
+          _msgcontroller.text = '';
+          // typing = false;
+          msgField.unfocus();
+        });
+      } else {
+        AppUtils.showToast(response.message!, context);
+      }
+    }).catchError((onError) {
+      AppUtils.dismissprogress();
+      print(onError.toString());
+    });
   }
 
   startOrStop() {

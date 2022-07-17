@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:playgroup/Screens/NoInternet.dart';
 import 'package:playgroup/Screens/OnBoardingScreen.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
@@ -61,13 +62,23 @@ class _SplashScreenState extends State<SplashScreen> {
     );
 
     // show the dialog
+    // showDialog(
+    //   barrierDismissible: false,
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return alert;
+    //   },
+    // );
     showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
+        barrierDismissible: false,
+        context: context,
+        builder: (_) => WillPopScope(
+              onWillPop: () async {
+                print("back");
+                return false;
+              },
+              child: alert,
+            ));
   }
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
@@ -76,11 +87,11 @@ class _SplashScreenState extends State<SplashScreen> {
       print("Status --> $_connectionStatus");
     });
     if (result == ConnectivityResult.none) {
-      if (!Strings.firstLogin) {
-        showAlertDialog(context);
-      }
+      showAlertDialog(context);
+      // Navigator.of(context).push(
+      //     MaterialPageRoute(builder: (BuildContext context) => NoInternet()));
     } else {
-      if (Strings.internetDialog) {
+      if (Strings.internetDialog == true) {
         Navigator.pop(context);
       }
     }

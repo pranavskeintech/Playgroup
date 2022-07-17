@@ -52,6 +52,7 @@ import 'package:playgroup/Models/editChildLanguage.dart';
 import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/updateGroupReq.dart';
+import 'package:playgroup/Models/uploadAudio.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
@@ -67,7 +68,7 @@ part 'ApiService.g.dart';
 //flutter packages pub run build_runner watch --delete-conflicting-outputs
 
 //@RestApi(baseUrl: 'http://3.109.217.67:80/sss/')
-//@RestApi(baseUrl: 'https://demo.emeetify.com:81/sss/')
+// @RestApi(baseUrl: 'http://192.168.1.142:5899/playgroup/')
 // @RestApi(baseUrl: 'http://172.16.200.70:3445/sss/')
 @RestApi(baseUrl: 'https://demo.emeetify.com:81/playgroup/')
 abstract class ApiService {
@@ -291,6 +292,9 @@ abstract class ApiService {
 
   @GET("chat/getchat_list/{ChildID}")
   Future<GetChatsList> GetChatList(@Path("ChildID") int ChildID);
+
+  @POST("chat/upload_chat_audio")
+  Future<CommonRes> uploadVoice(@Body() uploadAudio body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
