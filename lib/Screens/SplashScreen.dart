@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:playgroup/Screens/Dashboard.dart';
 import 'package:playgroup/Screens/Login.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:playgroup/Screens/NoInternet.dart';
@@ -10,6 +11,7 @@ import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -116,10 +118,24 @@ class _SplashScreenState extends State<SplashScreen> {
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     Timer(const Duration(seconds: 3), () {
+      checkToken();
+    });
+  }
+
+  checkToken() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Strings.authToken = sharedPreferences.getString("token")!;
+    Strings.refreshToken = sharedPreferences.getString("refreshToken")!;
+    Strings.SelectedChild = sharedPreferences.getInt("SelectedChild")!;
+    print("object:${Strings.authToken}");
+    if (Strings.authToken == null) {
       Navigator.of(context).push(
           MaterialPageRoute(builder: (BuildContext context) => LoginPage()));
       Strings.firstLogin == false;
-    });
+    } else {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (BuildContext context) => DashBoard()));
+    }
   }
 
   @override

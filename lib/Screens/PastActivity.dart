@@ -438,29 +438,35 @@ class _PastActivityState extends State<PastActivity> {
                                     Column(
                                       children: [
                                         InkWell(
-                                          highlightColor: Colors.transparent,
-                                          splashColor: Colors.transparent,
-                                          onHighlightChanged: (value) {
-                                            setState(() {
-                                              isHighlighted = !isHighlighted;
-                                            });
-                                          },
-                                          onTap: () {
-                                            if (PastActData![index].liked ==
-                                                0) {
-                                              addLike(PastActData![index]
-                                                  .markavailId);
-                                            } else {
-                                              unLike(PastActData![index]
-                                                  .markavailId);
-                                            }
-                                          },
-                                          child: Image.asset(
-                                            "assets/imgs/Like2.png",
-                                            width: 60,
-                                            height: 60,
-                                          ),
-                                        ),
+                                            highlightColor: Colors.transparent,
+                                            splashColor: Colors.transparent,
+                                            onHighlightChanged: (value) {
+                                              setState(() {
+                                                isHighlighted = !isHighlighted;
+                                              });
+                                            },
+                                            onTap: () {
+                                              if (PastActData![index].liked ==
+                                                  0) {
+                                                addLike(PastActData![index]
+                                                    .markavailId);
+                                              } else {
+                                                unLike(PastActData![index]
+                                                    .markavailId);
+                                              }
+                                            },
+                                            child:
+                                                (PastActData![index].liked == 0)
+                                                    ? Image.asset(
+                                                        "assets/imgs/Like2.png",
+                                                        width: 60,
+                                                        height: 60,
+                                                      )
+                                                    : Image.asset(
+                                                        "assets/imgs/Like5.png",
+                                                        width: 60,
+                                                        height: 60,
+                                                      )),
                                         GestureDetector(
                                           onTap: (() {}),
                                           child: Text(

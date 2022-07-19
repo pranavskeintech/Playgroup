@@ -493,7 +493,7 @@ class _ChildProfileState extends State<ChildProfile>
                 width: MediaQuery.of(context).size.width * 1,
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  borderRadius: BorderRadius.all(Radius.circular(10)),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.1),
@@ -1528,9 +1528,37 @@ class _ChildProfileState extends State<ChildProfile>
                                           color: Colors.black, fontSize: 11),
                                     )),
                               ),
-                              Icon(
-                                Icons.more_vert,
-                                size: 18,
+                              InkWell(
+                                onTap: () {
+                                  print("popmenu");
+                                  PopupMenuButton<String>(
+                                    child: Icon(
+                                      Icons.more_vert,
+                                      // size: 40,
+                                      color: Colors.white,
+                                    ),
+                                    //child:Text('Sort By'),
+                                    onSelected: (Data) {
+                                      handleClickFrndReq(
+                                          Data,
+                                          _FriendReqData![index]
+                                              .childFriendId!);
+                                    },
+                                    itemBuilder: (BuildContext context) {
+                                      return {'Block', 'Report'}
+                                          .map((String choice) {
+                                        return PopupMenuItem<String>(
+                                          value: choice,
+                                          child: Text(choice),
+                                        );
+                                      }).toList();
+                                    },
+                                  );
+                                },
+                                child: Icon(
+                                  Icons.more_vert,
+                                  size: 18,
+                                ),
                               )
                             ],
                           ),
@@ -1550,6 +1578,17 @@ class _ChildProfileState extends State<ChildProfile>
         ],
       ),
     );
+  }
+
+  handleClickFrndReq(String value, int id) {
+    switch (value) {
+      case 'Block':
+        setState(() {});
+        break;
+      case 'Report':
+        setState(() {});
+        break;
+    }
   }
 
   _AcceptFriendReq(CID, CFID, FID) {

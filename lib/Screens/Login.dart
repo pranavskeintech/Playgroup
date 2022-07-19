@@ -28,6 +28,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'ChildDetails.dart';
 
 class LoginPage extends StatefulWidget {
+  static const String routeName = "/Login";
   const LoginPage({Key? key}) : super(key: key);
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -211,13 +212,13 @@ class _LoginPageState extends State<LoginPage> {
       onWillPop: () => showExitPopup(context),
       child: Scaffold(
         body: Listener(
-        onPointerUp: (_) {
-          FocusScopeNode currentFocus = FocusScope.of(context);
-          if (!currentFocus.hasPrimaryFocus &&
-              currentFocus.focusedChild != null) {
-            currentFocus.focusedChild!.unfocus();
-          }
-        },
+          onPointerUp: (_) {
+            FocusScopeNode currentFocus = FocusScope.of(context);
+            if (!currentFocus.hasPrimaryFocus &&
+                currentFocus.focusedChild != null) {
+              currentFocus.focusedChild!.unfocus();
+            }
+          },
           child: SingleChildScrollView(
             child: Stack(
                 clipBehavior: Clip.none,
@@ -346,7 +347,8 @@ class _LoginPageState extends State<LoginPage> {
                         height: 40,
                         child: TextField(
                             style: TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.w600),
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600),
                             controller: _passwordController,
                             decoration: InputDecoration(
                                 suffixIcon:
@@ -374,7 +376,8 @@ class _LoginPageState extends State<LoginPage> {
                                 hintText: "Password",
                                 hintStyle:
                                     TextStyle(fontSize: 15, color: Colors.grey),
-                                contentPadding: EdgeInsets.fromLTRB(20, 5, 0, 0),
+                                contentPadding:
+                                    EdgeInsets.fromLTRB(20, 5, 0, 0),
                                 // border: OutlineInputBorder(),
                                 border: InputBorder.none),
                             keyboardType: TextInputType.visiblePassword,
@@ -424,8 +427,8 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             if (_passwordController.text.isNotEmpty &&
                                 _emailIdController.text.isNotEmpty) {
-                              if (AppUtils.validateEmail(
-                                  _emailIdController.text.replaceAll(' ', ''))) {
+                              if (AppUtils.validateEmail(_emailIdController.text
+                                  .replaceAll(' ', ''))) {
                                 AppUtils.showprogress();
                                 print("object");
                                 _Login();
@@ -457,12 +460,13 @@ class _LoginPageState extends State<LoginPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Container(
-                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
                                   decoration: BoxDecoration(
                                       color: Colors.grey.withOpacity(0.1),
                                       border: Border.all(
-                                          color:
-                                              Color.fromARGB(255, 124, 125, 126)),
+                                          color: Color.fromARGB(
+                                              255, 124, 125, 126)),
                                       borderRadius: BorderRadius.circular(5)),
                                   margin: EdgeInsets.fromLTRB(10, 0, 0, 0),
                                   child: FlatButton(
@@ -476,12 +480,13 @@ class _LoginPageState extends State<LoginPage> {
                                     color: Colors.transparent,
                                   )),
                               Container(
-                                  width: MediaQuery.of(context).size.width * 0.4,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.4,
                                   decoration: BoxDecoration(
                                       color: Colors.grey.withOpacity(0.1),
                                       border: Border.all(
-                                          color:
-                                              Color.fromARGB(255, 124, 125, 126)),
+                                          color: Color.fromARGB(
+                                              255, 124, 125, 126)),
                                       borderRadius: BorderRadius.circular(5)),
                                   margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
                                   child: FlatButton(
@@ -599,6 +604,11 @@ class _LoginPageState extends State<LoginPage> {
     api.login(Userlogin).then((response) {
       if (response.status == true) {
         AppUtils.dismissprogress();
+        AppUtils.setStringPreferences('token', response.token!);
+        AppUtils.setStringPreferences(
+            'refreshToken', response.refreshToken!.refreshToken!);
+        AppUtils.setIntPreferences(
+            'SelectedChild', response.data![0].selectedChildId!);
         Strings.authToken = response.token!;
         Strings.refreshToken = response.refreshToken!.refreshToken!;
         Strings.parentName = response.data![0].parentName!;

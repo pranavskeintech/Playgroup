@@ -25,6 +25,7 @@ import 'package:provider/provider.dart';
 import 'package:playgroup/Utilities/Functions.dart';
 import 'package:badges/badges.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
 import '../Network/ApiService.dart';
 
@@ -75,6 +76,7 @@ class _DashBoardState extends State<DashBoard> {
   int notifictionCount = 0;
 
   int markavailIndex = 0;
+  List<TargetFocus> targets = [];
 
   GetProfile() {
     _isLoading2 = true;
@@ -98,12 +100,14 @@ class _DashBoardState extends State<DashBoard> {
           ListViewData = _ProfileData!.children!.removeAt(index1!);
           _isLoading2 = false;
           _isLoading1 = false;
+          Strings.CoParent = _ProfileData!.coParent!.length;
+          print("gdg:${Strings.CoParent}");
           // _showDialog(ctx);
         });
       } else {
         _isLoading1 = false;
         _isLoading2 = false;
-        functions.createSnackBar(ctx, response.status.toString());
+        // functions.createSnackBar(ctx, response.status.toString());
         // _btnController.stop();
       }
     }).catchError((onError) {

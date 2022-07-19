@@ -879,12 +879,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                                 chooseChildId: Strings.SelectedChild,
                                                                                 fromSearch: false)));
                                                                       },
-                                                                      child: CircleAvatar(
-                                                                          backgroundColor: Colors
-                                                                              .white,
-                                                                          backgroundImage: OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile != "null"
-                                                                              ? NetworkImage(Strings.imageUrl + (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""))
-                                                                              : AssetImage("assets/imgs/profile-user.png") as ImageProvider),
+                                                                      child:
+                                                                          CircleAvatar(
+                                                                              radius: (14),
+                                                                              backgroundColor: Colors.white,
+                                                                              child: ClipRRect(
+                                                                                  borderRadius: BorderRadius.circular(50),
+                                                                                  child: (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile == "null")
+                                                                                      ? Image.asset("assets/imgs/profile-user.png")
+                                                                                      : Image.network(
+                                                                                          Strings.imageUrl + (OtherMarkAvailabilityData![mainIndex].friendsdata![index].profile ?? ""),
+                                                                                        ))),
                                                                     ),
                                                                   );
                                                                 } else if (index ==

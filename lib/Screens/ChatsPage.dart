@@ -47,9 +47,17 @@ class _Chat_ListState extends State<Chat_List>
 
   FocusNode msgField = new FocusNode();
 
-  List<ChatListData>? ChatData = [];
+  List<ChatListData>? ChatData;
 
   List<String> dateFormate = [];
+
+  DateFormat df = new DateFormat('dd-MMM-yy : kk:mm');
+
+  TextEditingController _searchQueryController = TextEditingController();
+  bool _isSearching = false;
+  String searchQuery = "Search query";
+
+  List<ChatListData>? _foundedChatList = [];
 
   // GetChatDatum() {
   //   //AppUtils.showprogress();
@@ -144,22 +152,21 @@ class _Chat_ListState extends State<Chat_List>
     // Strings.comments = [];
   }
 
+  onSearch(String search) {
+    print("Searching for $search");
+    setState(() {
+      _foundedChatList = ChatData!
+          .where((user) =>
+              user.childName!.toLowerCase().contains(search.toLowerCase()))
+          .toList();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Provider<ApiService>(
         create: (context) => ApiService.create(),
         child: Scaffold(
-          // appBar: AppBar(
-          //   backgroundColor: Strings.appThemecolor,
-          //   title: Text("Your Availability"),
-          //   leading: IconButton(
-          //     onPressed: () {
-          //       Navigator.pop(context);
-          //     },
-          //     icon: Icon(Icons.arrow_back_sharp),
-          //   ),
-          // ),
-          // resizeToAvoidBottomInset: false,
           body: Builder(builder: (BuildContext newContext) {
             return MarkAvail(newContext);
           }),
@@ -175,49 +182,103 @@ class _Chat_ListState extends State<Chat_List>
         : Scaffold(
             // backgroundColor: Colors.grey.shade200,
             appBar: AppBar(
+              // centerTitle: true,
               backgroundColor: Colors.white,
               elevation: 1,
-              title: Align(
-                alignment: Alignment.center,
-                child: Text(
-                  'Mesaages',
-                  // textScaleFactor: 1.12,
-                  style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 18,
-                      color: Colors.black),
-                ),
-              ),
+              //       title: isSearch?Align(
+              //         alignment: Alignment.center,
+              //         child: Text(
+              //           'Mesaages',
+              //           // textScaleFactor: 1.12,
+              //           style: TextStyle(
+              //               fontWeight: FontWeight.w400,
+              //               fontSize: 18,
+              //               color: Colors.black),
+              //         ),
+              //       ):appBarTitle,
+              //       leading:
+              //           // IconButton(
+              //           //   onPressed: () {
+              //           //     print("open");
+              //           //     // _key.currentState?.openDrawer();
+              //           //   },
+              //           //   icon: ImageIcon(
+              //           //     AssetImage("assets/imgs/back.png"),
+              //           //     color: Colors.black.withOpacity(.5),
+              //           //   ),
+              //           // ),
+              //           IconButton(
+              //         onPressed: () {
+              //           Navigator.pop(context);
+              //         },
+              //         icon: Icon(
+              //           Icons.arrow_back_sharp,
+              //           color: Colors.black54,
+              //         ),
+              //       ),
+              //       actions: [
+              //         IconButton(
+              //           color: Theme.of(context).iconTheme.color!.withOpacity(.5),
+              //           tooltip: 'Search',
+              //           enableFeedback: true,
+              //           icon: Icon(
+              //             Icons.search,
+              //             color: Colors.black.withOpacity(.5),
+              //           ),
+              //           onPressed: () {
+              //   setState(() {
+              //              if ( this.actionIcon.icon == Icons.search){
+              //               this.actionIcon = new Icon(Icons.close);
+              //               this.appBarTitle = new TextField(
+              //                 style: new TextStyle(
+              //                   color: Colors.white,
+
+              //                 ),
+              //                 decoration: new InputDecoration(
+              //                   prefixIcon: new Icon(Icons.search,color: Colors.white),
+              //                   hintText: "Search...",
+              //                   hintStyle: new TextStyle(color: Colors.white)
+              //                 ),
+              //               );}
+              //               else {
+              //                 appBarTitle = new Text("AppBar Title");
+              //               }
+
+              //             });},
+              //         ),
+              //       ],
+
               leading: IconButton(
                 onPressed: () {
-                  print("open");
-                  // _key.currentState?.openDrawer();
+                  Navigator.pop(context);
                 },
-                icon: ImageIcon(
-                  AssetImage("assets/imgs/menu_ver2.png"),
-                  color: Colors.black.withOpacity(.5),
+                icon: Icon(
+                  Icons.arrow_back_sharp,
+                  color: Colors.black54,
                 ),
               ),
-              actions: [
-                IconButton(
-                  color: Theme.of(context).iconTheme.color!.withOpacity(.5),
-                  tooltip: 'Search',
-                  enableFeedback: true,
-                  icon: Icon(
-                    Icons.search,
-                    color: Colors.black.withOpacity(.5),
-                  ),
-                  onPressed: () {},
-                ),
-              ],
+              title: _isSearching
+                  ? _buildSearchField()
+                  : Align(
+                      alignment: Alignment.center,
+                      child: Text(
+                        'Mesaages',
+                        // textScaleFactor: 1.12,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 18,
+                            color: Colors.black),
+                      ),
+                    ),
+              actions: _buildActions(),
             ),
             body: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
-                child: (ChatData!.length > 0)
+                child: (_foundedChatList!.length > 0)
                     ? Container(
                         color: Colors.white,
                         child: ListView.builder(
-                          itemCount: ChatData!.length,
+                          itemCount: _foundedChatList!.length,
                           shrinkWrap: true,
                           padding: EdgeInsets.only(top: 16),
                           physics: NeverScrollableScrollPhysics(),
@@ -263,7 +324,7 @@ class _Chat_ListState extends State<Chat_List>
                                       Expanded(
                                         child: Row(
                                           children: <Widget>[
-                                            (ChatData![index].type ==
+                                            (_foundedChatList![index].type ==
                                                     "Group-chats")
                                                 ? Stack(
                                                     children: [
@@ -275,13 +336,13 @@ class _Chat_ListState extends State<Chat_List>
                                                           backgroundColor:
                                                               Colors.white,
                                                           maxRadius: 20,
-                                                          backgroundImage: (ChatData![
+                                                          backgroundImage: (_foundedChatList![
                                                                           index]
                                                                       .groupImage! !=
                                                                   "null")
                                                               ? NetworkImage(Strings
                                                                       .imageUrl +
-                                                                  ChatData![
+                                                                  _foundedChatList![
                                                                           index]
                                                                       .groupImage!)
                                                               : AssetImage(
@@ -304,16 +365,19 @@ class _Chat_ListState extends State<Chat_List>
                                                     maxRadius: 20,
                                                     backgroundColor:
                                                         Colors.white,
-                                                    backgroundImage: (ChatData![index]
+                                                    backgroundImage: (_foundedChatList![
+                                                                        index]
                                                                     .profile !=
                                                                 "null" &&
-                                                            ChatData![index]
+                                                            _foundedChatList![
+                                                                        index]
                                                                     .profile !=
                                                                 null)
-                                                        ? NetworkImage(
-                                                            Strings.imageUrl +
-                                                                ChatData![index]
-                                                                    .profile!)
+                                                        ? NetworkImage(Strings
+                                                                .imageUrl +
+                                                            _foundedChatList![
+                                                                    index]
+                                                                .profile!)
                                                         : AssetImage(
                                                                 "assets/imgs/profile-user.png")
                                                             as ImageProvider,
@@ -324,7 +388,8 @@ class _Chat_ListState extends State<Chat_List>
                                             Expanded(
                                               child: GestureDetector(
                                                 onTap: () async {
-                                                  (ChatData![index].type !=
+                                                  (_foundedChatList![index]
+                                                              .type !=
                                                           "Group-chats")
                                                       ? await Navigator.push(
                                                           context,
@@ -333,14 +398,14 @@ class _Chat_ListState extends State<Chat_List>
                                                                   (context) {
                                                           return Individuals_Chat(
                                                               otherChildId:
-                                                                  ChatData![
+                                                                  _foundedChatList![
                                                                           index]
                                                                       .id!,
-                                                              name: ChatData![
+                                                              name: _foundedChatList![
                                                                       index]
                                                                   .childName!,
                                                               profile:
-                                                                  ChatData![
+                                                                  _foundedChatList![
                                                                           index]
                                                                       .profile);
                                                         }))
@@ -351,15 +416,17 @@ class _Chat_ListState extends State<Chat_List>
                                                                   (context) {
                                                           return Groups_Chat(
                                                               groupId:
-                                                                  ChatData![
+                                                                  _foundedChatList![
                                                                           index]
                                                                       .id,
-                                                              name: ChatData![
-                                                                      index]
-                                                                  .groupName,
-                                                              profile: ChatData![
-                                                                      index]
-                                                                  .groupImage!);
+                                                              name:
+                                                                  _foundedChatList![
+                                                                          index]
+                                                                      .groupName,
+                                                              profile:
+                                                                  _foundedChatList![
+                                                                          index]
+                                                                      .groupImage!);
                                                         }));
                                                   setState(() {
                                                     // widget.chatList;
@@ -388,12 +455,15 @@ class _Chat_ListState extends State<Chat_List>
                                                             .start,
                                                     children: <Widget>[
                                                       Text(
-                                                        (ChatData![index]
+                                                        (_foundedChatList![
+                                                                        index]
                                                                     .type ==
                                                                 "Group-chats")
-                                                            ? ChatData![index]
+                                                            ? _foundedChatList![
+                                                                    index]
                                                                 .groupName!
-                                                            : ChatData![index]
+                                                            : _foundedChatList![
+                                                                        index]
                                                                     .childName ??
                                                                 '',
                                                         style: TextStyle(
@@ -402,20 +472,84 @@ class _Chat_ListState extends State<Chat_List>
                                                       SizedBox(
                                                         height: 6,
                                                       ),
-                                                      Text(
-                                                        ChatData![index]
-                                                                .message ??
-                                                            '',
-                                                        style: TextStyle(
-                                                            fontSize: 13,
-                                                            color: Colors
-                                                                .grey.shade600,
-                                                            fontWeight: true
-                                                                ? FontWeight
-                                                                    .bold
-                                                                : FontWeight
-                                                                    .normal),
-                                                      ),
+                                                      (_foundedChatList![index]
+                                                                  .type ==
+                                                              "Group-chats")
+                                                          ? Row(
+                                                              children: [
+                                                                Text(
+                                                                  (Strings.SelectedChild ==
+                                                                          _foundedChatList![index]
+                                                                              .childId!)
+                                                                      ? "You:  "
+                                                                      : _foundedChatList![index]
+                                                                              .senderName! +
+                                                                          ":  ",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade600,
+                                                                      fontWeight: false
+                                                                          ? FontWeight
+                                                                              .bold
+                                                                          : FontWeight
+                                                                              .normal),
+                                                                ),
+                                                                Text(
+                                                                    ((_foundedChatList![index].message)!.contains(
+                                                                            ".wav"))
+                                                                        ? "Voice Message"
+                                                                        : _foundedChatList![index]
+                                                                            .message!,
+                                                                    style: TextStyle(
+                                                                        fontSize:
+                                                                            13,
+                                                                        color: Colors
+                                                                            .grey
+                                                                            .shade600,
+                                                                        fontWeight: false
+                                                                            ? FontWeight.bold
+                                                                            : FontWeight.normal))
+                                                              ],
+                                                            )
+                                                          : (_foundedChatList![
+                                                                              index]
+                                                                          .message ??
+                                                                      "")
+                                                                  .contains(
+                                                                      ".wav")
+                                                              ? Text(
+                                                                  "Voice Message",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade600,
+                                                                      fontWeight: false
+                                                                          ? FontWeight
+                                                                              .bold
+                                                                          : FontWeight
+                                                                              .normal))
+                                                              : Text(
+                                                                  _foundedChatList![
+                                                                              index]
+                                                                          .message ??
+                                                                      "",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          13,
+                                                                      color: Colors
+                                                                          .grey
+                                                                          .shade600,
+                                                                      fontWeight: false
+                                                                          ? FontWeight
+                                                                              .bold
+                                                                          : FontWeight
+                                                                              .normal),
+                                                                ),
                                                     ],
                                                   ),
                                                 ),
@@ -425,12 +559,11 @@ class _Chat_ListState extends State<Chat_List>
                                         ),
                                       ),
                                       Text(
-                                        TimeAgo
-                                            .calculateTimeDifferenceOfSeconds(
-                                                ChatData![index].createdDate!),
+                                        dateFormate[index],
                                         style: TextStyle(
                                             fontSize: 12,
-                                            fontWeight: true
+                                            color: Colors.grey.shade600,
+                                            fontWeight: false
                                                 ? FontWeight.bold
                                                 : FontWeight.normal),
                                       ),
@@ -444,6 +577,84 @@ class _Chat_ListState extends State<Chat_List>
                     : SizedBox()));
   }
 
+  Widget _buildSearchField() {
+    return TextField(
+      controller: _searchQueryController,
+      autofocus: true,
+      onChanged: (searchString) {
+        onSearch(searchString);
+      },
+      decoration: InputDecoration(
+        hintText: "Search...",
+        border: InputBorder.none,
+        hintStyle: TextStyle(color: Colors.black54),
+      ),
+      style: TextStyle(color: Colors.black54, fontSize: 16.0),
+      // onChanged: (query) => updateSearchQuery(query),
+    );
+  }
+
+  List<Widget> _buildActions() {
+    if (_isSearching) {
+      return <Widget>[
+        IconButton(
+          icon: const Icon(
+            Icons.clear,
+            color: Colors.black54,
+          ),
+          onPressed: () {
+            if (_searchQueryController == null ||
+                _searchQueryController.text.isEmpty) {
+              Navigator.pop(context);
+              return;
+            }
+            _clearSearchQuery();
+          },
+        ),
+      ];
+    }
+
+    return <Widget>[
+      IconButton(
+        icon: const Icon(
+          Icons.search,
+          color: Colors.black54,
+        ),
+        onPressed: _startSearch,
+      ),
+    ];
+  }
+
+  void _startSearch() {
+    ModalRoute.of(context)!
+        .addLocalHistoryEntry(LocalHistoryEntry(onRemove: _stopSearching));
+
+    setState(() {
+      _isSearching = true;
+    });
+  }
+
+  void updateSearchQuery(String newQuery) {
+    setState(() {
+      searchQuery = newQuery;
+    });
+  }
+
+  void _stopSearching() {
+    _clearSearchQuery();
+
+    setState(() {
+      _isSearching = false;
+    });
+  }
+
+  void _clearSearchQuery() {
+    setState(() {
+      _searchQueryController.clear();
+      updateSearchQuery("");
+    });
+  }
+
   getChatsList() async {
     print("Getting comments");
     _socket?.on("getchat_list", (_data) {
@@ -453,16 +664,30 @@ class _Chat_ListState extends State<Chat_List>
       setState(() {
         print("getting inside");
         msgField.unfocus();
-        if (_data[0]['child_id'] == Strings.SelectedChild) {
-          ChatData = [];
-          for (var item in _data) {
-            ChatData!.add(ChatListData.fromJson(item));
-            print("set state");
-            for (int index = 0; index < ChatData!.length; index++) {
-              dateFormate.add(DateFormat("dd-MM-yyyy")
-                  .format(DateTime.parse(ChatData![index].createdDate!)));
+        if (_data.toString() != '[]') {
+          if (_data[0]['child_id'] == Strings.SelectedChild) {
+            ChatData = [];
+            for (var item in _data) {
+              ChatData!.add(ChatListData.fromJson(item));
+              print("set state");
+              dateFormate.clear();
+              for (int index = 0; index < ChatData!.length; index++) {
+                dateFormate.add(df.format((DateFormat("yyyy-MM-dd hh:mm")
+                    .parse(ChatData![index].createdDate!))));
+                // date!.add(DateFormat("yyyy-MM-dd", "en_US")
+                //     .parse(ChatData![index].createdDate!));
+                print(
+                    "hii:${(DateFormat("yyyy-MM-dd hh:mm").parse(ChatData![index].createdDate!))}");
+              }
+              print("array:${dateFormate}");
             }
           }
+          setState(() {
+            _foundedChatList = ChatData;
+          });
+        } else {
+          Strings.comments = [];
+          _isLoading = false;
         }
         //initialCommentCheck = false;
         _isLoading = false;

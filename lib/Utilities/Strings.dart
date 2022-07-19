@@ -24,16 +24,16 @@ mixin Strings {
 
   static String imageUrl = "https://demo.emeetify.com:5890/";
 
+  // static String socketUrl = 'http://192.168.1.108:6253/';
   static String socketUrl = 'https://demo.emeetify.com:6253/';
 
   static String IndChat =
       'https://demo.emeetify.com:5890/chat/individual_chat/';
 
-  static String GroupChat =
-      'https://demo.emeetify.com:6253/Images/chat/Group_chat/';
+  static String GroupChat = 'https://demo.emeetify.com:5890/chat/Group_chat/';
 
   static String MarkChat =
-      'https://demo.emeetify.com:6253/Images/chat/markavail_chat/';
+      'https://demo.emeetify.com:5890/chat/markavail_chat/';
 
   static String parentName = '';
   static String parentemail = '';
@@ -95,4 +95,6 @@ mixin Strings {
   static int ChoosedChild = 0;
 
   static int notifictionCount = 0;
+
+  static int CoParent=0;
 }

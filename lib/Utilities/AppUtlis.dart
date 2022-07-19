@@ -164,6 +164,12 @@ class AppUtils {
     return pref;
   }
 
+  static Future<int> getIntPreferences(String key) async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    int pref = sharedPrefs.getInt(key) ?? 0;
+    return pref;
+  }
+
   static setStringPreferences(String key, String value) async {
     final sharedPrefs = await SharedPreferences.getInstance();
     sharedPrefs.setString(key, value);
@@ -171,6 +177,12 @@ class AppUtils {
     return "pref";
   }
 
+  static setIntPreferences(String key, int value) async {
+    final sharedPrefs = await SharedPreferences.getInstance();
+    sharedPrefs.setInt(key, value);
+
+    return "pref";
+  }
   static void showSucess(context, msg, onTap) {
     SuccessAlertBox(
       context: context,

@@ -146,7 +146,7 @@ class _CommentsContentState extends State<CommentsContent>
     print("id:${Strings.SelectedChild}");
     // getUserCats();
     //Strings.socketUrl
-    _socket = IO.io("http://192.168.1.142:6253/", <String, dynamic>{
+    _socket = IO.io("http://demo.emeetify.com:6252/", <String, dynamic>{
       'transports': ['websocket'],
       'autoConnect': false,
       'query': {
@@ -828,10 +828,6 @@ class _CommentsContentState extends State<CommentsContent>
                                         contentPadding: const EdgeInsets.only(
                                           bottom: 15.0,
                                         ),
-                                enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        color: Strings.textFeildBg, width: 0),
-                                    borderRadius: BorderRadius.circular(40)),
                                         hintText: "Type your Comment...",
                                         hintStyle: TextStyle(
                                             color: Colors.black54,
@@ -877,8 +873,12 @@ class _CommentsContentState extends State<CommentsContent>
         print("Dta chacek--> $initialCommentCheck");
         print("getting inside");
         msgField.unfocus();
-        if (_data != "") {
-          if (_data != "" && _data![0]['markavail_id'] == MarkAvailabilityId) {
+
+        if (_data.toString() == '[]') {
+          Strings.comments = [];
+          _isLoading = false;
+        } else {
+          if (_data![0]['markavail_id'] == MarkAvailabilityId) {
             Strings.comments = [];
             for (var item in _data) {
               Strings.comments.add(CommentRes.fromJson(item));
@@ -886,9 +886,6 @@ class _CommentsContentState extends State<CommentsContent>
             }
             _isLoading = false;
           }
-        } else {
-          Strings.comments = [];
-          _isLoading = false;
         }
         initialCommentCheck = false;
         print("Comments fetched changing to false");

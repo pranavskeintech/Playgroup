@@ -3,13 +3,18 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:playgroup/Screens/SplashScreen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:playgroup/Utilities/Router.dart';
 import 'Utilities/Strings.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   configLoading();
   await Firebase.initializeApp();
   runApp(MaterialApp(
+    navigatorKey: navigatorKey,
+    initialRoute: '/',
+    onGenerateRoute: RoutesGenerator.generateRoute,
     debugShowCheckedModeBanner: false,
     home: SplashScreen(),
     builder: EasyLoading.init(),

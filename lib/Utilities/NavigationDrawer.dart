@@ -114,27 +114,29 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
               //     // Navigator.of(context).pop()
               //   },
               // ),
-              ListTile(
-                leading: Image.asset(
-                  "assets/imgs/add-user.png",
-                  width: 17,
-                  height: 17,
-                ),
-                title: Transform.translate(
-                  offset: Offset(-20, -3),
-                  child: Text('Add Co Parent'),
-                ),
-                trailing: Icon(
-                  Icons.add_circle_outlined,
-                  color: Colors.blue,
-                  size: 20,
-                ),
-                onTap: () => {
-                  Navigator.of(context).push(
-                      MaterialPageRoute(builder: (context) => AddCoParent()))
-                 // Navigator.of(context).pop()
-                },
-              ),
+              (Strings.CoParent == 0)
+                  ? ListTile(
+                      leading: Image.asset(
+                        "assets/imgs/add-user.png",
+                        width: 17,
+                        height: 17,
+                      ),
+                      title: Transform.translate(
+                        offset: Offset(-20, -3),
+                        child: Text('Add Co Parent'),
+                      ),
+                      trailing: Icon(
+                        Icons.add_circle_outlined,
+                        color: Colors.blue,
+                        size: 20,
+                      ),
+                      onTap: () => {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AddCoParent()))
+                        // Navigator.of(context).pop()
+                      },
+                    )
+                  : SizedBox(),
               ListTile(
                 leading: Image.asset(
                   "assets/imgs/add_child.png",
@@ -173,7 +175,7 @@ class _NavigationDrawerState extends State<NavigationDrawer> {
                   print("object"),
                   Navigator.of(context).push(
                       MaterialPageRoute(builder: (context) => SettingsPage())),
-                 // Navigator.of(context).pop()
+                  // Navigator.of(context).pop()
                 },
               ),
               ListTile(

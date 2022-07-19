@@ -6,15 +6,23 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:io' as Io;
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:dart_emoji/dart_emoji.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:playgroup/Models/GetGroupsChat.dart';
 import 'package:playgroup/Models/IndividualChatRes.dart';
+import 'package:playgroup/Models/uploadAudio.dart';
+import 'package:playgroup/Models/uploadGroupChatAudio.dart';
+import 'package:playgroup/Network/ApiService.dart';
 import 'package:playgroup/Screens/GroupInfo.dart';
 import 'package:playgroup/Utilities/AppUtlis.dart';
 import 'package:playgroup/Utilities/Strings.dart';
+import 'package:provider/provider.dart';
+import 'package:record/record.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:ext_storage/ext_storage.dart';
 
 class Groups_Chat extends StatefulWidget {
   int? groupId;
@@ -66,6 +74,28 @@ class _Groups_ChatState extends State<Groups_Chat>
 
   List<String> dateFormate = [];
 
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache = AudioCache();
+  var startRecording = false;
+  var isPlaying = false;
+  var playingIndex = null;
+  int audioLength = 0;
+  int audioCurrentlenth = 0;
+  Timer? _timer;
+  List<int> recordedData = [];
+  final _audioRecorder = Record();
+
+  String file64 = '';
+  String? fileExt;
+
+  Stopwatch watch = Stopwatch();
+  bool startStop = true;
+  String elapsedTime = '';
+
+  String? audio;
+
+  BuildContext? ctx;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -116,6 +146,18 @@ class _Groups_ChatState extends State<Groups_Chat>
 
   @override
   Widget build(BuildContext context) {
+    return Provider<ApiService>(
+        create: (context) => ApiService.create(),
+        child: Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: Builder(builder: (BuildContext newContext) {
+            return GroupChat(newContext);
+          }),
+        ));
+  }
+
+  GroupChat(BuildContext context) {
+    ctx = context;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -314,42 +356,189 @@ class _Groups_ChatState extends State<Groups_Chat>
                                     : Colors.blue.shade400),
                               ),
                               padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                              child: (ChatData![index].message != null)
+                                  ? Text(
+                                      ChatData![index].message!,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: (ChatData![index].childId !=
+                                                Strings.SelectedChild
+                                            ? Colors.black54
+                                            : Colors.white),
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 170,
+                                      height: 30,
+                                      child: Row(
+                                        children: [
+                                          isPlaying == false
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (isPlaying == true) {
+                                                        stopAudio();
+                                                        _timer = new Timer(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500), () {
+                                                          setState(() {
+                                                            isPlaying = true;
+                                                            playingIndex =
+                                                                index;
+                                                            playAudio(
+                                                                ChatData![index]
+                                                                    .files!);
+                                                          });
+                                                        });
+                                                      } else {
+                                                        isPlaying = true;
+                                                        playingIndex = index;
+                                                        playAudio(
+                                                            ChatData![index]
+                                                                .files!);
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.play_arrow,
+                                                    size: 28.0,
+                                                    color: (ChatData![index]
+                                                                .childId !=
+                                                            Strings
+                                                                .SelectedChild
+                                                        ? Colors.black54
+                                                        : Color.fromARGB(
+                                                            255, 4, 112, 162)),
+                                                  ),
+                                                )
+                                              : playingIndex == index
+                                                  ? GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          isPlaying = false;
+                                                        });
+
+                                                        stopAudio();
+                                                      },
+                                                      child: Icon(
+                                                        Icons.stop,
+                                                        size: 28.0,
+                                                        color: (ChatData![index]
+                                                                    .childId !=
+                                                                Strings
+                                                                    .SelectedChild
+                                                            ? Colors.black54
+                                                            : Color.fromARGB(
+                                                                255,
+                                                                4,
+                                                                112,
+                                                                162)),
+                                                      ),
+                                                    )
+                                                  : GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          if (isPlaying ==
+                                                              true) {
+                                                            stopAudio();
+                                                            _timer = Timer(
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
+                                                                () {
+                                                              setState(() {
+                                                                isPlaying =
+                                                                    true;
+                                                                playingIndex =
+                                                                    index;
+                                                                playAudio(
+                                                                    ChatData![
+                                                                            index]
+                                                                        .files!);
+                                                              });
+                                                            });
+                                                          } else {
+                                                            isPlaying = true;
+                                                            playingIndex =
+                                                                index;
+                                                            playAudio(
+                                                                ChatData![index]
+                                                                    .files!);
+                                                          }
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.play_arrow,
+                                                        size: 28.0,
+                                                        color: (ChatData![index]
+                                                                    .childId !=
+                                                                Strings
+                                                                    .SelectedChild
+                                                            ? Colors.black54
+                                                            : Color.fromARGB(
+                                                                255,
+                                                                4,
+                                                                112,
+                                                                162)),
+                                                      ),
+                                                    ),
+                                          Container(
+                                            width: 130,
+                                            child: Slider(
+                                              activeColor:
+                                                  (ChatData![index].childId !=
+                                                          Strings.SelectedChild
+                                                      ? Colors.grey
+                                                      : Color.fromARGB(
+                                                          255, 4, 112, 162)),
+                                              inactiveColor: Colors.black54,
+                                              value: playingIndex == index
+                                                  ? audioCurrentlenth.toDouble()
+                                                  : 0,
+                                              min: 0,
+                                              max: playingIndex == index
+                                                  ? audioLength.toDouble()
+                                                  : 0,
+                                              onChanged: (double value) {
+                                                setState(() {
+                                                  playingIndex == index
+                                                      ? audioCurrentlenth =
+                                                          value.toInt()
+                                                      : 0;
+                                                  // _currentSliderValue = value;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          // (index != 0 &&
+                          //         ChatData![index].childId !=
+                          //             ChatData![index - 1].childId)
+                          //     ?
+                          Align(
+                            alignment: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
                               child: Text(
-                                ChatData![index].message!,
+                                DateFormat.jm().format(
+                                  DateTime.parse(ChatData![index].createdDate!),
+                                ),
                                 style: TextStyle(
-                                  fontSize: 15,
-                                  color: (ChatData![index].childId !=
-                                          Strings.SelectedChild
-                                      ? Colors.black54
-                                      : Colors.white),
+                                  fontSize: 11,
+                                  color: Colors.black54,
                                 ),
                               ),
                             ),
-                          ),
-                          (index != 0 &&
-                                  ChatData![index].childId !=
-                                      ChatData![index - 1].childId)
-                              ? Align(
-                                  alignment: (ChatData![index].childId !=
-                                          Strings.SelectedChild
-                                      ? Alignment.topLeft
-                                      : Alignment.topRight),
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.fromLTRB(8, 5, 8, 0),
-                                    child: Text(
-                                      DateFormat.jm().format(
-                                        DateTime.parse(
-                                            ChatData![index].createdDate!),
-                                      ),
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        color: Colors.black54,
-                                      ),
-                                    ),
-                                  ),
-                                )
-                              : SizedBox()
+                          )
+                          // : SizedBox()
                         ],
                       ),
                     ),
@@ -375,19 +564,43 @@ class _Groups_ChatState extends State<Groups_Chat>
                 child: Row(
                   children: <Widget>[
                     GestureDetector(
-                      onTap: () {},
+                      onLongPress: () {
+                        startRecording = true;
+                        startOrStop();
+                        recordComments();
+                      },
+                      onLongPressEnd: (details) {
+                        // AppUtils.showToast(details.toString());
+                        setState(() {
+                          startRecording = false;
+                          startOrStop();
+                          stopRecord();
+                          sendAudio();
+                        });
+                      },
                       child: Container(
-                        height: 23,
-                        width: 23,
+                        height: 30,
+                        width: 30,
                         decoration: BoxDecoration(
                           color: Colors.blue.shade400,
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(90),
                         ),
                         child: Icon(
                           Icons.mic_none_outlined,
                           color: Colors.white,
                           size: 20,
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: FadeTransition(
+                        opacity: _animationController!,
+                        child: startRecording == true
+                            ? Icon(Icons.mic, color: Colors.red)
+                            : SizedBox(
+                                width: 0,
+                              ),
                       ),
                     ),
                     SizedBox(
@@ -402,7 +615,9 @@ class _Groups_ChatState extends State<Groups_Chat>
                               contentPadding: const EdgeInsets.only(
                                 bottom: 15.0,
                               ),
-                              hintText: "Type Message...",
+                              hintText:startRecording == true
+                                ? elapsedTime
+                                : "Type Message...",
                               hintStyle: TextStyle(
                                   color: Colors.black54,
                                   fontStyle: FontStyle.italic),
@@ -690,6 +905,186 @@ class _Groups_ChatState extends State<Groups_Chat>
       msgField.unfocus();
     }
   }
+
+  recordComments() async {
+    var dir = await ExtStorage.getExternalStoragePublicDirectory(
+        ExtStorage.DIRECTORY_DOWNLOADS);
+    var status1 = await Permission.microphone.status;
+    var status2 = await Permission.storage.status;
+    if (!status1.isGranted) {
+      getPermission();
+    } else if (!status2.isGranted) {
+      getPermission();
+    } else {
+      await _audioRecorder.start(
+        path: dir! + "/MTARecordedAudio.wav",
+        encoder: AudioEncoder.AAC,
+      );
+    }
+    ;
+  }
+
+  Future<void> stopRecord() async {
+    _audioRecorder.stop();
+  }
+
+  playAudio(url) async {
+    // var dir = await ExtStorage.getExternalStoragePublicDirectory(
+    //     ExtStorage.DIRECTORY_DOWNLOADS);
+    // String url = dir + "/MTARecordedAudio.wav";
+    // dynamic audioUrl = Strings.IndChat + url;
+    print(Strings.IndChat + url);
+
+    // await audioPlayer.setSourceUrl(
+    //   Strings.IndChat + url,
+    // );
+    await audioPlayer.play(
+      Strings.GroupChat + url,
+      volume: 5,
+    );
+    //await audioPlayer.play(, volume: 5, mode: playAudio(url));
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      int seconds = d.inSeconds;
+      print('Max duration: $d');
+      setState(() {
+        audioLength = seconds;
+      });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      int seconds = p.inSeconds;
+      print('curr duration: $p');
+      setState(() {
+        audioCurrentlenth = seconds;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        audioLength = 0;
+        audioCurrentlenth = 0;
+        playingIndex = null;
+        isPlaying = false;
+      });
+    });
+    audioPlayer.onPlayerError.listen((msg) {
+      print('audioPlayer error : $msg');
+    });
+  }
+
+  stopAudio() async {
+    await audioPlayer.stop();
+    setState(() {
+      audioLength = 0;
+      audioCurrentlenth = 0;
+      playingIndex = null;
+      isPlaying = false;
+    });
+  }
+
+  sendAudio() async {
+    AppUtils.showprogress();
+    var dir = await ExtStorage.getExternalStoragePublicDirectory(
+        ExtStorage.DIRECTORY_DOWNLOADS);
+    print("direct $dir");
+    final bytesData =
+        await Io.File(dir! + "/MTARecordedAudio.wav").readAsBytes();
+    print("1");
+    String base64Encodes(List<int> bytes) => base64.encode(bytes);
+    print("2");
+    String base64Encode = base64Encodes(bytesData);
+    print("3");
+    audio = "data:audio/wav;base64," + base64Encode;
+    print("4");
+
+    uploadGroupChatAudio req = uploadGroupChatAudio();
+
+    req.files = "data:audio/wav;base64," + base64Encode;
+    req.childId = Strings.SelectedChild;
+    req.groupId = widget.groupId;
+    req.type = "group-chat";
+    var dat = jsonEncode(req);
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+
+    print("Printing data -- > $dat");
+    api.uploadGroupChatVoice(req).then((response) {
+      AppUtils.dismissprogress();
+      if (response.status!) {
+        AppUtils.showToast("Audio sent successfully", context);
+        _socket?.disconnect();
+        _socket?.connect();
+        _socket?.on("connect", (_) {
+          print('Connected');
+          initialCommentCheck = true;
+          getGroupChat();
+          _msgcontroller.text = '';
+          // typing = false;
+          msgField.unfocus();
+        });
+      } else {
+        AppUtils.showToast(response.message!, context);
+      }
+    }).catchError((onError) {
+      AppUtils.dismissprogress();
+      print(onError.toString());
+    });
+  }
+
+  startOrStop() {
+    if (startStop) {
+      startWatch();
+    } else {
+      stopWatch();
+    }
+  }
+
+  reset() {
+    watch.reset();
+  }
+
+  startWatch() {
+    setState(() {
+      startStop = false;
+      watch.start();
+      _timer = Timer.periodic(Duration(milliseconds: 100), updateTime);
+    });
+  }
+
+  stopWatch() {
+    setState(() {
+      startStop = true;
+      watch.stop();
+      setTime();
+      reset();
+    });
+  }
+
+  setTime() {
+    var timeSoFar = watch.elapsedMilliseconds;
+    setState(() {
+      elapsedTime = transformMilliSeconds(timeSoFar);
+    });
+  }
+
+  transformMilliSeconds(int milliseconds) {
+    int hundreds = (milliseconds / 10).truncate();
+    int seconds = (hundreds / 100).truncate();
+    int minutes = (seconds / 60).truncate();
+    int hours = (minutes / 60).truncate();
+
+    String hoursStr = (hours % 60).toString().padLeft(2, '0');
+    String minutesStr = (minutes % 60).toString().padLeft(2, '0');
+    String secondsStr = (seconds % 60).toString().padLeft(2, '0');
+
+    return "$hoursStr:$minutesStr:$secondsStr";
+  }
+
+  updateTime(Timer _timer) {
+    if (watch.isRunning) {
+      setState(() {
+        print("startstop Inside=$startStop");
+        elapsedTime = transformMilliSeconds(watch.elapsedMilliseconds);
+      });
+    }
+  }
 }
 
 class ChatMessage {
@@ -700,4 +1095,21 @@ class ChatMessage {
       {required this.messageContent,
       required this.messageType,
       required this.createdAt});
+}
+
+void getPermission() async {
+  var status1 = await Permission.microphone.status;
+  var status2 = await Permission.storage.status;
+  if (status1.isDenied) {
+    await Permission.microphone.request();
+    if (status2.isDenied) {
+      await Permission.storage.request();
+    }
+  } else if (status1.isPermanentlyDenied) {
+    // AppUtils.showToast(
+    //     "Please enable Microphone from App permission Settings",context);
+  } else {
+    await Permission.microphone.request();
+    await Permission.storage.request();
+  }
 }

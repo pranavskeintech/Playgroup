@@ -112,6 +112,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
     initialCommentCheck = true;
     print("id1:${Strings.SelectedChild}");
     print("id2:${widget.otherChildId}");
+    print("url:${Strings.socketUrl}");
 
     print("init state variable assigned--> $initialCommentCheck");
     _animationController = new AnimationController(
@@ -289,25 +290,26 @@ class _Individuals_ChatState extends State<Individuals_Chat>
                 return Column(
                   children: [
                     separator,
-                    (ChatData![index].message != null)
-                        ? Container(
-                            padding: EdgeInsets.only(
-                                left: 14, right: 14, top: 10, bottom: 10),
-                            child: Align(
-                              alignment: (ChatData![index].childId !=
-                                      Strings.SelectedChild
-                                  ? Alignment.topLeft
-                                  : Alignment.topRight),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(20),
-                                  color: (ChatData![index].childId !=
-                                          Strings.SelectedChild
-                                      ? Colors.grey.shade300
-                                      : Colors.blue.shade400),
-                                ),
-                                padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
-                                child: Text(
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 14, right: 14, top: 10, bottom: 10),
+                      child: Align(
+                        alignment:
+                            (ChatData![index].childId != Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Colors.grey.shade300
+                                : Colors.blue.shade400),
+                          ),
+                          padding: EdgeInsets.fromLTRB(15, 7,
+                              (ChatData![index].message != null) ? 15 : 0, 7),
+                          child: (ChatData![index].message != null)
+                              ? Text(
                                   ChatData![index].message!,
                                   style: TextStyle(
                                     fontSize: 15,
@@ -316,98 +318,143 @@ class _Individuals_ChatState extends State<Individuals_Chat>
                                         ? Colors.black54
                                         : Colors.white),
                                   ),
-                                ),
-                              ),
-                            ),
-                          )
-                        : Row(
-                            children: [
-                              isPlaying == false
-                                  ? GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          if (isPlaying == true) {
-                                            stopAudio();
-                                            _timer = new Timer(
-                                                const Duration(
-                                                    milliseconds: 500), () {
-                                              setState(() {
-                                                isPlaying = true;
-                                                playingIndex = index;
-                                                playAudio(
-                                                    ChatData![index].files!);
-                                              });
-                                            });
-                                          } else {
-                                            isPlaying = true;
-                                            playingIndex = index;
-                                            playAudio(ChatData![index].files!);
-                                          }
-                                        });
-                                      },
-                                      child: new Icon(Icons.play_arrow,
-                                          size: 28.0),
-                                    )
-                                  : playingIndex == index
-                                      ? GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              isPlaying = false;
-                                            });
-
-                                            stopAudio();
-                                          },
-                                          child:
-                                              new Icon(Icons.stop, size: 28.0),
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            setState(() {
-                                              if (isPlaying == true) {
-                                                stopAudio();
-                                                _timer = new Timer(
-                                                    const Duration(
-                                                        milliseconds: 500), () {
-                                                  setState(() {
+                                )
+                              : Container(
+                                  width: 170,
+                                  height: 30,
+                                  child: Row(
+                                    children: [
+                                      isPlaying == false
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                setState(() {
+                                                  if (isPlaying == true) {
+                                                    stopAudio();
+                                                    _timer = new Timer(
+                                                        const Duration(
+                                                            milliseconds: 500),
+                                                        () {
+                                                      setState(() {
+                                                        isPlaying = true;
+                                                        playingIndex = index;
+                                                        playAudio(
+                                                            ChatData![index]
+                                                                .files!);
+                                                      });
+                                                    });
+                                                  } else {
                                                     isPlaying = true;
                                                     playingIndex = index;
                                                     playAudio(ChatData![index]
                                                         .files!);
-                                                  });
+                                                  }
                                                 });
-                                              } else {
-                                                isPlaying = true;
-                                                playingIndex = index;
-                                                playAudio(
-                                                    ChatData![index].files!);
-                                              }
+                                              },
+                                              child: Icon(
+                                                Icons.play_arrow,
+                                                size: 28.0,
+                                                color: (ChatData![index]
+                                                            .childId !=
+                                                        Strings.SelectedChild
+                                                    ? Colors.black54
+                                                    : Color.fromARGB(
+                                                        255, 4, 112, 162)),
+                                              ),
+                                            )
+                                          : playingIndex == index
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      isPlaying = false;
+                                                    });
+
+                                                    stopAudio();
+                                                  },
+                                                  child: Icon(
+                                                    Icons.stop,
+                                                    size: 28.0,
+                                                    color: (ChatData![index]
+                                                                .childId !=
+                                                            Strings
+                                                                .SelectedChild
+                                                        ? Colors.black54
+                                                        : Color.fromARGB(
+                                                            255, 4, 112, 162)),
+                                                  ),
+                                                )
+                                              : GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (isPlaying == true) {
+                                                        stopAudio();
+                                                        _timer = Timer(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500), () {
+                                                          setState(() {
+                                                            isPlaying = true;
+                                                            playingIndex =
+                                                                index;
+                                                            playAudio(
+                                                                ChatData![index]
+                                                                    .files!);
+                                                          });
+                                                        });
+                                                      } else {
+                                                        isPlaying = true;
+                                                        playingIndex = index;
+                                                        playAudio(
+                                                            ChatData![index]
+                                                                .files!);
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.play_arrow,
+                                                    size: 28.0,
+                                                    color: (ChatData![index]
+                                                                .childId !=
+                                                            Strings
+                                                                .SelectedChild
+                                                        ? Colors.black54
+                                                        : Color.fromARGB(
+                                                            255, 4, 112, 162)),
+                                                  ),
+                                                ),
+                                      Container(
+                                        width: 130,
+                                        child: Slider(
+                                          activeColor:
+                                              (ChatData![index].childId !=
+                                                      Strings.SelectedChild
+                                                  ? Colors.grey
+                                                  : Color.fromARGB(
+                                                      255, 4, 112, 162)),
+                                          inactiveColor: Colors.black54,
+                                          value: playingIndex == index
+                                              ? audioCurrentlenth.toDouble()
+                                              : 0,
+                                          min: 0,
+                                          max: playingIndex == index
+                                              ? audioLength.toDouble()
+                                              : 0,
+                                          onChanged: (double value) {
+                                            setState(() {
+                                              playingIndex == index
+                                                  ? audioCurrentlenth =
+                                                      value.toInt()
+                                                  : 0;
+                                              // _currentSliderValue = value;
                                             });
                                           },
-                                          child: new Icon(Icons.play_arrow,
-                                              size: 28.0),
                                         ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Slider(
-                                value: playingIndex == index
-                                    ? audioCurrentlenth.toDouble()
-                                    : 0,
-                                min: 0,
-                                max: playingIndex == index
-                                    ? audioLength.toDouble()
-                                    : 0,
-                                onChanged: (double value) {
-                                  setState(() {
-                                    playingIndex == index
-                                        ? audioCurrentlenth = value.toInt()
-                                        : 0;
-                                    // _currentSliderValue = value;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                        ),
+                      ),
+                    ),
                     Align(
                       alignment:
                           (ChatData![index].childId != Strings.SelectedChild
@@ -463,17 +510,28 @@ class _Individuals_ChatState extends State<Individuals_Chat>
                         });
                       },
                       child: Container(
-                        height: 23,
-                        width: 23,
+                        height: 30,
+                        width: 30,
                         decoration: BoxDecoration(
                           color: Colors.blue.shade400,
-                          borderRadius: BorderRadius.circular(30),
+                          borderRadius: BorderRadius.circular(90),
                         ),
                         child: Icon(
                           Icons.mic_none_outlined,
                           color: Colors.white,
                           size: 20,
                         ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 20),
+                      child: FadeTransition(
+                        opacity: _animationController!,
+                        child: startRecording == true
+                            ? Icon(Icons.mic, color: Colors.red)
+                            : SizedBox(
+                                width: 0,
+                              ),
                       ),
                     ),
                     SizedBox(
@@ -485,14 +543,17 @@ class _Individuals_ChatState extends State<Individuals_Chat>
                         child: TextField(
                           controller: _msgcontroller,
                           decoration: InputDecoration(
-                              contentPadding: const EdgeInsets.only(
-                                bottom: 15.0,
-                              ),
-                              hintText: "Type Message...",
-                              hintStyle: TextStyle(
-                                  color: Colors.black54,
-                                  fontStyle: FontStyle.italic),
-                              border: InputBorder.none),
+                            contentPadding: const EdgeInsets.only(
+                              bottom: 15.0,
+                            ),
+                            hintText: startRecording == true
+                                ? elapsedTime
+                                : "Type Message...",
+                            hintStyle: TextStyle(
+                                color: Colors.black54,
+                                fontStyle: FontStyle.italic),
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
@@ -782,13 +843,15 @@ class _Individuals_ChatState extends State<Individuals_Chat>
   recordComments() async {
     var dir = await ExtStorage.getExternalStoragePublicDirectory(
         ExtStorage.DIRECTORY_DOWNLOADS);
-    var status = await Permission.microphone.status;
-    print("permission:${status.isGranted}");
-    if (!status.isGranted) {
+    var status1 = await Permission.microphone.status;
+    var status2 = await Permission.storage.status;
+    if (!status1.isGranted) {
+      getPermission();
+    } else if (!status2.isGranted) {
       getPermission();
     } else {
       await _audioRecorder.start(
-        path: dir! + "/MTARecordedAudio.mp3",
+        path: dir! + "/MTARecordedAudio.wav",
         encoder: AudioEncoder.AAC,
       );
     }
@@ -857,18 +920,18 @@ class _Individuals_ChatState extends State<Individuals_Chat>
         ExtStorage.DIRECTORY_DOWNLOADS);
     print("direct $dir");
     final bytesData =
-        await Io.File(dir! + "/MTARecordedAudio.mp3").readAsBytes();
+        await Io.File(dir! + "/MTARecordedAudio.wav").readAsBytes();
     print("1");
     String base64Encodes(List<int> bytes) => base64.encode(bytes);
     print("2");
     String base64Encode = base64Encodes(bytesData);
     print("3");
-    audio = "data:audio/mp3;base64," + base64Encode;
+    audio = "data:audio/wav;base64," + base64Encode;
     print("4");
 
-    uploadAudio req = uploadAudio();
+    uploadIndChatAudio req = uploadIndChatAudio();
 
-    req.files = "data:audio/mp3;base64," + base64Encode;
+    req.files = "data:audio/wav;base64," + base64Encode;
     req.childId = Strings.SelectedChild;
     req.otherChildId = widget.otherChildId;
     req.type = "chat";
@@ -876,7 +939,7 @@ class _Individuals_ChatState extends State<Individuals_Chat>
     final api = Provider.of<ApiService>(ctx!, listen: false);
 
     print("Printing data -- > $dat");
-    api.uploadVoice(req).then((response) {
+    api.uploadIndChatVoice(req).then((response) {
       AppUtils.dismissprogress();
       if (response.status!) {
         AppUtils.showToast("Audio sent successfully", context);
@@ -950,14 +1013,19 @@ class _Individuals_ChatState extends State<Individuals_Chat>
 }
 
 void getPermission() async {
-  var status = await Permission.microphone.status;
-  if (status.isDenied) {
+  var status1 = await Permission.microphone.status;
+  var status2 = await Permission.storage.status;
+  if (status1.isDenied) {
     await Permission.microphone.request();
-  } else if (status.isPermanentlyDenied) {
+    if (status2.isDenied) {
+      await Permission.storage.request();
+    }
+  } else if (status1.isPermanentlyDenied) {
     // AppUtils.showToast(
     //     "Please enable Microphone from App permission Settings",context);
   } else {
     await Permission.microphone.request();
+    await Permission.storage.request();
   }
 }
 

@@ -98,23 +98,26 @@ class _SearchScreenState extends State<SearchScreen> {
                           child: Text("No Match Found"),
                         ),
                       )
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: searchData.length,
-                          itemBuilder: (context, index) {
-                            int startIndex = searchData[index]
-                                .childName!
-                                .toLowerCase()
-                                .indexOf(searchController.text.toLowerCase());
-                            return Column(
-                              children: [
-                                ListTile(
-                                  onTap: () {
-                                    Strings.FriendNotification = false;
-                                    Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                            builder:
-                                                (BuildContext context) =>
+                    : (searchData.length == 0)
+                        ? SizedBox()
+                        : Expanded(
+                            child: ListView.builder(
+                              itemCount: searchData.length,
+                              itemBuilder: (context, index) {
+                                int startIndex = searchData[index]
+                                    .childName!
+                                    .toLowerCase()
+                                    .indexOf(
+                                        searchController.text.toLowerCase());
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      onTap: () {
+                                        Strings.FriendNotification = false;
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (BuildContext
+                                                        context) =>
                                                     OtherChildProfile(
                                                         otherChildID:
                                                             searchData[index]
@@ -122,202 +125,208 @@ class _SearchScreenState extends State<SearchScreen> {
                                                         chooseChildId: Strings
                                                             .SelectedChild,
                                                         fromSearch: true)));
-                                  },
-                                  leading: Transform.translate(
-                                    offset: Offset(-16, 0),
-                                    child: CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: searchData[index]
-                                                  .profile !=
-                                              "null"
-                                          ? NetworkImage(Strings.imageUrl +
-                                              (searchData[index].profile ?? ""))
-                                          : AssetImage(
-                                                  "assets/imgs/profile-user.png")
-                                              as ImageProvider,
-                                    ),
-                                  ),
-                                  title: Transform.translate(
-                                    offset: Offset(-16, 0),
-                                    child: RichText(
-                                        text: TextSpan(
-                                      text: searchData[index]
-                                          .childName!
-                                          .substring(0, startIndex),
-                                      style: TextStyle(color: Colors.grey),
-                                      children: [
-                                        TextSpan(
+                                      },
+                                      leading: Transform.translate(
+                                        offset: Offset(-16, 0),
+                                        child: CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          backgroundImage: searchData[index]
+                                                      .profile !=
+                                                  "null"
+                                              ? NetworkImage(Strings.imageUrl +
+                                                  (searchData[index].profile ??
+                                                      ""))
+                                              : AssetImage(
+                                                      "assets/imgs/profile-user.png")
+                                                  as ImageProvider,
+                                        ),
+                                      ),
+                                      title: Transform.translate(
+                                        offset: Offset(-16, 0),
+                                        child: RichText(
+                                            text: TextSpan(
                                           text: searchData[index]
                                               .childName!
-                                              .substring(
-                                                  startIndex,
-                                                  startIndex +
+                                              .substring(0, startIndex),
+                                          style: TextStyle(color: Colors.grey),
+                                          children: [
+                                            TextSpan(
+                                              text: searchData[index]
+                                                  .childName!
+                                                  .substring(
+                                                      startIndex,
+                                                      startIndex +
+                                                          searchController
+                                                              .text.length),
+                                              style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.black),
+                                            ),
+                                            TextSpan(
+                                              text: searchData[index]
+                                                  .childName!
+                                                  .substring(startIndex +
                                                       searchController
                                                           .text.length),
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.black),
-                                        ),
-                                        TextSpan(
-                                          text: searchData[index]
-                                              .childName!
-                                              .substring(startIndex +
-                                                  searchController.text.length),
-                                          style: TextStyle(color: Colors.grey),
-                                        )
-                                      ],
-                                    )),
-                                  ),
-                                  trailing: Container(
-                                    width: 120,
-                                    child: Transform.translate(
-                                      offset: Offset(20, 0),
-                                      child: Row(
-                                        children: [
-                                          Icon(
-                                            Icons.location_pin,
-                                            color: Colors.red,
-                                            size: 15,
-                                          ),
-                                          // SizedBox(
-                                          //   width: 3,
-                                          // ),
-                                          Text(
-                                            searchData[index].location ?? "",
-                                            overflow: TextOverflow.fade,
-                                            maxLines: 3,
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  subtitle: Container(
-                                      width: 120,
-                                      child: Transform.translate(
-                                        offset: Offset(-16, 0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "Parent : ",
-                                              style: TextStyle(
-                                                  color: Colors.grey,
-                                                  fontSize: 12),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            Text(
-                                              searchData[index].parentName!,
-                                              style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 12),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
+                                              style:
+                                                  TextStyle(color: Colors.grey),
+                                            )
                                           ],
+                                        )),
+                                      ),
+                                      trailing: Container(
+                                        width: 120,
+                                        child: Transform.translate(
+                                          offset: Offset(20, 0),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.location_pin,
+                                                color: Colors.red,
+                                                size: 15,
+                                              ),
+                                              // SizedBox(
+                                              //   width: 3,
+                                              // ),
+                                              Text(
+                                                searchData[index].location ??
+                                                    "",
+                                                overflow: TextOverflow.fade,
+                                                maxLines: 3,
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      )),
-                                ),
-                                // InkWell(
-                                //   onTap: () {
-                                //     Strings.FriendNotification = false;
-                                //     Navigator.of(context).push(MaterialPageRoute(
-                                //         builder: (BuildContext context) =>
-                                //             OtherChildProfile(
-                                //                 otherChildID:
-                                //                     searchData[index].childId,
-                                //                 fromSearch: true)));
-                                //   },
-                                //   child: Container(
-                                //       padding: EdgeInsets.all(10),
-                                //       child: Row(children: [
-                                //         CircleAvatar(
-                                //           backgroundColor: Colors.white,
-                                //           backgroundImage: searchData[index]
-                                //                       .profile !=
-                                //                   "null"
-                                //               ? NetworkImage(Strings.imageUrl +
-                                //                   (searchData[index].profile ?? ""))
-                                //               : AssetImage(
-                                //                       "assets/imgs/profile-user.png")
-                                //                   as ImageProvider,
-                                //         ),
-                                //         SizedBox(width: 14),
-                                //         Column(
-                                //             crossAxisAlignment:
-                                //                 CrossAxisAlignment.start,
-                                //             children: [
-                                //               // Text(searchData[index].childName ?? "",style: TextStyle(fontSize: 14)),
-                                //               Row(
-                                //                 mainAxisAlignment:
-                                //                     MainAxisAlignment.spaceBetween,
-                                //                 children: [
-                                //                   RichText(
-                                //                       text: TextSpan(
-                                //                     text: searchData[index]
-                                //                         .childName!
-                                //                         .substring(0, startIndex),
-                                //                     style: TextStyle(
-                                //                         color: Colors.grey),
-                                //                     children: [
-                                //                       TextSpan(
-                                //                         text: searchData[index]
-                                //                             .childName!
-                                //                             .substring(
-                                //                                 startIndex,
-                                //                                 startIndex +
-                                //                                     searchController
-                                //                                         .text
-                                //                                         .length),
-                                //                         style: TextStyle(
-                                //                             fontWeight:
-                                //                                 FontWeight.bold,
-                                //                             color: Colors.black),
-                                //                       ),
-                                //                       TextSpan(
-                                //                         text: searchData[index]
-                                //                             .childName!
-                                //                             .substring(startIndex +
-                                //                                 searchController
-                                //                                     .text.length),
-                                //                         style: TextStyle(
-                                //                             color: Colors.grey),
-                                //                       )
-                                //                     ],
-                                //                   )),
-                                //                   Text(
-                                //                     " - " +
-                                //                         searchData[index]
-                                //                             .parentName!,
-                                //                     style: TextStyle(
-                                //                         color: Colors.grey),
-                                //                   ),
-                                //                 ],
-                                //               ),
-                                //               SizedBox(height: 5),
-                                //               Row(
-                                //                 children: [
-                                //                   Icon(
-                                //                     Icons.location_pin,
-                                //                     color: Colors.red,
-                                //                     size: 15,
-                                //                   ),
-                                //                   SizedBox(
-                                //                     width: 3,
-                                //                   ),
-                                //                   Text(
-                                //                     searchData[index].location ??
-                                //                         "",
-                                //                     overflow: TextOverflow.fade,
-                                //                     maxLines: 3,
-                                //                   )
-                                //                 ],
-                                //               ),
-                                //             ])
-                                //       ])),
-                                // ),
-                              ],
-                            );
-                          },
-                        ),
-                      )
+                                      ),
+                                      subtitle: Container(
+                                          width: 120,
+                                          child: Transform.translate(
+                                            offset: Offset(-16, 0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "Parent : ",
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 12),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                Text(
+                                                  searchData[index].parentName!,
+                                                  style: TextStyle(
+                                                      color: Colors.black,
+                                                      fontSize: 12),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                              ],
+                                            ),
+                                          )),
+                                    ),
+                                    // InkWell(
+                                    //   onTap: () {
+                                    //     Strings.FriendNotification = false;
+                                    //     Navigator.of(context).push(MaterialPageRoute(
+                                    //         builder: (BuildContext context) =>
+                                    //             OtherChildProfile(
+                                    //                 otherChildID:
+                                    //                     searchData[index].childId,
+                                    //                 fromSearch: true)));
+                                    //   },
+                                    //   child: Container(
+                                    //       padding: EdgeInsets.all(10),
+                                    //       child: Row(children: [
+                                    //         CircleAvatar(
+                                    //           backgroundColor: Colors.white,
+                                    //           backgroundImage: searchData[index]
+                                    //                       .profile !=
+                                    //                   "null"
+                                    //               ? NetworkImage(Strings.imageUrl +
+                                    //                   (searchData[index].profile ?? ""))
+                                    //               : AssetImage(
+                                    //                       "assets/imgs/profile-user.png")
+                                    //                   as ImageProvider,
+                                    //         ),
+                                    //         SizedBox(width: 14),
+                                    //         Column(
+                                    //             crossAxisAlignment:
+                                    //                 CrossAxisAlignment.start,
+                                    //             children: [
+                                    //               // Text(searchData[index].childName ?? "",style: TextStyle(fontSize: 14)),
+                                    //               Row(
+                                    //                 mainAxisAlignment:
+                                    //                     MainAxisAlignment.spaceBetween,
+                                    //                 children: [
+                                    //                   RichText(
+                                    //                       text: TextSpan(
+                                    //                     text: searchData[index]
+                                    //                         .childName!
+                                    //                         .substring(0, startIndex),
+                                    //                     style: TextStyle(
+                                    //                         color: Colors.grey),
+                                    //                     children: [
+                                    //                       TextSpan(
+                                    //                         text: searchData[index]
+                                    //                             .childName!
+                                    //                             .substring(
+                                    //                                 startIndex,
+                                    //                                 startIndex +
+                                    //                                     searchController
+                                    //                                         .text
+                                    //                                         .length),
+                                    //                         style: TextStyle(
+                                    //                             fontWeight:
+                                    //                                 FontWeight.bold,
+                                    //                             color: Colors.black),
+                                    //                       ),
+                                    //                       TextSpan(
+                                    //                         text: searchData[index]
+                                    //                             .childName!
+                                    //                             .substring(startIndex +
+                                    //                                 searchController
+                                    //                                     .text.length),
+                                    //                         style: TextStyle(
+                                    //                             color: Colors.grey),
+                                    //                       )
+                                    //                     ],
+                                    //                   )),
+                                    //                   Text(
+                                    //                     " - " +
+                                    //                         searchData[index]
+                                    //                             .parentName!,
+                                    //                     style: TextStyle(
+                                    //                         color: Colors.grey),
+                                    //                   ),
+                                    //                 ],
+                                    //               ),
+                                    //               SizedBox(height: 5),
+                                    //               Row(
+                                    //                 children: [
+                                    //                   Icon(
+                                    //                     Icons.location_pin,
+                                    //                     color: Colors.red,
+                                    //                     size: 15,
+                                    //                   ),
+                                    //                   SizedBox(
+                                    //                     width: 3,
+                                    //                   ),
+                                    //                   Text(
+                                    //                     searchData[index].location ??
+                                    //                         "",
+                                    //                     overflow: TextOverflow.fade,
+                                    //                     maxLines: 3,
+                                    //                   )
+                                    //                 ],
+                                    //               ),
+                                    //             ])
+                                    //       ])),
+                                    // ),
+                                  ],
+                                );
+                              },
+                            ),
+                          )
                 : Container(
                     child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

@@ -8,6 +8,7 @@ import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/FriendRequestReq.dart';
 import 'package:playgroup/Models/GetAllActivities.dart';
 import 'package:playgroup/Models/OtherChildRes.dart';
+import 'package:playgroup/Models/blockFriendReq.dart';
 import 'package:playgroup/Screens/AddCoParent.dart';
 import 'package:playgroup/Screens/AvailabilityList.dart';
 import 'package:playgroup/Screens/Own_Availability.dart';
@@ -183,8 +184,32 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                 children: [
                   Container(
                     child: Column(children: [
-                      SizedBox(
-                        height: 20,
+                      Padding(
+                        padding: const EdgeInsets.only(right: 20, top: 20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            PopupMenuButton<String>(
+                              child: Icon(
+                                Icons.more_vert,
+                                // size: 40,
+                                color: Colors.black,
+                              ),
+                              //child:Text('Sort By'),
+                              onSelected: (Data) {
+                                handleClick(Data, childInfo![0].childId!);
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return {'Block', 'Report'}.map((String choice) {
+                                  return PopupMenuItem<String>(
+                                    value: choice,
+                                    child: Text(choice),
+                                  );
+                                }).toList();
+                              },
+                            )
+                          ],
+                        ),
                       ),
                       CircleAvatar(
                           radius: 50,
@@ -368,7 +393,7 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                     ]),
                     margin: EdgeInsets.fromLTRB(20, 40, 20, 0),
                     //padding: EdgeInsets.fromLTRB(0, 0, 0, 20),
-                    height: 250,
+                    height: 280,
                     //width: 320,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -491,30 +516,36 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600),
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(right: 10),
-                                    child: TextButton(
-                                        onPressed: () {
-                                          (childInfo![0].interests!.length > 4)
-                                              ? _showInterests(ctx!)
-                                              : null;
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "View All",
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 12),
-                                            ),
-                                            Icon(
-                                              Icons.keyboard_arrow_down_rounded,
-                                              size: 15,
-                                              color: Colors.grey,
-                                            )
-                                          ],
-                                        )),
-                                  )
+                                  (childInfo![0].interests!.length > 4)
+                                      ? Container(
+                                          margin: EdgeInsets.only(right: 10),
+                                          child: TextButton(
+                                              onPressed: () {
+                                                (childInfo![0]
+                                                            .interests!
+                                                            .length >
+                                                        4)
+                                                    ? _showInterests(ctx!)
+                                                    : null;
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "View All",
+                                                    style: TextStyle(
+                                                        color: Colors.blue,
+                                                        fontSize: 12),
+                                                  ),
+                                                  Icon(
+                                                    Icons
+                                                        .keyboard_arrow_down_rounded,
+                                                    size: 15,
+                                                    color: Colors.grey,
+                                                  )
+                                                ],
+                                              )),
+                                        )
+                                      : SizedBox()
                                 ],
                               ),
                               SizedBox(
@@ -669,40 +700,46 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
                                           fontSize: 16,
                                           fontWeight: FontWeight.w600),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(right: 10),
-                                      child: TextButton(
-                                        onPressed: () {
-                                          (childInfo![0].frndsdata!.length > 4)
-                                              ? Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        friendsList(
-                                                      FID:
-                                                          childInfo![0].childId,
-                                                    ),
+                                    (childInfo![0].frndsdata!.length > 4)
+                                        ? Container(
+                                            margin: EdgeInsets.only(right: 10),
+                                            child: TextButton(
+                                              onPressed: () {
+                                                (childInfo![0]
+                                                            .frndsdata!
+                                                            .length >
+                                                        4)
+                                                    ? Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              friendsList(
+                                                            FID: childInfo![0]
+                                                                .childId,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : null;
+                                              },
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    "View All",
+                                                    style: TextStyle(
+                                                        color: Colors.blue,
+                                                        fontSize: 12),
                                                   ),
-                                                )
-                                              : null;
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              "View All",
-                                              style: TextStyle(
-                                                  color: Colors.blue,
-                                                  fontSize: 12),
+                                                  Icon(
+                                                    Icons
+                                                        .keyboard_arrow_down_rounded,
+                                                    size: 15,
+                                                    color: Colors.grey,
+                                                  )
+                                                ],
+                                              ),
                                             ),
-                                            Icon(
-                                              Icons.keyboard_arrow_down_rounded,
-                                              size: 15,
-                                              color: Colors.grey,
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                          )
+                                        : SizedBox()
                                   ],
                                 ),
                               ),
@@ -1261,6 +1298,44 @@ class _OtherChildProfileState extends State<OtherChildProfile> {
       }
     }).catchError((onError) {
       print(onError.toString());
+    });
+  }
+
+  handleClick(String value, int id) {
+    switch (value) {
+      case 'Block':
+        setState(() {
+          _blockUser(id);
+        });
+        break;
+      case 'Report':
+        setState(() {});
+        break;
+    }
+  }
+
+  _blockUser(id) {
+    print("id:$id");
+    blockFriend friendReq = blockFriend();
+    friendReq.childId = Strings.ChoosedChild;
+    friendReq.childBlockId = id;
+    friendReq.blkstatus = "block";
+    ;
+    final api = Provider.of<ApiService>(ctx!, listen: false);
+    api.BlockFriends(friendReq).then((response) {
+      print('response ${response.status}');
+      print("result1:${response.toJson()}");
+
+      if (response.status == true) {
+        AppUtils.dismissprogress();
+        AppUtils.showToast(response.message, "");
+        CheckFriends();
+      } else {
+        // functions.createSnackBar(context, response.message.toString());
+        AppUtils.dismissprogress();
+        AppUtils.showError(context, response.message, "");
+        print("error");
+      }
     });
   }
 }

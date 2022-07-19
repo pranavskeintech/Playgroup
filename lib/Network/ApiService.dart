@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptFriendRequestReq.dart';
 import 'package:playgroup/Models/AcceptedFriendsRes.dart';
@@ -47,15 +49,23 @@ import 'package:playgroup/Models/SearchResultRes.dart';
 import 'package:playgroup/Models/SuggestTimeReq.dart';
 import 'package:playgroup/Models/UserDetailsRes.dart';
 import 'package:playgroup/Models/addGroupParticipants.dart';
+import 'package:playgroup/Models/blockFriendReq.dart';
 import 'package:playgroup/Models/editChildInterests.dart';
 import 'package:playgroup/Models/editChildLanguage.dart';
 import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/getPastActPhotos.dart';
+import 'package:playgroup/Models/reportUserReq.dart';
 import 'package:playgroup/Models/updateGroupReq.dart';
 import 'package:playgroup/Models/uploadAudio.dart';
+import 'package:playgroup/Models/uploadAvailChatAudio.dart';
+import 'package:playgroup/Models/uploadGroupChatAudio.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
 import 'package:playgroup/Screens/EditChildInterests.dart';
 import 'package:playgroup/Screens/deviceIdReq.dart';
+import 'package:playgroup/Utilities/AppUtlis.dart';
+import 'package:playgroup/Utilities/Functions.dart';
+import 'package:playgroup/Screens/SplashScreen.dart';
+import 'package:playgroup/main.dart';
 
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:retrofit/retrofit.dart';
@@ -68,7 +78,7 @@ part 'ApiService.g.dart';
 //flutter packages pub run build_runner watch --delete-conflicting-outputs
 
 //@RestApi(baseUrl: 'http://3.109.217.67:80/sss/')
-// @RestApi(baseUrl: 'http://192.168.1.142:5899/playgroup/')
+//@RestApi(baseUrl: 'http://192.168.1.108:5899/playgroup/')
 // @RestApi(baseUrl: 'http://172.16.200.70:3445/sss/')
 @RestApi(baseUrl: 'https://demo.emeetify.com:81/playgroup/')
 abstract class ApiService {
@@ -198,6 +208,12 @@ abstract class ApiService {
   @GET("friends/{ChildID}/Pending")
   Future<PendingFriendReqRes> GetPendingFriendReq(@Path("ChildID") int ChildID);
 
+  @POST("user/blockmails")
+  Future<CommonRes> BlockFriends(@Body() blockFriend body);
+
+  @POST("user/report")
+  Future<CommonRes> ReportUser(@Body() reportUser body);
+
   @GET("friends/{ChildID}/Accepted")
   Future<PendingFriendReqRes> getFriends(@Path("ChildID") int ChildID);
   @PUT("friends/")
@@ -294,7 +310,13 @@ abstract class ApiService {
   Future<GetChatsList> GetChatList(@Path("ChildID") int ChildID);
 
   @POST("chat/upload_chat_audio")
-  Future<CommonRes> uploadVoice(@Body() uploadAudio body);
+  Future<CommonRes> uploadIndChatVoice(@Body() uploadIndChatAudio body);
+
+  @POST("chat/upload_chat_audio")
+  Future<CommonRes> uploadGroupChatVoice(@Body() uploadGroupChatAudio body);
+  
+  @POST("chat/upload_chat_audio")
+  Future<CommonRes> uploadAvailChatVoice(@Body() uploadAvailChatAudio body);
 
 /////////////////////////////////////
 ////////////////////////////////////////////////////////
@@ -311,10 +333,13 @@ abstract class ApiService {
         options.headers["Content-Type"] = "application/json";
         options.headers["jwt"] = Strings.authToken;
         options.headers["refresh-token"] = Strings.refreshToken;
-        // options.headers["jwt"] = "08d41a36b34dadcfd6005452deb92037ad85af33b227827ae2f4e2d34b927fa0ae6a83d43cfdcff9";
-
         options.followRedirects = false;
         options.validateStatus = (status) {
+          if (status == 403) {
+            AppUtils.showToast(
+                "Session has been expired! Please login again", context);
+            navigatorKey.currentState?.pushNamed('/Login');
+          }
           return status! < 500;
         };
         return handler.next(options);

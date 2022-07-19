@@ -1,15 +1,15 @@
-class uploadIndChatAudio {
+class uploadGroupChatAudio {
   String? type;
   int? childId;
-  int? otherChildId;
+  int? groupId;
   String? files;
 
-  uploadIndChatAudio({this.type, this.childId, this.otherChildId, this.files});
+  uploadGroupChatAudio({this.type, this.childId, this.groupId, this.files});
 
-  uploadIndChatAudio.fromJson(Map<String, dynamic> json) {
+  uploadGroupChatAudio.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     childId = json['child_id'];
-    otherChildId = json['other_child_id'];
+    groupId = json['group_id'];
     files = json['files'];
   }
 
@@ -17,7 +17,7 @@ class uploadIndChatAudio {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['type'] = this.type;
     data['child_id'] = this.childId;
-    data['other_child_id'] = this.otherChildId;
+    data['group_id'] = this.groupId;
     data['files'] = this.files;
     return data;
   }

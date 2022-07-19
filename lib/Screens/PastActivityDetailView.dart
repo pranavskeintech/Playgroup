@@ -1,13 +1,16 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:chips_choice_null_safety/chips_choice_null_safety.dart';
 import 'package:intl/intl.dart';
+import 'package:playgroup/Models/GetAvailabilityChat.dart';
 import 'package:playgroup/Models/PastActivityById.dart';
 import 'package:playgroup/Models/getPastActPhotos.dart';
 import 'package:playgroup/Models/uploadPastActPhotos.dart';
@@ -20,6 +23,8 @@ import 'package:provider/provider.dart';
 import '../Utilities/Strings.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_cropper/image_cropper.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
+import 'package:dart_emoji/dart_emoji.dart';
 // import 'package:ext_storage/ext_storage.dart';
 // import 'package:flutter/foundation.dart';
 // import 'package:open_file/open_file.dart';
@@ -108,114 +113,27 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
   File? file;
   String filePath = '';
 
-  // void _downloadfile(serverURL, filename) async {
-  //   String? path;
-  //   if (Platform.isAndroid) {
-  //     path = await ExtStorage.getExternalStoragePublicDirectory(
-  //         ExtStorage.DIRECTORY_DOWNLOADS);
-  //   } else if (Platform.isIOS) {
-  //     print("ios");
-  //     var vpath = await getApplicationDocumentsDirectory();
-  //     String pathStr = vpath.toString();
-  //     if (pathStr != null && pathStr.length >= 5) {
-  //       path = pathStr.substring(12, pathStr.length);
-  //     }
-  //     if (path != null && path.length >= 1) {
-  //       path = path.substring(0, path.length - 1);
-  //     }
-  //   }
-  //   AppUtils.showprogress();
-  //   AppUtils.showToast('Downloading', ctx);
+  var initialCommentCheck = true;
+  AnimationController? _animationController;
+  IO.Socket? _socket;
 
-  //   var filenames = serverURL.split("/");
-  //   print("serverURL--> $serverURL");
-  //   //var fileName = filename;//filenames[1];
-  //   var extn = getFileExtension(serverURL);
-  //   var nospace = filename.replaceAll(' ', '');
-  //   var fileName = nospace + extn;
-  //   print("url--> $fileName");
-  //   String fullPath = "$path/$fileName";
-  //   setState(() {
-  //     filepath = fullPath;
-  //   });
-  //   var downloadedFile = await downloadFile(serverURL, fileName, path!);
-  //   print("downloaded file $downloadedFile");
-  //   openFile(downloadedFile);
-  // }
+  FocusNode msgField = new FocusNode();
 
-  // Future<void> openFile(filePath) async {
-  //   await OpenFile.open(filePath);
-  // }
+  List<AvailChatData>? ChatData = [];
 
-  // Future<String> downloadFile(String url, String fileName, String dir) async {
-  //   HttpClient httpClient = new HttpClient();
-  //   File file;
-  //   String filePath = '';
-  //   String myUrl = '';
-
-  //   try {
-  //     myUrl = Strings.imageUrl + url;
-  //     var request = await httpClient.getUrl(Uri.parse(myUrl));
-  //     var response = await request.close();
-  //     print("printing url ---> $myUrl");
-  //     if (response.statusCode == 200) {
-  //       var bytes = await consolidateHttpClientResponseBytes(response);
-  //       filePath = '$dir/$fileName';
-  //       file = File(filePath);
-  //       await file.writeAsBytes(bytes);
-  //     } else if (response.statusCode == 404) {
-  //       AppUtils.dismissprogress();
-  //       AppUtils.showToast("Sorry, File  not Found !", ctx);
-  //     } else {
-  //       AppUtils.dismissprogress();
-  //       filePath = 'Error code: ' + response.statusCode.toString();
-  //     }
-  //   } catch (ex) {
-  //     AppUtils.dismissprogress();
-  //     filePath = 'Can not fetch url';
-  //   }
-  //   AppUtils.dismissprogress();
-  //   return filePath;
-  // }
-
-  // String getFileExtension(String fileName) {
-  //   var file = fileName.split(".");
-  //   var fileExt = file[1];
-  //   if (fileExt == "png" || fileExt == "PNG") {
-  //     return ".png";
-  //   } else if (fileExt == "jpg" ||
-  //       fileExt == "jepg" ||
-  //       fileExt == "jpeg" ||
-  //       fileExt == "JPG" ||
-  //       fileExt == "JEPG" ||
-  //       fileExt == "JPEG") {
-  //     return ".jpg";
-  //   } else if (fileExt == "pdf" || fileExt == "PDF") {
-  //     return ".pdf";
-  //   } else if (fileExt == "txt" || fileExt == "TXT") {
-  //     return ".txt";
-  //   } else if (fileExt == "ppt" || fileExt == "PPT") {
-  //     return ".ppt";
-  //   } else if (fileExt == "xls" ||
-  //       fileExt == "xlsx" ||
-  //       fileExt == "xlsm" ||
-  //       fileExt == "xlsb" ||
-  //       fileExt == "xltx") {
-  //     return ".xls";
-  //   } else {
-  //     print("File extnsion--> $fileExt");
-  //     return ".$fileExt";
-  //   }
-  // }
-
-  String _getRandomImage(int width, int height) {
-    var rng = new Random();
-    return 'https://picsum.photos/$width/$height?random=${rng.nextInt(999999)}';
-    //return Strings.imageUrl + PastActPhotos![rng.nextInt(999999)].profile!;
-  }
+  List<String> dateFormate = [];
+  AudioPlayer audioPlayer = AudioPlayer();
+  AudioCache audioCache = AudioCache();
+  var startRecording = false;
+  var isPlaying = false;
+  var playingIndex = null;
+  int audioLength = 0;
+  int audioCurrentlenth = 0;
+  Timer? _timer;
 
   _GetPastAct() {
     //AppUtils.showprogress();
+    initialize();
     final api = Provider.of<ApiService>(ctx!, listen: false);
     api.PastActivityById(widget.markavailId!, Strings.SelectedChild)
         .then((response) {
@@ -255,6 +173,33 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
       }
     }).catchError((onError) {
       print(onError.toString());
+    });
+  }
+
+  void initialize() {
+    _animationController = new AnimationController(
+        vsync: this, duration: Duration(milliseconds: 500));
+    _animationController?.repeat(reverse: true);
+    _socket = IO.io(Strings.socketUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
+      'query': {
+        'token': Strings.authToken,
+        'markavail_id': widget.markavailId,
+        'child_id': Strings.SelectedChild,
+        'mark_type': "markavail-chat",
+        'forceNew': false,
+      }
+    });
+    _socket?.connect();
+    _socket?.onConnect((_) {
+      print('connect');
+    });
+    print("connection established");
+    _socket?.on("connect", (_) {
+      print('Connected');
+      print("Calling function");
+      getMarkChat();
     });
   }
 
@@ -663,21 +608,25 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
                                                                 false)));
                                           },
                                           child: CircleAvatar(
+                                              radius: (14),
                                               backgroundColor: Colors.white,
-                                              backgroundImage: PastActData![0]
-                                                          .friendsdata![index]
-                                                          .profile !=
-                                                      "null"
-                                                  ? NetworkImage(
-                                                      Strings.imageUrl +
+                                              child: ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(50),
+                                                  child: (PastActData![0]
+                                                              .friendsdata![
+                                                                  index]
+                                                              .profile ==
+                                                          "null")
+                                                      ? Image.asset(
+                                                          "assets/imgs/profile-user.png")
+                                                      : Image.network(Strings
+                                                              .imageUrl +
                                                           (PastActData![0]
                                                                   .friendsdata![
                                                                       index]
                                                                   .profile ??
-                                                              ""))
-                                                  : AssetImage(
-                                                          "assets/imgs/profile-user.png")
-                                                      as ImageProvider),
+                                                              "")))),
                                         ),
                                       );
                                     } else if (index == 5) {
@@ -764,155 +713,338 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
     return Scaffold(
       body: Stack(
         children: <Widget>[
-          ListView.builder(
-            itemCount: messages.length,
-            shrinkWrap: true,
-            padding: EdgeInsets.only(top: 10, bottom: 60),
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, index) {
-              return Container(
-                padding:
-                    EdgeInsets.only(left: 14, right: 14, top: 10, bottom: 10),
-                child: Column(
+          Expanded(
+            child: ListView.builder(
+              itemCount: ChatData!.length,
+              // shrinkWrap: true,
+              // reverse: true,
+              padding: EdgeInsets.only(top: 10, bottom: 10),
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, index) {
+                Widget separator = SizedBox();
+                if (index != 0 &&
+                    dateFormate[index] != dateFormate[index - 1]) {
+                  separator = Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        //color: Strings.chipsbg
+                      ),
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        dateFormate[index],
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ));
+                } else if (index == 0) {
+                  separator = Container(
+                      height: 20,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        //color: Strings.chipsbg
+                      ),
+                      padding: EdgeInsets.only(right: 5, left: 5),
+                      child: Text(
+                        dateFormate[index],
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ));
+                }
+                return Column(
                   children: [
-                    Align(
-                      alignment: (messages[index].messageType == "receiver"
-                          ? Alignment.topLeft
-                          : Alignment.topRight),
-                      child: messages[index].messageType == "receiver"
-                          ? Row(
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                CircleAvatar(
-                                  radius: 16,
-                                  backgroundImage:
-                                      AssetImage("assets/imgs/child5.jpg"),
-                                ),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                Text("Kingston Jackey")
-                              ],
-                            )
-                          : Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text("Jhon"),
-                                SizedBox(
-                                  width: 10,
-                                ),
-                                CircleAvatar(
-                                  radius: 16,
-                                  backgroundImage:
-                                      AssetImage("assets/imgs/child5.jpg"),
-                                ),
-                              ],
-                            ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Align(
-                      alignment: (messages[index].messageType == "receiver"
-                          ? Alignment.topLeft
-                          : Alignment.topRight),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20),
-                          color: (messages[index].messageType == "receiver"
-                              ? Colors.grey.shade300
-                              : Colors.blue.shade400),
-                        ),
-                        padding: EdgeInsets.fromLTRB(12, 7, 15, 7),
-                        child: Text(
-                          messages[index].messageContent,
-                          style: TextStyle(
-                            fontSize: 15,
-                            color: (messages[index].messageType == "receiver"
-                                ? Colors.black54
-                                : Colors.white),
+                    separator,
+                    Container(
+                      padding: EdgeInsets.only(
+                          left: 14, right: 14, top: 10, bottom: 10),
+                      child: Column(
+                        children: [
+                          (index != 0 &&
+                                  ChatData![index].childId !=
+                                      ChatData![index - 1].childId)
+                              ? Align(
+                                  alignment: (ChatData![index].childId !=
+                                          Strings.SelectedChild
+                                      ? Alignment.topLeft
+                                      : Alignment.topRight),
+                                  child: ChatData![index].childId !=
+                                          Strings.SelectedChild
+                                      ? Row(
+                                          // mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              radius: 16,
+                                              backgroundImage: (ChatData![index]
+                                                          .profile! !=
+                                                      "null")
+                                                  ? NetworkImage(Strings
+                                                          .imageUrl +
+                                                      ChatData![index].profile!)
+                                                  : AssetImage(
+                                                          "assets/imgs/profile-user.png")
+                                                      as ImageProvider,
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Text(ChatData![index].childName!)
+                                          ],
+                                        )
+                                      : Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            Text(ChatData![index].childName!),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              radius: 16,
+                                              backgroundImage: (ChatData![index]
+                                                          .profile! !=
+                                                      "null")
+                                                  ? NetworkImage(Strings
+                                                          .imageUrl +
+                                                      ChatData![index].profile!)
+                                                  : AssetImage(
+                                                          "assets/imgs/profile-user.png")
+                                                      as ImageProvider,
+                                            ),
+                                          ],
+                                        ),
+                                )
+                              : SizedBox(),
+                          SizedBox(
+                            height: 10,
                           ),
-                        ),
+                          Align(
+                            alignment: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: (ChatData![index].childId !=
+                                        Strings.SelectedChild
+                                    ? Colors.grey.shade300
+                                    : Colors.blue.shade400),
+                              ),
+                              padding: EdgeInsets.fromLTRB(15, 7, 15, 7),
+                              child: (ChatData![index].message != null)
+                                  ? Text(
+                                      ChatData![index].message!,
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        color: (ChatData![index].childId !=
+                                                Strings.SelectedChild
+                                            ? Colors.black54
+                                            : Colors.white),
+                                      ),
+                                    )
+                                  : Container(
+                                      width: 170,
+                                      height: 30,
+                                      child: Row(
+                                        children: [
+                                          isPlaying == false
+                                              ? GestureDetector(
+                                                  onTap: () {
+                                                    setState(() {
+                                                      if (isPlaying == true) {
+                                                        stopAudio();
+                                                        _timer = new Timer(
+                                                            const Duration(
+                                                                milliseconds:
+                                                                    500), () {
+                                                          setState(() {
+                                                            isPlaying = true;
+                                                            playingIndex =
+                                                                index;
+                                                            playAudio(
+                                                                ChatData![index]
+                                                                    .files!);
+                                                          });
+                                                        });
+                                                      } else {
+                                                        isPlaying = true;
+                                                        playingIndex = index;
+                                                        playAudio(
+                                                            ChatData![index]
+                                                                .files!);
+                                                      }
+                                                    });
+                                                  },
+                                                  child: Icon(
+                                                    Icons.play_arrow,
+                                                    size: 28.0,
+                                                    color: (ChatData![index]
+                                                                .childId !=
+                                                            Strings
+                                                                .SelectedChild
+                                                        ? Colors.black54
+                                                        : Color.fromARGB(
+                                                            255, 4, 112, 162)),
+                                                  ),
+                                                )
+                                              : playingIndex == index
+                                                  ? GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          isPlaying = false;
+                                                        });
+
+                                                        stopAudio();
+                                                      },
+                                                      child: Icon(
+                                                        Icons.stop,
+                                                        size: 28.0,
+                                                        color: (ChatData![index]
+                                                                    .childId !=
+                                                                Strings
+                                                                    .SelectedChild
+                                                            ? Colors.black54
+                                                            : Color.fromARGB(
+                                                                255,
+                                                                4,
+                                                                112,
+                                                                162)),
+                                                      ),
+                                                    )
+                                                  : GestureDetector(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          if (isPlaying ==
+                                                              true) {
+                                                            stopAudio();
+                                                            _timer = Timer(
+                                                                const Duration(
+                                                                    milliseconds:
+                                                                        500),
+                                                                () {
+                                                              setState(() {
+                                                                isPlaying =
+                                                                    true;
+                                                                playingIndex =
+                                                                    index;
+                                                                playAudio(
+                                                                    ChatData![
+                                                                            index]
+                                                                        .files!);
+                                                              });
+                                                            });
+                                                          } else {
+                                                            isPlaying = true;
+                                                            playingIndex =
+                                                                index;
+                                                            playAudio(
+                                                                ChatData![index]
+                                                                    .files!);
+                                                          }
+                                                        });
+                                                      },
+                                                      child: Icon(
+                                                        Icons.play_arrow,
+                                                        size: 28.0,
+                                                        color: (ChatData![index]
+                                                                    .childId !=
+                                                                Strings
+                                                                    .SelectedChild
+                                                            ? Colors.black54
+                                                            : Color.fromARGB(
+                                                                255,
+                                                                4,
+                                                                112,
+                                                                162)),
+                                                      ),
+                                                    ),
+                                          Container(
+                                            width: 130,
+                                            child: Slider(
+                                              activeColor:
+                                                  (ChatData![index].childId !=
+                                                          Strings.SelectedChild
+                                                      ? Colors.grey
+                                                      : Color.fromARGB(
+                                                          255, 4, 112, 162)),
+                                              inactiveColor: Colors.black54,
+                                              value: playingIndex == index
+                                                  ? audioCurrentlenth.toDouble()
+                                                  : 0,
+                                              min: 0,
+                                              max: playingIndex == index
+                                                  ? audioLength.toDouble()
+                                                  : 0,
+                                              onChanged: (double value) {
+                                                setState(() {
+                                                  playingIndex == index
+                                                      ? audioCurrentlenth =
+                                                          value.toInt()
+                                                      : 0;
+                                                  // _currentSliderValue = value;
+                                                });
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                            ),
+                          ),
+                          // (index != 0 &&
+                          //         ChatData![index].childId !=
+                          //             ChatData![index - 1].childId)
+                          //     ?
+                          Align(
+                            alignment: (ChatData![index].childId !=
+                                    Strings.SelectedChild
+                                ? Alignment.topLeft
+                                : Alignment.topRight),
+                            child: Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 5, 8, 0),
+                              child: Text(
+                                DateFormat.jm().format(
+                                  DateTime.parse(ChatData![index].createdDate!),
+                                ),
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: Colors.black54,
+                                ),
+                              ),
+                            ),
+                          )
+                          // : SizedBox()
+                        ],
                       ),
                     ),
                   ],
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
-          // Align(
-          //   alignment: Alignment.bottomLeft,
-          //   child: Padding(
-          //     padding: const EdgeInsets.all(8.0),
-          //     child: Container(
-          //       decoration: BoxDecoration(
-          //           color: Colors.white,
-          //           border: Border.all(
-          //             color: Colors.grey,
-          //           ),
-          //           borderRadius: BorderRadius.all(Radius.circular(50))),
-          //       padding: EdgeInsets.only(left: 10, bottom: 10, top: 10),
-          //       height: 50,
-          //       width: double.infinity,
-          //       // color: Colors.white,
-          //       child: Row(
-          //         children: <Widget>[
-          //           GestureDetector(
-          //             onTap: () {},
-          //             child: Container(
-          //               height: 23,
-          //               width: 23,
-          //               decoration: BoxDecoration(
-          //                 color: Colors.blue.shade400,
-          //                 borderRadius: BorderRadius.circular(30),
-          //               ),
-          //               child: Icon(
-          //                 Icons.mic_none_outlined,
-          //                 color: Colors.white,
-          //                 size: 20,
-          //               ),
-          //             ),
-          //           ),
-          //           SizedBox(
-          //             width: 15,
-          //           ),
-          //           Expanded(
-          //             child: Padding(
-          //               padding: const EdgeInsets.fromLTRB(0, 10, 0, 0),
-          //               child: TextField(
-          //                 decoration: InputDecoration(
-          //                     contentPadding: const EdgeInsets.only(
-          //                       bottom: 15.0,
-          //                     ),
-          //                     hintText: "Type Message...",
-          //                     hintStyle: TextStyle(
-          //                         color: Colors.black54,
-          //                         fontStyle: FontStyle.italic),
-          //                     border: InputBorder.none),
-          //               ),
-          //             ),
-          //           ),
-          //           SizedBox(
-          //             width: 15,
-          //           ),
-          //           FloatingActionButton(
-          //             onPressed: () {},
-          //             child: Icon(
-          //               Icons.send,
-          //               color: Colors.grey,
-          //               size: 25,
-          //             ),
-          //             backgroundColor: Colors.white,
-          //             elevation: 0,
-          //           ),
-          //         ],
-          //       ),
-          //     ),
-          //   ),
-          // ),
         ],
       ),
     );
+  }
+
+  getMarkChat() async {
+    _socket?.on("get-mark-avail-chats", (_data) {
+      setState(() {
+        print("Dta chacek--> $initialCommentCheck");
+        print("getting inside");
+        msgField.unfocus();
+        ChatData = [];
+        for (var item in _data) {
+          ChatData!.add(AvailChatData.fromJson(item));
+          print("set state");
+
+          for (int index = 0; index < ChatData!.length; index++) {
+            dateFormate.add(DateFormat("dd-MM-yyyy")
+                .format(DateTime.parse(ChatData![index].createdDate!)));
+          }
+        }
+        msgField.unfocus();
+      });
+    });
   }
 
   Widget Gallery() {
@@ -1261,6 +1393,58 @@ class _Past_Activity_DetailsState extends State<Past_Activity_Details>
       }
     }).catchError((onError) {
       print(onError.toString());
+    });
+  }
+
+  playAudio(url) async {
+    // var dir = await ExtStorage.getExternalStoragePublicDirectory(
+    //     ExtStorage.DIRECTORY_DOWNLOADS);
+    // String url = dir + "/MTARecordedAudio.wav";
+    // dynamic audioUrl = Strings.IndChat + url;
+    print(Strings.IndChat + url);
+
+    // await audioPlayer.setSourceUrl(
+    //   Strings.IndChat + url,
+    // );
+    await audioPlayer.play(
+      Strings.MarkChat + url,
+      volume: 5,
+    );
+    //await audioPlayer.play(, volume: 5, mode: playAudio(url));
+    audioPlayer.onDurationChanged.listen((Duration d) {
+      int seconds = d.inSeconds;
+      print('Max duration: $d');
+      setState(() {
+        audioLength = seconds;
+      });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration p) {
+      int seconds = p.inSeconds;
+      print('curr duration: $p');
+      setState(() {
+        audioCurrentlenth = seconds;
+      });
+    });
+    audioPlayer.onPlayerCompletion.listen((event) {
+      setState(() {
+        audioLength = 0;
+        audioCurrentlenth = 0;
+        playingIndex = null;
+        isPlaying = false;
+      });
+    });
+    audioPlayer.onPlayerError.listen((msg) {
+      print('audioPlayer error : $msg');
+    });
+  }
+
+  stopAudio() async {
+    await audioPlayer.stop();
+    setState(() {
+      audioLength = 0;
+      audioCurrentlenth = 0;
+      playingIndex = null;
+      isPlaying = false;
     });
   }
 }
