@@ -832,30 +832,17 @@ class _CommentsContentState extends State<CommentsContent>
                                         hintStyle: TextStyle(
                                             color: Colors.black54,
                                             fontStyle: FontStyle.italic),
-                                        border: InputBorder.none),
+                                        border: InputBorder.none,
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(
+                                        color: Strings.textFeildBg, width: 0),
+                                    borderRadius: BorderRadius.circular(40))),
                                   ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 15,
-                              ),
-                              FloatingActionButton(
-                                onPressed: () {
-                                  postComments();
-                                },
-                                child: Icon(
-                                  Icons.send,
-                                  color: Colors.white,
-                                  size: 15,
-                                ),
-                                backgroundColor: Strings.appThemecolor,
-                                elevation: 50,
-                              ),
-                            ],
-                          ),
-                        ),
+                          ),]
+                        )
                       ),
-                    ),
+                    ),)
                   ],
                 ),
               ),

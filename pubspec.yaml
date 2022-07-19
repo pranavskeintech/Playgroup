@@ -54,6 +54,7 @@ dependencies:
   ext_storage:
    git: https://github.com/pranavskeintech/skein_ext_storage.git
   tutorial_coach_mark: ^1.2.3
+  group_radio_button: ^1.2.0
 
 dev_dependencies:
   flutter_test:
